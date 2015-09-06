@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+
+    <h:head>
+
+    </h:head>
+
+    <h:body>
+
+        <pm:page id="inicio">
+            <ui:include src="menu/_cabecera.xhtml" >
+                <ui:param name="index" value="0" />
+            </ui:include>
+
+            <pm:content>
+                <p>Aquí van los muñecos y colores</p>
+            </pm:content>
+
+        </pm:page>
+
+        <pm:page id="pedido">
+            <ui:include src="menu/_cabecera.xhtml" >
+                <ui:param name="index" value="1" />
+            </ui:include>
+            <pm:content>
+                <ui:include src="pedido/_createPedido.xhtml" />
+            </pm:content>
+
+        </pm:page>
+
+    </h:body>
+
+</html>
