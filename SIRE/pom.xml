@@ -13,7 +13,6 @@
     <module>SIRE-WS</module>
     <module>SIRE-Services</module>
     <module>SIRE-Services-API</module>
-    <module>SIRE-WS-Client</module>
     <module>SIRE-Web</module>
     <module>SIRE-RS-Client</module>
   </modules>
