@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile">
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+    <h:head>
+        <title>Login</title>
+        <h:outputStylesheet name="main/css/customStyles.css" />
+    </h:head>
+    <h:body>
+        <pm:page id="login">
+            <h:form id="frmLogin" >                
+                <p:growl id="growl" sticky="false" showDetail="true" life="3000" />
+                <p:panel id="basic" header="Ingresar Usuario" style="margin-bottom:20px">
+                    <pm:content>
+                        <p:outputLabel for="username" value="Usuario:" />
+                        <p:inputText id="username" value="#{user.userName}" required="true" label="Usuario" />
+                    </pm:content>
+                    <pm:content>
+                        <p:outputLabel for="password" value="Contraseña:" />
+                        <p:password id="password" value="#{user.password}" required="true" label="Contraseña" />
+                    </pm:content>
+                    <pm:content>
+                        <p:commandButton value="Login" update="growl" actionListener="#{user.login()}"/>                                  
+                    </pm:content>
+                </p:panel>
+            </h:form>
+        </pm:page>
+    </h:body>
+</html>
+

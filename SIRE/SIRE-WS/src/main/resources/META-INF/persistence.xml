@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.sire_SIRE-WS_war_1.0.0PU" transaction-type="JTA">
+    <jta-data-source>jdbc/sire</jta-data-source>
+    <class>com.sire.entities.CxcClaseCliente</class>
+    <class>com.sire.entities.CxcCliente</class>
+    <class>com.sire.entities.CxcSector</class>
+    <class>com.sire.entities.CxcZona</class>
+    <class>com.sire.entities.FacTmpFactC</class>
+    <class>com.sire.entities.FacTmpFactD</class>
+    <class>com.sire.entities.GnrDivisa</class>
+    <class>com.sire.entities.GnrEmpresa</class>
+    <class>com.sire.entities.GnrPersona</class>
+    <class>com.sire.entities.GnrUsuarios</class>
+    <class>com.sire.entities.InvBodega</class>
+    <class>com.sire.entities.InvBodegaArt</class>
+    <class>com.sire.entities.InvGrupoProveedor</class>
+    <class>com.sire.entities.InvInventario</class>
+    <class>com.sire.entities.InvMovimientoCab</class>
+    <class>com.sire.entities.InvMovimientoDtll</class>
+    <class>com.sire.entities.InvProveedor</class>
+    <class>com.sire.entities.InvTransacciones</class>
+    <class>com.sire.entities.InvUnidadAlternativa</class>
+    <class>com.sire.entities.VCliente</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties/>
+  </persistence-unit>
+</persistence>

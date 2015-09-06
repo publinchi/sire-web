@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <pm:header title="SIRE Mobil" fixed="true">
+        <h:form>
+            <p:tabMenu activeIndex="#{index}" >
+                <p:menuitem value="Inicio" icon="ui-icon-home" action="pm:inicio?transition=flip" iconPos="top" update="inicio" />
+                <p:menuitem value="Pedido" icon="ui-icon-shop" action="pm:pedido?transition=flip" iconPos="top" update="pedido" />
+                <p:menuitem value="Salir" icon="ui-icon-power" iconPos="top" action="${user.logout()}" ajax="false" />
+            </p:tabMenu>
+        </h:form>
+    </pm:header>
+</html>
