@@ -48,6 +48,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrEmpresa.findByPatronal", query = "SELECT g FROM GnrEmpresa g WHERE g.patronal = :patronal"),
     @NamedQuery(name = "GnrEmpresa.findByResponsable", query = "SELECT g FROM GnrEmpresa g WHERE g.responsable = :responsable")})
 public class GnrEmpresa implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvGrupo1> invGrupo1List;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvArticulo> invArticuloList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvMarcas> invMarcasList;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -335,6 +341,33 @@ public class GnrEmpresa implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.GnrEmpresa[ codEmpresa=" + codEmpresa + " ]";
+    }
+
+    @XmlTransient
+    public List<InvGrupo1> getInvGrupo1List() {
+        return invGrupo1List;
+    }
+
+    public void setInvGrupo1List(List<InvGrupo1> invGrupo1List) {
+        this.invGrupo1List = invGrupo1List;
+    }
+
+    @XmlTransient
+    public List<InvArticulo> getInvArticuloList() {
+        return invArticuloList;
+    }
+
+    public void setInvArticuloList(List<InvArticulo> invArticuloList) {
+        this.invArticuloList = invArticuloList;
+    }
+
+    @XmlTransient
+    public List<InvMarcas> getInvMarcasList() {
+        return invMarcasList;
+    }
+
+    public void setInvMarcasList(List<InvMarcas> invMarcasList) {
+        this.invMarcasList = invMarcasList;
     }
     
 }
