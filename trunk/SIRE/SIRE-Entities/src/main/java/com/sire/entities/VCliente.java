@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "VCliente.findByComoPaga", query = "SELECT v FROM VCliente v WHERE v.comoPaga = :comoPaga"),
     @NamedQuery(name = "VCliente.findByTipoPersona", query = "SELECT v FROM VCliente v WHERE v.tipoPersona = :tipoPersona"),
     @NamedQuery(name = "VCliente.findByDocumento", query = "SELECT v FROM VCliente v WHERE v.documento = :documento"),
-    @NamedQuery(name = "VCliente.findByApellidos", query = "SELECT v FROM VCliente v WHERE v.apellidos = :apellidos"),
+    @NamedQuery(name = "VCliente.findByApellidos", query = "SELECT v FROM VCliente v WHERE v.apellidos like :apellidos"),
     @NamedQuery(name = "VCliente.findByCodDocumento", query = "SELECT v FROM VCliente v WHERE v.codDocumento = :codDocumento"),
     @NamedQuery(name = "VCliente.findByNombres", query = "SELECT v FROM VCliente v WHERE v.nombres = :nombres"),
     @NamedQuery(name = "VCliente.findBySexo", query = "SELECT v FROM VCliente v WHERE v.sexo = :sexo"),
