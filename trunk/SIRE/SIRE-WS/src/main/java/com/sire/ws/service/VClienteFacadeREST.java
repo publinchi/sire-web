@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,6 +28,7 @@ import javax.ws.rs.Produces;
 @Stateless
 @Path("com.sire.entities.vcliente")
 public class VClienteFacadeREST extends AbstractFacade<VCliente> {
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -76,6 +78,16 @@ public class VClienteFacadeREST extends AbstractFacade<VCliente> {
     }
 
     @GET
+    @Path("/findByApellidos/{apellidos}")
+    @Produces({"application/json"})
+    public VCliente findByApellidos(@PathParam("apellidos") String apellidos) {
+        TypedQuery<VCliente> query = em.createNamedQuery("VCliente.findByApellidos", VCliente.class);
+        query.setParameter("apellidos", apellidos);
+        VCliente retorno = (VCliente) query.getSingleResult();
+        return retorno;
+    }
+
+    @GET
     @Path("count")
     @Produces("text/plain")
     public String countREST() {
@@ -86,5 +98,5 @@ public class VClienteFacadeREST extends AbstractFacade<VCliente> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
