@@ -17,11 +17,6 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>unknown.binary</groupId>
-            <artifactId>javax.ws.rs-api-2.0</artifactId>
-            <version>SNAPSHOT</version>
-        </dependency>
-        <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
             <artifactId>jersey-container-servlet</artifactId>
             <version>2.5.1</version>
