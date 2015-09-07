@@ -25,7 +25,7 @@ import javax.ws.rs.client.WebTarget;
 public class VClienteFacadeREST {
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://190.154.203.178:8080/SIRE-WS/webresources";
 
     public VClienteFacadeREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -76,6 +76,12 @@ public class VClienteFacadeREST {
 
     public void create_JSON(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
+    }
+
+    public <T> T findByApellidos(Class<T> responseType, String apellidos) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByApellidos/{0}", new Object[]{apellidos}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public <T> T findAll_XML(Class<T> responseType) throws ClientErrorException {
