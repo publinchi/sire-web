@@ -3,11 +3,26 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
     <pm:field>
-        <p:outputLabel for="articulo" value="Articulo:" />
-        <p:inputText id="articulo"/>
+        <p:outputLabel for="articulo" value="Artículo:" />
+        <p:commandButton id="articulo" value="Buscar Artículo" onclick="PF('dlg2').show();" type="button" />               
     </pm:field>
+    <p:dialog header="Artículos" widgetVar="dlg2" showEffect="pop">
+        <h:form id="formArticulos">
+            <p:outputLabel for="buscarArticulos" value="Busca:" />
+            <h:panelGrid columns="2">
+                <p:inputText id="buscarArticulos" placeholder="Buscar Cliente" type="search" value="${articulosBean.input}"/>
+                <p:commandButton id="botonBuscarArticulo" icon="ui-icon-search" actionListener="${articulosBean.findArticulos}" update="@form:dataListArticulo"/>
+            </h:panelGrid>
+            <p:dataList id="dataListArticulo" value="#{articulosBean.articulos}" var="articulo" pt:data-inset="true">
+                <p:ajax event="taphold" listener="#{articulosBean.tapArticulo}" oncomplete="PF('dlg2').hide();"/>
+                <h:outputText value="#{articulo.nombreArticulo}" />
+            </p:dataList>
+        </h:form>
+    </p:dialog>
 
     <pm:field>
         <p:outputLabel for="bodega" value="Bodega:" />

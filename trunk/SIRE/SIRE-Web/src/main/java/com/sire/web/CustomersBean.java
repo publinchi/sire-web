@@ -53,14 +53,11 @@ public class CustomersBean {
     }
 
     public void findClientes() {
-        System.out.println("Input: " + input);
         String clientesString = null;
         try {
             clientesString = vClienteFacadeREST.findByApellidos(String.class, input);
-            System.out.println("Clientes: " + clientesString);
             clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
             }.getType());
-            System.out.println("# Clientes: " + clientes.size());
         } catch (ClientErrorException cee) {
             clientes = null;
         }
