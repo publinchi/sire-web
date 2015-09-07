@@ -5,22 +5,25 @@
  */
 package com.sire.web;
 
+import com.sire.entities.VCliente;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
 
 /**
  *
  * @author pestupinan
  */
-@ManagedBean
+@ManagedBean(name = "cliente")
+@SessionScoped
 public class CustomerBean {
 
+    private VCliente cliente;
     private String nombre;
     private String apellido;
     private String direccion;
     private String telefono;
 
     public String getNombre() {
-        nombre = "Victor";
         return nombre;
     }
 
@@ -29,7 +32,6 @@ public class CustomerBean {
     }
 
     public String getApellido() {
-        apellido = "Romero";
         return apellido;
     }
 
@@ -38,7 +40,6 @@ public class CustomerBean {
     }
 
     public String getDireccion() {
-        direccion = "Eloy Alfaro y Granados";
         return direccion;
     }
 
@@ -47,12 +48,19 @@ public class CustomerBean {
     }
 
     public String getTelefono() {
-        telefono = "022805656";
         return telefono;
     }
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public VCliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(VCliente cliente) {
+        this.cliente = cliente;
     }
 
 }

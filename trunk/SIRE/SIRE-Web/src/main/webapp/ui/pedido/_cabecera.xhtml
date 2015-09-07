@@ -4,7 +4,8 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html">
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <pm:field>
         <p:outputLabel for="fechaHora"  value="Fecha:" />
         <h:outputText id="fechaHora" value="#{timerBean.date.date}-#{timerBean.date.month+1}-#{timerBean.date.year+1900} #{timerBean.date.hours}:#{timerBean.date.minutes}"/>  
@@ -32,9 +33,9 @@
     <pm:field>
         <p:commandButton id="btn-cliente" value="Cliente" type="button"/>
     </pm:field>
-    <p:overlayPanel for="btn-cliente" widgetVar="pnlCliente" at="right" showEffect="overlay">
+    <p:overlayPanel id="overlayPanel" for="btn-cliente" widgetVar="pnlCliente" at="right" showEffect="overlay">
         <h2>Cliente</h2>
-        <ui:include src="_cliente.xhtml" />
+        <ui:include src="_cliente.xhtml" id="_cliente"/>
     </p:overlayPanel>
 
     <pm:field>
@@ -48,8 +49,17 @@
         <p:commandButton id="cliente" value="Buscar Cliente" onclick="PF('dlg1').show();" type="button" />               
     </pm:field>
     <p:dialog header="Clientes" widgetVar="dlg1" showEffect="pop">
-        <p:outputLabel for="busca" value="Busca:" />
-        <p:inputText id="busca" placeholder="Buscar Cliente" type="search"/>
+        <h:form id="form">
+            <p:outputLabel for="busca" value="Busca:" />
+            <h:panelGrid columns="2">
+                <p:inputText id="busca" placeholder="Buscar Cliente" type="search" value="${customers.input}"/>
+                <p:commandButton id="botonBuscar" icon="ui-icon-search" actionListener="${customers.findClientes}" update="@form:dataList"/>
+            </h:panelGrid>
+            <p:dataList id="dataList" value="#{customers.clientes}" var="c" pt:data-inset="true">
+                <p:ajax event="taphold" listener="#{customers.tapCliente}" update="pedido:accordionPanel:overlayPanel" oncomplete="PF('dlg1').hide();"/>
+                <h:outputText value="#{c.apellidos} #{c.nombres}" />
+            </p:dataList>
+        </h:form>
         <!--<h:outputText value="What we do in life, echoes in eternity!" />-->
     </p:dialog>
 

@@ -12,21 +12,27 @@ import com.sire.entities.VCliente;
 import com.sire.rs.client.VClienteFacadeREST;
 import java.util.List;
 import javax.annotation.PostConstruct;
-import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import javax.faces.bean.SessionScoped;
+import javax.ws.rs.ClientErrorException;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
  * @author pestupinan
  */
-@ManagedBean
-@ApplicationScoped
+@ManagedBean(name = "customers")
+@SessionScoped
 public class CustomersBean {
 
+    @ManagedProperty("#{cliente}")
+    private CustomerBean cliente;
     private List<VCliente> clientes;
     private final VClienteFacadeREST vClienteFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
+    private String input;
 
     public CustomersBean() {
         vClienteFacadeREST = new VClienteFacadeREST();
@@ -35,6 +41,9 @@ public class CustomersBean {
     }
 
     @PostConstruct
+    private void init() {
+    }
+
     private void loadClientes() {
         List<VCliente> list = gson.fromJson(vClienteFacadeREST.findAll_JSON(String.class), new TypeToken<java.util.List<VCliente>>() {
         }.getType());
@@ -43,10 +52,30 @@ public class CustomersBean {
         System.out.println("# clientes: " + clientes.size());
     }
 
+    public void findClientes() {
+        System.out.println("Input: " + input);
+        String clientesString = null;
+        try {
+            clientesString = vClienteFacadeREST.findByApellidos(String.class, input);
+            System.out.println("Clientes: " + clientesString);
+            clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+            }.getType());
+            System.out.println("# Clientes: " + clientes.size());
+        } catch (ClientErrorException cee) {
+            clientes = null;
+        }
+    }
+
     private void cleanClientes() {
         if (clientes != null) {
             getClientes().clear();
         }
+    }
+
+    public void tapCliente(SelectEvent event) {
+        VCliente vCliente = ((VCliente) event.getObject());
+        System.out.println("Cliente seleccionado: " + vCliente.getApellidos() + " " + vCliente.getNombres());
+        cliente.setCliente(vCliente);
     }
 
     public List<VCliente> getClientes() {
@@ -55,6 +84,22 @@ public class CustomersBean {
 
     public void setClientes(List<VCliente> clientes) {
         this.clientes = clientes;
+    }
+
+    public String getInput() {
+        return input;
+    }
+
+    public void setInput(String input) {
+        this.input = input;
+    }
+
+    public CustomerBean getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(CustomerBean cliente) {
+        this.cliente = cliente;
     }
 
 }
