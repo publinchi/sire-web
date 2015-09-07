@@ -80,10 +80,10 @@ public class VClienteFacadeREST extends AbstractFacade<VCliente> {
     @GET
     @Path("/findByApellidos/{apellidos}")
     @Produces({"application/json"})
-    public VCliente findByApellidos(@PathParam("apellidos") String apellidos) {
+    public List<VCliente> findByApellidos(@PathParam("apellidos") String apellidos) {
         TypedQuery<VCliente> query = em.createNamedQuery("VCliente.findByApellidos", VCliente.class);
-        query.setParameter("apellidos", apellidos);
-        VCliente retorno = (VCliente) query.getSingleResult();
+        query.setParameter("apellidos", "%" + apellidos + "%");
+        List<VCliente> retorno = query.getResultList();
         return retorno;
     }
 
