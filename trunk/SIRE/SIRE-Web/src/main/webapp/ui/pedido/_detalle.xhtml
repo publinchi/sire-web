@@ -14,15 +14,39 @@
         <h:form id="formArticulos">
             <p:outputLabel for="buscarArticulos" value="Busca:" />
             <h:panelGrid columns="2">
-                <p:inputText id="buscarArticulos" placeholder="Buscar Cliente" type="search" value="${articulosBean.input}"/>
+                <p:inputText id="buscarArticulos" placeholder="Buscar Articulo" type="search" value="${articulosBean.input}"/>
                 <p:commandButton id="botonBuscarArticulo" icon="ui-icon-search" actionListener="${articulosBean.findArticulos}" update="@form:dataListArticulo"/>
             </h:panelGrid>
             <p:dataList id="dataListArticulo" value="#{articulosBean.articulos}" var="articulo" pt:data-inset="true">
-                <p:ajax event="taphold" listener="#{articulosBean.tapArticulo}" oncomplete="PF('dlg2').hide();"/>
+                <p:ajax event="tap" listener="#{articulosBean.tapArticulo}" oncomplete="PF('dlg2').hide();" update="pedido:accordionPanel:formTablaArticulos:tablaArticulos"/>
                 <h:outputText value="#{articulo.nombreArticulo}" />
             </p:dataList>
         </h:form>
     </p:dialog>
+    <h:form id="formTablaArticulos">
+        <p:dataTable id="tablaArticulos" var="invMovimientoDtll" value="#{articulosBean.invMovimientoDtlls}" 
+                     reflow="true" selection="#{articulosBean.invMovimientoDtllSeleccionado}" selectionMode="single" rowKey="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}">
+            <p:ajax event="tap" listener="#{articulosBean.tapArticuloFinal}" update="@form:tablaArticulos"/>
+            <p:column headerText="Articulo">
+                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}" />
+            </p:column>
+            <p:column headerText="BD">
+                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codBodega}" />
+            </p:column>
+            <p:column headerText="INV">
+                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codInventario}" />
+            </p:column>
+            <p:column headerText="UM">
+                <h:outputText value="#{invMovimientoDtll.codUnidad}" />
+            </p:column>
+            <p:column headerText="Cantidad">
+                <h:outputText value="#{invMovimientoDtll.cantidad}" />
+            </p:column>
+            <p:column headerText="Precio Unitario">
+                <h:outputText value="#{invMovimientoDtll.costoUnitario}" />
+            </p:column>
+        </p:dataTable>
+    </h:form>
 
     <pm:field>
         <p:outputLabel for="bodega" value="Bodega:" />

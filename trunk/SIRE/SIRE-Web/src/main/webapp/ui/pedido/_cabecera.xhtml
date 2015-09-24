@@ -56,7 +56,7 @@
                 <p:commandButton id="botonBuscar" icon="ui-icon-search" actionListener="${customers.findClientes}" update="@form:dataList"/>
             </h:panelGrid>
             <p:dataList id="dataList" value="#{customers.clientes}" var="c" pt:data-inset="true">
-                <p:ajax event="taphold" listener="#{customers.tapCliente}" update="pedido:accordionPanel:overlayPanel" oncomplete="PF('dlg1').hide();"/>
+                <p:ajax event="tap" listener="#{customers.tapCliente}" update="pedido:accordionPanel:overlayPanel" oncomplete="PF('dlg1').hide();"/>
                 <h:outputText value="#{c.apellidos} #{c.nombres}" />
             </p:dataList>
         </h:form>

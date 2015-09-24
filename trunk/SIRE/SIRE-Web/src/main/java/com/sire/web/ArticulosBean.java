@@ -9,7 +9,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.InvArticulo;
+import com.sire.entities.InvBodegaArt;
+import com.sire.entities.InvBodegaArtPK;
+import com.sire.entities.InvMovimientoDtll;
 import com.sire.rs.client.InvArticuloFacadeREST;
+import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
@@ -29,8 +33,13 @@ public class ArticulosBean {
     private final Gson gson;
     private String input;
     private List<InvArticulo> articulos;
+//    private List<InvArticulo> articulosSeleccionados;
+    private List<InvMovimientoDtll> invMovimientoDtlls;
+    private InvMovimientoDtll invMovimientoDtllSeleccionado;
 
     public ArticulosBean() {
+//        articulosSeleccionados = new ArrayList<>();
+        invMovimientoDtlls = new ArrayList<>();
         invArticuloFacadeREST = new InvArticuloFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
@@ -52,7 +61,21 @@ public class ArticulosBean {
     public void tapArticulo(SelectEvent event) {
         InvArticulo invArticulo = ((InvArticulo) event.getObject());
         System.out.println("Articulo seleccionado: " + invArticulo.getNombreArticulo());
-//        cliente.setCliente(invArticulo);
+
+        InvMovimientoDtll invMovimientoDtll = new InvMovimientoDtll();
+        InvBodegaArt invBodegaArt = new InvBodegaArt();
+        InvBodegaArtPK invBodegaArtPK = new InvBodegaArtPK();
+
+        invBodegaArtPK.setCodArticulo(invArticulo.getInvArticuloPK().getCodArticulo());
+
+        invBodegaArt.setInvBodegaArtPK(invBodegaArtPK);
+        invMovimientoDtll.setInvBodegaArt(invBodegaArt);
+        invMovimientoDtlls.add(invMovimientoDtll);
+    }
+    
+     public void tapArticuloFinal(SelectEvent event) {
+        InvMovimientoDtll invMovimientoDtll = ((InvMovimientoDtll) event.getObject());
+        System.out.println("Articulo seleccionado: " + invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo());
     }
 
     public String getInput() {
@@ -69,6 +92,29 @@ public class ArticulosBean {
 
     public void setArticulos(List<InvArticulo> articulos) {
         this.articulos = articulos;
+    }
+
+//    public List<InvArticulo> getArticulosSeleccionados() {
+//        return articulosSeleccionados;
+//    }
+//
+//    public void setArticulosSeleccionados(List<InvArticulo> articulosSeleccionados) {
+//        this.articulosSeleccionados = articulosSeleccionados;
+//    }
+    public List<InvMovimientoDtll> getInvMovimientoDtlls() {
+        return invMovimientoDtlls;
+    }
+
+    public void setInvMovimientoDtlls(List<InvMovimientoDtll> invMovimientoDtlls) {
+        this.invMovimientoDtlls = invMovimientoDtlls;
+    }
+
+    public InvMovimientoDtll getInvMovimientoDtllSeleccionado() {
+        return invMovimientoDtllSeleccionado;
+    }
+
+    public void setInvMovimientoDtllSeleccionado(InvMovimientoDtll invMovimientoDtllSeleccionado) {
+        this.invMovimientoDtllSeleccionado = invMovimientoDtllSeleccionado;
     }
 
 }
