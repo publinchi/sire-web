@@ -39,15 +39,21 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.GnrEmpresaFacadeREST.class);
         resources.add(com.sire.ws.service.GnrPersonaFacadeREST.class);
         resources.add(com.sire.ws.service.GnrUsuariosFacadeREST.class);
+        resources.add(com.sire.ws.service.InvArticuloFacadeREST.class);
         resources.add(com.sire.ws.service.InvBodegaArtFacadeREST.class);
         resources.add(com.sire.ws.service.InvBodegaFacadeREST.class);
+        resources.add(com.sire.ws.service.InvGrupo1FacadeREST.class);
+        resources.add(com.sire.ws.service.InvGrupo2FacadeREST.class);
+        resources.add(com.sire.ws.service.InvGrupo3FacadeREST.class);
         resources.add(com.sire.ws.service.InvGrupoProveedorFacadeREST.class);
         resources.add(com.sire.ws.service.InvInventarioFacadeREST.class);
+        resources.add(com.sire.ws.service.InvMarcasFacadeREST.class);
         resources.add(com.sire.ws.service.InvMovimientoCabFacadeREST.class);
         resources.add(com.sire.ws.service.InvMovimientoDtllFacadeREST.class);
         resources.add(com.sire.ws.service.InvProveedorFacadeREST.class);
         resources.add(com.sire.ws.service.InvTransaccionesFacadeREST.class);
         resources.add(com.sire.ws.service.InvUnidadAlternativaFacadeREST.class);
+        resources.add(com.sire.ws.service.InvUnidadMedidaFacadeREST.class);
         resources.add(com.sire.ws.service.VClienteFacadeREST.class);
     }
     
