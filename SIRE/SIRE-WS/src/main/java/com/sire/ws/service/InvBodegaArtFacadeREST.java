@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("com.sire.entities.invbodegaart")
 public class InvBodegaArtFacadeREST extends AbstractFacade<InvBodegaArt> {
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -94,6 +96,16 @@ public class InvBodegaArtFacadeREST extends AbstractFacade<InvBodegaArt> {
     }
 
     @GET
+    @Path("/findByCodArticulo/{codArticulo}")
+    @Produces({"application/xml", "application/json"})
+    public List<InvBodegaArt> findByCodArticulo(@PathParam("codArticulo") Integer codArticulo) {
+        TypedQuery<InvBodegaArt> query = em.createNamedQuery("InvBodegaArt.findByCodArticulo", InvBodegaArt.class);
+        query.setParameter("codArticulo", codArticulo);
+        List<InvBodegaArt> invBodegaArts = query.getResultList();
+        return invBodegaArts;
+    }
+
+    @GET
     @Override
     @Produces({"application/xml", "application/json"})
     public List<InvBodegaArt> findAll() {
@@ -118,5 +130,5 @@ public class InvBodegaArtFacadeREST extends AbstractFacade<InvBodegaArt> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
