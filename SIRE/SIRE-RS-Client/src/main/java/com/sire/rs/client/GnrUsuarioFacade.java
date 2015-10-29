@@ -10,26 +10,26 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:InvArticuloFacadeREST
- * [com.sire.entities.invarticulo]<br>
+ * Jersey REST client generated for REST resource:GnrUsuariosFacadeREST
+ * [com.sire.entities.gnrusuarios]<br>
  * USAGE:
  * <pre>
- *        InvArticuloFacadeREST client = new InvArticuloFacadeREST();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
+        GnrUsuarioFacade client = new GnrUsuarioFacade();
+        Object response = client.XXX(...);
+        // do whatever with response
+        client.close();
+ </pre>
  *
  * @author Administrator
  */
-public class InvArticuloFacadeREST {
+public class GnrUsuarioFacade {
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://190.154.203.178:8080/SIRE-WS/webresources";
 
-    public InvArticuloFacadeREST() {
+    public GnrUsuarioFacade() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("com.sire.entities.invarticulo");
+        webTarget = client.target(BASE_URI).path("com.sire.entities.gnrusuarios");
     }
 
     public String countREST() throws ClientErrorException {
@@ -90,12 +90,6 @@ public class InvArticuloFacadeREST {
 
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
-    }
-
-    public <T> T findByNombreArticulo(Class<T> responseType, String nombreArticulo) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findByNombreArticulo/{0}", new Object[]{nombreArticulo}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public void close() {

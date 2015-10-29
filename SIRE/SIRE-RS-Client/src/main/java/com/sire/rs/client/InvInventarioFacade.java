@@ -10,11 +10,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:GnrUsuariosFacadeREST
- * [com.sire.entities.gnrusuarios]<br>
+ * Jersey REST client generated for REST resource:InvInventarioFacadeREST
+ * [com.sire.entities.invinventario]<br>
  * USAGE:
  * <pre>
- *        GnrUsuarioFacadeREST client = new GnrUsuarioFacadeREST();
+ *        InvInventarioFacade client = new InvInventarioFacade();
  *        Object response = client.XXX(...);
  *        // do whatever with response
  *        client.close();
@@ -22,14 +22,14 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author Administrator
  */
-public class GnrUsuarioFacadeREST {
+public class InvInventarioFacade {
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://190.154.203.178:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
 
-    public GnrUsuarioFacadeREST() {
+    public InvInventarioFacade() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("com.sire.entities.gnrusuarios");
+        webTarget = client.target(BASE_URI).path("com.sire.entities.invinventario");
     }
 
     public String countREST() throws ClientErrorException {

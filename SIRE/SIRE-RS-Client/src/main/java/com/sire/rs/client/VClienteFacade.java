@@ -10,24 +10,24 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:VClienteFacadeREST
- * [com.sire.entities.vcliente]<br>
+ * Jersey REST client generated for REST resource:VClienteFacade
+ [com.sire.entities.vcliente]<br>
  * USAGE:
  * <pre>
- *        VClienteFacadeREST client = new VClienteFacadeREST();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
+        VClienteFacade client = new VClienteFacade();
+        Object response = client.XXX(...);
+        // do whatever with response
+        client.close();
+ </pre>
  *
  * @author pestupinan
  */
-public class VClienteFacadeREST {
+public class VClienteFacade {
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://190.154.203.178:8080/SIRE-WS/webresources";
 
-    public VClienteFacadeREST() {
+    public VClienteFacade() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("com.sire.entities.vcliente");
     }

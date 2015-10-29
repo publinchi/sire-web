@@ -15,7 +15,7 @@ public class TestClient {
 //        CxcClaseClienteFacadeREST cxcClaseClienteFacadeREST = new CxcClaseClienteFacadeREST();
 //        System.out.println(cxcClaseClienteFacadeREST.countREST());
 
-        InvMovimientoCabFacadeREST invMovimientoCabFacadeREST = new InvMovimientoCabFacadeREST();
+        InvMovimientoCabFacade invMovimientoCabFacadeREST = new InvMovimientoCabFacade();
         System.out.println(invMovimientoCabFacadeREST.countREST());
     }
 }

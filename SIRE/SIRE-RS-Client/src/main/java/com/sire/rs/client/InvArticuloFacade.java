@@ -10,26 +10,26 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:CxcClaseClienteFacadeREST
- * [com.sire.entities.cxcclasecliente]<br>
+ * Jersey REST client generated for REST resource:InvArticuloFacade
+ [com.sire.entities.invarticulo]<br>
  * USAGE:
  * <pre>
- *        CxcClaseClienteFacadeREST client = new CxcClaseClienteFacadeREST();
- *        Object response = client.XXX(...);
- *        // do whatever with response
- *        client.close();
- * </pre>
+        InvArticuloFacade client = new InvArticuloFacade();
+        Object response = client.XXX(...);
+        // do whatever with response
+        client.close();
+ </pre>
  *
  * @author Administrator
  */
-public class CxcClaseClienteFacadeREST {
+public class InvArticuloFacade {
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://190.154.203.178:8080/SIRE-WS/webresources";
 
-    public CxcClaseClienteFacadeREST() {
+    public InvArticuloFacade() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("com.sire.entities.cxcclasecliente");
+        webTarget = client.target(BASE_URI).path("com.sire.entities.invarticulo");
     }
 
     public String countREST() throws ClientErrorException {
@@ -90,6 +90,12 @@ public class CxcClaseClienteFacadeREST {
 
     public void remove(String id) throws ClientErrorException {
         webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete();
+    }
+
+    public <T> T findByNombreArticulo(Class<T> responseType, String nombreArticulo) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByNombreArticulo/{0}", new Object[]{nombreArticulo}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public void close() {
