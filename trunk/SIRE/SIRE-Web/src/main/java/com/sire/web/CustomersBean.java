@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.VCliente;
-import com.sire.rs.client.VClienteFacadeREST;
+import com.sire.rs.client.VClienteFacade;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
@@ -29,13 +29,13 @@ public class CustomersBean {
     @ManagedProperty("#{cliente}")
     private CustomerBean cliente;
     private List<VCliente> clientes;
-    private final VClienteFacadeREST vClienteFacadeREST;
+    private final VClienteFacade vClienteFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
     private String input;
 
     public CustomersBean() {
-        vClienteFacadeREST = new VClienteFacadeREST();
+        vClienteFacadeREST = new VClienteFacade();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }

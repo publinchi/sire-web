@@ -12,7 +12,7 @@ import com.sire.entities.InvArticulo;
 import com.sire.entities.InvBodegaArt;
 import com.sire.entities.InvBodegaArtPK;
 import com.sire.entities.InvMovimientoDtll;
-import com.sire.rs.client.InvArticuloFacadeREST;
+import com.sire.rs.client.InvArticuloFacade;
 import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
@@ -28,7 +28,7 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 public class ArticulosBean {
 
-    private final InvArticuloFacadeREST invArticuloFacadeREST;
+    private final InvArticuloFacade invArticuloFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
     private String input;
@@ -40,7 +40,7 @@ public class ArticulosBean {
     public ArticulosBean() {
 //        articulosSeleccionados = new ArrayList<>();
         invMovimientoDtlls = new ArrayList<>();
-        invArticuloFacadeREST = new InvArticuloFacadeREST();
+        invArticuloFacadeREST = new InvArticuloFacade();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }
@@ -72,10 +72,11 @@ public class ArticulosBean {
         invMovimientoDtll.setInvBodegaArt(invBodegaArt);
         invMovimientoDtlls.add(invMovimientoDtll);
     }
-    
-     public void tapArticuloFinal(SelectEvent event) {
-        InvMovimientoDtll invMovimientoDtll = ((InvMovimientoDtll) event.getObject());
-        System.out.println("Articulo seleccionado: " + invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo());
+
+    public void tapArticuloFinal(SelectEvent event) {
+        setInvMovimientoDtllSeleccionado(((InvMovimientoDtll) event.getObject()));
+        System.out.println("Articulo seleccionado: "
+                + getInvMovimientoDtllSeleccionado().getInvBodegaArt().getInvBodegaArtPK().getCodArticulo());
     }
 
     public String getInput() {

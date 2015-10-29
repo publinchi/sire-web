@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:form id="formTablaArticulos">
+        <p:dataTable id="tablaArticulos" var="invMovimientoDtll" value="#{articulosBean.invMovimientoDtlls}" 
+                     reflow="true" selection="#{articulosBean.invMovimientoDtllSeleccionado}"
+                     selectionMode="single" rowKey="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}">
+            <p:ajax event="tap" listener="#{articulosBean.tapArticuloFinal}" update="@form:tablaArticulos,pedido:accordionPanel:dialogArticulo" 
+                    oncomplete="PF('dlg3').show();"/>
+            <p:column headerText="Articulo">
+                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}" />
+            </p:column>
+            <p:column headerText="BD">
+                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codBodega}" />
+            </p:column>
+            <p:column headerText="INV">
+                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codInventario}" />
+            </p:column>
+            <p:column headerText="UM">
+                <h:outputText value="#{invMovimientoDtll.codUnidad}" />
+            </p:column>
+            <p:column headerText="Cantidad">
+                <h:outputText value="#{invMovimientoDtll.cantidad}" />
+            </p:column>
+            <p:column headerText="Precio Unitario">
+                <h:outputText value="#{invMovimientoDtll.costoUnitario}" />
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</html>

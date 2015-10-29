@@ -44,6 +44,12 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.sire</groupId>
+            <artifactId>SIRE-Services</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-web-api</artifactId>
             <version>7.0</version>
