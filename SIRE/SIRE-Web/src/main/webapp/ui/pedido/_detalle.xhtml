@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
@@ -10,91 +11,11 @@
         <p:outputLabel for="articulo" value="Artículo:" />
         <p:commandButton id="articulo" value="Buscar Artículo" onclick="PF('dlg2').show();" type="button" />               
     </pm:field>
-    <p:dialog header="Artículos" widgetVar="dlg2" showEffect="pop">
-        <h:form id="formArticulos">
-            <p:outputLabel for="buscarArticulos" value="Busca:" />
-            <h:panelGrid columns="2">
-                <p:inputText id="buscarArticulos" placeholder="Buscar Articulo" type="search" value="${articulosBean.input}"/>
-                <p:commandButton id="botonBuscarArticulo" icon="ui-icon-search" actionListener="${articulosBean.findArticulos}" update="@form:dataListArticulo"/>
-            </h:panelGrid>
-            <p:dataList id="dataListArticulo" value="#{articulosBean.articulos}" var="articulo" pt:data-inset="true">
-                <p:ajax event="tap" listener="#{articulosBean.tapArticulo}" oncomplete="PF('dlg2').hide();" update="pedido:accordionPanel:formTablaArticulos:tablaArticulos"/>
-                <h:outputText value="#{articulo.nombreArticulo}" />
-            </p:dataList>
-        </h:form>
-    </p:dialog>
-    <h:form id="formTablaArticulos">
-        <p:dataTable id="tablaArticulos" var="invMovimientoDtll" value="#{articulosBean.invMovimientoDtlls}" 
-                     reflow="true" selection="#{articulosBean.invMovimientoDtllSeleccionado}" selectionMode="single" rowKey="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}">
-            <p:ajax event="tap" listener="#{articulosBean.tapArticuloFinal}" update="@form:tablaArticulos"/>
-            <p:column headerText="Articulo">
-                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}" />
-            </p:column>
-            <p:column headerText="BD">
-                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codBodega}" />
-            </p:column>
-            <p:column headerText="INV">
-                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codInventario}" />
-            </p:column>
-            <p:column headerText="UM">
-                <h:outputText value="#{invMovimientoDtll.codUnidad}" />
-            </p:column>
-            <p:column headerText="Cantidad">
-                <h:outputText value="#{invMovimientoDtll.cantidad}" />
-            </p:column>
-            <p:column headerText="Precio Unitario">
-                <h:outputText value="#{invMovimientoDtll.costoUnitario}" />
-            </p:column>
-        </p:dataTable>
-    </h:form>
+    
+    <ui:include src="_dialogArticulos.xhtml" />
+    
+    <ui:include src="_formTablaArticulos.xhtml" />
 
-    <pm:field>
-        <p:outputLabel for="bodega" value="Bodega:" />
-        <p:inputText id="bodega"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="tipoInventario" value="Tipo Inventario:" />
-        <p:inputText id="tipoInventario"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="unidadMedida" value="Unidad Medida:" />
-        <p:inputText id="unidadMedida"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="cantidad" value="Cantidad:" />
-        <p:inputText id="cantidad"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="precioUnitario" value="Precio Unitario:" />
-        <p:inputText id="precioUnitario"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="descuento1" value="% de descuento1:" />
-        <p:inputText id="descuento1"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="descuento2" value="% de descuento2:" />
-        <p:inputText id="descuento2"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="totalRegistro" value="Total Registro:" />
-        <p:inputText id="totalRegistro"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="iva" value="IVA:" />
-        <p:inputText id="iva"/>
-    </pm:field>
-
-    <pm:field>
-        <p:outputLabel for="totalIva" value="Total + IVA:" />
-        <p:inputText id="totalIva"/>
-    </pm:field>
+    <ui:include src="_dialogArticulo.xhtml" />
+    
 </html>

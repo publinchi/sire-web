@@ -1,0 +1,18 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <p:dialog id="dialogArticulos" header="Artículos" widgetVar="dlg2" showEffect="pop">
+        <h:form id="formArticulos">
+            <p:outputLabel for="buscarArticulos" value="Busca:" />
+            <h:panelGrid columns="2">
+                <p:inputText id="buscarArticulos" placeholder="Buscar Articulo" type="search" value="${articulosBean.input}"/>
+                <p:commandButton id="botonBuscarArticulo" icon="ui-icon-search" actionListener="${articulosBean.findArticulos}" update="@form:dataListArticulo"/>
+            </h:panelGrid>
+            <p:dataList id="dataListArticulo" value="#{articulosBean.articulos}" var="articulo" pt:data-inset="true">
+                <p:ajax event="tap" listener="#{articulosBean.tapArticulo}" oncomplete="PF('dlg2').hide();" update="pedido:accordionPanel:formTablaArticulos:tablaArticulos"/>
+                <h:outputText value="#{articulo.nombreArticulo}" />
+            </p:dataList>
+        </h:form>
+    </p:dialog>
+</html>
