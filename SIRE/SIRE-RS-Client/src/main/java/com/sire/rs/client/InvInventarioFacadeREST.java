@@ -10,26 +10,26 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:VClienteFacade
- [com.sire.entities.vcliente]<br>
+ * Jersey REST client generated for REST resource:InvInventarioFacadeREST
+ * [com.sire.entities.invinventario]<br>
  * USAGE:
  * <pre>
-        VClienteFacade client = new VClienteFacade();
-        Object response = client.XXX(...);
-        // do whatever with response
-        client.close();
- </pre>
+ *        InvInventarioFacadeREST client = new InvInventarioFacadeREST();
+ *        Object response = client.XXX(...);
+ *        // do whatever with response
+ *        client.close();
+ * </pre>
  *
  * @author pestupinan
  */
-public class VClienteFacade {
+public class InvInventarioFacadeREST {
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://190.154.203.178:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
 
-    public VClienteFacade() {
+    public InvInventarioFacadeREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("com.sire.entities.vcliente");
+        webTarget = client.target(BASE_URI).path("com.sire.entities.invinventario");
     }
 
     public String countREST() throws ClientErrorException {
@@ -70,18 +70,18 @@ public class VClienteFacade {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T findByCodBodega(Class<T> responseType, String codBodega) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByCodBodega/{0}", new Object[]{codBodega}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
     public void create_XML(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
 
     public void create_JSON(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
-    }
-
-    public <T> T findByApellidos(Class<T> responseType, String apellidos) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findByApellidos/{0}", new Object[]{apellidos}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public <T> T findAll_XML(Class<T> responseType) throws ClientErrorException {
