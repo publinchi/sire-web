@@ -10,8 +10,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.InvBodegaArt;
 import com.sire.entities.InvMovimientoDtll;
-import com.sire.rs.client.InvBodegaArtFacade;
+import com.sire.rs.client.InvBodegaArtFacadeREST;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -34,9 +35,9 @@ public class BodegasBean {
         Logger.getLogger(BodegasBean.class.getName()).info("Invocando getInvBodegaArts");
         if (invMovimientoDtll != null) {
             int codArticulo = invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo();
-            Logger.getLogger(BodegasBean.class.getName()).info(String.valueOf(codArticulo));
-            InvBodegaArtFacade invBodegaArtFacade = new InvBodegaArtFacade();
-            String result = invBodegaArtFacade.findByCodArticulo_JSON(String.class, String.valueOf(codArticulo));
+            Logger.getLogger(BodegasBean.class.getName()).log(Level.INFO, "codArticulo: {0}", String.valueOf(codArticulo));
+            InvBodegaArtFacadeREST invBodegaArtFacadeREST = new InvBodegaArtFacadeREST();
+            String result = invBodegaArtFacadeREST.findByCodArticulo_JSON(String.class, String.valueOf(codArticulo));
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setDateFormat("yyyy-MM-dd").create();
             invBodegaArts = gson.fromJson(result, new TypeToken<List<InvBodegaArt>>() {

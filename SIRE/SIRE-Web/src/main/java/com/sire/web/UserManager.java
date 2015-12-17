@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.GnrUsuarios;
-import com.sire.rs.client.GnrUsuarioFacade;
+import com.sire.rs.client.GnrUsuarioFacadeREST;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
@@ -54,7 +54,7 @@ public class UserManager {
     public void login() {
         System.out.println("User: " + userName);
         System.out.println("Password: " + password);
-        GnrUsuarioFacade gnrUsuarioFacadeREST = new GnrUsuarioFacade();
+        GnrUsuarioFacadeREST gnrUsuarioFacadeREST = new GnrUsuarioFacadeREST();
         List<GnrUsuarios> gnrUsuarios = gson.fromJson(gnrUsuarioFacadeREST.findAll_JSON(String.class),
                 new TypeToken<java.util.List<GnrUsuarios>>() {
                 }.getType());
