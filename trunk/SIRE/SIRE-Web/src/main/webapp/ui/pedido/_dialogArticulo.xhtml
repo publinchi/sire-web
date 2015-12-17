@@ -5,61 +5,94 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dialogArticulo" header="Artículo" widgetVar="dlg3" showEffect="pop">
         <h:form id="formArticulo">
+            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+
             <pm:field>
                 <p:outputLabel for="bodega" value="Bodega:" />
-                <p:selectOneMenu id="bodega" editable="true" value="#{articulosBean.invMovimientoDtllSeleccionado.invBodegaArt.invBodegaArtPK}">
-                    <f:selectItems value="#{bodegasBean.invBodegaArts}" var="bodega" 
-                                   itemLabel="#{bodega.invInventario.invBodega.descBodega}" itemValue="#{bodega.invBodegaArtPK.codBodega}" />
+                <p:selectOneMenu id="bodega" value="#{articulosBean.codBodega}">
+                    <p:ajax listener="#{articulosBean.loadInventariosByBodega()}"/>
+                    <f:selectItems value="#{bodegasBean.invBodegaArts}" 
+                                   var="bodega" 
+                                   itemLabel="#{bodega.invInventario.invBodega.descBodega}" 
+                                   itemValue="#{bodega.invBodegaArtPK.codBodega}" />
                 </p:selectOneMenu>
             </pm:field>
 
             <pm:field>
-                <p:outputLabel for="tipoInventario" value="Tipo Inventario:" />
-                <p:selectOneMenu id="tipoInventario" editable="true" value="#{articulosBean.invMovimientoDtllSeleccionado.invBodegaArt.invBodegaArtPK}">
-                    <f:selectItems value="#{bodegasBean.invBodegaArts}" var="bodega" 
-                                   itemLabel="#{bodega.invInventario.invBodega.descBodega}" itemValue="#{bodega.invBodegaArtPK.codBodega}" />
-                </p:selectOneMenu>
+                <h:panelGroup id="inv">
+                    <p:outputLabel for="tipoInventario" value="Tipo Inventario:" />
+                    <p:selectOneMenu id="tipoInventario" value="#{articulosBean.codInventario}">
+                        <f:selectItems value="#{inventariosBean.invInventarios}" 
+                                       var="inventario" 
+                                       itemLabel="#{inventario.nombreCorto}" 
+                                       itemValue="#{inventario.invInventarioPK.codInventario}" />
+                    </p:selectOneMenu>
+                </h:panelGroup>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="unidadMedida" value="Unidad Medida:" />
-                <p:inputText id="unidadMedida"/>
+                <p:selectOneMenu id="unidadMedida" value="#{articulosBean.codUnidad}" >
+                    <f:selectItems value="#{inventariosBean.invUnidadAlternativas}" 
+                                   var="unidadAlternativa" 
+                                   itemLabel="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}" 
+                                   itemValue="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}"/>
+                </p:selectOneMenu>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="cantidad" value="Cantidad:" />
-                <p:inputText id="cantidad"/>
+                <p:inputText id="cantidad" 
+                             value="#{articulosBean.cantidad}" 
+                             valueChangeListener="#{articulosBean.calcularTotalRegistro}"/>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="precioUnitario" value="Precio Unitario:" />
-                <p:inputText id="precioUnitario"/>
+                <p:inputText id="precioUnitario"
+                             value="#{articulosBean.invArticuloSeleccionado.costoPromedio}"
+                             disabled="true"/>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="descuento1" value="% de descuento1:" />
-                <p:inputText id="descuento1"/>
+                <p:inputText id="descuento1" 
+                             value="#{articulosBean.invArticuloSeleccionado.descArticulo}"
+                             disabled="true"/>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="descuento2" value="% de descuento2:" />
-                <p:inputText id="descuento2"/>
+                <p:inputText id="descuento2" 
+                             value="#{articulosBean.invArticuloSeleccionado.descArticulo}"
+                             disabled="true"/>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="totalRegistro" value="Total Registro:" />
-                <p:inputText id="totalRegistro"/>
+                <p:inputText id="totalRegistro"
+                             value="#{articulosBean.totalRegistro}"
+                             disabled="true"/>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="iva" value="IVA:" />
-                <p:inputText id="iva"/>
+                <p:inputText id="iva" 
+                             value="#{articulosBean.invArticuloSeleccionado.codIva}"
+                             disabled="true"/>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="totalIva" value="Total + IVA:" />
-                <p:inputText id="totalIva"/>
+                <p:inputText id="totalIva" 
+                             value="#{articulosBean.invArticuloSeleccionado.costoPromedio}"
+                             disabled="true"/>
             </pm:field>
+            <pm:content>
+                <p:commandButton value="Agregar" 
+                                 actionListener="#{articulosBean.agregarArticulo()}" 
+                                 oncomplete="PF('dlg3').hide();"/>
+            </pm:content>
         </h:form>
     </p:dialog>
 </html>
