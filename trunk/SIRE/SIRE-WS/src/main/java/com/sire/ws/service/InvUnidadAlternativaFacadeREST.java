@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("com.sire.entities.invunidadalternativa")
 public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlternativa> {
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -104,6 +106,16 @@ public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlte
     }
 
     @GET
+    @Path("/findByCodArticulo/{codArticulo}")
+    @Produces({"application/json"})
+    public List<InvUnidadAlternativa> findByCodArticulo(@PathParam("codArticulo") String codArticulo) {
+        TypedQuery<InvUnidadAlternativa> query = em.createNamedQuery("InvUnidadAlternativa.findByCodArticulo", InvUnidadAlternativa.class);
+        query.setParameter("codArticulo", Integer.parseInt(codArticulo));
+        List<InvUnidadAlternativa> retorno = query.getResultList();
+        return retorno;
+    }
+
+    @GET
     @Path("count")
     @Produces("text/plain")
     public String countREST() {
@@ -114,5 +126,5 @@ public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlte
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
