@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,6 +29,7 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("com.sire.entities.invinventario")
 public class InvInventarioFacadeREST extends AbstractFacade<InvInventario> {
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -110,9 +112,19 @@ public class InvInventarioFacadeREST extends AbstractFacade<InvInventario> {
         return String.valueOf(super.count());
     }
 
+    @GET
+    @Path("/findByCodBodega/{codBodega}")
+    @Produces({"application/json"})
+    public List<InvInventario> findByCodBodega(@PathParam("codBodega") String codBodega) {
+        TypedQuery<InvInventario> query = em.createNamedQuery("InvInventario.findByCodBodega", InvInventario.class);
+        query.setParameter("codBodega", codBodega);
+        List<InvInventario> retorno = query.getResultList();
+        return retorno;
+    }
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
