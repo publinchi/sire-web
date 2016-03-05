@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Administrator
+ * @author pestupinan
  */
 @Entity
 @Table(name = "INV_UNIDAD_ALTERNATIVA")
@@ -43,6 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "InvUnidadAlternativa.findByEstado", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.estado = :estado"),
     @NamedQuery(name = "InvUnidadAlternativa.findByFechaEstado", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.fechaEstado = :fechaEstado")})
 public class InvUnidadAlternativa implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invUnidadAlternativa")
+    private List<FacTmpFactD> facTmpFactDList;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected InvUnidadAlternativaPK invUnidadAlternativaPK;
@@ -63,8 +65,6 @@ public class InvUnidadAlternativa implements Serializable {
     @Column(name = "FECHA_ESTADO")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEstado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invUnidadAlternativa")
-    private List<FacTmpFactD> facTmpFactDList;
 
     public InvUnidadAlternativa() {
     }
@@ -140,15 +140,6 @@ public class InvUnidadAlternativa implements Serializable {
         this.fechaEstado = fechaEstado;
     }
 
-    @XmlTransient
-    public List<FacTmpFactD> getFacTmpFactDList() {
-        return facTmpFactDList;
-    }
-
-    public void setFacTmpFactDList(List<FacTmpFactD> facTmpFactDList) {
-        this.facTmpFactDList = facTmpFactDList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -172,6 +163,15 @@ public class InvUnidadAlternativa implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.InvUnidadAlternativa[ invUnidadAlternativaPK=" + invUnidadAlternativaPK + " ]";
+    }
+
+    @XmlTransient
+    public List<FacTmpFactD> getFacTmpFactDList() {
+        return facTmpFactDList;
+    }
+
+    public void setFacTmpFactDList(List<FacTmpFactD> facTmpFactDList) {
+        this.facTmpFactDList = facTmpFactDList;
     }
     
 }

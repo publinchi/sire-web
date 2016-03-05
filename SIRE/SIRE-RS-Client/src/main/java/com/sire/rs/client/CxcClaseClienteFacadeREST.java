@@ -10,11 +10,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:CxcClaseClienteFacade
+ * Jersey REST client generated for REST resource:CxcClaseClienteFacadeREST
  [com.sire.entities.cxcclasecliente]<br>
  * USAGE:
  * <pre>
-        CxcClaseClienteFacade client = new CxcClaseClienteFacade();
+        CxcClaseClienteFacadeREST client = new CxcClaseClienteFacadeREST();
         Object response = client.XXX(...);
         // do whatever with response
         client.close();
@@ -22,12 +22,12 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author Administrator
  */
-public class CxcClaseClienteFacade {
+public class CxcClaseClienteFacadeREST {
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://localhost:9080/SIRE-WS/webresources";
 
-    public CxcClaseClienteFacade() {
+    public CxcClaseClienteFacadeREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
         webTarget = client.target(BASE_URI).path("com.sire.entities.cxcclasecliente");
     }

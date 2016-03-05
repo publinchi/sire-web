@@ -101,6 +101,7 @@ public class InvBodegaArtFacadeREST extends AbstractFacade<InvBodegaArt> {
     public List<InvBodegaArt> findByCodArticulo(@PathParam("codArticulo") Integer codArticulo) {
         TypedQuery<InvBodegaArt> query = em.createNamedQuery("InvBodegaArt.findByCodArticulo", InvBodegaArt.class);
         query.setParameter("codArticulo", codArticulo);
+        query.setParameter("codInventario", "01");
         List<InvBodegaArt> invBodegaArts = query.getResultList();
         return invBodegaArts;
     }

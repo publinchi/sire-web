@@ -91,7 +91,7 @@ public class InvProveedor implements Serializable {
     @Column(name = "NUM_RESOL_SRI")
     private String numResolSri;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "invProveedor")
-    private List<InvMovimientoCab> invMovimientoCabList;
+    private List<InvMovimientoCabF> invMovimientoCabFList;
     @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private GnrEmpresa gnrEmpresa;
@@ -105,6 +105,8 @@ public class InvProveedor implements Serializable {
         @JoinColumn(name = "COD_GRUPO", referencedColumnName = "COD_GRUPO")})
     @ManyToOne(optional = false)
     private InvGrupoProveedor invGrupoProveedor;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invProveedor")
+    private List<InvMovimientoCab> invMovimientoCabList;
 
     public InvProveedor() {
     }
@@ -251,12 +253,12 @@ public class InvProveedor implements Serializable {
     }
 
     @XmlTransient
-    public List<InvMovimientoCab> getInvMovimientoCabList() {
-        return invMovimientoCabList;
+    public List<InvMovimientoCabF> getInvMovimientoCabFList() {
+        return invMovimientoCabFList;
     }
 
-    public void setInvMovimientoCabList(List<InvMovimientoCab> invMovimientoCabList) {
-        this.invMovimientoCabList = invMovimientoCabList;
+    public void setInvMovimientoCabFList(List<InvMovimientoCabF> invMovimientoCabFList) {
+        this.invMovimientoCabFList = invMovimientoCabFList;
     }
 
     public GnrEmpresa getGnrEmpresa() {
@@ -281,6 +283,15 @@ public class InvProveedor implements Serializable {
 
     public void setInvGrupoProveedor(InvGrupoProveedor invGrupoProveedor) {
         this.invGrupoProveedor = invGrupoProveedor;
+    }
+
+    @XmlTransient
+    public List<InvMovimientoCab> getInvMovimientoCabList() {
+        return invMovimientoCabList;
+    }
+
+    public void setInvMovimientoCabList(List<InvMovimientoCab> invMovimientoCabList) {
+        this.invMovimientoCabList = invMovimientoCabList;
     }
 
     @Override

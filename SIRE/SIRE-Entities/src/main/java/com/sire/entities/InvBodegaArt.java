@@ -34,13 +34,14 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "InvBodegaArt.findAll", query = "SELECT i FROM InvBodegaArt i"),
     @NamedQuery(name = "InvBodegaArt.findByCodEmpresa", query = "SELECT i FROM InvBodegaArt i WHERE i.invBodegaArtPK.codEmpresa = :codEmpresa"),
     @NamedQuery(name = "InvBodegaArt.findByCodBodega", query = "SELECT i FROM InvBodegaArt i WHERE i.invBodegaArtPK.codBodega = :codBodega"),
-    @NamedQuery(name = "InvBodegaArt.findByCodArticulo", query = "SELECT i FROM InvBodegaArt i WHERE i.invBodegaArtPK.codArticulo = :codArticulo"),
+    @NamedQuery(name = "InvBodegaArt.findByCodArticulo", query = "SELECT i FROM InvBodegaArt i WHERE i.invBodegaArtPK.codArticulo = :codArticulo AND i.invBodegaArtPK.codInventario = :codInventario"),
     @NamedQuery(name = "InvBodegaArt.findByCodInventario", query = "SELECT i FROM InvBodegaArt i WHERE i.invBodegaArtPK.codInventario = :codInventario"),
     @NamedQuery(name = "InvBodegaArt.findByStockMinimo", query = "SELECT i FROM InvBodegaArt i WHERE i.stockMinimo = :stockMinimo"),
     @NamedQuery(name = "InvBodegaArt.findByExistencia", query = "SELECT i FROM InvBodegaArt i WHERE i.existencia = :existencia"),
     @NamedQuery(name = "InvBodegaArt.findByExistPendEnt", query = "SELECT i FROM InvBodegaArt i WHERE i.existPendEnt = :existPendEnt"),
     @NamedQuery(name = "InvBodegaArt.findByExistPendSal", query = "SELECT i FROM InvBodegaArt i WHERE i.existPendSal = :existPendSal")})
 public class InvBodegaArt implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected InvBodegaArtPK invBodegaArtPK;
@@ -64,6 +65,8 @@ public class InvBodegaArt implements Serializable {
     private InvInventario invInventario;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "invBodegaArt")
     private List<InvMovimientoDtll> invMovimientoDtllList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invBodegaArt")
+    private List<InvMovimientoDtllF> invMovimientoDtllFList;
 
     public InvBodegaArt() {
     }
@@ -140,6 +143,15 @@ public class InvBodegaArt implements Serializable {
         this.invMovimientoDtllList = invMovimientoDtllList;
     }
 
+    @XmlTransient
+    public List<InvMovimientoDtllF> getInvMovimientoDtllFList() {
+        return invMovimientoDtllFList;
+    }
+
+    public void setInvMovimientoDtllFList(List<InvMovimientoDtllF> invMovimientoDtllFList) {
+        this.invMovimientoDtllFList = invMovimientoDtllFList;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -164,5 +176,5 @@ public class InvBodegaArt implements Serializable {
     public String toString() {
         return "com.sire.entities.InvBodegaArt[ invBodegaArtPK=" + invBodegaArtPK + " ]";
     }
-    
+
 }

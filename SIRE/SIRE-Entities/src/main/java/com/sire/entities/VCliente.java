@@ -47,7 +47,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "VCliente.findByComoPaga", query = "SELECT v FROM VCliente v WHERE v.comoPaga = :comoPaga"),
     @NamedQuery(name = "VCliente.findByTipoPersona", query = "SELECT v FROM VCliente v WHERE v.tipoPersona = :tipoPersona"),
     @NamedQuery(name = "VCliente.findByDocumento", query = "SELECT v FROM VCliente v WHERE v.documento = :documento"),
-    @NamedQuery(name = "VCliente.findByApellidos", query = "SELECT v FROM VCliente v WHERE v.apellidos like :apellidos"),
+    @NamedQuery(name = "VCliente.findByApellidos", query = "SELECT v FROM VCliente v WHERE v.apellidos like :apellidos ORDER BY v.apellidos"),
     @NamedQuery(name = "VCliente.findByCodDocumento", query = "SELECT v FROM VCliente v WHERE v.codDocumento = :codDocumento"),
     @NamedQuery(name = "VCliente.findByNombres", query = "SELECT v FROM VCliente v WHERE v.nombres = :nombres"),
     @NamedQuery(name = "VCliente.findBySexo", query = "SELECT v FROM VCliente v WHERE v.sexo = :sexo"),
@@ -56,7 +56,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "VCliente.findByEstadoCivil", query = "SELECT v FROM VCliente v WHERE v.estadoCivil = :estadoCivil"),
     @NamedQuery(name = "VCliente.findByFax", query = "SELECT v FROM VCliente v WHERE v.fax = :fax"),
     @NamedQuery(name = "VCliente.findByMail", query = "SELECT v FROM VCliente v WHERE v.mail = :mail"),
-    @NamedQuery(name = "VCliente.findByRazonSocial", query = "SELECT v FROM VCliente v WHERE v.razonSocial = :razonSocial"),
+    @NamedQuery(name = "VCliente.findByRazonSocial", query = "SELECT v FROM VCliente v WHERE v.razonSocial like :razonSocial ORDER BY v.razonSocial"),
     @NamedQuery(name = "VCliente.findByRepresentante", query = "SELECT v FROM VCliente v WHERE v.representante = :representante"),
     @NamedQuery(name = "VCliente.findByDireccion", query = "SELECT v FROM VCliente v WHERE v.direccion = :direccion"),
     @NamedQuery(name = "VCliente.findByCodContacto", query = "SELECT v FROM VCliente v WHERE v.codContacto = :codContacto"),
@@ -72,6 +72,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "VCliente.findByClaseCliete", query = "SELECT v FROM VCliente v WHERE v.claseCliete = :claseCliete"),
     @NamedQuery(name = "VCliente.findByLocalidad", query = "SELECT v FROM VCliente v WHERE v.localidad = :localidad")})
 public class VCliente implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Basic(optional = false)
     @Column(name = "COD_EMPRESA")
@@ -518,5 +519,5 @@ public class VCliente implements Serializable {
     public void setLocalidad(String localidad) {
         this.localidad = localidad;
     }
-    
+
 }

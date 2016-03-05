@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
- * @author Administrator
+ * @author pestupinan
  */
 @Entity
 @Table(name = "FAC_TMP_FACT_D")

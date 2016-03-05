@@ -24,7 +24,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -66,6 +65,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "InvMovimientoCab.findByFechCaduDoc", query = "SELECT i FROM InvMovimientoCab i WHERE i.fechCaduDoc = :fechCaduDoc"),
     @NamedQuery(name = "InvMovimientoCab.findByNumFactRete", query = "SELECT i FROM InvMovimientoCab i WHERE i.numFactRete = :numFactRete")})
 public class InvMovimientoCab implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected InvMovimientoCabPK invMovimientoCabPK;
@@ -87,7 +87,7 @@ public class InvMovimientoCab implements Serializable {
     private BigInteger totalDocumento;
     @Basic(optional = false)
     @Column(name = "SUBTOTAL")
-    private BigInteger subtotal;
+    private Double subtotal;
     @Basic(optional = false)
     @Column(name = "DESCUENTOS")
     private BigInteger descuentos;
@@ -159,7 +159,7 @@ public class InvMovimientoCab implements Serializable {
         @JoinColumn(name = "COD_MOVIMIENTO", referencedColumnName = "COD_MOVIMIENTO")})
     @ManyToOne(optional = false)
     private InvTransacciones invTransacciones;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invMovimientoCab")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "invMovimientoCab")
     private List<InvMovimientoDtll> invMovimientoDtllList;
 
     public InvMovimientoCab() {
@@ -169,7 +169,7 @@ public class InvMovimientoCab implements Serializable {
         this.invMovimientoCabPK = invMovimientoCabPK;
     }
 
-    public InvMovimientoCab(InvMovimientoCabPK invMovimientoCabPK, BigInteger totalDocumento, BigInteger subtotal, BigInteger descuentos, BigInteger otrDescuentos, BigInteger iva, BigInteger recargos, BigInteger fletes, BigInteger otrCargos) {
+    public InvMovimientoCab(InvMovimientoCabPK invMovimientoCabPK, BigInteger totalDocumento, Double subtotal, BigInteger descuentos, BigInteger otrDescuentos, BigInteger iva, BigInteger recargos, BigInteger fletes, BigInteger otrCargos) {
         this.invMovimientoCabPK = invMovimientoCabPK;
         this.totalDocumento = totalDocumento;
         this.subtotal = subtotal;
@@ -249,11 +249,11 @@ public class InvMovimientoCab implements Serializable {
         this.totalDocumento = totalDocumento;
     }
 
-    public BigInteger getSubtotal() {
+    public Double getSubtotal() {
         return subtotal;
     }
 
-    public void setSubtotal(BigInteger subtotal) {
+    public void setSubtotal(Double subtotal) {
         this.subtotal = subtotal;
     }
 
@@ -449,7 +449,7 @@ public class InvMovimientoCab implements Serializable {
         this.invTransacciones = invTransacciones;
     }
 
-    @XmlTransient
+//    @XmlTransient
     public List<InvMovimientoDtll> getInvMovimientoDtllList() {
         return invMovimientoDtllList;
     }
@@ -482,5 +482,5 @@ public class InvMovimientoCab implements Serializable {
     public String toString() {
         return "com.sire.entities.InvMovimientoCab[ invMovimientoCabPK=" + invMovimientoCabPK + " ]";
     }
-    
+
 }

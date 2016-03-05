@@ -9,48 +9,50 @@
 
             <pm:field>
                 <p:outputLabel for="bodega" value="Bodega:" />
-                <p:selectOneMenu id="bodega" value="#{articulosBean.codBodega}">
+                <p:selectOneMenu id="bodega" value="#{articulosBean.invMovimientoDtllSeleccionado.invBodegaArt.invBodegaArtPK.codBodega}" >
                     <p:ajax listener="#{articulosBean.loadInventariosByBodega()}"/>
                     <f:selectItems value="#{bodegasBean.invBodegaArts}" 
                                    var="bodega" 
-                                   itemLabel="#{bodega.invInventario.invBodega.descBodega}" 
+                                   itemLabel="#{bodega.invInventario.invBodega.descBodega} (#{bodega.existencia})" 
                                    itemValue="#{bodega.invBodegaArtPK.codBodega}" />
                 </p:selectOneMenu>
             </pm:field>
 
-            <pm:field>
-                <h:panelGroup id="inv">
-                    <p:outputLabel for="tipoInventario" value="Tipo Inventario:" />
-                    <p:selectOneMenu id="tipoInventario" value="#{articulosBean.codInventario}">
-                        <f:selectItems value="#{inventariosBean.invInventarios}" 
-                                       var="inventario" 
-                                       itemLabel="#{inventario.nombreCorto}" 
-                                       itemValue="#{inventario.invInventarioPK.codInventario}" />
-                    </p:selectOneMenu>
-                </h:panelGroup>
-            </pm:field>
+            <!--            <pm:field>
+                            <h:panelGroup id="inv">
+                                <p:outputLabel for="tipoInventario" value="Tipo Inventario:" />
+                                <p:selectOneMenu id="tipoInventario" value="{articulosBean.codInventario}">
+                                    <f:selectItems value="{inventariosBean.invInventarios}" 
+                                                   var="inventario" 
+                                                   itemLabel="{inventario.nombreCorto}" 
+                                                   itemValue="{inventario.invInventarioPK.codInventario}" />
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+                        </pm:field>-->
 
             <pm:field>
                 <p:outputLabel for="unidadMedida" value="Unidad Medida:" />
-                <p:selectOneMenu id="unidadMedida" value="#{articulosBean.codUnidad}" >
+                <p:selectOneMenu id="unidadMedida" value="#{articulosBean.invMovimientoDtllSeleccionado.codUnidad}" >
                     <f:selectItems value="#{inventariosBean.invUnidadAlternativas}" 
                                    var="unidadAlternativa" 
                                    itemLabel="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}" 
                                    itemValue="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}"/>
+                    <p:ajax listener="#{articulosBean.loadPrecioUnitarioByUnidadMedida()}"/>
                 </p:selectOneMenu>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="cantidad" value="Cantidad:" />
                 <p:inputText id="cantidad" 
-                             value="#{articulosBean.cantidad}" 
-                             valueChangeListener="#{articulosBean.calcularTotalRegistro}"/>
+                             value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}" >
+                    <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
+                </p:inputText>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="precioUnitario" value="Precio Unitario:" />
                 <p:inputText id="precioUnitario"
-                             value="#{articulosBean.invArticuloSeleccionado.costoPromedio}"
+                             value="#{articulosBean.invMovimientoDtllSeleccionado.costoUnitario}"
                              disabled="true"/>
             </pm:field>
 
@@ -71,7 +73,7 @@
             <pm:field>
                 <p:outputLabel for="totalRegistro" value="Total Registro:" />
                 <p:inputText id="totalRegistro"
-                             value="#{articulosBean.totalRegistro}"
+                             value="#{articulosBean.invMovimientoDtllSeleccionado.costoTotal}"
                              disabled="true"/>
             </pm:field>
 

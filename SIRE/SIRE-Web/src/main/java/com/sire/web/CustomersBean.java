@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import com.sire.entities.VCliente;
 import com.sire.rs.client.VClienteFacadeREST;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -33,8 +34,10 @@ public class CustomersBean {
     private final GsonBuilder builder;
     private final Gson gson;
     private String input;
+    private static Logger logger;
 
     public CustomersBean() {
+        logger = Logger.getLogger(CustomersBean.class.getName());
         vClienteFacadeREST = new VClienteFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
@@ -45,6 +48,7 @@ public class CustomersBean {
     }
 
     private void loadClientes() {
+        logger.info("loadClientes");
         List<VCliente> list = gson.fromJson(vClienteFacadeREST.findAll_JSON(String.class), new TypeToken<java.util.List<VCliente>>() {
         }.getType());
         cleanClientes();
@@ -53,9 +57,10 @@ public class CustomersBean {
     }
 
     public void findClientes() {
+        logger.info("findClientes");
         String clientesString = null;
         try {
-            clientesString = vClienteFacadeREST.findByApellidos(String.class, input);
+            clientesString = vClienteFacadeREST.findByRazonSocial(String.class, input);
             clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
             }.getType());
         } catch (ClientErrorException cee) {
@@ -99,4 +104,8 @@ public class CustomersBean {
         this.cliente = cliente;
     }
 
+    public void limpiar() {
+        clientes.clear();
+        input = null;
+    }
 }

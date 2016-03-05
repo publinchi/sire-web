@@ -18,7 +18,7 @@
             </h:panelGrid>
             <p:dataList id="dataListArticulo" value="#{articulosBean.articulos}" var="articulo" pt:data-inset="true">
                 <p:ajax event="tap" listener="#{articulosBean.tapArticulo}" oncomplete="PF('dlg2').hide();" update="pedido:accordionPanel:formTablaArticulos:tablaArticulos"/>
-                <h:outputText value="#{articulo.nombreArticulo}" />
+                <h:outputText value="#{articulo.invArticuloPK.codArticulo} - #{articulo.nombreArticulo}" />
             </p:dataList>
         </h:form>
     </p:dialog>

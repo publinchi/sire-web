@@ -8,6 +8,8 @@
             <p:tabMenu activeIndex="#{index}" >
                 <p:menuitem value="Inicio" icon="ui-icon-home" action="pm:inicio?transition=flip" iconPos="top" update="inicio" />
                 <p:menuitem value="Pedido" icon="ui-icon-shop" action="pm:pedido?transition=flip" iconPos="top" update="pedido" />
+                <p:menuitem value="Cobro" icon="ui-icon-action" action="pm:cobro?transition=flip" iconPos="top" update="cobro" />
+                <p:menuitem value="Mapa" icon="ui-icon-action" action="pm:mapa?transition=flip" iconPos="top" update="mapa" />
                 <p:menuitem value="Salir" icon="ui-icon-power" iconPos="top" action="${user.logout()}" ajax="false" />
             </p:tabMenu>
         </h:form>

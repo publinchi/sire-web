@@ -12,6 +12,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -38,6 +41,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrUsuarios.findByEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.estado = :estado"),
     @NamedQuery(name = "GnrUsuarios.findByFechaEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.fechaEstado = :fechaEstado")})
 public class GnrUsuarios implements Serializable {
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<FacTmpFactC> facTmpFactCList;
+    @JoinTable(name = "GNR_USUA_CONT", joinColumns = {
+        @JoinColumn(name = "NOMBRE_USUARIO", referencedColumnName = "NOMBRE_USUARIO")}, inverseJoinColumns = {
+        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA"),
+        @JoinColumn(name = "NUM_CONTADOR", referencedColumnName = "NUM_CONTADOR"),
+        @JoinColumn(name = "COD_MODULO", referencedColumnName = "COD_MODULO"),
+        @JoinColumn(name = "COD_DOCUMENTO", referencedColumnName = "COD_DOCUMENTO")})
+    @ManyToMany
+    private List<GnrContadorDoc> gnrContadorDocList;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -58,8 +71,10 @@ public class GnrUsuarios implements Serializable {
     @Column(name = "FECHA_ESTADO")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEstado;
-    @OneToMany(mappedBy = "nombreUsuario")
-    private List<FacTmpFactC> facTmpFactCList;
+    @OneToMany(mappedBy = "usuario")
+    private List<FacCatalogoPrecioD> facCatalogoPrecioDList;
+    @OneToMany(mappedBy = "anteriorUsuarioPrecio")
+    private List<FacCatalogoPrecioD> facCatalogoPrecioDList1;
 
     public GnrUsuarios() {
     }
@@ -125,12 +140,21 @@ public class GnrUsuarios implements Serializable {
     }
 
     @XmlTransient
-    public List<FacTmpFactC> getFacTmpFactCList() {
-        return facTmpFactCList;
+    public List<FacCatalogoPrecioD> getFacCatalogoPrecioDList() {
+        return facCatalogoPrecioDList;
     }
 
-    public void setFacTmpFactCList(List<FacTmpFactC> facTmpFactCList) {
-        this.facTmpFactCList = facTmpFactCList;
+    public void setFacCatalogoPrecioDList(List<FacCatalogoPrecioD> facCatalogoPrecioDList) {
+        this.facCatalogoPrecioDList = facCatalogoPrecioDList;
+    }
+
+    @XmlTransient
+    public List<FacCatalogoPrecioD> getFacCatalogoPrecioDList1() {
+        return facCatalogoPrecioDList1;
+    }
+
+    public void setFacCatalogoPrecioDList1(List<FacCatalogoPrecioD> facCatalogoPrecioDList1) {
+        this.facCatalogoPrecioDList1 = facCatalogoPrecioDList1;
     }
 
     @Override
@@ -156,6 +180,24 @@ public class GnrUsuarios implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.GnrUsuarios[ nombreUsuario=" + nombreUsuario + " ]";
+    }
+
+    @XmlTransient
+    public List<GnrContadorDoc> getGnrContadorDocList() {
+        return gnrContadorDocList;
+    }
+
+    public void setGnrContadorDocList(List<GnrContadorDoc> gnrContadorDocList) {
+        this.gnrContadorDocList = gnrContadorDocList;
+    }
+
+    @XmlTransient
+    public List<FacTmpFactC> getFacTmpFactCList() {
+        return facTmpFactCList;
+    }
+
+    public void setFacTmpFactCList(List<FacTmpFactC> facTmpFactCList) {
+        this.facTmpFactCList = facTmpFactCList;
     }
     
 }

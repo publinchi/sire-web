@@ -23,9 +23,10 @@ import javax.ws.rs.client.WebTarget;
  * @author Administrator
  */
 public class InvArticuloFacadeREST {
+
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://localhost:9080/SIRE-WS/webresources";
 
     public InvArticuloFacadeREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -98,8 +99,14 @@ public class InvArticuloFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T findParaVenta(Class<T> responseType, String nombreArticulo, String codEmpresa) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findParaVenta/{0}/{1}", new Object[]{nombreArticulo, codEmpresa}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
     public void close() {
         client.close();
     }
-    
+
 }

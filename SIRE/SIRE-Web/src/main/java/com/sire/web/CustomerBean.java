@@ -63,4 +63,12 @@ public class CustomerBean {
         this.cliente = cliente;
     }
 
+    public void limpiar() {
+        cliente = null;
+        nombre = null;
+        apellido = null;
+        direccion = null;
+        telefono = null;
+    }
+
 }

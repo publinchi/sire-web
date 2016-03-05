@@ -21,7 +21,7 @@ import javax.ws.rs.Produces;
 
 /**
  *
- * @author Administrator
+ * @author pestupinan
  */
 @Stateless
 @Path("com.sire.entities.gnrusuarios")

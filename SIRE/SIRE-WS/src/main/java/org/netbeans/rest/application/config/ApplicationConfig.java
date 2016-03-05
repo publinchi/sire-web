@@ -33,10 +33,12 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.CxcClienteFacadeREST.class);
         resources.add(com.sire.ws.service.CxcSectorFacadeREST.class);
         resources.add(com.sire.ws.service.CxcZonaFacadeREST.class);
-        resources.add(com.sire.ws.service.FacTmpFactCFacadeREST.class);
-        resources.add(com.sire.ws.service.FacTmpFactDFacadeREST.class);
+        resources.add(com.sire.ws.service.FacCatalogoPrecioCFacadeREST.class);
+        resources.add(com.sire.ws.service.FacCatalogoPrecioDFacadeREST.class);
+        resources.add(com.sire.ws.service.GnrContadorDocFacadeREST.class);
         resources.add(com.sire.ws.service.GnrDivisaFacadeREST.class);
         resources.add(com.sire.ws.service.GnrEmpresaFacadeREST.class);
+        resources.add(com.sire.ws.service.GnrModuloDocFacadeREST.class);
         resources.add(com.sire.ws.service.GnrPersonaFacadeREST.class);
         resources.add(com.sire.ws.service.GnrUsuariosFacadeREST.class);
         resources.add(com.sire.ws.service.InvArticuloFacadeREST.class);
