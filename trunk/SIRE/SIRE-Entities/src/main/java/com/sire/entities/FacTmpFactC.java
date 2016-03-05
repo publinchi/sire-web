@@ -28,7 +28,7 @@ import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
- * @author Administrator
+ * @author pestupinan
  */
 @Entity
 @Table(name = "FAC_TMP_FACT_C")

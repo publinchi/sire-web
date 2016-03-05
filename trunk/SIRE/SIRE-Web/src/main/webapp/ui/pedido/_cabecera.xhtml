@@ -8,26 +8,37 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <pm:field>
         <p:outputLabel for="fechaHora"  value="Fecha:" />
-        <h:outputText id="fechaHora" value="#{timerBean.date.date}-#{timerBean.date.month+1}-#{timerBean.date.year+1900} #{timerBean.date.hours}:#{timerBean.date.minutes}"/>  
+        <p:clock id="fechaHora" pattern="dd/MM/yyyy HH:mm:ss" mode="server" />
     </pm:field>
 
     <pm:field>
         <p:outputLabel for="tipoPago" value="Tipo Pago:" />
-        <p:selectOneMenu id="tipoPago">
+        <p:selectOneMenu id="tipoPago" value="#{articulosBean.invMovimientoCab.formaPago}">
             <f:selectItem itemLabel="Seleccione Tipo" itemValue="" />
-            <f:selectItem itemLabel="CREDITO" itemValue="CREDITO" />
-            <f:selectItem itemLabel="EFECTIVO" itemValue="EFECTIVO" />
+            <f:selectItem itemLabel="CONTADO" itemValue="0" />
+            <f:selectItem itemLabel="CREDITO" itemValue="1" />
         </p:selectOneMenu>
     </pm:field>
 
     <pm:field>
         <p:outputLabel for="ubicacion" value="Ubicación:" />
-        <p:inputText id="ubicacion" />
+        <p:commandButton id="btn" type="button" value="Ver Mapa" onclick="renderMap();
+                PF('gmapDialog').show()" />
+    </pm:field>
+
+    <pm:field>
+        <p:inputText id="ubicacion" value="{articulosBean.ubicacion}" readonly="false"/>
     </pm:field>
 
     <pm:field>
         <p:outputLabel for="vendedor" value="Vendedor:" />
         <h:outputText id="vendedor" value="#{user.current.nombreUsuario}"/>
+    </pm:field>
+
+    <pm:field>
+        <p:outputLabel for="cliente" value="Cliente:" />
+        <!--<p:inputText id="cliente" placeholder="Buscar Cliente" type="search"/>-->
+        <p:commandButton id="cliente" value="Buscar Cliente" onclick="PF('dlg1').show();" type="button" />               
     </pm:field>
 
     <pm:field>
@@ -43,11 +54,6 @@
         <p:inputText id="stock" />
     </pm:field>
 
-    <pm:field>
-        <p:outputLabel for="cliente" value="Cliente:" />
-        <!--<p:inputText id="cliente" placeholder="Buscar Cliente" type="search"/>-->
-        <p:commandButton id="cliente" value="Buscar Cliente" onclick="PF('dlg1').show();" type="button" />               
-    </pm:field>
     <p:dialog header="Clientes" widgetVar="dlg1" showEffect="pop">
         <h:form id="form">
             <p:outputLabel for="busca" value="Busca:" />
@@ -57,9 +63,23 @@
             </h:panelGrid>
             <p:dataList id="dataList" value="#{customers.clientes}" var="c" pt:data-inset="true">
                 <p:ajax event="tap" listener="#{customers.tapCliente}" update="pedido:accordionPanel:overlayPanel" oncomplete="PF('dlg1').hide();"/>
-                <h:outputText value="#{c.apellidos} #{c.nombres}" />
+                <h:outputText value="#{c.codCliente} - #{c.apellidos} #{c.nombres}" />
             </p:dataList>
         </h:form>
+    </p:dialog>
+
+    <p:dialog id="gmapDialog" widgetVar="gmapDialog" modal="true" style="width:100%;height:100%">
+        <p:gmap 
+            id="gmap"
+            center="41.381542, 2.122893"
+            zoom="15" 
+            type="ROADMAP" 
+            style="width: 100%;height: 400px" 
+            mapTypeControl="true"
+            navigationControl="true"
+            widgetVar="gmap" />
+        <p:separator />
+        <p:commandButton type="button" value="Mi Localización" onclick="findMe()" />
     </p:dialog>
 
 </html>

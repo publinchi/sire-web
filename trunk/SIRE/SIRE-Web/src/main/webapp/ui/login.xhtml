@@ -24,6 +24,15 @@
                         <p:password id="password" value="#{user.password}" required="true" label="Contraseña" />
                     </pm:content>
                     <pm:content>
+                        <p:outputLabel for="empresa" value="Empresa:" />
+                        <p:selectOneMenu id="empresa" value="#{user.gnrEmpresa.codEmpresa}" required="true" >
+                            <f:selectItems value="#{empresasBean.gnrEmpresas}" 
+                                           var="empresa" 
+                                           itemLabel="#{empresa.descEmpresa}" 
+                                           itemValue="#{empresa.codEmpresa}" />
+                        </p:selectOneMenu>
+                    </pm:content>
+                    <pm:content>
                         <p:commandButton value="Login" update="growl" actionListener="#{user.login()}"/>                                  
                     </pm:content>
                 </p:panel>

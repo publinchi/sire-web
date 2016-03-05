@@ -8,6 +8,7 @@ package com.sire.web;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.sire.entities.GnrEmpresa;
 import com.sire.entities.GnrUsuarios;
 import com.sire.rs.client.GnrUsuarioFacadeREST;
 import java.io.IOException;
@@ -18,6 +19,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -27,23 +30,26 @@ import javax.faces.context.FacesContext;
 @SessionScoped
 public class UserManager {
 
-    private String userName;
-    private String password;
+    @Getter
+    @Setter
+    private String userName, password;
+    @Getter
+    @Setter
+    private GnrEmpresa gnrEmpresa;
     private final Gson gson;
+    @Getter
+    @Setter
     private GnrUsuarios current;
+    @Getter
+    @Setter
     private int activeindex;
+    private static Logger logger;
 
     public UserManager() {
+        logger = Logger.getLogger(UserManager.class.getName());
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-    }
-
-    public int getActiveindex() {
-        return activeindex;
-    }
-
-    public void setActiveindex(int activeindex) {
-        this.activeindex = activeindex;
+        gnrEmpresa = new GnrEmpresa();
     }
 
     public void dirige(int a) {
@@ -52,8 +58,9 @@ public class UserManager {
     }
 
     public void login() {
-        System.out.println("User: " + userName);
-        System.out.println("Password: " + password);
+        logger.log(Level.INFO, "User: {0}", userName);
+        logger.log(Level.INFO, "Password: {0}", password);
+        logger.log(Level.INFO, "Empresa: {0}", gnrEmpresa);
         GnrUsuarioFacadeREST gnrUsuarioFacadeREST = new GnrUsuarioFacadeREST();
         List<GnrUsuarios> gnrUsuarios = gson.fromJson(gnrUsuarioFacadeREST.findAll_JSON(String.class),
                 new TypeToken<java.util.List<GnrUsuarios>>() {
@@ -88,30 +95,6 @@ public class UserManager {
     public String logout() {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index?faces-redirect=true";
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public GnrUsuarios getCurrent() {
-        return current;
-    }
-
-    public void setCurrent(GnrUsuarios current) {
-        this.current = current;
     }
 
 }

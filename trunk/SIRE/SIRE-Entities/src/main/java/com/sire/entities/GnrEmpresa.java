@@ -49,11 +49,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrEmpresa.findByResponsable", query = "SELECT g FROM GnrEmpresa g WHERE g.responsable = :responsable")})
 public class GnrEmpresa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<InvGrupo1> invGrupo1List;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<InvArticulo> invArticuloList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<InvMarcas> invMarcasList;
+    private List<FacTmpFactC> facTmpFactCList;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -102,15 +98,21 @@ public class GnrEmpresa implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<GnrDivisa> gnrDivisaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<FacTmpFactC> facTmpFactCList;
+    private List<InvGrupo1> invGrupo1List;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvArticulo> invArticuloList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvMarcas> invMarcasList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvMovimientoCabF> invMovimientoCabFList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvProveedor> invProveedorList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<InvGrupoProveedor> invGrupoProveedorList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<InvMovimientoCab> invMovimientoCabList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<InvTransacciones> invTransaccionesList1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<InvProveedor> invProveedorList;
 
     public GnrEmpresa() {
     }
@@ -274,12 +276,48 @@ public class GnrEmpresa implements Serializable {
     }
 
     @XmlTransient
-    public List<FacTmpFactC> getFacTmpFactCList() {
-        return facTmpFactCList;
+    public List<InvGrupo1> getInvGrupo1List() {
+        return invGrupo1List;
     }
 
-    public void setFacTmpFactCList(List<FacTmpFactC> facTmpFactCList) {
-        this.facTmpFactCList = facTmpFactCList;
+    public void setInvGrupo1List(List<InvGrupo1> invGrupo1List) {
+        this.invGrupo1List = invGrupo1List;
+    }
+
+    @XmlTransient
+    public List<InvArticulo> getInvArticuloList() {
+        return invArticuloList;
+    }
+
+    public void setInvArticuloList(List<InvArticulo> invArticuloList) {
+        this.invArticuloList = invArticuloList;
+    }
+
+    @XmlTransient
+    public List<InvMarcas> getInvMarcasList() {
+        return invMarcasList;
+    }
+
+    public void setInvMarcasList(List<InvMarcas> invMarcasList) {
+        this.invMarcasList = invMarcasList;
+    }
+
+    @XmlTransient
+    public List<InvMovimientoCabF> getInvMovimientoCabFList() {
+        return invMovimientoCabFList;
+    }
+
+    public void setInvMovimientoCabFList(List<InvMovimientoCabF> invMovimientoCabFList) {
+        this.invMovimientoCabFList = invMovimientoCabFList;
+    }
+
+    @XmlTransient
+    public List<InvProveedor> getInvProveedorList() {
+        return invProveedorList;
+    }
+
+    public void setInvProveedorList(List<InvProveedor> invProveedorList) {
+        this.invProveedorList = invProveedorList;
     }
 
     @XmlTransient
@@ -309,15 +347,6 @@ public class GnrEmpresa implements Serializable {
         this.invTransaccionesList1 = invTransaccionesList1;
     }
 
-    @XmlTransient
-    public List<InvProveedor> getInvProveedorList() {
-        return invProveedorList;
-    }
-
-    public void setInvProveedorList(List<InvProveedor> invProveedorList) {
-        this.invProveedorList = invProveedorList;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -344,30 +373,12 @@ public class GnrEmpresa implements Serializable {
     }
 
     @XmlTransient
-    public List<InvGrupo1> getInvGrupo1List() {
-        return invGrupo1List;
+    public List<FacTmpFactC> getFacTmpFactCList() {
+        return facTmpFactCList;
     }
 
-    public void setInvGrupo1List(List<InvGrupo1> invGrupo1List) {
-        this.invGrupo1List = invGrupo1List;
-    }
-
-    @XmlTransient
-    public List<InvArticulo> getInvArticuloList() {
-        return invArticuloList;
-    }
-
-    public void setInvArticuloList(List<InvArticulo> invArticuloList) {
-        this.invArticuloList = invArticuloList;
-    }
-
-    @XmlTransient
-    public List<InvMarcas> getInvMarcasList() {
-        return invMarcasList;
-    }
-
-    public void setInvMarcasList(List<InvMarcas> invMarcasList) {
-        this.invMarcasList = invMarcasList;
+    public void setFacTmpFactCList(List<FacTmpFactC> facTmpFactCList) {
+        this.facTmpFactCList = facTmpFactCList;
     }
     
 }

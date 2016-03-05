@@ -23,18 +23,19 @@ public class SecurityBean {
 
     @ManagedProperty(value = "#{user}")
     private UserManager userManager;
-    String loginURL = "/SIRE-Web/ui/login.xhtml";
+    String loginURL = "/ui/login.xhtml";
 
     public void checkLogIn() {
         if (userManager == null || !userManager.isLoggedIn()) {
             try {
-                FacesContext.getCurrentInstance().getExternalContext().redirect(loginURL);
+                String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+                FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath + loginURL);
                 Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "No Autorizado");
             } catch (IOException ex) {
                 Logger.getLogger(SecurityBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }else{
-        Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "Autorizado");
+        } else {
+            Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "Autorizado");
         }
     }
 

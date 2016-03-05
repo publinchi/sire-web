@@ -35,15 +35,19 @@ public class InventariosBean {
         InvMovimientoDtll invMovimientoDtll = articulosBean.getInvMovimientoDtllSeleccionado();
         Logger.getLogger(InventariosBean.class.getName()).info("Invocando getInvInventarios");
         if (invMovimientoDtll != null) {
-            int codBodega = articulosBean.getCodBodega();
-            Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "codBodega: {0}", String.valueOf(codBodega));
-            InvInventarioFacadeREST invInventarioFacadeREST = new InvInventarioFacadeREST();
-            String result = invInventarioFacadeREST.findByCodBodega(String.class, String.valueOf(codBodega));
-            GsonBuilder builder = new GsonBuilder();
-            Gson gson = builder.setDateFormat("yyyy-MM-dd").create();
-            invInventarios = gson.fromJson(result, new TypeToken<List<InvInventario>>() {
-            }.getType());
-            Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "# Inverntarios: {0}", invInventarios.size());
+            String codBod = invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodBodega();
+            Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "# CodBod: {0}", codBod);
+            if (codBod != null) {
+                int codBodega = Integer.valueOf(codBod);
+                Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "codBodega: {0}", String.valueOf(codBodega));
+                InvInventarioFacadeREST invInventarioFacadeREST = new InvInventarioFacadeREST();
+                String result = invInventarioFacadeREST.findByCodBodega(String.class, String.valueOf(codBodega));
+                GsonBuilder builder = new GsonBuilder();
+                Gson gson = builder.setDateFormat("yyyy-MM-dd").create();
+                invInventarios = gson.fromJson(result, new TypeToken<List<InvInventario>>() {
+                }.getType());
+                Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "# Inventarios: {0}", invInventarios.size());
+            }
         }
         return invInventarios;
     }
@@ -64,7 +68,7 @@ public class InventariosBean {
         InvMovimientoDtll invMovimientoDtll = articulosBean.getInvMovimientoDtllSeleccionado();
         Logger.getLogger(InventariosBean.class.getName()).info("Invocando getInvInventarios");
         if (invMovimientoDtll != null) {
-            int codArticulo = articulosBean.getCodArticulo();
+            int codArticulo = invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo();
             Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, InventariosBean.class.getName() + " - codArticulo: {0}", codArticulo);
             InvUnidadAlternativaFacadeREST invUnidadAlternativaFacadeREST = new InvUnidadAlternativaFacadeREST();
             String result = invUnidadAlternativaFacadeREST.findByCodArticulo(String.class, String.valueOf(codArticulo));

@@ -9,6 +9,35 @@
     <class>com.sire.entities.InvArticulo</class>
     <class>com.sire.entities.InvMarcas</class>
     <class>com.sire.entities.InvUnidadMedida</class>
+    <class>com.sire.entities.FacParametrosGenerales</class>
+    <class>com.sire.entities.FacListaPrecioD</class>
+    <class>com.sire.entities.FacListaPrecioC</class>
+    <class>com.sire.entities.CxcClaseCliente</class>
+    <class>com.sire.entities.InvMovimientoDtllF</class>
+    <class>com.sire.entities.InvBodega</class>
+    <class>com.sire.entities.CxcZona</class>
+    <class>com.sire.entities.FacCatalogoPrecioD</class>
+    <class>com.sire.entities.CxcCliente</class>
+    <class>com.sire.entities.InvBodegaArt</class>
+    <class>com.sire.entities.GnrDivisa</class>
+    <class>com.sire.entities.InvInventario</class>
+    <class>com.sire.entities.InvGrupoProveedor</class>
+    <class>com.sire.entities.GnrPersona</class>
+    <class>com.sire.entities.FacCatalogoGeneral</class>
+    <class>com.sire.entities.InvMovimientoCab</class>
+    <class>com.sire.entities.CxcSector</class>
+    <class>com.sire.entities.InvMovimientoDtll</class>
+    <class>com.sire.entities.InvProveedor</class>
+    <class>com.sire.entities.GnrUsuarios</class>
+    <class>com.sire.entities.InvMovimientoCabF</class>
+    <class>com.sire.entities.FacCatalogoPrecioC</class>
+    <class>com.sire.entities.GnrEmpresa</class>
+    <class>com.sire.entities.InvTransacciones</class>
+    <class>com.sire.entities.InvUnidadAlternativa</class>
+    <class>com.sire.entities.GnrModuloDoc</class>
+    <class>com.sire.entities.GnrContadorDoc</class>
+    <class>com.sire.entities.FacTmpFactC</class>
+    <class>com.sire.entities.FacTmpFactD</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@//localhost:1521/orcl"/>
       <property name="javax.persistence.jdbc.user" value="dipronor"/>

@@ -28,6 +28,7 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("com.sire.entities.invmovimientocab")
 public class InvMovimientoCabFacadeREST extends AbstractFacade<InvMovimientoCab> {
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -64,7 +65,23 @@ public class InvMovimientoCabFacadeREST extends AbstractFacade<InvMovimientoCab>
     @Override
     @Consumes({"application/xml", "application/json"})
     public void create(InvMovimientoCab entity) {
+//        em.getTransaction().begin();
         super.create(entity);
+
+//        FacTmpFactC facTmpFactC = new FacTmpFactC();
+//        facTmpFactC.setCodCliente(entity.getCxcCliente().getCxcClientePK().getCodCliente().longValue());
+//        facTmpFactC.setCodDivisa("01");
+//        facTmpFactC.setCodDocumento("FAC");
+//        facTmpFactC.setCodPago(entity.getFormaPago());
+//        // TODO setCodVendedor
+//        facTmpFactC.setCodVendedor(1);
+//        facTmpFactC.setContCred("1");
+//        facTmpFactC.setDescuentos(BigInteger.ZERO);
+//        facTmpFactC.setEstado("G");
+//        FacTmpFactCPK facTmpFactCPK= new FacTmpFactCPK(entity.getInvMovimientoCabPK().getCodEmpresa(), 0, null);
+//        facTmpFactC.setFacTmpFactCPK(null);
+//        em.persist(facTmpFactC);
+//        em.getTransaction().commit();
     }
 
     @PUT
@@ -114,5 +131,5 @@ public class InvMovimientoCabFacadeREST extends AbstractFacade<InvMovimientoCab>
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

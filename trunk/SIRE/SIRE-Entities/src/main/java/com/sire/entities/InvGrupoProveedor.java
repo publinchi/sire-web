@@ -52,6 +52,8 @@ public class InvGrupoProveedor implements Serializable {
     @Column(name = "FECHA_ESTADO")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEstado;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invGrupoProveedor")
+    private List<InvProveedor> invProveedorList;
     @JoinColumns({
         @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false),
         @JoinColumn(name = "COD_DIVISA", referencedColumnName = "COD_DIVISA")})
@@ -60,8 +62,6 @@ public class InvGrupoProveedor implements Serializable {
     @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private GnrEmpresa gnrEmpresa;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invGrupoProveedor")
-    private List<InvProveedor> invProveedorList;
 
     public InvGrupoProveedor() {
     }
@@ -114,6 +114,15 @@ public class InvGrupoProveedor implements Serializable {
         this.fechaEstado = fechaEstado;
     }
 
+    @XmlTransient
+    public List<InvProveedor> getInvProveedorList() {
+        return invProveedorList;
+    }
+
+    public void setInvProveedorList(List<InvProveedor> invProveedorList) {
+        this.invProveedorList = invProveedorList;
+    }
+
     public GnrDivisa getGnrDivisa() {
         return gnrDivisa;
     }
@@ -128,15 +137,6 @@ public class InvGrupoProveedor implements Serializable {
 
     public void setGnrEmpresa(GnrEmpresa gnrEmpresa) {
         this.gnrEmpresa = gnrEmpresa;
-    }
-
-    @XmlTransient
-    public List<InvProveedor> getInvProveedorList() {
-        return invProveedorList;
-    }
-
-    public void setInvProveedorList(List<InvProveedor> invProveedorList) {
-        this.invProveedorList = invProveedorList;
     }
 
     @Override

@@ -29,6 +29,7 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("com.sire.entities.invarticulo")
 public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -104,8 +105,21 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     @Path("/findByNombreArticulo/{nombreArticulo}")
     @Produces({"application/json"})
     public List<InvArticulo> findByNombreArticulo(@PathParam("nombreArticulo") String nombreArticulo) {
-        TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findByNombreArticulo", InvArticulo.class);
-        query.setParameter("nombreArticulo", "%" + nombreArticulo + "%");
+        TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findByNombreArticuloEstado", InvArticulo.class);
+        query.setParameter("nombreArticulo", nombreArticulo + "%");
+        query.setParameter("estado", "A");
+        List<InvArticulo> retorno = query.getResultList();
+        return retorno;
+    }
+
+    @GET
+    @Path("/findParaVenta/{nombreArticulo}/{codEmpresa}")
+    @Produces({"application/json"})
+    public List<InvArticulo> findParaVenta(@PathParam("nombreArticulo") String nombreArticulo, @PathParam("codEmpresa") String codEmpresa) {
+        TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findParaVenta", InvArticulo.class);
+        query.setParameter("nombreArticulo", nombreArticulo + "%");
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("estado", "A");
         List<InvArticulo> retorno = query.getResultList();
         return retorno;
     }
@@ -121,5 +135,5 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

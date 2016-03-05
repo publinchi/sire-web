@@ -96,6 +96,8 @@ public class CxcCliente implements Serializable {
     private String localidad;
     @Column(name = "CALIFICACION")
     private String calificacion;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<InvMovimientoCabF> invMovimientoCabFList;
     @JoinColumn(name = "CLASE_CLIETE", referencedColumnName = "CODIGO")
     @ManyToOne
     private CxcClaseCliente claseCliete;
@@ -272,6 +274,15 @@ public class CxcCliente implements Serializable {
 
     public void setCalificacion(String calificacion) {
         this.calificacion = calificacion;
+    }
+
+    @XmlTransient
+    public List<InvMovimientoCabF> getInvMovimientoCabFList() {
+        return invMovimientoCabFList;
+    }
+
+    public void setInvMovimientoCabFList(List<InvMovimientoCabF> invMovimientoCabFList) {
+        this.invMovimientoCabFList = invMovimientoCabFList;
     }
 
     public CxcClaseCliente getClaseCliete() {

@@ -23,9 +23,10 @@ import javax.ws.rs.client.WebTarget;
  * @author pestupinan
  */
 public class VClienteFacadeREST {
+
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://localhost:9080/SIRE-WS/webresources";
 
     public VClienteFacadeREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
@@ -84,6 +85,12 @@ public class VClienteFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T findByRazonSocial(Class<T> responseType, String razonSocial) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByRazonSocial/{0}", new Object[]{razonSocial}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
     public <T> T findAll_XML(Class<T> responseType) throws ClientErrorException {
         WebTarget resource = webTarget;
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
@@ -101,5 +108,5 @@ public class VClienteFacadeREST {
     public void close() {
         client.close();
     }
-    
+
 }

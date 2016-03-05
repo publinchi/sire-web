@@ -21,7 +21,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -54,6 +57,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "InvMovimientoDtll.findByOperador", query = "SELECT i FROM InvMovimientoDtll i WHERE i.operador = :operador"),
     @NamedQuery(name = "InvMovimientoDtll.findByFactor", query = "SELECT i FROM InvMovimientoDtll i WHERE i.factor = :factor")})
 public class InvMovimientoDtll implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected InvMovimientoDtllPK invMovimientoDtllPK;
@@ -70,12 +74,12 @@ public class InvMovimientoDtll implements Serializable {
     private BigInteger auxCantidad;
     @Basic(optional = false)
     @Column(name = "COSTO_TOTAL")
-    private BigInteger costoTotal;
+    private Double costoTotal;
     @Basic(optional = false)
     @Column(name = "COSTO_UNITARIO")
-    private BigInteger costoUnitario;
+    private Double costoUnitario;
     @Column(name = "PRECIO_VENTA")
-    private BigInteger precioVenta;
+    private Double precioVenta;
     @Column(name = "ESTADO")
     private String estado;
     @Basic(optional = false)
@@ -116,6 +120,10 @@ public class InvMovimientoDtll implements Serializable {
         @JoinColumn(name = "NUM_DOCUMENTO", referencedColumnName = "NUM_DOCUMENTO", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private InvMovimientoCab invMovimientoCab;
+    @Transient
+    @Getter
+    @Setter
+    private InvArticulo invArticulo;
 
     public InvMovimientoDtll() {
     }
@@ -124,7 +132,7 @@ public class InvMovimientoDtll implements Serializable {
         this.invMovimientoDtllPK = invMovimientoDtllPK;
     }
 
-    public InvMovimientoDtll(InvMovimientoDtllPK invMovimientoDtllPK, BigDecimal cantidad, BigInteger auxCantidad, BigInteger costoTotal, BigInteger costoUnitario, BigInteger valorCompra, BigDecimal porcDesc1, BigDecimal porcDesc2, BigDecimal porcentajeIva, BigInteger descuento, BigDecimal porcDesc3) {
+    public InvMovimientoDtll(InvMovimientoDtllPK invMovimientoDtllPK, BigDecimal cantidad, BigInteger auxCantidad, Double costoTotal, Double costoUnitario, BigInteger valorCompra, BigDecimal porcDesc1, BigDecimal porcDesc2, BigDecimal porcentajeIva, BigInteger descuento, BigDecimal porcDesc3) {
         this.invMovimientoDtllPK = invMovimientoDtllPK;
         this.cantidad = cantidad;
         this.auxCantidad = auxCantidad;
@@ -182,27 +190,27 @@ public class InvMovimientoDtll implements Serializable {
         this.auxCantidad = auxCantidad;
     }
 
-    public BigInteger getCostoTotal() {
+    public Double getCostoTotal() {
         return costoTotal;
     }
 
-    public void setCostoTotal(BigInteger costoTotal) {
+    public void setCostoTotal(Double costoTotal) {
         this.costoTotal = costoTotal;
     }
 
-    public BigInteger getCostoUnitario() {
+    public Double getCostoUnitario() {
         return costoUnitario;
     }
 
-    public void setCostoUnitario(BigInteger costoUnitario) {
+    public void setCostoUnitario(Double costoUnitario) {
         this.costoUnitario = costoUnitario;
     }
 
-    public BigInteger getPrecioVenta() {
+    public Double getPrecioVenta() {
         return precioVenta;
     }
 
-    public void setPrecioVenta(BigInteger precioVenta) {
+    public void setPrecioVenta(Double precioVenta) {
         this.precioVenta = precioVenta;
     }
 
@@ -326,5 +334,5 @@ public class InvMovimientoDtll implements Serializable {
     public String toString() {
         return "com.sire.entities.InvMovimientoDtll[ invMovimientoDtllPK=" + invMovimientoDtllPK + " ]";
     }
-    
+
 }

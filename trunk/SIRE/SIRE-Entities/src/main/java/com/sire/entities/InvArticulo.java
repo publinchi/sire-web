@@ -57,8 +57,11 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "InvArticulo.findByStockMax", query = "SELECT i FROM InvArticulo i WHERE i.stockMax = :stockMax"),
     @NamedQuery(name = "InvArticulo.findByPorcentajeUtilidad2", query = "SELECT i FROM InvArticulo i WHERE i.porcentajeUtilidad2 = :porcentajeUtilidad2"),
     @NamedQuery(name = "InvArticulo.findByPorcentajeUtilidad3", query = "SELECT i FROM InvArticulo i WHERE i.porcentajeUtilidad3 = :porcentajeUtilidad3"),
-    @NamedQuery(name = "InvArticulo.findByTipoArticulo", query = "SELECT i FROM InvArticulo i WHERE i.tipoArticulo = :tipoArticulo")})
+    @NamedQuery(name = "InvArticulo.findByTipoArticulo", query = "SELECT i FROM InvArticulo i WHERE i.tipoArticulo = :tipoArticulo"),
+    @NamedQuery(name = "InvArticulo.findByNombreArticuloEstado", query = "SELECT i FROM InvArticulo i WHERE i.nombreArticulo like :nombreArticulo AND i.estado = :estado ORDER BY i.nombreArticulo"),
+    @NamedQuery(name = "InvArticulo.findParaVenta", query = "SELECT a FROM InvArticulo a, InvBodegaArt b, FacCatalogoPrecioD c WHERE a.invArticuloPK.codEmpresa = :codEmpresa AND a.invArticuloPK.codEmpresa = b.invBodegaArtPK.codEmpresa AND a.invArticuloPK.codArticulo = b.invBodegaArtPK.codArticulo AND b.invBodegaArtPK.codInventario = '01' AND a.invArticuloPK.codEmpresa = c.facCatalogoPrecioDPK.codEmpresa AND a.invArticuloPK.codArticulo = c.facCatalogoPrecioDPK.codArticulo AND c.facCatalogoPrecioDPK.codCatalogo = '01' AND a.estado = :estado AND a.nombreArticulo like :nombreArticulo ORDER BY a.nombreArticulo")})
 public class InvArticulo implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected InvArticuloPK invArticuloPK;
@@ -422,5 +425,5 @@ public class InvArticulo implements Serializable {
     public String toString() {
         return "com.sire.entities.InvArticulo[ invArticuloPK=" + invArticuloPK + " ]";
     }
-    
+
 }

@@ -12,7 +12,7 @@ import javax.persistence.Embeddable;
 
 /**
  *
- * @author Administrator
+ * @author pestupinan
  */
 @Embeddable
 public class FacTmpFactDPK implements Serializable {
