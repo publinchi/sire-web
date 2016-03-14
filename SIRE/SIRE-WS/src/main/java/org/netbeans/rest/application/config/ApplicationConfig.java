@@ -35,6 +35,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.CxcZonaFacadeREST.class);
         resources.add(com.sire.ws.service.FacCatalogoPrecioCFacadeREST.class);
         resources.add(com.sire.ws.service.FacCatalogoPrecioDFacadeREST.class);
+        resources.add(com.sire.ws.service.FacDescVolFacadeREST.class);
         resources.add(com.sire.ws.service.GnrContadorDocFacadeREST.class);
         resources.add(com.sire.ws.service.GnrDivisaFacadeREST.class);
         resources.add(com.sire.ws.service.GnrEmpresaFacadeREST.class);
@@ -49,6 +50,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.InvGrupo3FacadeREST.class);
         resources.add(com.sire.ws.service.InvGrupoProveedorFacadeREST.class);
         resources.add(com.sire.ws.service.InvInventarioFacadeREST.class);
+        resources.add(com.sire.ws.service.InvIvaFacadeREST.class);
         resources.add(com.sire.ws.service.InvMarcasFacadeREST.class);
         resources.add(com.sire.ws.service.InvMovimientoCabFacadeREST.class);
         resources.add(com.sire.ws.service.InvMovimientoDtllFacadeREST.class);

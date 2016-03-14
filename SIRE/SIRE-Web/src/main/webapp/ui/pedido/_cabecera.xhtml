@@ -27,7 +27,9 @@
     </pm:field>
 
     <pm:field>
-        <p:inputText id="ubicacion" value="{articulosBean.ubicacion}" readonly="false"/>
+        <h:inputHidden id="lat" value="#{addMarkersView.lat}" />
+        <h:inputHidden id="lng" value="#{addMarkersView.lng}" />
+        <p:inputText id="ubicacion" value="#{mapaBean.ciudad}, #{mapaBean.direccion}" readonly="false"/>
     </pm:field>
 
     <pm:field>
@@ -77,9 +79,15 @@
             style="width: 100%;height: 400px" 
             mapTypeControl="true"
             navigationControl="true"
-            widgetVar="gmap" />
+            widgetVar="gmap" 
+            model="#{mapaBean.emptyModel}"/>
         <p:separator />
-        <p:commandButton type="button" value="Mi Localización" onclick="findMe()" />
+        <h:form>
+            <p:commandButton value="Mi Localización" 
+                             actionListener="#{mapaBean.seleccionarLocalizacion}" 
+                             onclick="findMe()"
+                             update="pedido:accordionPanel:ubicacion"/>
+        </h:form>
     </p:dialog>
 
 </html>

@@ -99,7 +99,7 @@ public class InvMovimientoDtll implements Serializable {
     private BigDecimal porcentajeIva;
     @Basic(optional = false)
     @Column(name = "DESCUENTO")
-    private BigInteger descuento;
+    private BigDecimal descuento;
     @Basic(optional = false)
     @Column(name = "PORC_DESC3")
     private BigDecimal porcDesc3;
@@ -124,6 +124,10 @@ public class InvMovimientoDtll implements Serializable {
     @Getter
     @Setter
     private InvArticulo invArticulo;
+    @Transient
+    @Getter
+    @Setter
+    private int posicion;
 
     public InvMovimientoDtll() {
     }
@@ -132,7 +136,7 @@ public class InvMovimientoDtll implements Serializable {
         this.invMovimientoDtllPK = invMovimientoDtllPK;
     }
 
-    public InvMovimientoDtll(InvMovimientoDtllPK invMovimientoDtllPK, BigDecimal cantidad, BigInteger auxCantidad, Double costoTotal, Double costoUnitario, BigInteger valorCompra, BigDecimal porcDesc1, BigDecimal porcDesc2, BigDecimal porcentajeIva, BigInteger descuento, BigDecimal porcDesc3) {
+    public InvMovimientoDtll(InvMovimientoDtllPK invMovimientoDtllPK, BigDecimal cantidad, BigInteger auxCantidad, Double costoTotal, Double costoUnitario, BigInteger valorCompra, BigDecimal porcDesc1, BigDecimal porcDesc2, BigDecimal porcentajeIva, BigDecimal descuento, BigDecimal porcDesc3) {
         this.invMovimientoDtllPK = invMovimientoDtllPK;
         this.cantidad = cantidad;
         this.auxCantidad = auxCantidad;
@@ -262,11 +266,11 @@ public class InvMovimientoDtll implements Serializable {
         this.porcentajeIva = porcentajeIva;
     }
 
-    public BigInteger getDescuento() {
+    public BigDecimal getDescuento() {
         return descuento;
     }
 
-    public void setDescuento(BigInteger descuento) {
+    public void setDescuento(BigDecimal descuento) {
         this.descuento = descuento;
     }
 

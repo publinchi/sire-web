@@ -10,15 +10,14 @@
                 <p:inputText id="buscarArticulos" 
                              placeholder="Buscar Articulo" 
                              type="search" 
-                             value="${articulosBean.input}"
-                             converter="toUpperCaseConverter">
+                             value="${articulosBean.input}">
                     <f:ajax event="blur" render="@this" immediate="true"/>
                 </p:inputText>
                 <p:commandButton id="botonBuscarArticulo" icon="ui-icon-search" actionListener="${articulosBean.findArticulos}" update="@form:dataListArticulo"/>
             </h:panelGrid>
             <p:dataList id="dataListArticulo" value="#{articulosBean.articulos}" var="articulo" pt:data-inset="true">
                 <p:ajax event="tap" listener="#{articulosBean.tapArticulo}" oncomplete="PF('dlg2').hide();" update="pedido:accordionPanel:formTablaArticulos:tablaArticulos"/>
-                <h:outputText value="#{articulo.invArticuloPK.codArticulo} - #{articulo.nombreArticulo}" />
+                <h:outputText value="#{articulo.invArticuloPK.codArticulo} - #{articulo.nombreArticulo} - #{articulo.unidad} - &#36;#{articulo.precio} - (#{articulo.existencia})" />
             </p:dataList>
         </h:form>
     </p:dialog>

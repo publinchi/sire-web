@@ -8,27 +8,8 @@
             <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 
             <pm:field>
-                <p:outputLabel for="bodega" value="Bodega:" />
-                <p:selectOneMenu id="bodega" value="#{articulosBean.invMovimientoDtllSeleccionado.invBodegaArt.invBodegaArtPK.codBodega}" >
-                    <p:ajax listener="#{articulosBean.loadInventariosByBodega()}"/>
-                    <f:selectItems value="#{bodegasBean.invBodegaArts}" 
-                                   var="bodega" 
-                                   itemLabel="#{bodega.invInventario.invBodega.descBodega} (#{bodega.existencia})" 
-                                   itemValue="#{bodega.invBodegaArtPK.codBodega}" />
-                </p:selectOneMenu>
+                <p:outputLabel id="existencia" value="Existencia: #{articulosBean.existencia}" />
             </pm:field>
-
-            <!--            <pm:field>
-                            <h:panelGroup id="inv">
-                                <p:outputLabel for="tipoInventario" value="Tipo Inventario:" />
-                                <p:selectOneMenu id="tipoInventario" value="{articulosBean.codInventario}">
-                                    <f:selectItems value="{inventariosBean.invInventarios}" 
-                                                   var="inventario" 
-                                                   itemLabel="{inventario.nombreCorto}" 
-                                                   itemValue="{inventario.invInventarioPK.codInventario}" />
-                                </p:selectOneMenu>
-                            </h:panelGroup>
-                        </pm:field>-->
 
             <pm:field>
                 <p:outputLabel for="unidadMedida" value="Unidad Medida:" />
@@ -42,7 +23,7 @@
             </pm:field>
 
             <pm:field>
-                <p:outputLabel for="cantidad" value="Cantidad:" />
+                <p:outputLabel id="cantidadLabel" for="cantidad" value="Cantidad: #{articulosBean.cantidadExedida}" />
                 <p:inputText id="cantidad" 
                              value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}" >
                     <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
@@ -59,14 +40,7 @@
             <pm:field>
                 <p:outputLabel for="descuento1" value="% de descuento1:" />
                 <p:inputText id="descuento1" 
-                             value="#{articulosBean.invArticuloSeleccionado.descArticulo}"
-                             disabled="true"/>
-            </pm:field>
-
-            <pm:field>
-                <p:outputLabel for="descuento2" value="% de descuento2:" />
-                <p:inputText id="descuento2" 
-                             value="#{articulosBean.invArticuloSeleccionado.descArticulo}"
+                             value="#{articulosBean.invArticuloSeleccionado.descuento}"
                              disabled="true"/>
             </pm:field>
 
@@ -80,19 +54,21 @@
             <pm:field>
                 <p:outputLabel for="iva" value="IVA:" />
                 <p:inputText id="iva" 
-                             value="#{articulosBean.invArticuloSeleccionado.codIva}"
+                             value="#{articulosBean.invArticuloSeleccionado.iva}"
                              disabled="true"/>
             </pm:field>
 
             <pm:field>
                 <p:outputLabel for="totalIva" value="Total + IVA:" />
                 <p:inputText id="totalIva" 
-                             value="#{articulosBean.invArticuloSeleccionado.costoPromedio}"
+                             value="#{articulosBean.invArticuloSeleccionado.totalPlusIVA}"
                              disabled="true"/>
             </pm:field>
             <pm:content>
-                <p:commandButton value="Agregar" 
+                <p:commandButton id="botonAgregar"
+                                 value="Agregar" 
                                  actionListener="#{articulosBean.agregarArticulo()}" 
+                                 disabled="#{articulosBean.agregarBloqueado}"
                                  oncomplete="PF('dlg3').hide();"/>
             </pm:content>
         </h:form>
