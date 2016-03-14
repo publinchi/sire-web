@@ -18,6 +18,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -30,6 +32,9 @@ public class InventariosBean {
     private List<InvUnidadAlternativa> invUnidadAlternativas;
     @ManagedProperty(value = "#{articulosBean}")
     private ArticulosBean articulosBean;
+
+    @Setter
+    private InvUnidadAlternativa invUnidadAlternativa;
 
     public List<InvInventario> getInvInventarios() {
         InvMovimientoDtll invMovimientoDtll = articulosBean.getInvMovimientoDtllSeleccionado();
@@ -83,6 +88,10 @@ public class InventariosBean {
 
     public void setInvUnidadAlternativas(List<InvUnidadAlternativa> invUnidadAlternativas) {
         this.invUnidadAlternativas = invUnidadAlternativas;
+    }
+
+    public InvUnidadAlternativa getInvUnidadAlternativa() {
+        return invUnidadAlternativa;
     }
 
 }

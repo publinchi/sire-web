@@ -21,7 +21,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -59,7 +62,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "InvArticulo.findByPorcentajeUtilidad3", query = "SELECT i FROM InvArticulo i WHERE i.porcentajeUtilidad3 = :porcentajeUtilidad3"),
     @NamedQuery(name = "InvArticulo.findByTipoArticulo", query = "SELECT i FROM InvArticulo i WHERE i.tipoArticulo = :tipoArticulo"),
     @NamedQuery(name = "InvArticulo.findByNombreArticuloEstado", query = "SELECT i FROM InvArticulo i WHERE i.nombreArticulo like :nombreArticulo AND i.estado = :estado ORDER BY i.nombreArticulo"),
-    @NamedQuery(name = "InvArticulo.findParaVenta", query = "SELECT a FROM InvArticulo a, InvBodegaArt b, FacCatalogoPrecioD c WHERE a.invArticuloPK.codEmpresa = :codEmpresa AND a.invArticuloPK.codEmpresa = b.invBodegaArtPK.codEmpresa AND a.invArticuloPK.codArticulo = b.invBodegaArtPK.codArticulo AND b.invBodegaArtPK.codInventario = '01' AND a.invArticuloPK.codEmpresa = c.facCatalogoPrecioDPK.codEmpresa AND a.invArticuloPK.codArticulo = c.facCatalogoPrecioDPK.codArticulo AND c.facCatalogoPrecioDPK.codCatalogo = '01' AND a.estado = :estado AND a.nombreArticulo like :nombreArticulo ORDER BY a.nombreArticulo")})
+    @NamedQuery(name = "InvArticulo.findParaVenta", query = "SELECT a, c, SUM(b.existencia) FROM InvArticulo a, InvBodegaArt b, FacCatalogoPrecioD c WHERE a.invArticuloPK.codEmpresa = :codEmpresa AND a.invArticuloPK.codEmpresa = b.invBodegaArtPK.codEmpresa AND a.invArticuloPK.codArticulo = b.invBodegaArtPK.codArticulo AND b.invBodegaArtPK.codInventario = '01' AND a.invArticuloPK.codEmpresa = c.facCatalogoPrecioDPK.codEmpresa AND a.invArticuloPK.codArticulo = c.facCatalogoPrecioDPK.codArticulo AND c.facCatalogoPrecioDPK.codCatalogo = '01' AND a.estado = :estado AND a.nombreArticulo like :nombreArticulo GROUP BY a, c ORDER BY a.nombreArticulo"),
+    @NamedQuery(name = "InvArticulo.findByArticuloEmpresa", query = "SELECT i FROM InvArticulo i WHERE i.invArticuloPK.codArticulo = :codArticulo AND i.invArticuloPK.codEmpresa = :codEmpresa")})
 public class InvArticulo implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -144,6 +148,38 @@ public class InvArticulo implements Serializable {
     @JoinColumn(name = "COD_UNIDAD", referencedColumnName = "COD_UNIDAD")
     @ManyToOne(optional = false)
     private InvUnidadMedida codUnidad;
+
+    // Inicio Transientes
+    @Getter
+    @Setter
+    @Transient
+    private Double precio;
+
+    @Getter
+    @Setter
+    @Transient
+    private String unidad;
+
+    @Getter
+    @Setter
+    @Transient
+    private BigDecimal existencia;
+
+    @Getter
+    @Setter
+    @Transient
+    private BigDecimal descuento;
+
+    @Getter
+    @Setter
+    @Transient
+    private BigDecimal iva;
+
+    @Getter
+    @Setter
+    @Transient
+    private Double totalPlusIVA;
+    // Fin Transientes
 
     public InvArticulo() {
     }

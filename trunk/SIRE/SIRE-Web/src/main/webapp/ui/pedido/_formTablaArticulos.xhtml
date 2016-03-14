@@ -5,17 +5,15 @@
         <p:growl id="message" showDetail="true" sticky="true" autoUpdate="true"/>
         <p:dataTable id="tablaArticulos" var="invMovimientoDtll" value="#{articulosBean.invMovimientoDtlls}" 
                      reflow="true" selection="#{articulosBean.invMovimientoDtllSeleccionado}"
-                     selectionMode="single" rowKey="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}">
+                     selectionMode="single" rowKey="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}"
+                     resizableColumns="true" resizeMode="fit">
             <p:ajax event="tap" listener="#{articulosBean.tapArticuloFinal}" 
                     update="@form:tablaArticulos,pedido:accordionPanel:dialogArticulo" 
                     oncomplete="PF('dlg3').show();"/>
             <p:ajax event="swipeleft" listener="#{articulosBean.swipeleft}" 
-                    update="@form:tablaArticulos" />
+                    update="@form:tablaArticulos" onstart="return confirm('¿Desea eliminar el registro?')" />
             <p:column headerText="Articulo">
                 <h:outputText value="#{invMovimientoDtll.invArticulo.nombreArticulo}" />
-            </p:column>
-            <p:column headerText="BD">
-                <h:outputText value="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codBodega}" />
             </p:column>
             <p:column headerText="UM">
                 <h:outputText value="#{invMovimientoDtll.codUnidad}" />
@@ -23,9 +21,30 @@
             <p:column headerText="Cantidad">
                 <h:outputText value="#{invMovimientoDtll.cantidad}" />
             </p:column>
-            <p:column headerText="Precio Unitario">
-                <h:outputText value="#{invMovimientoDtll.costoUnitario}" />
+            <p:column headerText="P. Unit.">
+                <h:outputText value="&#36;#{invMovimientoDtll.costoUnitario}" />
             </p:column>
+            <p:column headerText="% Desc.">
+                <h:outputText value="#{invMovimientoDtll.porcDesc1}" />
+            </p:column>
+            <p:column headerText="Total Registro">
+                <h:outputText value="&#36;#{invMovimientoDtll.costoTotal}" />
+            </p:column>
+
+            <p:columnGroup type="footer">
+                <p:row>
+                    <p:column colspan="5" style="text-align:right" footerText="SubTotal:" />
+                    <p:column footerText="&#36;#{articulosBean.subTotal}" />
+                </p:row>
+                <p:row>
+                    <p:column colspan="5" style="text-align:right" footerText="IVA:" />
+                    <p:column footerText="&#36;#{articulosBean.iva}" />
+                </p:row>
+                <p:row>
+                    <p:column colspan="5" style="text-align:right" footerText="Total:" />
+                    <p:column footerText="&#36;#{articulosBean.total}" />
+                </p:row>
+            </p:columnGroup>
         </p:dataTable>
 
         <p:commandButton value="Enviar" action="#{articulosBean.enviar()}" update="@form:message" />

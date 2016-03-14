@@ -5,8 +5,11 @@
  */
 package com.sire.ws.service;
 
+import com.sire.entities.FacCatalogoPrecioD;
 import com.sire.entities.InvArticulo;
 import com.sire.entities.InvArticuloPK;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -116,11 +119,32 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     @Path("/findParaVenta/{nombreArticulo}/{codEmpresa}")
     @Produces({"application/json"})
     public List<InvArticulo> findParaVenta(@PathParam("nombreArticulo") String nombreArticulo, @PathParam("codEmpresa") String codEmpresa) {
-        TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findParaVenta", InvArticulo.class);
-        query.setParameter("nombreArticulo", nombreArticulo + "%");
+        TypedQuery<Object[]> query = em.createNamedQuery("InvArticulo.findParaVenta", Object[].class);
+        query.setParameter("nombreArticulo", nombreArticulo.replace("$WC", "%AC"));
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("estado", "A");
+        List<Object[]> retorno = query.getResultList();
+
+        List<InvArticulo> list = new ArrayList<>();
+        for (Object[] objects : retorno) {
+            ((InvArticulo) objects[0]).setPrecio(((FacCatalogoPrecioD) objects[1]).getPrecioVenta1());
+            ((InvArticulo) objects[0]).setUnidad(((FacCatalogoPrecioD) objects[1]).getCodUnidad());
+            ((InvArticulo) objects[0]).setExistencia((BigDecimal) objects[2]);
+            list.add((InvArticulo) objects[0]);
+        }
+
+        return list;
+    }
+
+    @GET
+    @Path("/findByArticuloEmpresa/{codArticulo}/{codEmpresa}")
+    @Produces({"application/json"})
+    public List<InvArticulo> findByArticuloEmpresa(@PathParam("codArticulo") String codArticulo, @PathParam("codEmpresa") String codEmpresa) {
+        TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findByArticuloEmpresa", InvArticulo.class);
+        query.setParameter("codArticulo", Integer.valueOf(codArticulo));
+        query.setParameter("codEmpresa", codEmpresa);
         List<InvArticulo> retorno = query.getResultList();
+
         return retorno;
     }
 

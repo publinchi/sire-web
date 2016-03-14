@@ -48,6 +48,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrEmpresa.findByPatronal", query = "SELECT g FROM GnrEmpresa g WHERE g.patronal = :patronal"),
     @NamedQuery(name = "GnrEmpresa.findByResponsable", query = "SELECT g FROM GnrEmpresa g WHERE g.responsable = :responsable")})
 public class GnrEmpresa implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvIva> invIvaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<FacTmpFactC> facTmpFactCList;
     private static final long serialVersionUID = 1L;
@@ -379,6 +382,15 @@ public class GnrEmpresa implements Serializable {
 
     public void setFacTmpFactCList(List<FacTmpFactC> facTmpFactCList) {
         this.facTmpFactCList = facTmpFactCList;
+    }
+
+    @XmlTransient
+    public List<InvIva> getInvIvaList() {
+        return invIvaList;
+    }
+
+    public void setInvIvaList(List<InvIva> invIvaList) {
+        this.invIvaList = invIvaList;
     }
     
 }
