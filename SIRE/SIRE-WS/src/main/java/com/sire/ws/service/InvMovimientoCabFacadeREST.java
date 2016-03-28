@@ -5,9 +5,17 @@
  */
 package com.sire.ws.service;
 
+import com.sire.entities.InvBodegaArt;
+import com.sire.entities.InvBodegaArtPK;
 import com.sire.entities.InvMovimientoCab;
 import com.sire.entities.InvMovimientoCabPK;
+import com.sire.entities.InvMovimientoDtll;
+import com.sire.entities.Pedido;
+import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -62,26 +70,55 @@ public class InvMovimientoCabFacadeREST extends AbstractFacade<InvMovimientoCab>
     }
 
     @POST
-    @Override
     @Consumes({"application/xml", "application/json"})
-    public void create(InvMovimientoCab entity) {
-//        em.getTransaction().begin();
-        super.create(entity);
+    public void create(Pedido entity) {
+        try {
 
-//        FacTmpFactC facTmpFactC = new FacTmpFactC();
-//        facTmpFactC.setCodCliente(entity.getCxcCliente().getCxcClientePK().getCodCliente().longValue());
-//        facTmpFactC.setCodDivisa("01");
-//        facTmpFactC.setCodDocumento("FAC");
-//        facTmpFactC.setCodPago(entity.getFormaPago());
-//        // TODO setCodVendedor
-//        facTmpFactC.setCodVendedor(1);
-//        facTmpFactC.setContCred("1");
-//        facTmpFactC.setDescuentos(BigInteger.ZERO);
-//        facTmpFactC.setEstado("G");
-//        FacTmpFactCPK facTmpFactCPK= new FacTmpFactCPK(entity.getInvMovimientoCabPK().getCodEmpresa(), 0, null);
-//        facTmpFactC.setFacTmpFactCPK(null);
-//        em.persist(facTmpFactC);
-//        em.getTransaction().commit();
+            super.create(entity.getInvMovimientoCab());
+            em.persist(entity.getFacTmpFactC());
+
+            Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).info("Actualizando...");
+            for (InvMovimientoDtll invMovimientoDtll : entity.getInvMovimientoCab().getInvMovimientoDtllList()) {
+                InvBodegaArtPK invBodegaArtPK = new InvBodegaArtPK();
+
+                Integer codArticulo = invMovimientoDtll.getInvArticulo().getInvArticuloPK().getCodArticulo();
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).info(codArticulo.toString());
+                invBodegaArtPK.setCodArticulo(codArticulo);
+
+                String codBodega = invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodBodega();
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).info(codBodega);
+                invBodegaArtPK.setCodBodega(codBodega);
+
+                String codEmpresa = invMovimientoDtll.getInvMovimientoDtllPK().getCodEmpresa();
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).info(codEmpresa);
+                invBodegaArtPK.setCodEmpresa(codEmpresa);
+
+                String codInventario = invMovimientoDtll.getInvBodegaArt().getInvInventario().getInvInventarioPK().getCodInventario();
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).info(codInventario);
+                invBodegaArtPK.setCodInventario(codInventario);
+
+                InvBodegaArt invBodegaArt = em.find(InvBodegaArt.class, invBodegaArtPK);
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).info(invBodegaArt.toString());
+
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).log(Level.INFO, "Cantidad: {0}", invMovimientoDtll.getCantidad());
+
+                Double antiguaExistencia = invBodegaArt.getExistencia().doubleValue();
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).log(Level.INFO, "Antigua Existencia: {0}", antiguaExistencia);
+
+                Double nuevaExistencia = antiguaExistencia - invMovimientoDtll.getCantidad().doubleValue();
+                Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).log(Level.INFO, "Nueva Existencia: {0}", nuevaExistencia);
+
+                if (nuevaExistencia >= 0) {
+                    invBodegaArt.setExistencia(new BigDecimal(nuevaExistencia));
+                    Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).log(Level.INFO, "Existencia actualizada.");
+                } else {
+                    throw new SQLException("Cantidad de articulo " + codArticulo + " superior a la disponible.");
+                }
+            }
+        } catch (SQLException se) {
+            Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).log(Level.SEVERE, se.getMessage());
+        }
+
     }
 
     @PUT

@@ -23,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -161,6 +162,13 @@ public class InvMovimientoCab implements Serializable {
     private InvTransacciones invTransacciones;
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "invMovimientoCab")
     private List<InvMovimientoDtll> invMovimientoDtllList;
+
+    @Transient
+    private Integer codVendedor;
+    @Transient
+    private GnrUsuarios nombreUsuario;
+    @Transient
+    private String razonSocial;
 
     public InvMovimientoCab() {
     }
@@ -481,6 +489,30 @@ public class InvMovimientoCab implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.InvMovimientoCab[ invMovimientoCabPK=" + invMovimientoCabPK + " ]";
+    }
+
+    public Integer getCodVendedor() {
+        return codVendedor;
+    }
+
+    public void setCodVendedor(Integer codVendedor) {
+        this.codVendedor = codVendedor;
+    }
+
+    public void setNombreUsuario(GnrUsuarios gnrUsuarios) {
+        this.nombreUsuario = gnrUsuarios;
+    }
+
+    public GnrUsuarios getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public String getRazonSocial() {
+        return razonSocial;
+    }
+
+    public void setRazonSocial(String razonSocial) {
+        this.razonSocial = razonSocial;
     }
 
 }

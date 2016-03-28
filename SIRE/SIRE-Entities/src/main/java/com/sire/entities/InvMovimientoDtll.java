@@ -128,6 +128,10 @@ public class InvMovimientoDtll implements Serializable {
     @Getter
     @Setter
     private int posicion;
+    @Transient
+    @Getter
+    @Setter
+    private InvUnidadAlternativa invUnidadAlternativa;
 
     public InvMovimientoDtll() {
     }

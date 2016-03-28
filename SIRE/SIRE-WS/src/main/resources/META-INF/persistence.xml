@@ -37,6 +37,8 @@
     <class>com.sire.entities.FacTmpFactD</class>
     <class>com.sire.entities.FacDescVol</class>
     <class>com.sire.entities.InvIva</class>
+    <class>com.sire.entities.CxcFormaPago</class>
+    <class>com.sire.entities.FacParametros</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="eclipselink.logging.level" value="FINE"/>

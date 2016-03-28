@@ -11,6 +11,12 @@ package com.sire.utils;
  */
 public class Round {
 
+    /**
+     *
+     * @param value
+     * @param places
+     * @return
+     */
     public static double round(double value, int places) {
         if (places < 0) {
             throw new IllegalArgumentException();
