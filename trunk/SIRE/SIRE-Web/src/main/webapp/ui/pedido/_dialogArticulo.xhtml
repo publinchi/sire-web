@@ -3,7 +3,8 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <p:dialog id="dialogArticulo" header="Artículo" widgetVar="dlg3" showEffect="pop">
+    <p:dialog id="dialogArticulo" header="Artículo" widgetVar="dlg3" 
+              showEffect="pop">
         <h:form id="formArticulo">
             <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
 
@@ -11,66 +12,79 @@
                 <p:outputLabel id="existencia" value="Existencia: #{articulosBean.existencia}" />
             </pm:field>
 
-            <pm:field>
-                <p:outputLabel for="unidadMedida" value="Unidad Medida:" />
-                <p:selectOneMenu id="unidadMedida" value="#{articulosBean.invMovimientoDtllSeleccionado.codUnidad}" >
-                    <f:selectItems value="#{inventariosBean.invUnidadAlternativas}" 
-                                   var="unidadAlternativa" 
-                                   itemLabel="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}" 
-                                   itemValue="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}"/>
-                    <p:ajax listener="#{articulosBean.loadPrecioUnitarioByUnidadMedida()}"/>
-                </p:selectOneMenu>
-            </pm:field>
+            <p:panelGrid columns="2" >
+                <pm:field>
+                    <p:outputLabel for="unidadMedida" value="Unidad Medida:" />
+                    <p:selectOneMenu id="unidadMedida" value="#{articulosBean.invMovimientoDtllSeleccionado.codUnidad}" >
+                        <f:selectItems value="#{inventariosBean.invUnidadAlternativas}" 
+                                       var="unidadAlternativa" 
+                                       itemLabel="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}" 
+                                       itemValue="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}"/>
+                        <p:ajax listener="#{articulosBean.loadPrecioUnitarioByUnidadMedida()}"/>
+                    </p:selectOneMenu>
+                </pm:field>
+                <pm:field>
+                    <p:outputLabel id="cantidadLabel" for="cantidad" 
+                                   value="Cantidad: #{articulosBean.cantidadExcedida}" 
+                                   style="color: #{articulosBean.colorCantidadExcedida}"/>
+                    <p:inputText id="cantidad" 
+                                 value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}" >
+                        <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
+                    </p:inputText>
+                </pm:field>
+            </p:panelGrid>
 
-            <pm:field>
-                <p:outputLabel id="cantidadLabel" for="cantidad" value="Cantidad: #{articulosBean.cantidadExedida}" />
-                <p:inputText id="cantidad" 
-                             value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}" >
-                    <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
-                </p:inputText>
-            </pm:field>
+            <p:panelGrid columns="2">
+                <pm:field>
+                    <p:outputLabel for="precioUnitario" value="Precio Unitario:" />
+                    <div class="remove-clear">
+                        <p:inputText id="precioUnitario"
+                                     value="#{articulosBean.invMovimientoDtllSeleccionado.costoUnitario}"
+                                     readonly="true"/>
+                    </div>
+                </pm:field>
+                <pm:field>
+                    <p:outputLabel for="descuento1" value="% de descuento1:" />
+                    <div class="remove-clear">
+                        <p:inputText id="descuento1" 
+                                     value="#{articulosBean.invArticuloSeleccionado.descuento}"
+                                     readonly="true"/>
+                    </div>
+                </pm:field>
+            </p:panelGrid>
 
-            <pm:field>
-                <p:outputLabel for="precioUnitario" value="Precio Unitario:" />
-                <p:inputText id="precioUnitario"
-                             value="#{articulosBean.invMovimientoDtllSeleccionado.costoUnitario}"
-                             disabled="true"/>
-            </pm:field>
-
-            <pm:field>
-                <p:outputLabel for="descuento1" value="% de descuento1:" />
-                <p:inputText id="descuento1" 
-                             value="#{articulosBean.invArticuloSeleccionado.descuento}"
-                             disabled="true"/>
-            </pm:field>
-
-            <pm:field>
-                <p:outputLabel for="totalRegistro" value="Total Registro:" />
-                <p:inputText id="totalRegistro"
-                             value="#{articulosBean.invMovimientoDtllSeleccionado.costoTotal}"
-                             disabled="true"/>
-            </pm:field>
-
-            <pm:field>
-                <p:outputLabel for="iva" value="IVA:" />
-                <p:inputText id="iva" 
-                             value="#{articulosBean.invArticuloSeleccionado.iva}"
-                             disabled="true"/>
-            </pm:field>
+            <p:panelGrid columns="2">
+                <pm:field>
+                    <p:outputLabel for="totalRegistro" value="Total Registro:" />
+                    <div class="remove-clear">
+                        <p:inputText id="totalRegistro"
+                                     value="#{articulosBean.invMovimientoDtllSeleccionado.costoTotal}"
+                                     readonly="true"/>
+                    </div>
+                </pm:field>
+                <pm:field>
+                    <p:outputLabel for="iva" value="IVA:" />
+                    <div class="remove-clear">
+                        <p:inputText id="iva" 
+                                     value="#{articulosBean.invArticuloSeleccionado.iva}"
+                                     readonly="true"/>
+                    </div>
+                </pm:field>
+            </p:panelGrid>
 
             <pm:field>
                 <p:outputLabel for="totalIva" value="Total + IVA:" />
-                <p:inputText id="totalIva" 
-                             value="#{articulosBean.invArticuloSeleccionado.totalPlusIVA}"
-                             disabled="true"/>
+                <div class="remove-clear">
+                    <p:inputText id="totalIva" 
+                                 value="#{articulosBean.invArticuloSeleccionado.totalPlusIVA}"
+                                 readonly="true"/>
+                </div>
             </pm:field>
-            <pm:content>
-                <p:commandButton id="botonAgregar"
-                                 value="Agregar" 
-                                 actionListener="#{articulosBean.agregarArticulo()}" 
-                                 disabled="#{articulosBean.agregarBloqueado}"
-                                 oncomplete="PF('dlg3').hide();"/>
-            </pm:content>
+            <p:commandButton id="botonAgregar"
+                             value="Agregar" 
+                             actionListener="#{articulosBean.agregarArticulo()}" 
+                             disabled="#{articulosBean.agregarBloqueado}"
+                             oncomplete="PF('dlg3').hide();"/>
         </h:form>
     </p:dialog>
 </html>

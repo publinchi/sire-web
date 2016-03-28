@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -41,6 +42,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrUsuarios.findByEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.estado = :estado"),
     @NamedQuery(name = "GnrUsuarios.findByFechaEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.fechaEstado = :fechaEstado")})
 public class GnrUsuarios implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
+    private List<FacParametros> facParametrosList;
     @OneToMany(mappedBy = "nombreUsuario")
     private List<FacTmpFactC> facTmpFactCList;
     @JoinTable(name = "GNR_USUA_CONT", joinColumns = {
@@ -198,6 +202,15 @@ public class GnrUsuarios implements Serializable {
 
     public void setFacTmpFactCList(List<FacTmpFactC> facTmpFactCList) {
         this.facTmpFactCList = facTmpFactCList;
+    }
+
+    @XmlTransient
+    public List<FacParametros> getFacParametrosList() {
+        return facParametrosList;
+    }
+
+    public void setFacParametrosList(List<FacParametros> facParametrosList) {
+        this.facParametrosList = facParametrosList;
     }
     
 }

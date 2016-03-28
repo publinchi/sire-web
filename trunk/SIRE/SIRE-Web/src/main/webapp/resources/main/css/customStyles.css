@@ -4,10 +4,10 @@
           box-shadow: #7D7D7D 8px 8px 8px;}
 
 .ui-datatable{-webkit-box-shadow: #7D7D7D 13px 13px 13px;
-               -moz-box-shadow: #7D7D7D 13px 13px 13px; 
-               /* box-shadow: #FFFFFF 13px 13px 13px; */
-               margin-top:10px;
-               opacity: 0.95;
+              -moz-box-shadow: #7D7D7D 13px 13px 13px; 
+              /* box-shadow: #FFFFFF 13px 13px 13px; */
+              margin-top:10px;
+              opacity: 0.95;
 }
 
 .tableWithOutStyles{-webkit-box-shadow: #7D7D7D 0px 0px 0px;
@@ -49,8 +49,8 @@
     max-width: 93%;
     height: 485px;
     width: 950px;
-/*    -webkit-box-shadow: 12px 12px 5px 2px #757575;
-box-shadow: 12px 12px 5px 2px #757575;*/
+    /*    -webkit-box-shadow: 12px 12px 5px 2px #757575;
+    box-shadow: 12px 12px 5px 2px #757575;*/
 }
 
 .amaLaVidaImage{
@@ -90,4 +90,12 @@ box-shadow: 12px 12px 5px 2px #757575;*/
     {
         background-position: top right;
     }
+}
+
+.remove-clear .ui-input-text a {
+    display: none;
+}
+
+.remove-clear .ui-input-has-clear {
+    padding-right: 0 !important;        
 }

@@ -11,4 +11,11 @@ package com.sire.exception;
  */
 public class EmptyException extends Exception {
 
+    /**
+     *
+     * @param message
+     */
+    public EmptyException(String message) {
+        super(message);
+    }
 }

@@ -4,33 +4,32 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+      xmlns:h="http://java.sun.com/jsf/html">
     <pm:field>
         <p:outputLabel for="fechaHora"  value="Fecha:" />
         <p:clock id="fechaHora" pattern="dd/MM/yyyy HH:mm:ss" mode="server" />
     </pm:field>
 
     <pm:field>
-        <p:outputLabel for="tipoPago" value="Tipo Pago:" />
-        <p:selectOneMenu id="tipoPago" value="#{articulosBean.invMovimientoCab.formaPago}">
-            <f:selectItem itemLabel="Seleccione Tipo" itemValue="" />
-            <f:selectItem itemLabel="CONTADO" itemValue="0" />
-            <f:selectItem itemLabel="CREDITO" itemValue="1" />
-        </p:selectOneMenu>
+        <h:form>
+            <p:outputLabel for="tipoPago" value="Tipo Pago:" />
+            <p:selectOneMenu id="tipoPago" value="#{articulosBean.formaPago}">
+                <f:selectItem itemLabel="Seleccione Forma Pago" itemValue="" />
+                <f:selectItems value="#{formaPagoBean.formaPagos}"  
+                               var="formaPago" 
+                               itemLabel="#{formaPago.descripcion}" 
+                               itemValue="#{formaPago.cxcFormaPagoPK.codPago}"/>
+                <p:ajax listener="#{articulosBean.loadTipoPago()}"/>
+            </p:selectOneMenu>
+        </h:form>
     </pm:field>
 
-    <pm:field>
-        <p:outputLabel for="ubicacion" value="Ubicación:" />
-        <p:commandButton id="btn" type="button" value="Ver Mapa" onclick="renderMap();
-                PF('gmapDialog').show()" />
-    </pm:field>
-
-    <pm:field>
-        <h:inputHidden id="lat" value="#{addMarkersView.lat}" />
-        <h:inputHidden id="lng" value="#{addMarkersView.lng}" />
-        <p:inputText id="ubicacion" value="#{mapaBean.ciudad}, #{mapaBean.direccion}" readonly="false"/>
-    </pm:field>
+    <!--    <pm:field>
+            <p:outputLabel for="ubicacion" value="Ubicación:" />
+            <p:commandButton id="btn" type="button" value="Ver Mapa" onclick="
+                    PF('gmapDialog').show();
+                    renderMap()" />
+        </pm:field>-->
 
     <pm:field>
         <p:outputLabel for="vendedor" value="Vendedor:" />
@@ -46,37 +45,89 @@
     <pm:field>
         <p:commandButton id="btn-cliente" value="Cliente" type="button"/>
     </pm:field>
+
+    <pm:field>
+        <p:outputLabel for="ubicacion" value="Ubicación:" />
+        <p:commandButton id="geolocalizar" type="button" 
+                         onclick="getLocation();" value="Geolocalizar"/>
+    </pm:field>
+    <pm:field>
+        <div class="remove-clear">
+            <p:inputText id="ubicacion" value="#{mapa.direccion}" 
+                         readonly="true" />
+        </div>
+    </pm:field>
+
+    <h:form id="formId">
+        <p:remoteCommand name="processLocation" 
+                         actionListener="#{mapa.processLocation()}"
+                         process="@this" partialSubmit="true" 
+                         update="pedido:accordionPanel:ubicacion"/>
+    </h:form>
+
     <p:overlayPanel id="overlayPanel" for="btn-cliente" widgetVar="pnlCliente" at="right" showEffect="overlay">
         <h2>Cliente</h2>
         <ui:include src="_cliente.xhtml" id="_cliente"/>
     </p:overlayPanel>
 
-    <pm:field>
-        <p:outputLabel for="stock" value="Stock:" />
-        <p:inputText id="stock" />
-    </pm:field>
+    <!--    <pm:field>
+            <p:outputLabel for="stock" value="Stock:" />
+            <p:inputText id="stock" />
+        </pm:field>-->
 
-    <p:dialog header="Clientes" widgetVar="dlg1" showEffect="pop">
+    <p:dialog header="Clientes" widgetVar="dlg1" showEffect="pop"
+              resizable="false" appendTo="@(body)">
         <h:form id="form">
             <p:outputLabel for="busca" value="Busca:" />
-            <h:panelGrid columns="2">
-                <p:inputText id="busca" placeholder="Buscar Cliente" type="search" value="${customers.input}"/>
-                <p:commandButton id="botonBuscar" icon="ui-icon-search" actionListener="${customers.findClientes}" update="@form:dataList"/>
+            <h:panelGrid columns="3">
+                <p:selectOneRadio id="modo" value="#{customers.modo}" 
+                                  columns="1" 
+                                  immediate="true">
+                    <f:selectItem itemLabel="Código" itemValue="c" />
+                    <f:selectItem itemLabel="Nombre" itemValue="n" />
+                    <p:ajax event="change" listener="#{customers.cambioModo}"
+                            update="@form"/>
+                </p:selectOneRadio>
+
+                <p:inputText id="busca" placeholder="Buscar Cliente" type="search" 
+                             value="${customers.input}"/>
+                <p:commandButton id="botonBuscar" icon="ui-icon-search" 
+                                 actionListener="${customers.findClientes}" 
+                                 update="@form"/>
             </h:panelGrid>
-            <p:dataList id="dataList" value="#{customers.clientes}" var="c" pt:data-inset="true">
-                <p:ajax event="tap" listener="#{customers.tapCliente}" update="pedido:accordionPanel:overlayPanel" oncomplete="PF('dlg1').hide();"/>
-                <h:outputText value="#{c.codCliente} - #{c.apellidos} #{c.nombres}" />
-            </p:dataList>
+            <p:dataTable id="dataList" var="c" 
+                         value="#{customers.clientes}" 
+                         selectionMode="single" reflow="false" rows="5" 
+                         paginator="true" 
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         paginatorPosition="bottom" 
+                         paginatorAlwaysVisible="false"
+                         rowKey="#{c.codCliente}" 
+                         tableStyleClass="ui-table-columntoggle"
+                         tableStyle="width:auto"
+                         rendered="#{customers.clientes.size() gt 0}">
+                <p:ajax event="tap" listener="#{customers.tapCliente}" 
+                        oncomplete="PF('dlg1').hide();" 
+                        update="pedido:accordionPanel:overlayPanel,pedido:accordionPanel:form" />
+                <p:column headerText="Código" priority="1">
+                    <h:outputText value="#{c.codCliente}" />
+                </p:column>
+                <p:column headerText="Apellidos Nombres" priority="1">
+                    <h:outputText value="#{c.apellidos} #{c.nombres}" />
+                </p:column>
+            </p:dataTable>
         </h:form>
     </p:dialog>
 
-    <p:dialog id="gmapDialog" widgetVar="gmapDialog" modal="true" style="width:100%;height:100%">
+    <p:dialog id="gmapDialog" widgetVar="gmapDialog" modal="true" 
+              style="width:100%;height:400px"
+              closeOnEscape="false" closable="false" >
         <p:gmap 
             id="gmap"
             center="41.381542, 2.122893"
             zoom="15" 
             type="ROADMAP" 
-            style="width: 100%;height: 400px" 
+            style="width:100%;height:400px" 
             mapTypeControl="true"
             navigationControl="true"
             widgetVar="gmap" 
@@ -85,7 +136,7 @@
         <h:form>
             <p:commandButton value="Mi Localización" 
                              actionListener="#{mapaBean.seleccionarLocalizacion}" 
-                             onclick="findMe()"
+                             onclick="findMe(); PF('gmapDialog').hide()"
                              update="pedido:accordionPanel:ubicacion"/>
         </h:form>
     </p:dialog>

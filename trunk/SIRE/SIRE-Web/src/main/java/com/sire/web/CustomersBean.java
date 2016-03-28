@@ -7,16 +7,21 @@ package com.sire.web;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.VCliente;
 import com.sire.rs.client.VClienteFacadeREST;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.ws.rs.ClientErrorException;
+import lombok.Getter;
+import lombok.Setter;
 import org.primefaces.event.SelectEvent;
 
 /**
@@ -28,16 +33,22 @@ import org.primefaces.event.SelectEvent;
 public class CustomersBean {
 
     @ManagedProperty("#{cliente}")
+    @Getter
+    @Setter
     private CustomerBean cliente;
+    @Getter
+    @Setter
     private List<VCliente> clientes;
     private final VClienteFacadeREST vClienteFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
-    private String input;
-    private static Logger logger;
+    @Getter
+    @Setter
+    private String input, modo = "c";
+    private static final Logger logger = Logger.getLogger(CustomersBean.class.getName());
 
     public CustomersBean() {
-        logger = Logger.getLogger(CustomersBean.class.getName());
+
         vClienteFacadeREST = new VClienteFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
@@ -53,16 +64,28 @@ public class CustomersBean {
         }.getType());
         cleanClientes();
         setClientes(list);
-        System.out.println("# clientes: " + clientes.size());
+        logger.log(Level.INFO, "# clientes: {0}", clientes.size());
     }
 
     public void findClientes() {
         logger.info("findClientes");
         String clientesString = null;
         try {
-            clientesString = vClienteFacadeREST.findByRazonSocial(String.class, input);
-            clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
-            }.getType());
+            if (modo.equals("n") && !input.isEmpty()) {
+                clientesString = vClienteFacadeREST.findByRazonSocial(String.class, input);
+                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                }.getType());
+            } else if (modo.equals("c") && !input.isEmpty()) {
+                try {
+                    clientesString = vClienteFacadeREST.find_JSON(String.class, input);
+                    clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                    }.getType());
+                } catch (JsonSyntaxException jse) {
+                    VCliente vcliente = gson.fromJson(clientesString, VCliente.class);
+                    clientes = new ArrayList<>();
+                    clientes.add(vcliente);
+                }
+            }
         } catch (ClientErrorException cee) {
             clientes = null;
         }
@@ -75,37 +98,22 @@ public class CustomersBean {
     }
 
     public void tapCliente(SelectEvent event) {
+        logger.info("tapCliente");
         VCliente vCliente = ((VCliente) event.getObject());
-        System.out.println("Cliente seleccionado: " + vCliente.getApellidos() + " " + vCliente.getNombres());
+        logger.log(Level.INFO, "Cliente seleccionado: {0} {1}", new Object[]{vCliente.getApellidos(), vCliente.getNombres()});
         cliente.setCliente(vCliente);
+
+        limpiar();
     }
 
-    public List<VCliente> getClientes() {
-        return clientes;
-    }
-
-    public void setClientes(List<VCliente> clientes) {
-        this.clientes = clientes;
-    }
-
-    public String getInput() {
-        return input;
-    }
-
-    public void setInput(String input) {
-        this.input = input;
-    }
-
-    public CustomerBean getCliente() {
-        return cliente;
-    }
-
-    public void setCliente(CustomerBean cliente) {
-        this.cliente = cliente;
+    public void cambioModo() {
+        limpiar();
     }
 
     public void limpiar() {
-        clientes.clear();
+        if (clientes != null) {
+            clientes.clear();
+        }
         input = null;
     }
 }

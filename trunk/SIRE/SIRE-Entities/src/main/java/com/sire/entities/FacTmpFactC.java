@@ -24,7 +24,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -125,7 +124,7 @@ public class FacTmpFactC implements Serializable {
     @JoinColumn(name = "NOMBRE_USUARIO", referencedColumnName = "NOMBRE_USUARIO")
     @ManyToOne
     private GnrUsuarios nombreUsuario;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "facTmpFactC")
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "facTmpFactC")
     private List<FacTmpFactD> facTmpFactDList;
 
     public FacTmpFactC() {
@@ -351,7 +350,7 @@ public class FacTmpFactC implements Serializable {
         this.nombreUsuario = nombreUsuario;
     }
 
-    @XmlTransient
+//    @XmlTransient
     public List<FacTmpFactD> getFacTmpFactDList() {
         return facTmpFactDList;
     }

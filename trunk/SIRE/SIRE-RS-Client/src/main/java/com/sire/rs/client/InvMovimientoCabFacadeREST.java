@@ -5,6 +5,8 @@
  */
 package com.sire.rs.client;
 
+import com.sire.entities.FacTmpFactC;
+import com.sire.entities.InvMovimientoCab;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -23,6 +25,7 @@ import javax.ws.rs.client.WebTarget;
  * @author pestupinan
  */
 public class InvMovimientoCabFacadeREST {
+
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:9080/SIRE-WS/webresources";
@@ -95,5 +98,5 @@ public class InvMovimientoCabFacadeREST {
     public void close() {
         client.close();
     }
-    
+
 }

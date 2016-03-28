@@ -11,7 +11,22 @@
         <f:event type="preRenderView" listener="#{securityMB.checkLogIn()}" />
     </f:metadata>
     <h:head>
-        <script src="http://maps.google.com/maps/api/js?v=3.22" type="text/javascript"></script>
+        <h:outputStylesheet name="main/css/customStyles.css" />
+        <script src="http://maps.google.com/maps/api/js?v=3.22" type="text/javascript" />
+        <script>
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    alert('Por favor activar GPS.');
+                }
+            }
+
+            function showPosition(position) {
+                processLocation([{name: 'lat', value: position.coords.latitude}, {name: 'lng', value: position.coords.longitude}]);
+            }
+        </script>
+
         <script type="text/javascript">
             var map;
             function renderMap() {
@@ -35,45 +50,63 @@
                             enableHighAccuracy: true
                         });
             }
-
         </script>
     </h:head>
 
     <h:body>
-
+        <h:outputStylesheet name="main/css/style.css" />
         <pm:page id="inicio">
-            <pm:header title="Inicio">
-            </pm:header>
-
-            <pm:content>
+            <pm:header title="Inicio" />
+            <pm:content style="background-image: url(#{resource['main/images/dipronor.png']});
+                        /*background-size: cover;*/
+                        /*background-repeat: no-repeat;*/
+                        background-color: transparent;
+                        /*filter:alpha(opacity=20);   works in IE 7 */
+                        /*opacity: 0.2;   works in Firefox */">
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="0" />
                 </ui:include>
-                <h:outputText value="Bienvenido, login exitoso." />
+                <ui:include src="inicio/_inicio.xhtml" />
             </pm:content>
+            <pm:footer>
+                <p:outputLabel value="SIRE, Copyright © 2015" style="text-align: center"/>
+            </pm:footer>
         </pm:page>
 
         <pm:page id="pedido">
-            <pm:header title="Pedido">
-            </pm:header>
-
-            <pm:content>
+            <pm:header title="Pedido"/>
+            <pm:content style="background-image: url(#{resource['main/images/dipronor.png']});
+                        /*background-size: cover;*/
+                        /*background-repeat: no-repeat;*/
+                        background-color: transparent;
+                        /*filter:alpha(opacity=20);   works in IE 7 */
+                        /*opacity: 0.2;   works in Firefox */">
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="1" />
                 </ui:include>
                 <ui:include src="pedido/_createPedido.xhtml" />
             </pm:content>
+            <pm:footer>
+                <p:outputLabel value="SIRE, Copyright © 2015" style="text-align: center"/>
+            </pm:footer>
         </pm:page>
 
-        <pm:page id="cobro">
+        <pm:page id="cobro" style="background-image: url(#{resource['main/images/dipronor.png']});
+                 /*background-size: cover;*/
+                 /*background-repeat: no-repeat;*/
+                 background-color: transparent;
+                 /*filter:alpha(opacity=20);   works in IE 7 */
+                 /*opacity: 0.2;   works in Firefox */">
             <pm:header title="Cobro">
             </pm:header>
-
             <pm:content>
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="2" />
                 </ui:include>
             </pm:content>
+            <pm:footer>
+                <p:outputLabel value="SIRE, Copyright © 2015" style="text-align: center"/>
+            </pm:footer>
         </pm:page>
 
     </h:body>

@@ -21,6 +21,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -64,14 +65,15 @@ public class UserManager {
         GnrUsuarioFacadeREST gnrUsuarioFacadeREST = new GnrUsuarioFacadeREST();
         List<GnrUsuarios> gnrUsuarios = gson.fromJson(gnrUsuarioFacadeREST.findAll_JSON(String.class),
                 new TypeToken<java.util.List<GnrUsuarios>>() {
-                }.getType());
+        }.getType());
         System.out.println(gnrUsuarios.size());
         for (GnrUsuarios gnrUsuario : gnrUsuarios) {
             if (gnrUsuario.getNombreUsuario().toUpperCase().equals(userName.toUpperCase())
                     && gnrUsuario.getClave().toUpperCase().equals(password.toUpperCase())) {
                 current = gnrUsuario;
                 FacesContext context = FacesContext.getCurrentInstance();
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Exitoso", "Bienvenido " + userName + "."));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Exitoso", "Bienvenido " + current.getNombreUsuario() + "."));
+                context.getExternalContext().getFlash().setKeepMessages(true);
                 try {
                     context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath() + "/ui/index.xhtml");
                 } catch (IOException ex) {
@@ -85,6 +87,7 @@ public class UserManager {
         context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Login Error", "Nombre de usuario o contraseña incorrectos"));
         userName = null;
         password = null;
+        RequestContext.getCurrentInstance().update("login:frmLogin:basic");
     }
 
     public boolean isLoggedIn() {
