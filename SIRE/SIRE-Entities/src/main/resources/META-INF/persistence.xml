@@ -4,6 +4,16 @@
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <class>com.sire.entities.FacParametros</class>
     <class>com.sire.entities.CxcFormaPago</class>
+    <class>com.sire.entities.CxcCheque</class>
+    <class>com.sire.entities.CxcPagoContado</class>
+    <class>com.sire.entities.CxcDocCobrar</class>
+    <class>com.sire.entities.BanBancos</class>
+    <class>com.sire.entities.FacTarCredito</class>
+    <class>com.sire.entities.CxcAbonoD</class>
+    <class>com.sire.entities.CxcAbonoC</class>
+    <class>com.sire.entities.CxcInforme</class>
+    <class>com.sire.entities.BanCtaCte</class>
+    <class>com.sire.entities.GnrUsuaMod</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:49161:XE"/>
       <property name="javax.persistence.jdbc.password" value="dipronor"/>

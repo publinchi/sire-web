@@ -71,7 +71,7 @@ public class InvMovimientoDtll implements Serializable {
     private BigInteger numPedido;
     @Basic(optional = false)
     @Column(name = "AUX_CANTIDAD")
-    private BigInteger auxCantidad;
+    private Double auxCantidad;
     @Basic(optional = false)
     @Column(name = "COSTO_TOTAL")
     private Double costoTotal;
@@ -140,7 +140,7 @@ public class InvMovimientoDtll implements Serializable {
         this.invMovimientoDtllPK = invMovimientoDtllPK;
     }
 
-    public InvMovimientoDtll(InvMovimientoDtllPK invMovimientoDtllPK, BigDecimal cantidad, BigInteger auxCantidad, Double costoTotal, Double costoUnitario, BigInteger valorCompra, BigDecimal porcDesc1, BigDecimal porcDesc2, BigDecimal porcentajeIva, BigDecimal descuento, BigDecimal porcDesc3) {
+    public InvMovimientoDtll(InvMovimientoDtllPK invMovimientoDtllPK, BigDecimal cantidad, Double auxCantidad, Double costoTotal, Double costoUnitario, BigInteger valorCompra, BigDecimal porcDesc1, BigDecimal porcDesc2, BigDecimal porcentajeIva, BigDecimal descuento, BigDecimal porcDesc3) {
         this.invMovimientoDtllPK = invMovimientoDtllPK;
         this.cantidad = cantidad;
         this.auxCantidad = auxCantidad;
@@ -190,11 +190,11 @@ public class InvMovimientoDtll implements Serializable {
         this.numPedido = numPedido;
     }
 
-    public BigInteger getAuxCantidad() {
+    public Double getAuxCantidad() {
         return auxCantidad;
     }
 
-    public void setAuxCantidad(BigInteger auxCantidad) {
+    public void setAuxCantidad(Double auxCantidad) {
         this.auxCantidad = auxCantidad;
     }
 

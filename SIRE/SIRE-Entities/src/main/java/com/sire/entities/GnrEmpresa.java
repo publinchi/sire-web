@@ -50,6 +50,12 @@ import javax.xml.bind.annotation.XmlTransient;
 public class GnrEmpresa implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<GnrUsuaMod> gnrUsuaModList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<FacTarCredito> facTarCreditoList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<InvIva> invIvaList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<FacTmpFactC> facTmpFactCList;
@@ -391,6 +397,24 @@ public class GnrEmpresa implements Serializable {
 
     public void setInvIvaList(List<InvIva> invIvaList) {
         this.invIvaList = invIvaList;
+    }
+
+    @XmlTransient
+    public List<FacTarCredito> getFacTarCreditoList() {
+        return facTarCreditoList;
+    }
+
+    public void setFacTarCreditoList(List<FacTarCredito> facTarCreditoList) {
+        this.facTarCreditoList = facTarCreditoList;
+    }
+
+    @XmlTransient
+    public List<GnrUsuaMod> getGnrUsuaModList() {
+        return gnrUsuaModList;
+    }
+
+    public void setGnrUsuaModList(List<GnrUsuaMod> gnrUsuaModList) {
+        this.gnrUsuaModList = gnrUsuaModList;
     }
     
 }

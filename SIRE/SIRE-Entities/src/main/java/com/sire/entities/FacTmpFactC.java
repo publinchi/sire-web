@@ -60,6 +60,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacTmpFactC.findByFechaEstado", query = "SELECT f FROM FacTmpFactC f WHERE f.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "FacTmpFactC.findByTotalFactura", query = "SELECT f FROM FacTmpFactC f WHERE f.totalFactura = :totalFactura")})
 public class FacTmpFactC implements Serializable {
+
+    @Column(name = "UBICACION_PEDIDO")
+    private String ubicacionPedido;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected FacTmpFactCPK facTmpFactCPK;
@@ -107,7 +110,7 @@ public class FacTmpFactC implements Serializable {
     private BigInteger recargos;
     @Basic(optional = false)
     @Column(name = "TOTAL_SIN_IVA")
-    private BigInteger totalSinIva;
+    private Double totalSinIva;
     @Column(name = "ESTADO")
     private String estado;
     @Basic(optional = false)
@@ -134,7 +137,7 @@ public class FacTmpFactC implements Serializable {
         this.facTmpFactCPK = facTmpFactCPK;
     }
 
-    public FacTmpFactC(FacTmpFactCPK facTmpFactCPK, BigDecimal porcComision, BigInteger valorDivisa, BigInteger descuentos, BigInteger otrDescuentos, BigInteger iva, BigInteger recargos, BigInteger totalSinIva, long totalConIva) {
+    public FacTmpFactC(FacTmpFactCPK facTmpFactCPK, BigDecimal porcComision, BigInteger valorDivisa, BigInteger descuentos, BigInteger otrDescuentos, BigInteger iva, BigInteger recargos, Double totalSinIva, long totalConIva) {
         this.facTmpFactCPK = facTmpFactCPK;
         this.porcComision = porcComision;
         this.valorDivisa = valorDivisa;
@@ -294,11 +297,11 @@ public class FacTmpFactC implements Serializable {
         this.recargos = recargos;
     }
 
-    public BigInteger getTotalSinIva() {
+    public Double getTotalSinIva() {
         return totalSinIva;
     }
 
-    public void setTotalSinIva(BigInteger totalSinIva) {
+    public void setTotalSinIva(Double totalSinIva) {
         this.totalSinIva = totalSinIva;
     }
 
@@ -383,5 +386,13 @@ public class FacTmpFactC implements Serializable {
     public String toString() {
         return "com.sire.entities.FacTmpFactC[ facTmpFactCPK=" + facTmpFactCPK + " ]";
     }
-    
+
+    public String getUbicacionPedido() {
+        return ubicacionPedido;
+    }
+
+    public void setUbicacionPedido(String ubicacionPedido) {
+        this.ubicacionPedido = ubicacionPedido;
+    }
+
 }
