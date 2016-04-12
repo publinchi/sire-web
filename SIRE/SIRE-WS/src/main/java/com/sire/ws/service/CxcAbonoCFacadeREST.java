@@ -5,8 +5,8 @@
  */
 package com.sire.ws.service;
 
-import com.sire.entities.CxcZona;
-import com.sire.entities.CxcZonaPK;
+import com.sire.entities.CxcAbonoC;
+import com.sire.entities.CxcAbonoCPK;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,77 +27,81 @@ import javax.ws.rs.core.PathSegment;
  * @author publio
  */
 @Stateless
-@Path("com.sire.entities.cxczona")
-public class CxcZonaFacadeREST extends AbstractFacade<CxcZona> {
+@Path("com.sire.entities.cxcabonoc")
+public class CxcAbonoCFacadeREST extends AbstractFacade<CxcAbonoC> {
 
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
-    private CxcZonaPK getPrimaryKey(PathSegment pathSegment) {
+    private CxcAbonoCPK getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;codEmpresa=codEmpresaValue;codZona=codZonaValue'.
+         * URI path part is supposed to be in form of 'somePath;codEmpresa=codEmpresaValue;codDocumento=codDocumentoValue;numAbono=numAbonoValue'.
          * Here 'somePath' is a result of getPath() method invocation and
          * it is ignored in the following code.
          * Matrix parameters are used as field names to build a primary key instance.
          */
-        com.sire.entities.CxcZonaPK key = new com.sire.entities.CxcZonaPK();
+        com.sire.entities.CxcAbonoCPK key = new com.sire.entities.CxcAbonoCPK();
         javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
         java.util.List<String> codEmpresa = map.get("codEmpresa");
         if (codEmpresa != null && !codEmpresa.isEmpty()) {
             key.setCodEmpresa(codEmpresa.get(0));
         }
-        java.util.List<String> codZona = map.get("codZona");
-        if (codZona != null && !codZona.isEmpty()) {
-            key.setCodZona(codZona.get(0));
+        java.util.List<String> codDocumento = map.get("codDocumento");
+        if (codDocumento != null && !codDocumento.isEmpty()) {
+            key.setCodDocumento(codDocumento.get(0));
+        }
+        java.util.List<String> numAbono = map.get("numAbono");
+        if (numAbono != null && !numAbono.isEmpty()) {
+            key.setNumAbono(new java.math.BigInteger(numAbono.get(0)));
         }
         return key;
     }
 
-    public CxcZonaFacadeREST() {
-        super(CxcZona.class);
+    public CxcAbonoCFacadeREST() {
+        super(CxcAbonoC.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(CxcZona entity) {
+    public void create(CxcAbonoC entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, CxcZona entity) {
+    public void edit(@PathParam("id") PathSegment id, CxcAbonoC entity) {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
-        com.sire.entities.CxcZonaPK key = getPrimaryKey(id);
+        com.sire.entities.CxcAbonoCPK key = getPrimaryKey(id);
         super.remove(super.find(key));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public CxcZona find(@PathParam("id") PathSegment id) {
-        com.sire.entities.CxcZonaPK key = getPrimaryKey(id);
+    public CxcAbonoC find(@PathParam("id") PathSegment id) {
+        com.sire.entities.CxcAbonoCPK key = getPrimaryKey(id);
         return super.find(key);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<CxcZona> findAll() {
+    public List<CxcAbonoC> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<CxcZona> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<CxcAbonoC> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

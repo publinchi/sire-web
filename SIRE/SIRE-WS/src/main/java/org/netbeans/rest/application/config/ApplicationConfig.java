@@ -29,9 +29,15 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
+        resources.add(com.sire.ws.service.BanBancosFacadeREST.class);
+        resources.add(com.sire.ws.service.BanCtaCteFacadeREST.class);
+        resources.add(com.sire.ws.service.CxcAbonoCFacadeREST.class);
+        resources.add(com.sire.ws.service.CxcAbonoDFacadeREST.class);
         resources.add(com.sire.ws.service.CxcClaseClienteFacadeREST.class);
         resources.add(com.sire.ws.service.CxcClienteFacadeREST.class);
+        resources.add(com.sire.ws.service.CxcDocCobrarFacadeREST.class);
         resources.add(com.sire.ws.service.CxcFormaPagoFacadeREST.class);
+        resources.add(com.sire.ws.service.CxcInformeFacadeREST.class);
         resources.add(com.sire.ws.service.CxcSectorFacadeREST.class);
         resources.add(com.sire.ws.service.CxcZonaFacadeREST.class);
         resources.add(com.sire.ws.service.FacCatalogoPrecioCFacadeREST.class);
@@ -43,6 +49,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.GnrEmpresaFacadeREST.class);
         resources.add(com.sire.ws.service.GnrModuloDocFacadeREST.class);
         resources.add(com.sire.ws.service.GnrPersonaFacadeREST.class);
+        resources.add(com.sire.ws.service.GnrUsuaModFacadeREST.class);
         resources.add(com.sire.ws.service.GnrUsuariosFacadeREST.class);
         resources.add(com.sire.ws.service.InvArticuloFacadeREST.class);
         resources.add(com.sire.ws.service.InvBodegaArtFacadeREST.class);
