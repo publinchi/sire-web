@@ -1,0 +1,45 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <p:dialog id="dialogCheques" header="Cheque:" widgetVar="dialogCheques" 
+              showEffect="pop">
+        <h:form id="chequesForm">
+            <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+            <pm:field>
+                <p:outputLabel value="Banco:"/>
+                <p:selectOneMenu id="banco" value="#{cxcDocCobrarBean.codBanco}">
+                    <f:selectItem itemLabel="Seleccione Banco" itemValue="" />
+                    <f:selectItems value="#{bancosBean.bancos}"  
+                                   var="banco" 
+                                   itemLabel="#{banco.descripcion}" 
+                                   itemValue="#{banco.banBancosPK.codBanco}"/>
+                </p:selectOneMenu>
+            </pm:field>
+            <pm:field>
+                <p:outputLabel value="Número de cuenta:"/>
+                <p:inputText value="#{cxcDocCobrarBean.numCuenta}"/>
+            </pm:field>
+            <pm:field>
+                <p:outputLabel value="Número de cheque:"/>
+                <p:inputText value="#{cxcDocCobrarBean.numCheque}"/>
+            </pm:field>
+            <pm:field>
+                <p:outputLabel value="Valor:"/>
+                <p:inputText value="#{cxcDocCobrarBean.valorCheque}">
+                    <p:ajax listener="#{cxcDocCobrarBean.calcularCheques()}" />
+                </p:inputText>
+            </pm:field>
+            <pm:field>
+                <p:outputLabel value="Fecha:"/>
+                <p:calendar value="#{cxcDocCobrarBean.fechaCheque}" mode="inline" />
+            </pm:field>
+            <p:commandButton id="agregarChequeButton" value="Agregar" action="#{cxcDocCobrarBean.agregarCheque()}" 
+                             oncomplete="PF('dialogCheques').hide();"
+                             update="@form"
+                             disabled="#{cxcDocCobrarBean.botonAgegarChequeBloqueado}"/>
+        </h:form>
+    </p:dialog>
+</html>

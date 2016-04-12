@@ -9,7 +9,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.GnrEmpresa;
+import com.sire.entities.GnrUsuaMod;
 import com.sire.entities.GnrUsuarios;
+import com.sire.rs.client.GnrUsuaModFacadeREST;
 import com.sire.rs.client.GnrUsuarioFacadeREST;
 import java.io.IOException;
 import java.util.List;
@@ -45,6 +47,14 @@ public class UserManager {
     @Setter
     private int activeindex;
     private static Logger logger;
+    @Getter
+    @Setter
+    private List<GnrUsuaMod> gnrUsuaMods;
+
+    private final static String PEDIDOS_Y_DESPACHOS = "04";
+    private final static String CUENTAS_POR_COBRAR = "06";
+    @Getter
+    private boolean pedidoVisible = false, cobroVisible = false;
 
     public UserManager() {
         logger = Logger.getLogger(UserManager.class.getName());
@@ -75,6 +85,7 @@ public class UserManager {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Exitoso", "Bienvenido " + current.getNombreUsuario() + "."));
                 context.getExternalContext().getFlash().setKeepMessages(true);
                 try {
+                    loadAuthorizedModules();
                     context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath() + "/ui/index.xhtml");
                 } catch (IOException ex) {
                     Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
@@ -91,13 +102,39 @@ public class UserManager {
     }
 
     public boolean isLoggedIn() {
-        Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "Cheking logged in");
+        Logger.getLogger(UserManager.class.getName()).log(Level.INFO, "Cheking logged in");
         return current != null;
     }
 
     public String logout() {
+        gnrUsuaMods = null;
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index?faces-redirect=true";
     }
 
+    private void loadAuthorizedModules() {
+        if (gnrUsuaMods == null) {
+            GnrUsuaModFacadeREST gnrUsuaModFacadeREST = new GnrUsuaModFacadeREST();
+            String gnrUsuaModsString = gnrUsuaModFacadeREST.findByNombreUsuario(String.class, userName.toUpperCase());
+            gnrUsuaMods = gson.fromJson(gnrUsuaModsString,
+                    new TypeToken<java.util.List<GnrUsuaMod>>() {
+            }.getType());
+
+            checkPermission();
+        }
+    }
+
+    private void checkPermission() {
+        logger.info("gnrUsuaMods size: " + gnrUsuaMods.size());
+
+        for (GnrUsuaMod gnrUsuaMod : gnrUsuaMods) {
+            if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(PEDIDOS_Y_DESPACHOS)) {
+                pedidoVisible = true;
+                logger.info("pedidoVisible: " + pedidoVisible);
+            } else if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(CUENTAS_POR_COBRAR)) {
+                cobroVisible = true;
+                logger.info("cobroVisible: " + cobroVisible);
+            }
+        }
+    }
 }
