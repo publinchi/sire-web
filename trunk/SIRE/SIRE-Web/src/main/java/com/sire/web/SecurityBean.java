@@ -12,6 +12,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.RequestScoped;
 import javax.faces.context.FacesContext;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
@@ -21,6 +23,9 @@ import javax.faces.context.FacesContext;
 @RequestScoped
 public class SecurityBean {
 
+    private static Logger logger = Logger.getLogger(SecurityBean.class.getName());
+    @Getter
+    @Setter
     @ManagedProperty(value = "#{user}")
     private UserManager userManager;
     String loginURL = "/ui/login.xhtml";
@@ -37,13 +42,5 @@ public class SecurityBean {
         } else {
             Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "Autorizado");
         }
-    }
-
-    public UserManager getUserManager() {
-        return userManager;
-    }
-
-    public void setUserManager(UserManager userManager) {
-        this.userManager = userManager;
     }
 }

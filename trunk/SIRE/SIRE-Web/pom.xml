@@ -77,6 +77,16 @@
             <artifactId>google-maps-services</artifactId>
             <version>0.1.11</version>
         </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>1.9.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.primefaces.extensions</groupId>
+            <artifactId>primefaces-extensions</artifactId>
+            <version>4.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>

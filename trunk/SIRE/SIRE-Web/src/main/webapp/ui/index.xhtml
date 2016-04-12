@@ -57,12 +57,7 @@
         <h:outputStylesheet name="main/css/style.css" />
         <pm:page id="inicio">
             <pm:header title="Inicio" />
-            <pm:content style="background-image: url(#{resource['main/images/dipronor.png']});
-                        /*background-size: cover;*/
-                        /*background-repeat: no-repeat;*/
-                        background-color: transparent;
-                        /*filter:alpha(opacity=20);   works in IE 7 */
-                        /*opacity: 0.2;   works in Firefox */">
+            <pm:content>
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="0" />
                 </ui:include>
@@ -75,12 +70,7 @@
 
         <pm:page id="pedido">
             <pm:header title="Pedido"/>
-            <pm:content style="background-image: url(#{resource['main/images/dipronor.png']});
-                        /*background-size: cover;*/
-                        /*background-repeat: no-repeat;*/
-                        background-color: transparent;
-                        /*filter:alpha(opacity=20);   works in IE 7 */
-                        /*opacity: 0.2;   works in Firefox */">
+            <pm:content>
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="1" />
                 </ui:include>
@@ -91,18 +81,14 @@
             </pm:footer>
         </pm:page>
 
-        <pm:page id="cobro" style="background-image: url(#{resource['main/images/dipronor.png']});
-                 /*background-size: cover;*/
-                 /*background-repeat: no-repeat;*/
-                 background-color: transparent;
-                 /*filter:alpha(opacity=20);   works in IE 7 */
-                 /*opacity: 0.2;   works in Firefox */">
+        <pm:page id="cobro">
             <pm:header title="Cobro">
             </pm:header>
             <pm:content>
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="2" />
                 </ui:include>
+                <ui:include src="cobro/_createCobro.xhtml" />
             </pm:content>
             <pm:footer>
                 <p:outputLabel value="SIRE, Copyright © 2015" style="text-align: center"/>
