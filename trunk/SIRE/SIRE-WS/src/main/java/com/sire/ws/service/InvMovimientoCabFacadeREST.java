@@ -105,7 +105,7 @@ public class InvMovimientoCabFacadeREST extends AbstractFacade<InvMovimientoCab>
                 Double antiguaExistencia = invBodegaArt.getExistencia().doubleValue();
                 Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).log(Level.INFO, "Antigua Existencia: {0}", antiguaExistencia);
 
-                Double nuevaExistencia = antiguaExistencia - invMovimientoDtll.getCantidad().doubleValue();
+                Double nuevaExistencia = antiguaExistencia - invMovimientoDtll.getAuxCantidad();
                 Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).log(Level.INFO, "Nueva Existencia: {0}", nuevaExistencia);
 
                 if (nuevaExistencia >= 0) {
