@@ -51,12 +51,13 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacTmpFactD.findByEntregado", query = "SELECT f FROM FacTmpFactD f WHERE f.entregado = :entregado"),
     @NamedQuery(name = "FacTmpFactD.findByDetalle", query = "SELECT f FROM FacTmpFactD f WHERE f.detalle = :detalle")})
 public class FacTmpFactD implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected FacTmpFactDPK facTmpFactDPK;
     @Basic(optional = false)
     @Column(name = "CANTIDAD")
-    private BigInteger cantidad;
+    private Double cantidad;
     @Column(name = "COD_BODEGA")
     private String codBodega;
     @Column(name = "COD_INVENTARIO")
@@ -68,9 +69,9 @@ public class FacTmpFactD implements Serializable {
     private String operador;
     @Basic(optional = false)
     @Column(name = "PRECIO_UNITARIO")
-    private BigInteger precioUnitario;
+    private Double precioUnitario;
     @Column(name = "AUX_CANTIDAD")
-    private BigInteger auxCantidad;
+    private Double auxCantidad;
     @Column(name = "PORCENTAJE_IVA")
     private BigDecimal porcentajeIva;
     @Basic(optional = false)
@@ -85,7 +86,7 @@ public class FacTmpFactD implements Serializable {
     @Column(name = "PORC_DESC_PAGO")
     private BigDecimal porcDescPago;
     @Column(name = "TOTAL_REG")
-    private BigInteger totalReg;
+    private Double totalReg;
     @Column(name = "PROMOCION")
     private String promocion;
     @Column(name = "PORC_DESC_PROM")
@@ -114,7 +115,7 @@ public class FacTmpFactD implements Serializable {
         this.facTmpFactDPK = facTmpFactDPK;
     }
 
-    public FacTmpFactD(FacTmpFactDPK facTmpFactDPK, BigInteger cantidad, BigInteger precioUnitario, BigDecimal porcDescVol, BigInteger cantidadDevuelta, BigDecimal porcDescPago) {
+    public FacTmpFactD(FacTmpFactDPK facTmpFactDPK, Double cantidad, Double precioUnitario, BigDecimal porcDescVol, BigInteger cantidadDevuelta, BigDecimal porcDescPago) {
         this.facTmpFactDPK = facTmpFactDPK;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
@@ -135,11 +136,11 @@ public class FacTmpFactD implements Serializable {
         this.facTmpFactDPK = facTmpFactDPK;
     }
 
-    public BigInteger getCantidad() {
+    public Double getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(BigInteger cantidad) {
+    public void setCantidad(Double cantidad) {
         this.cantidad = cantidad;
     }
 
@@ -175,19 +176,19 @@ public class FacTmpFactD implements Serializable {
         this.operador = operador;
     }
 
-    public BigInteger getPrecioUnitario() {
+    public Double getPrecioUnitario() {
         return precioUnitario;
     }
 
-    public void setPrecioUnitario(BigInteger precioUnitario) {
+    public void setPrecioUnitario(Double precioUnitario) {
         this.precioUnitario = precioUnitario;
     }
 
-    public BigInteger getAuxCantidad() {
+    public Double getAuxCantidad() {
         return auxCantidad;
     }
 
-    public void setAuxCantidad(BigInteger auxCantidad) {
+    public void setAuxCantidad(Double auxCantidad) {
         this.auxCantidad = auxCantidad;
     }
 
@@ -231,11 +232,11 @@ public class FacTmpFactD implements Serializable {
         this.porcDescPago = porcDescPago;
     }
 
-    public BigInteger getTotalReg() {
+    public Double getTotalReg() {
         return totalReg;
     }
 
-    public void setTotalReg(BigInteger totalReg) {
+    public void setTotalReg(Double totalReg) {
         this.totalReg = totalReg;
     }
 
@@ -311,5 +312,5 @@ public class FacTmpFactD implements Serializable {
     public String toString() {
         return "com.sire.entities.FacTmpFactD[ facTmpFactDPK=" + facTmpFactDPK + " ]";
     }
-    
+
 }

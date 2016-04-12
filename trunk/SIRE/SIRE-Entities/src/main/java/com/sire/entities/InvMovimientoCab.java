@@ -85,7 +85,7 @@ public class InvMovimientoCab implements Serializable {
     private String estado;
     @Basic(optional = false)
     @Column(name = "TOTAL_DOCUMENTO")
-    private BigInteger totalDocumento;
+    private Double totalDocumento;
     @Basic(optional = false)
     @Column(name = "SUBTOTAL")
     private Double subtotal;
@@ -122,9 +122,9 @@ public class InvMovimientoCab implements Serializable {
     @Column(name = "NRO_CUOTAS")
     private Integer nroCuotas;
     @Column(name = "T_CON_IVA")
-    private BigInteger tConIva;
+    private Double tConIva;
     @Column(name = "T_SIN_IVA")
-    private BigInteger tSinIva;
+    private Double tSinIva;
     @Column(name = "AUTO_CONT_DOC")
     private String autoContDoc;
     @Column(name = "AUTO_CONT_IMPR_DOC")
@@ -177,7 +177,7 @@ public class InvMovimientoCab implements Serializable {
         this.invMovimientoCabPK = invMovimientoCabPK;
     }
 
-    public InvMovimientoCab(InvMovimientoCabPK invMovimientoCabPK, BigInteger totalDocumento, Double subtotal, BigInteger descuentos, BigInteger otrDescuentos, BigInteger iva, BigInteger recargos, BigInteger fletes, BigInteger otrCargos) {
+    public InvMovimientoCab(InvMovimientoCabPK invMovimientoCabPK, Double totalDocumento, Double subtotal, BigInteger descuentos, BigInteger otrDescuentos, BigInteger iva, BigInteger recargos, BigInteger fletes, BigInteger otrCargos) {
         this.invMovimientoCabPK = invMovimientoCabPK;
         this.totalDocumento = totalDocumento;
         this.subtotal = subtotal;
@@ -249,11 +249,11 @@ public class InvMovimientoCab implements Serializable {
         this.estado = estado;
     }
 
-    public BigInteger getTotalDocumento() {
+    public Double getTotalDocumento() {
         return totalDocumento;
     }
 
-    public void setTotalDocumento(BigInteger totalDocumento) {
+    public void setTotalDocumento(Double totalDocumento) {
         this.totalDocumento = totalDocumento;
     }
 
@@ -361,19 +361,19 @@ public class InvMovimientoCab implements Serializable {
         this.nroCuotas = nroCuotas;
     }
 
-    public BigInteger getTConIva() {
+    public Double getTConIva() {
         return tConIva;
     }
 
-    public void setTConIva(BigInteger tConIva) {
+    public void setTConIva(Double tConIva) {
         this.tConIva = tConIva;
     }
 
-    public BigInteger getTSinIva() {
+    public Double getTSinIva() {
         return tSinIva;
     }
 
-    public void setTSinIva(BigInteger tSinIva) {
+    public void setTSinIva(Double tSinIva) {
         this.tSinIva = tSinIva;
     }
 

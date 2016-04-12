@@ -55,6 +55,16 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CxcCliente.findByLocalidad", query = "SELECT c FROM CxcCliente c WHERE c.localidad = :localidad"),
     @NamedQuery(name = "CxcCliente.findByCalificacion", query = "SELECT c FROM CxcCliente c WHERE c.calificacion = :calificacion")})
 public class CxcCliente implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcAbonoC> cxcAbonoCList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcCheque> cxcChequeList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcDocCobrar> cxcDocCobrarList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcPagoContado> cxcPagoContadoList;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected CxcClientePK cxcClientePK;
@@ -341,6 +351,42 @@ public class CxcCliente implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.CxcCliente[ cxcClientePK=" + cxcClientePK + " ]";
+    }
+
+    @XmlTransient
+    public List<CxcCheque> getCxcChequeList() {
+        return cxcChequeList;
+    }
+
+    public void setCxcChequeList(List<CxcCheque> cxcChequeList) {
+        this.cxcChequeList = cxcChequeList;
+    }
+
+    @XmlTransient
+    public List<CxcDocCobrar> getCxcDocCobrarList() {
+        return cxcDocCobrarList;
+    }
+
+    public void setCxcDocCobrarList(List<CxcDocCobrar> cxcDocCobrarList) {
+        this.cxcDocCobrarList = cxcDocCobrarList;
+    }
+
+    @XmlTransient
+    public List<CxcPagoContado> getCxcPagoContadoList() {
+        return cxcPagoContadoList;
+    }
+
+    public void setCxcPagoContadoList(List<CxcPagoContado> cxcPagoContadoList) {
+        this.cxcPagoContadoList = cxcPagoContadoList;
+    }
+
+    @XmlTransient
+    public List<CxcAbonoC> getCxcAbonoCList() {
+        return cxcAbonoCList;
+    }
+
+    public void setCxcAbonoCList(List<CxcAbonoC> cxcAbonoCList) {
+        this.cxcAbonoCList = cxcAbonoCList;
     }
     
 }

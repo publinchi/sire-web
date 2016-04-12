@@ -44,6 +44,12 @@ import javax.xml.bind.annotation.XmlTransient;
 public class GnrUsuarios implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
+    private List<GnrUsuaMod> gnrUsuaModList;
+
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<CxcAbonoC> cxcAbonoCList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
     private List<FacParametros> facParametrosList;
     @OneToMany(mappedBy = "nombreUsuario")
     private List<FacTmpFactC> facTmpFactCList;
@@ -211,6 +217,24 @@ public class GnrUsuarios implements Serializable {
 
     public void setFacParametrosList(List<FacParametros> facParametrosList) {
         this.facParametrosList = facParametrosList;
+    }
+
+    @XmlTransient
+    public List<CxcAbonoC> getCxcAbonoCList() {
+        return cxcAbonoCList;
+    }
+
+    public void setCxcAbonoCList(List<CxcAbonoC> cxcAbonoCList) {
+        this.cxcAbonoCList = cxcAbonoCList;
+    }
+
+    @XmlTransient
+    public List<GnrUsuaMod> getGnrUsuaModList() {
+        return gnrUsuaModList;
+    }
+
+    public void setGnrUsuaModList(List<GnrUsuaMod> gnrUsuaModList) {
+        this.gnrUsuaModList = gnrUsuaModList;
     }
     
 }
