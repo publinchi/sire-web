@@ -2,7 +2,6 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:pm="http://primefaces.org/mobile"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:pe="http://primefaces.org/ui/extensions">
     <p:dialog id="dialogDocCobrar" header="Doc. Cobrar" widgetVar="dialogDocCobrar" 
               showEffect="pop">
@@ -25,7 +24,9 @@
                              value="Aceptar" 
                              actionListener="#{cxcDocCobrarBean.calcularSaldo()}" 
                              oncomplete="PF('dialogDocCobrar').hide();"
-                             update="cobro:accordionPanel:cxcDocCobrarDataTable"/>
+                             update="cobro:accordionPanel:cxcDocCobrarDataTable
+                             cobro:accordionPanel:formaPagoForm:pagoTotalLabel
+                             cobro:accordionPanel:formaPagoForm:diferenciaLabel"/>
         </h:form>
     </p:dialog>
 </html>
