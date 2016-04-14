@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pm="http://primefaces.org/mobile">
+    <pm:field>
+        <p:outputLabel for="cliente" value="Cliente:" />
+        <h:panelGrid columns="2" columnClasses="verticalAlignMiddle">
+            <p:commandButton id="cliente" 
+                             value="Buscar Cliente" 
+                             onclick="PF('clienteDialog').show();" 
+                             type="button" 
+                             styleClass="ui-btn-inline"/>    
+            <p:commandButton id="#{buscarButton}" value="Ver Cliente" type="button" 
+                             styleClass="ui-btn-inline"/>
+        </h:panelGrid>
+    </pm:field>
+</html>
