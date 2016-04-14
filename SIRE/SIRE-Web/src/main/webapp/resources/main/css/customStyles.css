@@ -99,3 +99,14 @@
 .remove-clear .ui-input-has-clear {
     padding-right: 0 !important;        
 }
+
+.ui-widget {
+    font-size: 100% !important;
+}
+.ui-widget .ui-widget {
+    font-size: 100% !important;
+}
+
+.verticalAlignMiddle {
+    vertical-align: middle;
+}
