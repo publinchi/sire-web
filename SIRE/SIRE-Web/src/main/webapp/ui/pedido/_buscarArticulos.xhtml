@@ -25,7 +25,8 @@
                          rowKey="#{articulo.invArticuloPK}" 
                          tableStyleClass="ui-table-columntoggle"
                          tableStyle="width:auto"
-                         rendered="#{articulosBean.articulos.size() gt 0}">
+                         rendered="#{articulosBean.articulos.size() gt 0}"
+                         style="font-size:9.5px;">
                 <p:ajax event="rowSelect" listener="#{articulosBean.tapArticulo}" 
                         update="@form,pedido:accordionPanel:formTablaArticulos" />
                 <p:column headerText="Código" priority="1">
@@ -34,13 +35,13 @@
                 <p:column headerText="Nombre" priority="1">
                     <h:outputText value="#{articulo.nombreArticulo}" />
                 </p:column>
-                <p:column headerText="Unidad" priority="2">
+                <p:column headerText="Unidad" priority="1">
                     <h:outputText value="#{articulo.unidad}" />
                 </p:column>
-                <p:column headerText="Precio" priority="2">
+                <p:column headerText="Precio" priority="1">
                     <h:outputText value="&#36;#{articulo.precio}" />
                 </p:column>
-                <p:column headerText="Existencia" priority="2">
+                <p:column headerText="Existencia" priority="1">
                     <h:outputText value="(#{articulo.existencia})" />
                 </p:column>
             </p:dataTable>

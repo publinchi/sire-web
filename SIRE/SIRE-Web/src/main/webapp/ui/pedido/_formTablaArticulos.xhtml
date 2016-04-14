@@ -13,7 +13,8 @@
                          rowKey="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}"
                          tableStyleClass="ui-table-columntoggle"
                          tableStyle="width:auto"
-                         rendered="#{articulosBean.invMovimientoDtlls.size() gt 0}">
+                         rendered="#{articulosBean.invMovimientoDtlls.size() gt 0}"
+                         style="font-size:9px;">
                 <p:ajax event="tap" listener="#{articulosBean.tapArticuloFinal}" 
                         update="@form:tablaArticulos,pedido:accordionPanel:dialogArticulo" 
                         oncomplete="PF('dlg3').show();"/>
@@ -28,10 +29,10 @@
                 <p:column headerText="Cant." priority="1">
                     <h:outputText value="#{invMovimientoDtll.cantidad}" />
                 </p:column>
-                <p:column headerText="P. Unit." priority="2">
+                <p:column headerText="P. Unit." priority="1">
                     <h:outputText value="&#36;#{invMovimientoDtll.costoUnitario}" />
                 </p:column>
-                <p:column headerText="% Desc." priority="2">
+                <p:column headerText="% Desc." priority="1">
                     <h:outputText value="#{invMovimientoDtll.porcDesc1}" />
                 </p:column>
                 <p:column headerText="Tot. Reg." priority="1">
@@ -39,18 +40,12 @@
                 </p:column>
 
                 <p:columnGroup type="footer">
-                    <p:row>
-                        <p:column colspan="3" style="text-align:right" footerText="SubTotal:" />
-                        <p:column footerText="&#36;#{articulosBean.subTotal}" />
-                    </p:row>
-                    <p:row>
-                        <p:column colspan="3" style="text-align:right" footerText="IVA:" />
-                        <p:column footerText="&#36;#{articulosBean.iva}" />
-                    </p:row>
-                    <p:row>
-                        <p:column colspan="3" style="text-align:right" footerText="Total:" />
-                        <p:column footerText="&#36;#{articulosBean.total}" />
-                    </p:row>
+                    <p:column style="text-align:right" footerText="SubTotal:" />
+                    <p:column footerText="&#36;#{articulosBean.subTotal}" />
+                    <p:column style="text-align:right" footerText="IVA:" />
+                    <p:column footerText="&#36;#{articulosBean.iva}" />
+                    <p:column style="text-align:right" footerText="Total:" />
+                    <p:column footerText="&#36;#{articulosBean.total}" />
                 </p:columnGroup>
             </p:dataTable>
 
