@@ -170,7 +170,6 @@ public class CxcDocCobrarBean {
         calcularFormaPago();
         capital = null;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
-        RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:diferencia");
     }
 
     public void calcularFormaPago() {
