@@ -696,19 +696,19 @@ public class ArticulosBean {
             }
 
             Double _subTotal = Round.round(invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue()) - descuento, 2);
-            logger.info("_subTotal: " + _subTotal);
+            logger.log(Level.INFO, "_subTotal: {0}", _subTotal);
 
             Double _iva = invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getPorcentajeIva().doubleValue() / 100);
-            logger.info("_iva: " + _iva);
+            logger.log(Level.INFO, "_iva: {0}", _iva);
 
             subTotal += Round.round(_subTotal, 2);
-            logger.info("subTotal: " + subTotal);
+            logger.log(Level.INFO, "subTotal: {0}", subTotal);
             iva += Round.round(_iva, 2);
-            logger.info("iva: " + iva);
+            logger.log(Level.INFO, "iva: {0}", iva);
             total += Round.round((_subTotal + _iva), 2);
-            logger.info("total: " + total);
+            logger.log(Level.INFO, "total: {0}", total);
         }
-
+        subTotal = Round.round(subTotal, 2);
     }
 
     private String obtenerEmpresa() {
@@ -770,7 +770,7 @@ public class ArticulosBean {
             facTmpFactD.setPorcDescProm(BigDecimal.ZERO); //TODO
             facTmpFactD.setPorcDescVol(invMovimientoDtll.getPorcDesc1()); //TODO
             facTmpFactD.setPorcentajeIva(invMovimientoDtll.getPorcentajeIva());
-            logger.info("CostoUnitario: " + invMovimientoDtll.getCostoUnitario());
+            logger.log(Level.INFO, "CostoUnitario: {0}", invMovimientoDtll.getCostoUnitario());
             facTmpFactD.setPrecioUnitario(invMovimientoDtll.getCostoUnitario()); //TODO
             facTmpFactD.setPromocion(null); //TODO
             facTmpFactD.setSerie(null); //TODO
