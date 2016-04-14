@@ -2,12 +2,12 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:pm="http://primefaces.org/mobile"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:pe="http://primefaces.org/ui/extensions">
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dialogCheques" header="Cheque:" widgetVar="dialogCheques" 
               showEffect="pop">
         <h:form id="chequesForm">
             <p:messages id="messages" showDetail="true" autoUpdate="true" closable="true" />
+
             <pm:field>
                 <p:outputLabel value="Banco:"/>
                 <p:selectOneMenu id="banco" value="#{cxcDocCobrarBean.codBanco}">
@@ -18,27 +18,45 @@
                                    itemValue="#{banco.banBancosPK.codBanco}"/>
                 </p:selectOneMenu>
             </pm:field>
-            <pm:field>
-                <p:outputLabel value="Número de cuenta:"/>
-                <p:inputText value="#{cxcDocCobrarBean.numCuenta}"/>
-            </pm:field>
-            <pm:field>
-                <p:outputLabel value="Número de cheque:"/>
-                <p:inputText value="#{cxcDocCobrarBean.numCheque}"/>
-            </pm:field>
-            <pm:field>
-                <p:outputLabel value="Valor:"/>
-                <p:inputText value="#{cxcDocCobrarBean.valorCheque}">
-                    <p:ajax listener="#{cxcDocCobrarBean.calcularCheques()}" />
-                </p:inputText>
-            </pm:field>
-            <pm:field>
-                <p:outputLabel value="Fecha:"/>
-                <p:calendar value="#{cxcDocCobrarBean.fechaCheque}" mode="inline" />
-            </pm:field>
-            <p:commandButton id="agregarChequeButton" value="Agregar" action="#{cxcDocCobrarBean.agregarCheque()}" 
+
+            <p:tabView>
+                <p:tab title="Número Cuenta">
+                    <!--                    <pm:field>
+                                            <p:outputLabel value="Número de cuenta:"/>-->
+                    <p:inputText value="#{cxcDocCobrarBean.numCuenta}"/>
+                    <!--</pm:field>-->
+                </p:tab>
+                <p:tab title="Número Cheque">
+                    <!--                    <pm:field>
+                                            <p:outputLabel value="Número de cheque:"/>-->
+                    <p:inputText value="#{cxcDocCobrarBean.numCheque}"/>
+                    <!--</pm:field>-->
+                </p:tab>
+            </p:tabView>
+
+            <p:tabView>
+                <p:tab title="Valor">
+                    <!--                    <pm:field>
+                                            <p:outputLabel value="Valor:"/>-->
+                    <p:inputText value="#{cxcDocCobrarBean.valorCheque}">
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularCheques()}" />
+                    </p:inputText>
+                    <!--</pm:field>-->
+                </p:tab>
+                <p:tab title="Fecha">
+                    <!--                    <pm:field>
+                                            <p:outputLabel value="Fecha:"/>-->
+                    <p:calendar value="#{cxcDocCobrarBean.fechaCheque}" 
+                                pattern="dd-MM-yyyy" mask="true"/>
+                    <!--</pm:field>-->
+                </p:tab>
+            </p:tabView>
+
+            <p:commandButton id="agregarChequeButton" value="Agregar" 
+                             action="#{cxcDocCobrarBean.agregarCheque()}" 
                              oncomplete="PF('dialogCheques').hide();"
-                             update="@form"
+                             update="@form 
+                             cobro:accordionPanel:formaPagoForm:diferenciaLabel"
                              disabled="#{cxcDocCobrarBean.botonAgegarChequeBloqueado}"/>
         </h:form>
     </p:dialog>
