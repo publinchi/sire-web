@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <p:dialog header="Clientes" widgetVar="clienteDialog" showEffect="pop"
+              resizable="false" appendTo="@(body)">
+        <h:form id="form">
+            <p:outputLabel for="busca" value="Busca:" />
+            <h:panelGrid columns="3">
+                <p:selectOneRadio id="modo" value="#{customers.modo}" 
+                                  columns="1" 
+                                  immediate="true">
+                    <f:selectItem itemLabel="Código" itemValue="c" />
+                    <f:selectItem itemLabel="Nombre" itemValue="n" />
+                    <p:ajax event="change" listener="#{customers.cambioModo}"
+                            update="@form"/>
+                </p:selectOneRadio>
+
+                <p:inputText id="busca" placeholder="Buscar Cliente" type="search" 
+                             value="${customers.input}"/>
+                <p:commandButton id="botonBuscar" icon="ui-icon-search" 
+                                 actionListener="${customers.findClientes}" 
+                                 update="@form"/>
+            </h:panelGrid>
+            <p:dataTable id="dataList" var="c" 
+                         value="#{customers.clientes}" 
+                         selectionMode="single" reflow="false" rows="5" 
+                         paginator="true" 
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         paginatorPosition="bottom" 
+                         paginatorAlwaysVisible="false"
+                         rowKey="#{c.codCliente}" 
+                         tableStyleClass="ui-table-columntoggle"
+                         tableStyle="width:auto"
+                         rendered="#{customers.clientes.size() gt 0}">
+                <p:ajax event="tap" listener="#{customers.tapCliente}" 
+                        oncomplete="PF('clienteDialog').hide();" 
+                        update="#{update}" />
+                <p:column headerText="Código" priority="1">
+                    <h:outputText value="#{c.codCliente}" />
+                </p:column>
+                <p:column headerText="Apellidos Nombres" priority="1">
+                    <h:outputText value="#{c.apellidos} #{c.nombres}" />
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+</html>
