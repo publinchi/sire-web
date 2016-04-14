@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://java.sun.com/jsf/facelets"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:pm="http://primefaces.org/mobile"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
-
-
-    <p:outputLabel id="infoCliente" 
-                   value="Cliente: #{cxcDocCobrarBean.client.codCliente} - #{cxcDocCobrarBean.client.razonSocial}"/>
+      xmlns:p="http://primefaces.org/ui">
     <ui:include src="_formTablaDocumentos.xhtml" />
     <p:spacer/>
-    <!--<ui:include src="_formaPagoButton.xhtml" />-->
     <ui:include src="_dialogDocCobrar.xhtml" />
     <ui:include src="_formaPago.xhtml" />
     <ui:include src="_dialogCheque.xhtml" />
