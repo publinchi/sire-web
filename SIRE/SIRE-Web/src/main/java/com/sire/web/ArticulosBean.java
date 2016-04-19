@@ -403,11 +403,11 @@ public class ArticulosBean {
 
             Double totalPlusIVA = precioTotal * (1 + invArticuloSeleccionado.getIva().doubleValue() / 100);
             logger.log(Level.INFO, "totalPlusIVA: {0}", totalPlusIVA);
-            invArticuloSeleccionado.setTotalPlusIVA(totalPlusIVA);
+            invArticuloSeleccionado.setTotalPlusIVA(Round.round(totalPlusIVA, 2));
 
             agregarBloqueado = false;
 
-            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalRegistro");
+            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:bloqueC:totalRegistro");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalIva");
             cantidadExcedida = "";
             colorCantidadExcedida = "black";
@@ -527,7 +527,7 @@ public class ArticulosBean {
             addMessage("Pedido enviado exitosamente.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
-            return "pedido?faces-redirect=true";
+            return "index?faces-redirect=true";
         } catch (EmptyException ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
@@ -887,8 +887,14 @@ public class ArticulosBean {
         return null;
     }
 
-    private Integer obtenerVendedor() {
-        Integer defCodVendedor = obtenerFacParametros().getDefCodVendedor();
+    private Integer obtenerVendedor() throws EmptyException {
+        FacParametros facParametros = obtenerFacParametros();
+
+        if (facParametros == null) {
+            throw new EmptyException("Vendedor no asociado a facturación.");
+        }
+
+        Integer defCodVendedor = facParametros.getDefCodVendedor();
         logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
