@@ -1,7 +1,6 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <p:dialog id="dialogArticulo" header="Artículo" widgetVar="dlg3" 
               showEffect="pop">
@@ -12,7 +11,7 @@
             <p:outputLabel id="existencia" value="Existencia: #{articulosBean.existencia}" />
             <!--</pm:field>-->
 
-            <p:tabView>
+            <p:tabView id="bloqueA">
                 <p:tab title="Unidad Medida">
                     <!--<pm:field>-->
                     <!--<p:outputLabel for="unidadMedida" value="Unidad Medida:" />-->
@@ -38,7 +37,7 @@
                 </p:tab>
             </p:tabView>
 
-            <p:tabView>
+            <p:tabView id="bloqueB">
                 <p:tab title="Precio Unitario">
                     <!--<pm:field>-->
                     <!--<p:outputLabel for="precioUnitario" value="Precio Unitario:" />-->
@@ -61,7 +60,7 @@
                 </p:tab>
             </p:tabView>
 
-            <p:tabView>
+            <p:tabView id="bloqueC">
                 <p:tab title="Total Registro">
                     <!--<pm:field>-->
                     <!--<p:outputLabel for="totalRegistro" value="Total Registro:" />-->
@@ -84,7 +83,7 @@
                 </p:tab>
             </p:tabView>
 
-            <h:outputText value="Total + IVA: &#36; #{articulosBean.invArticuloSeleccionado.totalPlusIVA}" />
+            <h:outputText id="totalIva" value="Total + IVA: &#36; #{articulosBean.invArticuloSeleccionado.totalPlusIVA}" />
             <p:commandButton id="botonAgregar"
                              value="Agregar" 
                              actionListener="#{articulosBean.agregarArticulo()}" 
