@@ -15,9 +15,11 @@
 
             <pm:field>
                 <p:outputLabel id="saldoLabel" for="saldo" value="Saldo: " />
-                <pe:inputNumber id="saldo" value="#{cxcDocCobrarBean.cxcDocCobrarSeleccionado.saldoDocumento}" disabled="true" symbol="$ "  
-                                roundMethod="B"  
-                                decimalPlaces="2"/>  
+                <div class="remove-clear">
+                    <p:inputText id="saldo"
+                                 value="&#36; #{cxcDocCobrarBean.cxcDocCobrarSeleccionado.saldoDocumento}"
+                                 readonly="true"/>
+                </div>
             </pm:field>
 
             <p:commandButton id="aceptarButton"
