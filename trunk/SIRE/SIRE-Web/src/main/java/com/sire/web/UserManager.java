@@ -53,8 +53,10 @@ public class UserManager {
 
     private final static String PEDIDOS_Y_DESPACHOS = "04";
     private final static String CUENTAS_POR_COBRAR = "06";
+    private final static String CAJAS = "19";
+    private final static String NOMINA = "10";
     @Getter
-    private boolean pedidoVisible = false, cobroVisible = false;
+    private boolean pedidoVisible = false, cobroVisible = false, cajasVisible = false, nominaVisible = false;
 
     public UserManager() {
         logger = Logger.getLogger(UserManager.class.getName());
@@ -134,6 +136,12 @@ public class UserManager {
             } else if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(CUENTAS_POR_COBRAR)) {
                 cobroVisible = true;
                 logger.info("cobroVisible: " + cobroVisible);
+            } else if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(CAJAS)) {
+                cajasVisible = true;
+                logger.info("cajasVisible: " + cajasVisible);
+            } else if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(NOMINA)) {
+                nominaVisible = true;
+                logger.info("nominaVisible: " + nominaVisible);
             }
         }
     }
