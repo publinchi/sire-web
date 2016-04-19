@@ -6,7 +6,11 @@
              header="Documentos por cobrar:"
              toggleable="true" collapsed="false" >
         <p:outputLabel id="infoClienteLabel"
-                       value="Cliente: #{cliente.cliente.codCliente} - #{cliente.cliente.razonSocial}"/>
+                       value="Cliente: #{cliente.cliente.codCliente} - #{cliente.cliente.razonSocial}"
+                       rendered="#{cliente.cliente.codCliente gt 0}"/>
+        <p:outputLabel id="seleccioneClienteLabel"
+                       value="Por favor seleccione el cliente."
+                       rendered="#{cliente.cliente.codCliente eq null}"/>
         <p:dataTable id="cxcDocCobrarDataTable"
                      value="#{cxcDocCobrarBean.cxcDocCobrarList}" 
                      var="cxcDocCobrar" 
