@@ -59,11 +59,12 @@
 
     <h:body>
         <pm:page id="inicio">
-            <pm:header title="Inicio" />
-            <pm:content>
+            <pm:header title="Inicio">
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="0" />
                 </ui:include>
+            </pm:header>
+            <pm:content>
                 <ui:include src="inicio/_inicio.xhtml" />
             </pm:content>
             <pm:footer>
@@ -72,11 +73,12 @@
         </pm:page>
 
         <pm:page id="pedido">
-            <pm:header title="Pedido"/>
-            <pm:content>
+            <pm:header title="Pedido">
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="1" />
                 </ui:include>
+            </pm:header>
+            <pm:content>
                 <ui:include src="pedido/_createPedido.xhtml" />
             </pm:content>
             <pm:footer>
@@ -86,11 +88,11 @@
 
         <pm:page id="cobro">
             <pm:header title="Cobro">
-            </pm:header>
-            <pm:content>
                 <ui:include src="menu/_cabecera.xhtml" >
                     <ui:param name="index" value="2" />
                 </ui:include>
+            </pm:header>
+            <pm:content>
                 <ui:include src="cobro/_createCobro.xhtml" />
             </pm:content>
             <pm:footer>
@@ -98,6 +100,32 @@
             </pm:footer>
         </pm:page>
 
+        <pm:page id="cajas">
+            <pm:header title="Cajas">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="3" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+                <!--<ui:include src="pedido/_createPedido.xhtml" />-->
+            </pm:content>
+            <pm:footer>
+                <p:outputLabel value="SIRE, Copyright © 2015" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
+
+        <pm:page id="asistencia">
+            <pm:header title="Asistencia">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="4" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+            </pm:content>
+            <pm:footer>
+                <p:outputLabel value="SIRE, Copyright © 2015" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
     </h:body>
 
 </html>
