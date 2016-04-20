@@ -99,7 +99,7 @@ public class VCliente implements Serializable {
     private Date fechaCreacion;
     @Basic(optional = false)
     @Column(name = "LIMITE_FACTURA")
-    private BigInteger limiteFactura;
+    private Double limiteFactura;
     @Column(name = "INDICADOR")
     private String indicador;
     @Column(name = "PAGA_IVA")
@@ -249,11 +249,11 @@ public class VCliente implements Serializable {
         this.fechaCreacion = fechaCreacion;
     }
 
-    public BigInteger getLimiteFactura() {
+    public Double getLimiteFactura() {
         return limiteFactura;
     }
 
-    public void setLimiteFactura(BigInteger limiteFactura) {
+    public void setLimiteFactura(Double limiteFactura) {
         this.limiteFactura = limiteFactura;
     }
 
