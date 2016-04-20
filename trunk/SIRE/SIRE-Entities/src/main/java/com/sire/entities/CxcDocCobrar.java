@@ -53,7 +53,8 @@ import lombok.Setter;
     @NamedQuery(name = "CxcDocCobrar.findByEstado", query = "SELECT c FROM CxcDocCobrar c WHERE c.estado = :estado"),
     @NamedQuery(name = "CxcDocCobrar.findByFechaEstado", query = "SELECT c FROM CxcDocCobrar c WHERE c.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "CxcDocCobrar.findByNroPagos", query = "SELECT c FROM CxcDocCobrar c WHERE c.nroPagos = :nroPagos"),
-    @NamedQuery(name = "CxcDocCobrar.findByCodCliente", query = "SELECT c FROM CxcDocCobrar c WHERE c.cxcCliente.cxcClientePK.codCliente = :codCliente and c.saldoDocumento > 0")})
+    @NamedQuery(name = "CxcDocCobrar.findByCodCliente", query = "SELECT c FROM CxcDocCobrar c WHERE c.cxcCliente.cxcClientePK.codCliente = :codCliente and c.saldoDocumento > 0"),
+    @NamedQuery(name = "CxcDocCobrar.sumSaldoDocumentoByCodClienteCodEmpresa", query = "SELECT SUM(c.saldoDocumento) FROM CxcDocCobrar c WHERE c.cxcDocCobrarPK.codEmpresa = :codEmpresa AND c.cxcCliente.cxcClientePK.codCliente = :codCliente AND c.saldoDocumento <> 0 AND FUNC('TO_CHAR', FUNC('TRUNC',c.fechaEmision),'MMRRRR') = :fechaFac")})
 public class CxcDocCobrar implements Serializable {
 
     private static final long serialVersionUID = 1L;
