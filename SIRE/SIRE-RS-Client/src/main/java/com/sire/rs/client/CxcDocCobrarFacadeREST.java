@@ -33,6 +33,12 @@ public class CxcDocCobrarFacadeREST {
         webTarget = client.target(BASE_URI).path("com.sire.entities.cxcdoccobrar");
     }
 
+    public String sumSaldoDocumentoByCodClienteCodEmpresa(String codCliente, String codEmpresa, String fechaFac) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("sumSaldoDocumentoByCodClienteCodEmpresaFechaFac/{0}/{1}/{2}", new Object[]{codCliente, codEmpresa, fechaFac}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+    }
+
     public String countREST() throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path("count");
