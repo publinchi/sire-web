@@ -33,6 +33,8 @@ import com.sire.entities.InvUnidadAlternativa;
 import com.sire.entities.Pedido;
 import com.sire.entities.VCliente;
 import com.sire.exception.EmptyException;
+import com.sire.exception.LimitException;
+import com.sire.rs.client.CxcDocCobrarFacadeREST;
 import com.sire.rs.client.FacCatalogoPrecioDFacadeREST;
 import com.sire.rs.client.FacDescVolFacadeREST;
 import com.sire.rs.client.FacParametrosFacadeREST;
@@ -46,6 +48,7 @@ import com.sire.utils.Round;
 import com.sire.utils.bodega.BodegaUtil;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -84,6 +87,8 @@ public class ArticulosBean {
     private final InvIvaFacadeREST invIvaFacadeREST;
     private final InvUnidadAlternativaFacadeREST invUnidadAlternativaFacadeREST;
     private final FacParametrosFacadeREST facParametrosFacadeREST;
+    private final CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST;
+
     private final GsonBuilder builder;
     private final Gson gson;
     private String input;
@@ -117,7 +122,7 @@ public class ArticulosBean {
     private MapaBean mapa;
 
     //Resumen
-    Double subTotal, iva, total, totalSinIva, totalConIva;
+    Double subTotal, iva, total, totalSinIva, totalConIva, limiteFactura;
 
     //Mensaje
     private String cantidadExcedida, colorCantidadExcedida = "black";
@@ -137,6 +142,7 @@ public class ArticulosBean {
         invIvaFacadeREST = new InvIvaFacadeREST();
         invUnidadAlternativaFacadeREST = new InvUnidadAlternativaFacadeREST();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
+        cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }
@@ -505,6 +511,10 @@ public class ArticulosBean {
 
     public String enviar() {
         try {
+            if (facturacionLimitada()) {
+                throw new LimitException("No se puede facturar, cliente pasó el limite de facturación que es de : " + limiteFactura);
+            }
+
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "03", "SAI");
             prepararInvMovimientoCab(numDocumentoResp);
@@ -535,6 +545,10 @@ public class ArticulosBean {
         } catch (NullPointerException ex) {
             logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
             addMessage("Advertencia", "Por favor validar registro(s).", FacesMessage.SEVERITY_INFO);
+            return "pedido?faces-redirect=true";
+        } catch (LimitException ex) {
+            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
+            addMessage("Error", ex.getMessage(), FacesMessage.SEVERITY_ERROR);
             return "pedido?faces-redirect=true";
         }
     }
@@ -945,5 +959,32 @@ public class ArticulosBean {
         invMovimientoDtll.setInvUnidadAlternativa(invUnidadAlternativa);
 
         return invUnidadAlternativa;
+    }
+
+    private boolean facturacionLimitada() {
+        if (obtenerSumSaldoDocumento() == 0.0) {
+            return false;
+        } else {
+            limiteFactura = obtenerLimiteFactura();
+            return false;
+        }
+    }
+
+    private Double obtenerLimiteFactura() {
+        Double limiteFact = cliente.getCliente().getLimiteFactura();
+        logger.log(Level.INFO, "limiteFactura: {0}", limiteFact);
+        return limiteFact;
+    }
+
+    private Double obtenerSumSaldoDocumento() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("MMyyyy");
+        String formatted = format.format(c.getTime());
+        String sum = cxcDocCobrarFacadeREST.sumSaldoDocumentoByCodClienteCodEmpresa(cliente.getCliente().getCodCliente().toString(), obtenerEmpresa(), formatted);
+        if (sum.isEmpty()) {
+            return null;
+        } else {
+            return new Double(sum);
+        }
     }
 }
