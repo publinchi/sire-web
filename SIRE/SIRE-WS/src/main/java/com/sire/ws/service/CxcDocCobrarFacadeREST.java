@@ -135,6 +135,23 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         return retorno;
     }
 
+    @GET
+    @Path("/sumSaldoDocumentoByCodClienteCodEmpresaFechaFac/{codCliente}/{codEmpresa}/{fechaFac}")
+    @Produces({"application/json"})
+    public String sumSaldoDocumentoByCodClienteCodEmpresa(@PathParam("codCliente") String codCliente, @PathParam("codEmpresa") String codEmpresa, @PathParam("fechaFac") String fechaFac) {
+        TypedQuery<Double> query = em.createNamedQuery("CxcDocCobrar.sumSaldoDocumentoByCodClienteCodEmpresa", Double.class);
+        query.setParameter("codCliente", new BigInteger(codCliente));
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("fechaFac", fechaFac);
+
+        Double sum = query.getSingleResult();
+        if (sum != null) {
+            return sum.toString();
+        } else {
+            return "";
+        }
+    }
+
     @PUT
     @Path("save")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
