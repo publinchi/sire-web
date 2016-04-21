@@ -962,12 +962,9 @@ public class ArticulosBean {
     }
 
     private boolean facturacionLimitada() {
-        if (obtenerSumSaldoDocumento() == 0.0) {
-            return false;
-        } else {
-            limiteFactura = obtenerLimiteFactura();
-            return false;
-        }
+        Double sumSaldoDocumento = obtenerSumSaldoDocumento();
+        limiteFactura = obtenerLimiteFactura();
+        return true;
     }
 
     private Double obtenerLimiteFactura() {
@@ -982,7 +979,7 @@ public class ArticulosBean {
         String formatted = format.format(c.getTime());
         String sum = cxcDocCobrarFacadeREST.sumSaldoDocumentoByCodClienteCodEmpresa(cliente.getCliente().getCodCliente().toString(), obtenerEmpresa(), formatted);
         if (sum.isEmpty()) {
-            return null;
+            return 0.0;
         } else {
             return new Double(sum);
         }
