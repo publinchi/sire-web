@@ -10,11 +10,11 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
 
 /**
- * Jersey REST client generated for REST resource:CxcDocCobrarFacadeREST
- * [com.sire.entities.cxcdoccobrar]<br>
+ * Jersey REST client generated for REST resource:CxcChequeFacadeREST
+ * [com.sire.entities.cxccheque]<br>
  * USAGE:
  * <pre>
- *        CxcDocCobrarFacadeREST client = new CxcDocCobrarFacadeREST();
+ *        CxcChequeFacadeREST client = new CxcChequeFacadeREST();
  *        Object response = client.XXX(...);
  *        // do whatever with response
  *        client.close();
@@ -22,27 +22,15 @@ import javax.ws.rs.client.WebTarget;
  *
  * @author publio
  */
-public class CxcDocCobrarFacadeREST {
+public class CxcChequeFacadeREST {
 
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:9080/SIRE-WS/webresources";
 
-    public CxcDocCobrarFacadeREST() {
+    public CxcChequeFacadeREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
-        webTarget = client.target(BASE_URI).path("com.sire.entities.cxcdoccobrar");
-    }
-
-    public String sumSaldoDocumentoByCodClienteCodEmpresaFechaFac(String codCliente, String codEmpresa, String fechaFac) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("sumSaldoDocumentoByCodClienteCodEmpresaFechaFac/{0}/{1}/{2}", new Object[]{codCliente, codEmpresa, fechaFac}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
-    }
-
-    public String sumCapitalByCodClienteCodEmpresaFechaRecepcion(String codCliente, String codEmpresa, String fechaRecepcion) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("sumCapitalByCodClienteCodEmpresaFechaRecepcion/{0}/{1}/{2}", new Object[]{codCliente, codEmpresa, fechaRecepcion}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
+        webTarget = client.target(BASE_URI).path("com.sire.entities.cxccheque");
     }
 
     public String countREST() throws ClientErrorException {
@@ -83,12 +71,10 @@ public class CxcDocCobrarFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public void save_XML(Object requestEntity) throws ClientErrorException {
-        webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
-    }
-
-    public void save_JSON(Object requestEntity) throws ClientErrorException {
-        webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
+    public <T> T findByCodClienteCodEmpresaMes(Class<T> responseType, String codCliente, String codEmpresa, String fechaFac) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByCodClienteCodEmpresaMes/{0}/{1}/{2}", new Object[]{codCliente, codEmpresa, fechaFac}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public void create_XML(Object requestEntity) throws ClientErrorException {
@@ -97,12 +83,6 @@ public class CxcDocCobrarFacadeREST {
 
     public void create_JSON(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
-    }
-
-    public <T> T findByCodCliente(Class<T> responseType, String codCliente) throws ClientErrorException {
-        WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findByCodCliente/{0}", new Object[]{codCliente}));
-        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
     public <T> T findAll_XML(Class<T> responseType) throws ClientErrorException {
@@ -122,5 +102,5 @@ public class CxcDocCobrarFacadeREST {
     public void close() {
         client.close();
     }
-
+    
 }
