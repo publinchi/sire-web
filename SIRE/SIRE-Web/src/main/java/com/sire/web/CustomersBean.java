@@ -115,5 +115,6 @@ public class CustomersBean {
             clientes.clear();
         }
         input = null;
+        modo = "n";
     }
 }

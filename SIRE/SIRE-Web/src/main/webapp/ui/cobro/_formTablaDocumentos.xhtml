@@ -1,7 +1,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
     <p:panel id="cxcDocCobrarPanel" widgetVar="cxcDocCobrarPanel" 
              header="Documentos por cobrar:"
              toggleable="true" collapsed="false" >
@@ -62,11 +63,11 @@
                 <h:outputText value="&#36; #{cxcDocCobrar.valorDocumento}" />
             </p:column>
             <p:column headerText="Saldo" priority="1"
-                      style="vertical-align: middle">
-<!--                <pe:inputNumber value="#{cxcDocCobrar.saldoDocumento}" 
-                                readonly="true" symbol="$ "  
-                                roundMethod="B"  
-                                decimalPlaces="2" />  -->
+                      style="vertical-align: middle;">
+                <!--<pe:inputNumber value="#{cxcDocCobrar.saldoDocumento}"
+                readonly="true" symbol="$ "  
+                roundMethod="B"  
+                decimalPlaces="2"/>  --> 
                 <h:outputText value="&#36; #{cxcDocCobrar.saldoDocumento}" />
             </p:column>
             <p:columnGroup type="footer">

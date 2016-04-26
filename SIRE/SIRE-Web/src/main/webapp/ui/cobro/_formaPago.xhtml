@@ -13,7 +13,7 @@
             <h:outputText id="pagoTotalLabel" 
                           value="Pago Total: #{cxcDocCobrarBean.totalCapital}"/>
             <!--</pm:field>-->
-            <p:tabView>
+            <p:tabView id="bloqueA">
                 <p:tab title="Retención">
                     <!--                    <pm:field>
                                             <p:outputLabel id="retencionLabel" for="retencion" 
@@ -45,7 +45,7 @@
                 </p:tab>
             </p:tabView>
 
-            <p:tabView>
+            <p:tabView id="bloqueB">
                 <p:tab title="Cheques">
                     <!--                    <pm:field>
                                             <p:outputLabel id="chequesLabel" for="cheques" 
@@ -64,7 +64,7 @@
                         <p:dataTable id="cxcChequeDataTable"
                                      value="#{cxcDocCobrarBean.cxcCheques}" 
                                      var="cxcCheque" 
-                                     rowKey="#{cxcCheque.cxcChequePK.numDocumento}"
+                                     rowKey="#{cxcCheque.cxcChequePK.auxiliar}"
                                      selectionMode="single" reflow="false" rows="5" 
                                      paginator="true" 
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
@@ -74,10 +74,12 @@
                                      tableStyle="width:auto;height:auto"
                                      rendered="#{cxcDocCobrarBean.cxcCheques.size() gt 0}"
                                      style="font-size:11px;">
-                            <p:column headerText="Cod." priority="1" 
-                                      style="vertical-align: middle">
-                                <h:outputText value="#{cxcCheque.cxcChequePK.numDocumento}" />
-                            </p:column>
+                            <p:ajax event="swipeleft" listener="#{cxcDocCobrarBean.swipeleft}" 
+                                    update="@form" onstart="return confirm('¿Desea eliminar el registro?')" />
+                            <!--                            <p:column headerText="Cod." priority="1" 
+                                                                  style="vertical-align: middle">
+                                                            <h:outputText value="#{cxcCheque.cxcChequePK.numDocumento}" />
+                                                        </p:column>-->
                             <p:column headerText="Cod. Banco" priority="1"
                                       style="vertical-align: middle">
                                 <h:outputText value="#{cxcCheque.codBanco}" />
@@ -91,10 +93,11 @@
                                 <h:outputText value="#{cxcCheque.numCheque}" />
                             </p:column>
                             <p:column headerText="Valor" priority="1">
-                                <pe:inputNumber value="#{cxcCheque.valorCheque}" 
+                                <h:outputText value="&#36; #{cxcCheque.valorCheque}" />
+<!--                                <pe:inputNumber value="#{cxcCheque.valorCheque}" 
                                                 readonly="true" symbol="$ "  
                                                 roundMethod="B"  
-                                                decimalPlaces="2"/>  
+                                                decimalPlaces="2"/>  -->
                             </p:column>
                             <p:column headerText="Fecha" priority="2"
                                       style="vertical-align: middle">
@@ -104,7 +107,7 @@
                             </p:column>
                             <p:columnGroup type="footer">
                                 <p:row>
-                                    <p:column colspan="4" style="text-align:right" footerText="Totales:" />
+                                    <p:column colspan="2" style="text-align:right" footerText="Totales:" />
                                     <p:column footerText="&#36; #{cxcDocCobrarBean.totalCheques}" />
                                 </p:row>
                             </p:columnGroup>
@@ -118,19 +121,10 @@
                     <p:inputText id="tarjeta" readonly="true"/>
                     <!--</pm:field>-->
                 </p:tab>
-                <p:tab title="Deposito">
-                    <!--                    <pm:field>
-                                            <p:outputLabel id="depositoLabel" for="deposito" value="Deposito: "/>-->
-                    <p:inputText id="deposito" value="#{cxcDocCobrarBean.deposito}">
-                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago()}" 
-                                update="@form"/>
-                    </p:inputText>
-                    <!--</pm:field>-->
-                </p:tab>
             </p:tabView>
 
-            <p:tabView>
-                <p:tab title="Cuenta Bancaria">
+            <p:tabView id="bloqueC">
+                <p:tab title="Deposito">
                     <!--                    <pm:field>
                                             <p:outputLabel id="cuentaBancariaLabel" for="cuentaBancaria" value="Cuenta Bancaria: "/>-->
                     <p:selectOneMenu id="cuentaBancaria" value="#{cxcDocCobrarBean.numeroCuenta}">
@@ -141,6 +135,10 @@
                                        itemValue="#{banCtaCte.banCtaCtePK.ctaCorriente}"/>
                     </p:selectOneMenu>
                     <!--</pm:field>-->
+                    <p:inputText id="deposito" value="#{cxcDocCobrarBean.deposito}">
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago()}" 
+                                update="@form"/>
+                    </p:inputText>
                 </p:tab>
                 <p:tab title="Otros">
                     <!--                    <pm:field>

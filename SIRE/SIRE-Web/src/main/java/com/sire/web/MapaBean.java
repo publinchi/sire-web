@@ -64,4 +64,8 @@ public class MapaBean {
             Logger.getLogger(MapaBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+
+    public void limpiar() {
+        direccion = null;
+    }
 }

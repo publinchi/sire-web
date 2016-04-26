@@ -9,9 +9,9 @@ package com.sire.exception;
  *
  * @author pestupinan
  */
-public class ClienteException extends Exception {
+public class VendedorException extends Exception {
 
-    public ClienteException(String message) {
+    public VendedorException(String message) {
         super(message);
     }
 }

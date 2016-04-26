@@ -722,6 +722,7 @@ public class ArticulosBean {
             total += Round.round((_subTotal + _iva), 2);
             logger.log(Level.INFO, "total: {0}", total);
         }
+        total = Round.round(total, 2);
         subTotal = Round.round(subTotal, 2);
     }
 
@@ -962,9 +963,21 @@ public class ArticulosBean {
     }
 
     private boolean facturacionLimitada() {
-        Double sumSaldoDocumento = obtenerSumSaldoDocumento();
-        limiteFactura = obtenerLimiteFactura();
-        return true;
+        if (invMovimientoCab.getFormaPago().equals("1")) {
+            Double sumSaldoDocumento = obtenerSumSaldoDocumento();
+            logger.info("sumSaldoDocumento: " + sumSaldoDocumento);
+            Double sumCapital = obtenerSumCapital();
+            logger.info("sumCapital: " + sumCapital);
+            limiteFactura = obtenerLimiteFactura();
+            logger.info("limiteFactura: " + limiteFactura);
+
+            Double saldoActual = sumSaldoDocumento + sumCapital;
+
+            return ((saldoActual + total) > limiteFactura);
+        } else {
+            return false;
+        }
+
     }
 
     private Double obtenerLimiteFactura() {
@@ -977,7 +990,19 @@ public class ArticulosBean {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("MMyyyy");
         String formatted = format.format(c.getTime());
-        String sum = cxcDocCobrarFacadeREST.sumSaldoDocumentoByCodClienteCodEmpresa(cliente.getCliente().getCodCliente().toString(), obtenerEmpresa(), formatted);
+        String sum = cxcDocCobrarFacadeREST.sumSaldoDocumentoByCodClienteCodEmpresaFechaFac(cliente.getCliente().getCodCliente().toString(), obtenerEmpresa(), formatted);
+        if (sum.isEmpty()) {
+            return 0.0;
+        } else {
+            return new Double(sum);
+        }
+    }
+
+    private Double obtenerSumCapital() {
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat format = new SimpleDateFormat("MMyyyy");
+        String formatted = format.format(c.getTime());
+        String sum = cxcDocCobrarFacadeREST.sumCapitalByCodClienteCodEmpresaFechaRecepcion(cliente.getCliente().getCodCliente().toString(), obtenerEmpresa(), formatted);
         if (sum.isEmpty()) {
             return 0.0;
         } else {
