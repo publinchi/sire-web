@@ -14,6 +14,8 @@
     <class>com.sire.entities.CxcInforme</class>
     <class>com.sire.entities.BanCtaCte</class>
     <class>com.sire.entities.GnrUsuaMod</class>
+    <class>com.sire.entities.VCobros</class>
+    <class>com.sire.entities.GnrLogHistorico</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:49161:XE"/>
       <property name="javax.persistence.jdbc.password" value="dipronor"/>

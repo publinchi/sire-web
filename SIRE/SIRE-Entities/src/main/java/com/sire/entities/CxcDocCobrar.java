@@ -5,6 +5,7 @@
  */
 package com.sire.entities;
 
+import com.sire.utils.Round;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -54,7 +55,8 @@ import lombok.Setter;
     @NamedQuery(name = "CxcDocCobrar.findByFechaEstado", query = "SELECT c FROM CxcDocCobrar c WHERE c.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "CxcDocCobrar.findByNroPagos", query = "SELECT c FROM CxcDocCobrar c WHERE c.nroPagos = :nroPagos"),
     @NamedQuery(name = "CxcDocCobrar.findByCodCliente", query = "SELECT c FROM CxcDocCobrar c WHERE c.cxcCliente.cxcClientePK.codCliente = :codCliente and c.saldoDocumento > 0"),
-    @NamedQuery(name = "CxcDocCobrar.sumSaldoDocumentoByCodClienteCodEmpresa", query = "SELECT SUM(c.saldoDocumento) FROM CxcDocCobrar c WHERE c.cxcDocCobrarPK.codEmpresa = :codEmpresa AND c.cxcCliente.cxcClientePK.codCliente = :codCliente AND c.saldoDocumento <> 0 AND FUNC('TO_CHAR', FUNC('TRUNC',c.fechaEmision),'MMRRRR') = :fechaFac")})
+    @NamedQuery(name = "CxcDocCobrar.sumSaldoDocumentoByCodClienteCodEmpresaFechaFac", query = "SELECT SUM(c.saldoDocumento) FROM CxcDocCobrar c WHERE c.cxcDocCobrarPK.codEmpresa = :codEmpresa AND c.cxcCliente.cxcClientePK.codCliente = :codCliente AND c.saldoDocumento <> 0 AND FUNC('TO_CHAR', FUNC('TRUNC',c.fechaEmision),'MMRRRR') = :fechaFac"),
+    @NamedQuery(name = "CxcDocCobrar.sumCapitalByCodClienteCodEmpresaFechaEmision", query = "SELECT SUM(a.capital) FROM VCobros a, CxcDocCobrar b WHERE a.codEmpresa = :codEmpresa AND a.codDocumento = :codDocumento AND a.numAbono = :numDocumento AND a.codEmpresa = b.cxcDocCobrarPK.codEmpresa AND a.codAbono = b.cxcDocCobrarPK.codDocumento AND a.numDocumento = b.cxcDocCobrarPK.numDocumento AND FUNC('TO_CHAR', FUNC('TRUNC',b.fechaEmision),'MMRRRR') = :fechaEmision")})
 public class CxcDocCobrar implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -210,7 +212,7 @@ public class CxcDocCobrar implements Serializable {
     }
 
     public Double getSaldoDocumento() {
-        return saldoDocumento;
+        return Round.round(saldoDocumento, 2);
     }
 
     public void setSaldoDocumento(Double saldoDocumento) {

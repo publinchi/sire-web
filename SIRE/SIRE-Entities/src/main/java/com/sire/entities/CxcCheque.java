@@ -5,6 +5,7 @@
  */
 package com.sire.entities;
 
+import com.sire.utils.Round;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.Date;
@@ -47,7 +48,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CxcCheque.findByNumDeposito", query = "SELECT c FROM CxcCheque c WHERE c.numDeposito = :numDeposito"),
     @NamedQuery(name = "CxcCheque.findByEstado", query = "SELECT c FROM CxcCheque c WHERE c.estado = :estado"),
     @NamedQuery(name = "CxcCheque.findByDetalle", query = "SELECT c FROM CxcCheque c WHERE c.detalle = :detalle"),
-    @NamedQuery(name = "CxcCheque.findByFechaEstado", query = "SELECT c FROM CxcCheque c WHERE c.fechaEstado = :fechaEstado")})
+    @NamedQuery(name = "CxcCheque.findByFechaEstado", query = "SELECT c FROM CxcCheque c WHERE c.fechaEstado = :fechaEstado"),
+    @NamedQuery(name = "CxcCheque.findByCodClienteCodEmpresaMes", query = "SELECT c FROM CxcCheque c WHERE c.cxcChequePK.codEmpresa = :codEmpresa AND c.cxcCliente.cxcClientePK.codCliente = :codCliente AND FUNC('TO_CHAR', FUNC('TRUNC',c.fechaRecepcion),'MMRRRR') = :fechaRecepcion")})
 public class CxcCheque implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -166,7 +168,7 @@ public class CxcCheque implements Serializable {
     }
 
     public Double getValorCheque() {
-        return valorCheque;
+        return Round.round(valorCheque, 2);
     }
 
     public void setValorCheque(Double valorCheque) {
@@ -253,5 +255,5 @@ public class CxcCheque implements Serializable {
     public String toString() {
         return "com.sire.entities.CxcCheque[ cxcChequePK=" + cxcChequePK + " ]";
     }
-    
+
 }
