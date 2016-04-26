@@ -138,8 +138,8 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
     @GET
     @Path("/sumSaldoDocumentoByCodClienteCodEmpresaFechaFac/{codCliente}/{codEmpresa}/{fechaFac}")
     @Produces({"application/json"})
-    public String sumSaldoDocumentoByCodClienteCodEmpresa(@PathParam("codCliente") String codCliente, @PathParam("codEmpresa") String codEmpresa, @PathParam("fechaFac") String fechaFac) {
-        TypedQuery<Double> query = em.createNamedQuery("CxcDocCobrar.sumSaldoDocumentoByCodClienteCodEmpresa", Double.class);
+    public String sumSaldoDocumentoByCodClienteCodEmpresaFechaFac(@PathParam("codCliente") String codCliente, @PathParam("codEmpresa") String codEmpresa, @PathParam("fechaFac") String fechaFac) {
+        TypedQuery<Double> query = em.createNamedQuery("CxcDocCobrar.sumSaldoDocumentoByCodClienteCodEmpresaFechaFac", Double.class);
         query.setParameter("codCliente", new BigInteger(codCliente));
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("fechaFac", fechaFac);
@@ -152,11 +152,38 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         }
     }
 
+    @GET
+    @Path("/sumCapitalByCodClienteCodEmpresaFechaRecepcion/{codCliente}/{codEmpresa}/{fechaFac}")
+    @Produces({"application/json"})
+    public String sumCapitalByCodClienteCodEmpresaFechaRecepcion(@PathParam("codCliente") String codCliente, @PathParam("codEmpresa") String codEmpresa, @PathParam("fechaRecepcion") String fechaRecepcion) {
+        TypedQuery<CxcCheque> q = em.createNamedQuery("CxcCheque.findByCodClienteCodEmpresaMes", CxcCheque.class);
+        q.setParameter("codCliente", new BigInteger(codCliente));
+        q.setParameter("codEmpresa", codEmpresa);
+        q.setParameter("fechaRecepcion", fechaRecepcion);
+
+        List<CxcCheque> cxcCheques = q.getResultList();
+
+        Double total = 0.0;
+        for (CxcCheque cxcCheque : cxcCheques) {
+            TypedQuery<Double> query = em.createNamedQuery("CxcDocCobrar.sumCapitalByCodClienteCodEmpresaFechaEmision", Double.class);
+            query.setParameter("codEmpresa", codEmpresa);
+            query.setParameter("codDocumento", cxcCheque.getCxcChequePK().getCodDocumento());
+            query.setParameter("numDocumento", cxcCheque.getCxcChequePK().getNumDocumento());
+            query.setParameter("fechaEmision", fechaRecepcion);
+
+            Double sum = query.getSingleResult();
+            if (sum != null) {
+                total += sum;
+            }
+        }
+        return total.toString();
+    }
+
     @PUT
     @Path("save")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void save(Pago pago) {
-//        List<CxcDocCobrar> cxcDocCobrarList, CxcAbonoC cxcAbonoC, CxcPagoContado cxcPagoContado, List<CxcCheque> cxcChequeList
+//        getEntityManager().persist(pago.getGnrLogHistorico());
 
         for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
             super.edit(cxcDocCobrar);

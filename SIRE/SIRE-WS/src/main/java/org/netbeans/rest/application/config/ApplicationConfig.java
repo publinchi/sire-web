@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.BanCtaCteFacadeREST.class);
         resources.add(com.sire.ws.service.CxcAbonoCFacadeREST.class);
         resources.add(com.sire.ws.service.CxcAbonoDFacadeREST.class);
+        resources.add(com.sire.ws.service.CxcChequeFacadeREST.class);
         resources.add(com.sire.ws.service.CxcClaseClienteFacadeREST.class);
         resources.add(com.sire.ws.service.CxcClienteFacadeREST.class);
         resources.add(com.sire.ws.service.CxcDocCobrarFacadeREST.class);
