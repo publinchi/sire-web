@@ -11,4 +11,12 @@
             <ui:include src="_detalle.xhtml" />
         </p:tab>
     </p:accordionPanel>
+
+    <ui:include src="../cliente/_clienteDialog.xhtml" >
+        <ui:param name="update" value="pedido:clienteOverlayPanel" />
+    </ui:include>
+
+    <ui:include src="../cliente/_clienteOverlayPanel.xhtml">
+        <ui:param name="buscarButton" value="pedido:accordionPanel:btn-cliente-pedido"/>
+    </ui:include>
 </html>

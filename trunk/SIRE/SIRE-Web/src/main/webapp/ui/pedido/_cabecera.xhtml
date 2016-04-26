@@ -45,12 +45,4 @@
                          process="@this" partialSubmit="true" 
                          update="pedido:accordionPanel:ubicacion"/>
     </h:form>
-
-    <ui:include src="../cliente/_clienteOverlayPanel.xhtml">
-        <ui:param name="buscarButton" value="btn-cliente-pedido"/>
-    </ui:include>
-
-    <ui:include src="../cliente/_clienteDialog.xhtml" >
-        <ui:param name="update" value="pedido:accordionPanel:clienteOverlayPanel,pedido:accordionPanel:form" />
-    </ui:include>
 </html>
