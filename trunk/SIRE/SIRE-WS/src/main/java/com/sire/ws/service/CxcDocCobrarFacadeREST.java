@@ -183,7 +183,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
     @Path("save")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void save(Pago pago) {
-//        getEntityManager().persist(pago.getGnrLogHistorico());
+        getEntityManager().persist(pago.getGnrLogHistorico());
 
         for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
             super.edit(cxcDocCobrar);

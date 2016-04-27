@@ -73,9 +73,10 @@ public class InvMovimientoCabFacadeREST extends AbstractFacade<InvMovimientoCab>
     @Consumes({"application/xml", "application/json"})
     public void create(Pedido entity) {
         try {
+            getEntityManager().persist(entity.getGnrLogHistorico());
 
             super.create(entity.getInvMovimientoCab());
-            em.persist(entity.getFacTmpFactC());
+            getEntityManager().persist(entity.getFacTmpFactC());
 
             Logger.getLogger(InvMovimientoCabFacadeREST.class.getName()).info("Actualizando...");
             for (InvMovimientoDtll invMovimientoDtll : entity.getInvMovimientoCab().getInvMovimientoDtllList()) {
