@@ -18,6 +18,8 @@ import com.sire.entities.FacTmpFactCPK;
 import com.sire.entities.FacTmpFactD;
 import com.sire.entities.FacTmpFactDPK;
 import com.sire.entities.GnrDivisa;
+import com.sire.entities.GnrLogHistorico;
+import com.sire.entities.GnrLogHistoricoPK;
 import com.sire.entities.GnrUsuarios;
 import com.sire.entities.InvArticulo;
 import com.sire.entities.InvBodegaArt;
@@ -32,8 +34,12 @@ import com.sire.entities.InvTransacciones;
 import com.sire.entities.InvUnidadAlternativa;
 import com.sire.entities.Pedido;
 import com.sire.entities.VCliente;
+import com.sire.exception.ClienteException;
 import com.sire.exception.EmptyException;
+import com.sire.exception.GPSException;
 import com.sire.exception.LimitException;
+import com.sire.exception.PayWayException;
+import com.sire.exception.VendedorException;
 import com.sire.rs.client.CxcDocCobrarFacadeREST;
 import com.sire.rs.client.FacCatalogoPrecioDFacadeREST;
 import com.sire.rs.client.FacDescVolFacadeREST;
@@ -246,7 +252,7 @@ public class ArticulosBean {
             invArticuloSeleccionado.setIva(findIva());
 
             loadPrecioUnitarioByUnidadMedida();
-        } catch (EmptyException ex) {
+        } catch (ClienteException ex) {
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
         }
     }
@@ -511,6 +517,10 @@ public class ArticulosBean {
 
     public String enviar() {
         try {
+            if (invMovimientoCab.getFormaPago() == null) {
+                throw new PayWayException("Por favor seleccione forma de pago.");
+            }
+
             if (facturacionLimitada()) {
                 throw new LimitException("No se puede facturar, cliente pasó el limite de facturación que es de : " + limiteFactura);
             }
@@ -527,6 +537,7 @@ public class ArticulosBean {
 
             pedido.setFacTmpFactC(facTmpFactC);
             pedido.setInvMovimientoCab(invMovimientoCab);
+            agregarLog(pedido);
 
             logger.info("Enviando Documento ...");
             invMovimientoCabFacadeREST.create_JSON(pedido);
@@ -538,17 +549,9 @@ public class ArticulosBean {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
-        } catch (EmptyException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
-            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
-            return "pedido?faces-redirect=true";
-        } catch (NullPointerException ex) {
+        } catch (NullPointerException | PayWayException | GPSException | EmptyException | LimitException | ClienteException | VendedorException ex) {
             logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
-            addMessage("Advertencia", "Por favor validar registro(s).", FacesMessage.SEVERITY_INFO);
-            return "pedido?faces-redirect=true";
-        } catch (LimitException ex) {
-            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
-            addMessage("Error", ex.getMessage(), FacesMessage.SEVERITY_ERROR);
+            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "pedido?faces-redirect=true";
         }
     }
@@ -592,23 +595,23 @@ public class ArticulosBean {
         cliente.limpiar();
     }
 
-    private CxcCliente obtenerCliente() throws EmptyException {
+    private CxcCliente obtenerCliente() throws ClienteException {
         if (cliente.getCliente() == null) {
-            throw new EmptyException("Por favor seleccione el cliente.");
+            throw new ClienteException("Por favor seleccione el cliente.");
         }
 
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
 
-    private VCliente obtenerVCliente() throws EmptyException {
+    private VCliente obtenerVCliente() throws ClienteException {
         if (cliente.getCliente() == null) {
-            throw new EmptyException("Por favor seleccione el cliente.");
+            throw new ClienteException("Por favor seleccione el cliente.");
         }
 
         return cliente.getCliente();
     }
 
-    private BigDecimal buscarDescuento() throws EmptyException {
+    private BigDecimal buscarDescuento() throws ClienteException {
         String articulosString = invArticuloFacadeREST.findByArticuloEmpresa(String.class, String.valueOf(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo()), obtenerEmpresa());
         List<InvArticulo> listaArticulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
         }.getType());
@@ -755,7 +758,6 @@ public class ArticulosBean {
         facTmpFactC.setTotalFactura(new BigDecimal(invMovimientoCab.getTotalDocumento()));
         facTmpFactC.setTotalSinIva(invMovimientoCab.getTSinIva());
         facTmpFactC.setValorDivisa(BigInteger.ONE);
-        facTmpFactC.setUbicacionPedido(mapa.getDireccion());
         FacTmpFactCPK facTmpFactCPK = new FacTmpFactCPK(invMovimientoCab.getInvMovimientoCabPK().getCodEmpresa(), Integer.parseInt(String.valueOf(invMovimientoCab.getInvMovimientoCabPK().getNumDocumento())), "SAI");
         facTmpFactC.setFacTmpFactCPK(facTmpFactCPK);
     }
@@ -795,16 +797,16 @@ public class ArticulosBean {
         }
     }
 
-    private void prepararInvMovimientoCab(BigDecimal numDocumentoResp) throws EmptyException {
+    private void prepararInvMovimientoCab(BigDecimal numDocumentoResp) throws PayWayException, GPSException, ClienteException, VendedorException {
         CxcCliente cxcCliente = obtenerCliente();
         invMovimientoCab.setCxcCliente(cxcCliente);
 
         if (invMovimientoCab.getFormaPago() == null) {
-            throw new EmptyException("Por favor seleccione la forma de pago.");
+            throw new PayWayException("Por favor seleccione la forma de pago.");
         }
 
         if (mapa.getDireccion() == null) {
-            throw new EmptyException("Por favor active el GPS y seleccione Geolocalizar.");
+            throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
         }
 
         InvMovimientoCabPK invMovimientoCabPK = new InvMovimientoCabPK();
@@ -890,11 +892,14 @@ public class ArticulosBean {
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
+        logger.info("Current user: " + userManager.getCurrent().getNombreUsuario().toLowerCase());
+
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                     equals(obtenerEmpresa())) {
+                logger.info("Usuario *: " + facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
                 logger.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
@@ -902,11 +907,11 @@ public class ArticulosBean {
         return null;
     }
 
-    private Integer obtenerVendedor() throws EmptyException {
+    private Integer obtenerVendedor() throws VendedorException {
         FacParametros facParametros = obtenerFacParametros();
 
         if (facParametros == null) {
-            throw new EmptyException("Vendedor no asociado a facturación.");
+            throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
         Integer defCodVendedor = facParametros.getDefCodVendedor();
@@ -1008,5 +1013,21 @@ public class ArticulosBean {
         } else {
             return new Double(sum);
         }
+    }
+
+    private void agregarLog(Pedido pedido) throws VendedorException {
+        GnrLogHistorico gnrLogHistorico = new GnrLogHistorico();
+        gnrLogHistorico.setDispositivo("Tablet");
+        gnrLogHistorico.setEstado("G");
+        gnrLogHistorico.setFechaDocumento(Calendar.getInstance().getTime());
+        gnrLogHistorico.setFechaEstado(Calendar.getInstance().getTime());
+        GnrLogHistoricoPK gnrLogHistoricoPK = new GnrLogHistoricoPK();
+        gnrLogHistoricoPK.setCodDocumento(pedido.getInvMovimientoCab().getInvMovimientoCabPK().getCodDocumento());
+        gnrLogHistoricoPK.setCodEmpresa(obtenerEmpresa());
+        gnrLogHistoricoPK.setNumDocumento(new Long(pedido.getInvMovimientoCab().getInvMovimientoCabPK().getNumDocumento()).intValue());
+        gnrLogHistorico.setGnrLogHistoricoPK(gnrLogHistoricoPK);
+        gnrLogHistorico.setNombreUsuario(obtenerVendedor().toString());
+        gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
+        pedido.setGnrLogHistorico(gnrLogHistorico);
     }
 }
