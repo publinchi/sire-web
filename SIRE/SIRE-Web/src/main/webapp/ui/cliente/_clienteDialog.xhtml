@@ -7,17 +7,18 @@
               resizable="false" appendTo="@(body)" positionType="absolute" 
               position="center">
         <h:form id="form">
-            <p:outputLabel for="busca" value="Busca:" />
-            <h:panelGrid columns="3">
-                <p:selectOneRadio id="modo" value="#{customers.modo}" 
-                                  columns="1" 
-                                  immediate="true">
-                    <f:selectItem itemLabel="Código" itemValue="c" />
-                    <f:selectItem itemLabel="Nombre" itemValue="n" />
-                    <p:ajax event="change" listener="#{customers.cambioModo}"
-                            update="@form"/>
-                </p:selectOneRadio>
-
+            <p:selectOneRadio id="modo" 
+                              value="#{customers.modo}" 
+                              columns="1" 
+                              immediate="true"
+                              layout="lineDirection"
+                              styleClass="selectRadio">
+                <f:selectItem itemLabel="Código" itemValue="c" />
+                <f:selectItem itemLabel="Nombre" itemValue="n" />
+                <p:ajax event="change" listener="#{customers.cambioModo}"
+                        update="@form"/>
+            </p:selectOneRadio>
+            <h:panelGrid columns="2">
                 <p:inputText id="busca" placeholder="Buscar Cliente" type="search" 
                              value="${customers.input}"/>
                 <p:commandButton id="botonBuscar" icon="ui-icon-search" 
@@ -27,8 +28,8 @@
             <p:dataTable id="dataList" var="c" 
                          value="#{customers.clientes}" 
                          selectionMode="single" reflow="false" rows="5" 
-                         paginator="true" 
-                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         paginator="true"  
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {LastPageLink}"
                          paginatorPosition="bottom" 
                          paginatorAlwaysVisible="false"
                          pageLinks="3"
@@ -36,7 +37,7 @@
                          tableStyleClass="ui-table-columntoggle"
                          tableStyle="width:auto"
                          rendered="#{customers.clientes.size() gt 0}"
-                         onExpandStart="alert('expand');">
+                         style="font-size:12px;">
                 <p:ajax event="tap" listener="#{customers.tapCliente}" 
                         oncomplete="PF('clienteDialog').hide();" 
                         update="#{update},@form" />
