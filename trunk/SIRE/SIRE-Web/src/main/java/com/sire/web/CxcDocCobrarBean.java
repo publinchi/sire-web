@@ -496,10 +496,10 @@ public class CxcDocCobrarBean {
 
     private void agregarLog(Pago pago) throws VendedorException {
         GnrLogHistorico gnrLogHistorico = new GnrLogHistorico();
-        gnrLogHistorico.setDispositivo("");
+        gnrLogHistorico.setDispositivo("Tablet");
         gnrLogHistorico.setEstado("G");
         gnrLogHistorico.setFechaDocumento(Calendar.getInstance().getTime());
-        gnrLogHistorico.setFechaEstado(null);
+        gnrLogHistorico.setFechaEstado(Calendar.getInstance().getTime());
         GnrLogHistoricoPK gnrLogHistoricoPK = new GnrLogHistoricoPK();
         gnrLogHistoricoPK.setCodDocumento(pago.getCxcAbonoC().getCxcAbonoCPK().getCodDocumento());
         gnrLogHistoricoPK.setCodEmpresa(obtenerEmpresa());

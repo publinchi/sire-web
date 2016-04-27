@@ -104,6 +104,7 @@ public class CustomersBean {
         cliente.setCliente(vCliente);
 
         limpiar();
+        modo = "c";
     }
 
     public void cambioModo() {
@@ -115,6 +116,5 @@ public class CustomersBean {
             clientes.clear();
         }
         input = null;
-        modo = "n";
     }
 }
