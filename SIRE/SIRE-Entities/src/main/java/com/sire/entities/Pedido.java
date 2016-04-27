@@ -5,28 +5,18 @@
  */
 package com.sire.entities;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  *
  * @author publio
  */
+@Getter
+@Setter
 public class Pedido {
 
     private InvMovimientoCab invMovimientoCab;
     private FacTmpFactC facTmpFactC;
-
-    public InvMovimientoCab getInvMovimientoCab() {
-        return invMovimientoCab;
-    }
-
-    public void setInvMovimientoCab(InvMovimientoCab invMovimientoCab) {
-        this.invMovimientoCab = invMovimientoCab;
-    }
-
-    public FacTmpFactC getFacTmpFactC() {
-        return facTmpFactC;
-    }
-
-    public void setFacTmpFactC(FacTmpFactC facTmpFactC) {
-        this.facTmpFactC = facTmpFactC;
-    }
+    private GnrLogHistorico gnrLogHistorico;
 }

@@ -61,8 +61,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacTmpFactC.findByTotalFactura", query = "SELECT f FROM FacTmpFactC f WHERE f.totalFactura = :totalFactura")})
 public class FacTmpFactC implements Serializable {
 
-    @Column(name = "UBICACION_PEDIDO")
-    private String ubicacionPedido;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected FacTmpFactCPK facTmpFactCPK;
@@ -386,13 +384,4 @@ public class FacTmpFactC implements Serializable {
     public String toString() {
         return "com.sire.entities.FacTmpFactC[ facTmpFactCPK=" + facTmpFactCPK + " ]";
     }
-
-    public String getUbicacionPedido() {
-        return ubicacionPedido;
-    }
-
-    public void setUbicacionPedido(String ubicacionPedido) {
-        this.ubicacionPedido = ubicacionPedido;
-    }
-
 }
