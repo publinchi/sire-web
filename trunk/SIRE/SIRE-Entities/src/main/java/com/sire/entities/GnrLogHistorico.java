@@ -6,7 +6,6 @@
 package com.sire.entities;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -53,7 +52,8 @@ public class GnrLogHistorico implements Serializable {
     @Column(name = "ESTADO")
     private String estado;
     @Column(name = "FECHA_ESTADO")
-    private BigInteger fechaEstado;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaEstado;
 
     public GnrLogHistorico() {
     }
@@ -114,11 +114,11 @@ public class GnrLogHistorico implements Serializable {
         this.estado = estado;
     }
 
-    public BigInteger getFechaEstado() {
+    public Date getFechaEstado() {
         return fechaEstado;
     }
 
-    public void setFechaEstado(BigInteger fechaEstado) {
+    public void setFechaEstado(Date fechaEstado) {
         this.fechaEstado = fechaEstado;
     }
 
@@ -146,5 +146,5 @@ public class GnrLogHistorico implements Serializable {
     public String toString() {
         return "com.sire.entities.GnrLogHistorico[ gnrLogHistoricoPK=" + gnrLogHistoricoPK + " ]";
     }
-    
+
 }
