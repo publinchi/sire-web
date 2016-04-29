@@ -7,6 +7,7 @@ package org.netbeans.rest.application.config;
 
 import java.util.Set;
 import javax.ws.rs.core.Application;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
 
 /**
  *
@@ -18,15 +19,16 @@ public class ApplicationConfig extends Application {
     @Override
     public Set<Class<?>> getClasses() {
         Set<Class<?>> resources = new java.util.HashSet<>();
+        resources.add(MultiPartFeature.class);
+        resources.add(DebugExceptionMapper.class);
         addRestResourceClasses(resources);
         return resources;
     }
 
     /**
-     * Do not modify addRestResourceClasses() method.
-     * It is automatically populated with
-     * all resources defined in the project.
-     * If required, comment out calling this method in getClasses().
+     * Do not modify addRestResourceClasses() method. It is automatically
+     * populated with all resources defined in the project. If required, comment
+     * out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.sire.ws.service.BanBancosFacadeREST.class);
@@ -68,7 +70,9 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.InvTransaccionesFacadeREST.class);
         resources.add(com.sire.ws.service.InvUnidadAlternativaFacadeREST.class);
         resources.add(com.sire.ws.service.InvUnidadMedidaFacadeREST.class);
+        resources.add(com.sire.ws.service.UploadFileService.class);
         resources.add(com.sire.ws.service.VClienteFacadeREST.class);
+        resources.add(org.netbeans.rest.application.config.DebugExceptionMapper.class);
     }
-    
+
 }
