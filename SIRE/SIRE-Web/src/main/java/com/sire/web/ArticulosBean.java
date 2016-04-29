@@ -915,6 +915,11 @@ public class ArticulosBean {
         }
 
         Integer defCodVendedor = facParametros.getDefCodVendedor();
+
+        if (defCodVendedor == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
         logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
