@@ -23,6 +23,7 @@ import javax.ws.rs.client.WebTarget;
  * @author pestupinan
  */
 public class GnrContadorDocFacadeREST {
+
     private WebTarget webTarget;
     private Client client;
     private static final String BASE_URI = "http://localhost:9080/SIRE-WS/webresources";
@@ -32,9 +33,9 @@ public class GnrContadorDocFacadeREST {
         webTarget = client.target(BASE_URI).path("com.sire.entities.gnrcontadordoc");
     }
 
-    public <T> T numDocumento(Class<T> responseType, String wempresa, String wcod_modulo, String wcod_documento) throws ClientErrorException {
+    public <T> T numDocumento(Class<T> responseType, String wempresa, String wcod_modulo, String wcod_documento, String wnombre_usuario) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("{0}/{1}/{2}", new Object[]{wempresa, wcod_modulo, wcod_documento}));
+        resource = resource.path(java.text.MessageFormat.format("{0}/{1}/{2}/{3}", new Object[]{wempresa, wcod_modulo, wcod_documento, wnombre_usuario}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
@@ -101,5 +102,5 @@ public class GnrContadorDocFacadeREST {
     public void close() {
         client.close();
     }
-    
+
 }

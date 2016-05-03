@@ -526,7 +526,7 @@ public class ArticulosBean {
             }
 
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
-            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "03", "SAI");
+            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
             prepararInvMovimientoCab(numDocumentoResp);
             prepararInvMovimientoDtlls(numDocumentoResp);
 

@@ -118,15 +118,16 @@ public class GnrContadorDocFacadeREST extends AbstractFacade<GnrContadorDoc> {
     }
 
     @GET
-    @Path("{wempresa}/{wcod_modulo}/{wcod_documento}")
+    @Path("{wempresa}/{wcod_modulo}/{wcod_documento}/{wnombre_usuario}")
     @Produces("application/json")
-    public BigDecimal numDocumento(@PathParam("wempresa") String wempresa, @PathParam("wcod_modulo") String wcod_modulo, @PathParam("wcod_documento") String wcod_documento) {
-        StoredProcedureQuery query = this.em.createNamedStoredProcedureQuery("PRC_NUM_COMPROBANTE");
+    public BigDecimal numDocumento(@PathParam("wempresa") String wempresa, @PathParam("wcod_modulo") String wcod_modulo, @PathParam("wcod_documento") String wcod_documento, @PathParam("wnombre_usuario") String wnombre_usuario) {
+        StoredProcedureQuery query = this.em.createNamedStoredProcedureQuery("PRC_NUM_COMPROBANTE2");
         query.setParameter("wempresa", wempresa);
         query.setParameter("wcod_modulo", wcod_modulo);
         query.setParameter("wcod_documento", wcod_documento);
+        query.setParameter("wnombre_usuario", wnombre_usuario);
         query.execute();
-        BigDecimal wnum_documento = (BigDecimal) query.getOutputParameterValue(4);
+        BigDecimal wnum_documento = (BigDecimal) query.getOutputParameterValue(5);
 //        String mensaje = (String) query.getOutputParameterValue(5);
 
         return wnum_documento;
