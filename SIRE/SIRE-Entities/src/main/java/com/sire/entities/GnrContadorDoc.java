@@ -36,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
             @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wempresa"),
             @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wcod_modulo"),
             @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wcod_documento"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wnombre_usuario"),
             @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wnum_documento"),
             @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "mensaje")
         }
