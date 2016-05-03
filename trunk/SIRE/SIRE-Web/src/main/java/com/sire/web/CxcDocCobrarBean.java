@@ -206,7 +206,7 @@ public class CxcDocCobrarBean {
         try {
             logger.info("enviar()");
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
-            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN");
+            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN", userManager.getCurrent().getNombreUsuario());
 
             CxcAbonoC cxcAbonoC = new CxcAbonoC();
             CxcAbonoCPK cxcAbonoCPK = new CxcAbonoCPK();
