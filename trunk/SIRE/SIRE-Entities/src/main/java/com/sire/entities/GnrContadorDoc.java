@@ -30,8 +30,8 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author pestupinan
  */
 @NamedStoredProcedureQuery(
-        name = "PRC_NUM_COMPROBANTE",
-        procedureName = "PRC_NUM_COMPROBANTE",
+        name = "PRC_NUM_COMPROBANTE2",
+        procedureName = "PRC_NUM_COMPROBANTE2",
         parameters = {
             @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wempresa"),
             @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wcod_modulo"),
