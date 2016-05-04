@@ -1031,7 +1031,7 @@ public class ArticulosBean {
         gnrLogHistoricoPK.setCodEmpresa(obtenerEmpresa());
         gnrLogHistoricoPK.setNumDocumento(new Long(pedido.getInvMovimientoCab().getInvMovimientoCabPK().getNumDocumento()).intValue());
         gnrLogHistorico.setGnrLogHistoricoPK(gnrLogHistoricoPK);
-        gnrLogHistorico.setNombreUsuario(obtenerVendedor().toString());
+        gnrLogHistorico.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
         gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
         pedido.setGnrLogHistorico(gnrLogHistorico);
     }

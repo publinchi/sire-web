@@ -505,7 +505,7 @@ public class CxcDocCobrarBean {
         gnrLogHistoricoPK.setCodEmpresa(obtenerEmpresa());
         gnrLogHistoricoPK.setNumDocumento(pago.getCxcAbonoC().getCxcAbonoCPK().getNumAbono().intValue());
         gnrLogHistorico.setGnrLogHistoricoPK(gnrLogHistoricoPK);
-        gnrLogHistorico.setNombreUsuario(obtenerVendedor().toString());
+        gnrLogHistorico.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
         gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
         pago.setGnrLogHistorico(gnrLogHistorico);
     }
