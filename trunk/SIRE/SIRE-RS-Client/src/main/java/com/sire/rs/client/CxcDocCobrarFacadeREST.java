@@ -8,6 +8,7 @@ package com.sire.rs.client;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 /**
  * Jersey REST client generated for REST resource:CxcDocCobrarFacadeREST
@@ -83,12 +84,12 @@ public class CxcDocCobrarFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
-    public void save_XML(Object requestEntity) throws ClientErrorException {
-        webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
+    public Response save_XML(Object requestEntity) throws ClientErrorException {
+        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), Response.class);
     }
 
-    public void save_JSON(Object requestEntity) throws ClientErrorException {
-        webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON));
+    public Response save_JSON(Object requestEntity) throws ClientErrorException {
+        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), Response.class);
     }
 
     public void create_XML(Object requestEntity) throws ClientErrorException {
