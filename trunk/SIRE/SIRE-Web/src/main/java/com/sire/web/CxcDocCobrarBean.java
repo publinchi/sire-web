@@ -556,43 +556,42 @@ public class CxcDocCobrarBean {
     private void enviarMail(Pago pago) throws MessagingException, MailException {
         Message message = new MimeMessage(mailSession);
 
-//        if (cliente.getCliente().getMail() != null && !cliente.getCliente().getMail().isEmpty()) {
-//        String toUser = cliente.getCliente().getMail();
-        String toUser = "publio.estupinan@cobiscorp.com";
-        String sub = "Pedido.";
-        String saltoLinea = System.getProperty("line.separator");
-        StringBuilder msg = new StringBuilder();
-        msg.append("Documento Nº: ");
-        msg.append(pago.getGnrLogHistorico().getGnrLogHistoricoPK().getNumDocumento());
-        msg.append(saltoLinea);
-        msg.append("Monto: ");
-        msg.append(pago.getCxcAbonoC().getTotalCapital());
-        msg.append(saltoLinea);
-        msg.append("Ret. Fuente: ");
-        msg.append(pago.getCxcPagoContado().getRetencion());
-        msg.append(saltoLinea);
-        msg.append("Dev. Descuento: ");
-        msg.append("");
-        msg.append(saltoLinea);
-        msg.append("Cheques: ");
-        msg.append(saltoLinea);
-        for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
-            msg.append("Banco: ");
-            msg.append(cxcCheque.getCodBanco());
+        if (cliente.getCliente().getMail() != null && !cliente.getCliente().getMail().isEmpty()) {
+            String toUser = cliente.getCliente().getMail();
+            String sub = "Pedido.";
+            String saltoLinea = System.getProperty("line.separator");
+            StringBuilder msg = new StringBuilder();
+            msg.append("Documento Nº: ");
+            msg.append(pago.getGnrLogHistorico().getGnrLogHistoricoPK().getNumDocumento());
             msg.append(saltoLinea);
-            msg.append("Cheque Nº: ");
-            msg.append(cxcCheque.getNumCheque());
+            msg.append("Monto: ");
+            msg.append(pago.getCxcAbonoC().getTotalCapital());
             msg.append(saltoLinea);
-            msg.append("Valor: ");
-            msg.append(cxcCheque.getValorCheque());
-        }
+            msg.append("Ret. Fuente: ");
+            msg.append(pago.getCxcPagoContado().getRetencion());
+            msg.append(saltoLinea);
+            msg.append("Dev. Descuento: ");
+            msg.append("");
+            msg.append(saltoLinea);
+            msg.append("Cheques: ");
+            msg.append(saltoLinea);
+            for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
+                msg.append("Banco: ");
+                msg.append(cxcCheque.getCodBanco());
+                msg.append(saltoLinea);
+                msg.append("Cheque Nº: ");
+                msg.append(cxcCheque.getNumCheque());
+                msg.append(saltoLinea);
+                msg.append("Valor: ");
+                msg.append(cxcCheque.getValorCheque());
+            }
 
-        message.setRecipient(Message.RecipientType.TO, new InternetAddress(toUser));
-        message.setText(msg.toString());
-        message.setSubject(sub);
-        Transport.send(message);
-//        } else {
-//            throw new MailException("Cliente no tiene e-mail");
-//        }
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(toUser));
+            message.setText(msg.toString());
+            message.setSubject(sub);
+            Transport.send(message);
+        } else {
+            throw new MailException("Cliente no tiene e-mail");
+        }
     }
 }
