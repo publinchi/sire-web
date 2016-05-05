@@ -13,8 +13,6 @@ import com.sire.event.MailEvent;
 import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
-import javax.enterprise.event.Event;
-import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -38,9 +36,8 @@ import javax.ws.rs.core.Response;
 @Path("com.sire.entities.cxcdoccobrar")
 public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
 
-    @Inject
-    private Event<MailEvent> eventProducer;
-
+// TODO    @Inject
+// TODO   private Event<MailEvent> eventProducer;
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -241,6 +238,6 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
 
         event.setMessage(msg.toString());
 
-        eventProducer.fire(event); //firing event!
+// TODO      eventProducer.fire(event); //firing event!
     }
 }
