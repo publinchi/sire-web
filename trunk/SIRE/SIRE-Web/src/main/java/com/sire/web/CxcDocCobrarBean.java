@@ -25,6 +25,7 @@ import com.sire.entities.GnrLogHistoricoPK;
 import com.sire.entities.Pago;
 import com.sire.entities.VCliente;
 import com.sire.exception.ClienteException;
+import com.sire.exception.MailException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.BanCtaCteFacadeREST;
 import com.sire.rs.client.CxcChequeFacadeREST;
@@ -41,11 +42,18 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.context.RequestContext;
@@ -121,6 +129,9 @@ public class CxcDocCobrarBean {
     @Getter
     @Setter
     private List<CxcCheque> cxcCheques;
+
+    @Resource(name = "mail/gmail")
+    private Session mailSession;
 
     public CxcDocCobrarBean() {
         cxcChequeFacadeREST = new CxcChequeFacadeREST();
@@ -203,10 +214,11 @@ public class CxcDocCobrarBean {
     }
 
     public String enviar() {
+        BigDecimal numDocumentoResp = null;
         try {
             logger.info("enviar()");
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
-            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN", userManager.getCurrent().getNombreUsuario());
+            numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN", userManager.getCurrent().getNombreUsuario());
 
             CxcAbonoC cxcAbonoC = new CxcAbonoC();
             CxcAbonoCPK cxcAbonoCPK = new CxcAbonoCPK();
@@ -286,6 +298,10 @@ public class CxcDocCobrarBean {
             agregarLog(pago);
             cxcDocCobrarFacadeREST.save_JSON(pago);
 
+            logger.info("Enviando Mail ...");
+            enviarMail(pago);
+            logger.info("Mail Enviado.");
+
             limpiar();
 
             addMessage("Cobro enviado exitosamente.", "Num. Cobro: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
@@ -296,6 +312,13 @@ public class CxcDocCobrarBean {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
             return "cobro?faces-redirect=true";
+        } catch (MessagingException | MailException ex) {
+            limpiar();
+            logger.log(Level.SEVERE, "Por favor revisar servidor mail o correo de cliente.", ex);
+            addMessage("Pedido enviado, pero no se envió correo.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_WARN);
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getFlash().setKeepMessages(true);
+            return "index?faces-redirect=true";
         }
     }
 
@@ -516,5 +539,48 @@ public class CxcDocCobrarBean {
         numCheque = null;
         numCuenta = null;
         valorCheque = 0.0;
+    }
+
+    private void enviarMail(Pago pago) throws MessagingException, MailException {
+        Message message = new MimeMessage(mailSession);
+
+//        if (cliente.getCliente().getMail() != null && !cliente.getCliente().getMail().isEmpty()) {
+//        String toUser = cliente.getCliente().getMail();
+        String toUser = "publio.estupinan@cobiscorp.com";
+        String sub = "Pedido.";
+        String saltoLinea = "/n";
+        StringBuilder msg = new StringBuilder();
+        msg.append("Documento Nº: ");
+        msg.append(pago.getGnrLogHistorico().getGnrLogHistoricoPK().getNumDocumento());
+        msg.append(saltoLinea);
+        msg.append("Monto: ");
+        msg.append(pago.getCxcAbonoC().getTotalCapital());
+        msg.append(saltoLinea);
+        msg.append("Ret. Fuente: ");
+        msg.append(pago.getCxcPagoContado().getRetencion());
+        msg.append(saltoLinea);
+        msg.append("Dev. Descuento: ");
+        msg.append("");
+        msg.append(saltoLinea);
+        msg.append("Cheques: ");
+        msg.append(saltoLinea);
+        for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
+            msg.append("Banco: ");
+            msg.append(cxcCheque.getCodBanco());
+            msg.append(saltoLinea);
+            msg.append("Cheque Nº: ");
+            msg.append(cxcCheque.getNumCheque());
+            msg.append(saltoLinea);
+            msg.append("Valor: ");
+            msg.append(cxcCheque.getValorCheque());
+        }
+
+        message.setRecipient(Message.RecipientType.TO, new InternetAddress(toUser));
+        message.setText(msg.toString());
+        message.setSubject(sub);
+        Transport.send(message);
+//        } else {
+//            throw new MailException("Cliente no tiene e-mail");
+//        }
     }
 }
