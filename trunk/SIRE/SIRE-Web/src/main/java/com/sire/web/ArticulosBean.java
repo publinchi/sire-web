@@ -38,6 +38,7 @@ import com.sire.exception.ClienteException;
 import com.sire.exception.EmptyException;
 import com.sire.exception.GPSException;
 import com.sire.exception.LimitException;
+import com.sire.exception.MailException;
 import com.sire.exception.PayWayException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.CxcDocCobrarFacadeREST;
@@ -61,12 +62,19 @@ import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.faces.application.FacesMessage.Severity;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 import javax.ws.rs.ClientErrorException;
 import lombok.Getter;
 import lombok.Setter;
@@ -132,6 +140,9 @@ public class ArticulosBean {
 
     //Mensaje
     private String cantidadExcedida, colorCantidadExcedida = "black";
+
+    @Resource(name = "mail/gmail")
+    private Session mailSession;
 
     public ArticulosBean() {
         codInventario = "01";
@@ -516,6 +527,7 @@ public class ArticulosBean {
     }
 
     public String enviar() {
+        BigDecimal numDocumentoResp = null;
         try {
             if (invMovimientoCab.getFormaPago() == null) {
                 throw new PayWayException("Por favor seleccione forma de pago.");
@@ -526,7 +538,7 @@ public class ArticulosBean {
             }
 
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
-            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
+            numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
             prepararInvMovimientoCab(numDocumentoResp);
             prepararInvMovimientoDtlls(numDocumentoResp);
 
@@ -543,6 +555,10 @@ public class ArticulosBean {
             invMovimientoCabFacadeREST.create_JSON(pedido);
             logger.info("Documento Enviado.");
 
+            logger.info("Enviando Mail ...");
+            enviarMail();
+            logger.info("Mail Enviado.");
+
             limpiar();
 
             addMessage("Pedido enviado exitosamente.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
@@ -553,6 +569,13 @@ public class ArticulosBean {
             logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "pedido?faces-redirect=true";
+        } catch (MessagingException | MailException ex) {
+            limpiar();
+            logger.log(Level.SEVERE, "Por favor revisar servidor mail o correo de cliente.", ex);
+            addMessage("Pedido enviado, pero no se envió correo.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_WARN);
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getFlash().setKeepMessages(true);
+            return "index?faces-redirect=true";
         }
     }
 
@@ -1034,5 +1057,22 @@ public class ArticulosBean {
         gnrLogHistorico.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
         gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
         pedido.setGnrLogHistorico(gnrLogHistorico);
+    }
+
+    private void enviarMail() throws MessagingException, MailException {
+        Message message = new MimeMessage(mailSession);
+
+        if (cliente.getCliente().getMail() != null && !cliente.getCliente().getMail().isEmpty()) {
+//        String toUser = cliente.getCliente().getMail();
+            String toUser = "publio.estupinan@cobiscorp.com";
+            String sub = "Pedido.";
+            String msg = "Mail de prueba.";
+            message.setRecipient(Message.RecipientType.TO, new InternetAddress(toUser));
+            message.setText(msg);
+            message.setSubject(sub);
+            Transport.send(message);
+        } else {
+            throw new MailException("Cliente no tiene e-mail");
+        }
     }
 }
