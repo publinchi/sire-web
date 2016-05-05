@@ -9,9 +9,12 @@ import com.sire.entities.CxcCheque;
 import com.sire.entities.CxcDocCobrar;
 import com.sire.entities.CxcDocCobrarPK;
 import com.sire.entities.Pago;
+import com.sire.event.MailEvent;
 import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.enterprise.event.Event;
+import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -34,6 +37,9 @@ import javax.ws.rs.core.Response;
 @Stateless
 @Path("com.sire.entities.cxcdoccobrar")
 public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
+
+    @Inject
+    private Event<MailEvent> eventProducer;
 
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
@@ -195,7 +201,46 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
             getEntityManager().persist(cxcCheque);
         }
-        
+
+        // TODO https://rodrigouchoa.wordpress.com/2014/10/22/cdi-ejb-sending-asynchronous-mail-on-transaction-success/
+        // TODO: sendEmail(pago);
         return Response.ok().build();
+    }
+
+    private void sendEmail(Pago pago) {
+        MailEvent event = new MailEvent();
+        event.setTo(pago.getClientMail());
+        event.setSubject("Cobro.");
+
+        String saltoLinea = System.getProperty("line.separator");
+        StringBuilder msg = new StringBuilder();
+        msg.append("Documento Nº: ");
+        msg.append(pago.getGnrLogHistorico().getGnrLogHistoricoPK().getNumDocumento());
+        msg.append(saltoLinea);
+        msg.append("Monto: ");
+        msg.append(pago.getCxcAbonoC().getTotalCapital());
+        msg.append(saltoLinea);
+        msg.append("Ret. Fuente: ");
+        msg.append(pago.getCxcPagoContado().getRetencion());
+        msg.append(saltoLinea);
+        msg.append("Dev. Descuento: ");
+        msg.append("");
+        msg.append(saltoLinea);
+        msg.append("Cheques: ");
+        msg.append(saltoLinea);
+        for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
+            msg.append("Banco: ");
+            msg.append(cxcCheque.getCodBanco());
+            msg.append(saltoLinea);
+            msg.append("Cheque Nº: ");
+            msg.append(cxcCheque.getNumCheque());
+            msg.append(saltoLinea);
+            msg.append("Valor: ");
+            msg.append(cxcCheque.getValorCheque());
+        }
+
+        event.setMessage(msg.toString());
+
+        eventProducer.fire(event); //firing event!
     }
 }

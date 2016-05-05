@@ -558,7 +558,7 @@ public class CxcDocCobrarBean {
 
         if (cliente.getCliente().getMail() != null && !cliente.getCliente().getMail().isEmpty()) {
             String toUser = cliente.getCliente().getMail();
-            String sub = "Pedido.";
+            String sub = "Cobro.";
             String saltoLinea = System.getProperty("line.separator");
             StringBuilder msg = new StringBuilder();
             msg.append("Documento Nº: ");
