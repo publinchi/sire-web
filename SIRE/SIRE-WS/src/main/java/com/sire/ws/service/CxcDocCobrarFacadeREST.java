@@ -25,6 +25,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -182,7 +183,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
     @PUT
     @Path("save")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void save(Pago pago) {
+    public Response save(Pago pago) {
         getEntityManager().persist(pago.getGnrLogHistorico());
 
         for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
@@ -194,5 +195,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
             getEntityManager().persist(cxcCheque);
         }
+        
+        return Response.ok().build();
     }
 }

@@ -26,6 +26,7 @@ import com.sire.entities.Pago;
 import com.sire.entities.VCliente;
 import com.sire.exception.ClienteException;
 import com.sire.exception.MailException;
+import com.sire.exception.RestException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.BanCtaCteFacadeREST;
 import com.sire.rs.client.CxcChequeFacadeREST;
@@ -54,6 +55,7 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.context.RequestContext;
@@ -214,9 +216,9 @@ public class CxcDocCobrarBean {
     }
 
     public String enviar() {
+        logger.info("enviar()");
         BigDecimal numDocumentoResp = null;
         try {
-            logger.info("enviar()");
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN", userManager.getCurrent().getNombreUsuario());
 
@@ -296,26 +298,36 @@ public class CxcDocCobrarBean {
             pago.setCxcDocCobrarList(cxcDocCobrarList);
             pago.setCxcPagoContado(cxcPagoContado);
             agregarLog(pago);
-            cxcDocCobrarFacadeREST.save_JSON(pago);
+            logger.info("Enviando Pago ...");
+            Response response = cxcDocCobrarFacadeREST.save_JSON(pago);
+            logger.info("Pago Enviado.");
 
+            logger.info("Response: " + response.toString());
+            logger.info("Status: " + response.getStatus());
+            logger.info("Status info: " + response.getStatusInfo().getReasonPhrase());
+
+            if (response.getStatus() != 200) {
+                throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
+            }
             logger.info("Enviando Mail ...");
             enviarMail(pago);
             logger.info("Mail Enviado.");
 
             limpiar();
 
-            addMessage("Cobro enviado exitosamente.", "Num. Cobro: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
+            addMessage("Cobro relizado exitosamente.", "Num. Cobro: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
-        } catch (ClienteException | VendedorException ex) {
+
+        } catch (RestException | ClienteException | VendedorException ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
             return "cobro?faces-redirect=true";
         } catch (MessagingException | MailException ex) {
             limpiar();
-            logger.log(Level.SEVERE, "Por favor revisar servidor mail o correo de cliente.", ex);
-            addMessage("Pedido enviado, pero no se envió correo.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_WARN);
+            logger.log(Level.WARNING, ex.getMessage(), ex);
+            addMessage("Cobro relizado exitosamente.", "Num. Cobro: " + numDocumentoResp + ",  pero no se pudo enviar e-mail.", FacesMessage.SEVERITY_WARN);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
@@ -548,7 +560,7 @@ public class CxcDocCobrarBean {
 //        String toUser = cliente.getCliente().getMail();
         String toUser = "publio.estupinan@cobiscorp.com";
         String sub = "Pedido.";
-        String saltoLinea = "/n";
+        String saltoLinea = System.getProperty("line.separator");
         StringBuilder msg = new StringBuilder();
         msg.append("Documento Nº: ");
         msg.append(pago.getGnrLogHistorico().getGnrLogHistoricoPK().getNumDocumento());
