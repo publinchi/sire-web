@@ -22,5 +22,6 @@ public class Pago {
     private CxcPagoContado cxcPagoContado;
     private List<CxcCheque> cxcChequeList;
     private GnrLogHistorico gnrLogHistorico;
+    private String clientMail;
 
 }
