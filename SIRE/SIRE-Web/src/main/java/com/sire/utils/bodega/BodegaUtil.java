@@ -63,9 +63,9 @@ public class BodegaUtil {
             tmp.add(exist);
         }
 
-        Collections.sort(tmp, new Comparator<Long>() {
+        Collections.sort(tmp, new Comparator<Integer>() {
             @Override
-            public int compare(Long o1, Long o2) {
+            public int compare(Integer o1, Integer o2) {
                 return o2.compareTo(o1);
             }
         });
