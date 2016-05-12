@@ -39,7 +39,7 @@ public class CajFacturaEnviadaPK implements Serializable {
     @Column(name = "NUM_DOCUMENTO")
     private String numDocumento;
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "SeqGen")
-    @SequenceGenerator(name = "SeqGen", sequenceName = "SECUENCIAL_SEQUENCE", allocationSize = 1)
+    @SequenceGenerator(name = "SeqGen", sequenceName = "seq_caj_factura_enviada", allocationSize = 1)
     @Basic(optional = false)
     @Column(name = "SECUENCIAL")
     private Integer secuencial;
