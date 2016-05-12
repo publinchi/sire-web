@@ -43,6 +43,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrUsuarios.findByFechaEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.fechaEstado = :fechaEstado")})
 public class GnrUsuarios implements Serializable {
 
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<PryProyecto> pryProyectoList;
+
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<CajFacturaEnviada> cajFacturaEnviadaList;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
     private List<GnrUsuaMod> gnrUsuaModList;
 
@@ -235,6 +241,24 @@ public class GnrUsuarios implements Serializable {
 
     public void setGnrUsuaModList(List<GnrUsuaMod> gnrUsuaModList) {
         this.gnrUsuaModList = gnrUsuaModList;
+    }
+
+    @XmlTransient
+    public List<CajFacturaEnviada> getCajFacturaEnviadaList() {
+        return cajFacturaEnviadaList;
+    }
+
+    public void setCajFacturaEnviadaList(List<CajFacturaEnviada> cajFacturaEnviadaList) {
+        this.cajFacturaEnviadaList = cajFacturaEnviadaList;
+    }
+
+    @XmlTransient
+    public List<PryProyecto> getPryProyectoList() {
+        return pryProyectoList;
+    }
+
+    public void setPryProyectoList(List<PryProyecto> pryProyectoList) {
+        this.pryProyectoList = pryProyectoList;
     }
     
 }
