@@ -51,6 +51,8 @@
     <class>com.sire.entities.GnrUsuaMod</class>
     <class>com.sire.entities.VCobros</class>
     <class>com.sire.entities.GnrLogHistorico</class>
+    <class>com.sire.entities.CajFacturaEnviada</class>
+    <class>com.sire.entities.PryProyecto</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="eclipselink.logging.level" value="FINE"/>
