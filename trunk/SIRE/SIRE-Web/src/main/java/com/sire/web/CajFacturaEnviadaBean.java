@@ -71,6 +71,7 @@ public class CajFacturaEnviadaBean {
         cajFacturaEnviada.setFechaEstado(Calendar.getInstance().getTime());
         cajFacturaEnviada.setIdFoto(file.getFileName());
         cajFacturaEnviada.setNombreUsuario(userManager.getCurrent());
+        cajFacturaEnviada.getCajFacturaEnviadaPK().setCodSupervisor(Integer.valueOf(userManager.getCurrent().getNombreUsuario()));
         cajFacturaEnviada.setEstado("G");
         CajFacturaEnviadaFacadeREST cajFacturaEnviadaFacadeREST = new CajFacturaEnviadaFacadeREST();
         Response response = cajFacturaEnviadaFacadeREST.save_JSON(cajFacturaEnviada);
