@@ -48,42 +48,51 @@
         <pm:field>
             <p:inputText id="rucCiProveedor" placeholder="RUC Proveedor" 
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.cajFacturaEnviadaPK.rucCiProveedor}"
+                         requiredMessage="Campo RUC Proveedor requerido"
                          required="true"/>
         </pm:field>
         <pm:field>
-            <p:inputText id="numDocumento" placeholder="Factura Nro"
+            <p:inputText id="numDocumento" placeholder="Factura Nro."
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.cajFacturaEnviadaPK.numDocumento}"
+                         requiredMessage="Campo Factura Nro requerido"
                          required="true"/>
         </pm:field>
         <pm:field>
             <p:calendar id="fechaDocumento" placeholder="Fecha Doc."
                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.fechaDocumento}"
+                        requiredMessage="Campo Fecha Doc requerido"
                         required="true"/>
         </pm:field>
         <pm:field>
             <p:inputText id="totalConIva" placeholder="Total con IVA"
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalConIva}"
+                         requiredMessage="Campo Total con IVA requerido"
                          required="true"/>
         </pm:field>
         <pm:field>
             <p:inputText id="totalSinIva" placeholder="Total sin IVA"
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalSinIva}"
+                         requiredMessage="Campo Total sin IVA requerido"
                          required="true"/>
         </pm:field>
         <pm:field>
             <p:inputText id="ivaDocumento" placeholder="Iva Documento"
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.ivaDocumento}"
+                         requiredMessage="Campo Iva Documento requerido"
                          required="true"/>
         </pm:field>
         <pm:field>
             <p:inputText id="codRubro" placeholder="Rubro"
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.codRubro}"
+                         requiredMessage="Campo Rubro requerido"
                          required="true"/>
         </pm:field>
         <pm:field>
-            <p:inputText id="estado" placeholder="Estado"
-                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.estado}"
-                         required="true"/>
+            <p:inputText id="totalDocumento" placeholder="Total Documento"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalDocumento}"
+                         requiredMessage="Campo Total Documento requerido"
+                         required="true"
+                         readonly="true"/>
         </pm:field>
 
         <p:commandButton value="Enviar" ajax="false" 

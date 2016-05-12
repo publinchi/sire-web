@@ -71,7 +71,7 @@ public class CajFacturaEnviadaBean {
         cajFacturaEnviada.setFechaEstado(Calendar.getInstance().getTime());
         cajFacturaEnviada.setIdFoto(file.getFileName());
         cajFacturaEnviada.setNombreUsuario(userManager.getCurrent());
-        cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getTotalSinIva());
+        cajFacturaEnviada.setEstado("G");
         CajFacturaEnviadaFacadeREST cajFacturaEnviadaFacadeREST = new CajFacturaEnviadaFacadeREST();
         Response response = cajFacturaEnviadaFacadeREST.save_JSON(cajFacturaEnviada);
         if (response.getStatus() == 200) {
@@ -79,9 +79,9 @@ public class CajFacturaEnviadaBean {
             addMessage("Factura enviada exitosamente.", "Num. Factura: " + cajFacturaEnviada.getCajFacturaEnviadaPK().getNumDocumento(), FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
-            
+
             limpiar();
-            
+
             return "index?faces-redirect=true";
         } else {
             limpiar();
@@ -113,6 +113,10 @@ public class CajFacturaEnviadaBean {
         String subProyectosString = pryProyectoFacadeREST.findSubByCodProyectoCodEmpresa_JSON(String.class, String.valueOf(cajFacturaEnviada.getCajFacturaEnviadaPK().getCodProyecto()), obtenerEmpresa());
         subProyectos = gson.fromJson(subProyectosString, new TypeToken<java.util.List<PrySubproyecto>>() {
         }.getType());
+    }
+
+    public void calcularTotalDocumento() {
+        cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getTotalSinIva());
     }
 
     private void savePicture() {
