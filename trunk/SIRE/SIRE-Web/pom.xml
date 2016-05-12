@@ -44,12 +44,6 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sire</groupId>
-            <artifactId>SIRE-Services</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.14.8</version>
