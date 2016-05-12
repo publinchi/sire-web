@@ -33,6 +33,7 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(com.sire.ws.service.BanBancosFacadeREST.class);
         resources.add(com.sire.ws.service.BanCtaCteFacadeREST.class);
+        resources.add(com.sire.ws.service.CajFacturaEnviadaFacadeREST.class);
         resources.add(com.sire.ws.service.CxcAbonoCFacadeREST.class);
         resources.add(com.sire.ws.service.CxcAbonoDFacadeREST.class);
         resources.add(com.sire.ws.service.CxcChequeFacadeREST.class);
@@ -70,6 +71,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.InvTransaccionesFacadeREST.class);
         resources.add(com.sire.ws.service.InvUnidadAlternativaFacadeREST.class);
         resources.add(com.sire.ws.service.InvUnidadMedidaFacadeREST.class);
+        resources.add(com.sire.ws.service.PryProyectoFacadeREST.class);
         resources.add(com.sire.ws.service.UploadFileService.class);
         resources.add(com.sire.ws.service.VClienteFacadeREST.class);
         resources.add(org.netbeans.rest.application.config.DebugExceptionMapper.class);
