@@ -3,30 +3,91 @@
       xmlns:ui="http://java.sun.com/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:pe="http://primefaces.org/ui/extensions">
-    <p:panelGrid columns="2">
-        <p:inputText id="rucCiProveedor" placeholder="RUC Proveedor" />
-        <p:inputText id="numDocumento" placeholder="Factura Nro"/>
-        <p:calendar id="fechaDocumento" placeholder="Fecha Doc."/>
-        <p:inputText id="codRubro" placeholder="Rubro"/>
-        <p:inputText id="totalConIva" placeholder="Total con IVA"/>
-        <p:inputText id="totalSinIva" placeholder="Total sin IVA"/>
-    </p:panelGrid>
-    <!--<p:outputLabel id="graphicImageLabel" for="graphicImage" value="Foto:"/>-->
-    <p:panel id="panelGraphicImage" header="Foto" style="text-align: center"
-             toggleable="true">
-        <p:graphicImage id="graphicImage"/>
-    </p:panel>
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <p:commandButton id="cameraBtn" type="button" 
-                     onclick="bridgeit.camera('cameraBtn', 'onAfterPhotoCapture', {thumbWidth: 200, thumbHeight: 200});"
-                     value="Tomar foto" icon="ui-icon-camera"/>
+    <h:form id="cajasForm" enctype="multipart/form-data">
+        <p:growl id="messages" showDetail="true" />
+        <pm:field>
+            <p:outputLabel for="imagen" value="Foto:"/>
+            <p:fileUpload id="imagen" value="#{cajFacturaEnviadaBean.file}" mode="simple" 
+                          skinSimple="true" accept="image/*" 
+                          allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+                          required="true">
+                <f:passThroughAttribute name="capture" value="camera"/>
+            </p:fileUpload>
+        </pm:field>
+        <pm:field>
+            <p:outputLabel for="cliente" value="Cliente:"/>
+            <p:selectOneMenu id="cliente" 
+                             value="#{cajFacturaEnviadaBean.cajFacturaEnviada.cajFacturaEnviadaPK.codProyecto}"
+                             required="true">
+                <f:selectItem itemLabel="Seleccione Cliente" itemValue="#{null}" 
+                              noSelectionOption="true"/>
+                <f:selectItems value="#{cajFacturaEnviadaBean.proyectos}" 
+                               var="proyecto" 
+                               itemLabel="#{proyecto.descProyecto}" 
+                               itemValue="#{proyecto.pryProyectoPK.codProyecto}"/>
+                <p:ajax update="cajas:cajasForm:subProyecto" listener="#{cajFacturaEnviadaBean.findSubProyecto()}"/>
+            </p:selectOneMenu>
+        </pm:field>
+        <pm:field id="subProyecto">
+            <p:outputLabel for="proyecto" value="Proyecto:"/>
+            <p:selectOneMenu id="proyecto" 
+                             value="#{cajFacturaEnviadaBean.cajFacturaEnviada.cajFacturaEnviadaPK.codSubproyecto}"
+                             required="true">
+                <f:selectItem itemLabel="Seleccione Proyecto" itemValue="#{null}" 
+                              noSelectionOption="true"/>
+                <f:selectItems value="#{cajFacturaEnviadaBean.subProyectos}" 
+                               var="subProyecto" 
+                               itemLabel="#{subProyecto.descSubproyecto}" 
+                               itemValue="#{subProyecto.codSubproyecto}"/>
+            </p:selectOneMenu>
+        </pm:field>
+        <pm:field>
+            <p:inputText id="rucCiProveedor" placeholder="RUC Proveedor" 
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.cajFacturaEnviadaPK.rucCiProveedor}"
+                         required="true"/>
+        </pm:field>
+        <pm:field>
+            <p:inputText id="numDocumento" placeholder="Factura Nro"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.cajFacturaEnviadaPK.numDocumento}"
+                         required="true"/>
+        </pm:field>
+        <pm:field>
+            <p:calendar id="fechaDocumento" placeholder="Fecha Doc."
+                        value="#{cajFacturaEnviadaBean.cajFacturaEnviada.fechaDocumento}"
+                        required="true"/>
+        </pm:field>
+        <pm:field>
+            <p:inputText id="totalConIva" placeholder="Total con IVA"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalConIva}"
+                         required="true"/>
+        </pm:field>
+        <pm:field>
+            <p:inputText id="totalSinIva" placeholder="Total sin IVA"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalSinIva}"
+                         required="true"/>
+        </pm:field>
+        <pm:field>
+            <p:inputText id="ivaDocumento" placeholder="Iva Documento"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.ivaDocumento}"
+                         required="true"/>
+        </pm:field>
+        <pm:field>
+            <p:inputText id="codRubro" placeholder="Rubro"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.codRubro}"
+                         required="true"/>
+        </pm:field>
+        <pm:field>
+            <p:inputText id="estado" placeholder="Estado"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.estado}"
+                         required="true"/>
+        </pm:field>
 
-    <h:form>
-        <pe:remoteCommand name="rc">
-            <pe:methodSignature parameters="java.lang.String" />
-            <pe:methodParam name="photo"/>
-        </pe:remoteCommand>
-        <p:commandButton type="button" onclick="sendForm()" value="Execute" icon="ui-icon-refresh" />
+        <p:commandButton value="Enviar" ajax="false" 
+                         actionListener="#{cajFacturaEnviadaBean.enviar}" 
+                         disabled="false" />
     </h:form>
 </html>
