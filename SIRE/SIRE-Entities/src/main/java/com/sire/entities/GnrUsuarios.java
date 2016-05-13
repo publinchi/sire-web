@@ -43,6 +43,12 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrUsuarios.findByFechaEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.fechaEstado = :fechaEstado")})
 public class GnrUsuarios implements Serializable {
 
+    @Basic(optional = false)
+    @Column(name = "USUARIO_ID")
+    private int usuarioId;
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<CajRubro> cajRubroList;
+
     @OneToMany(mappedBy = "nombreUsuario")
     private List<PryProyecto> pryProyectoList;
 
@@ -259,6 +265,23 @@ public class GnrUsuarios implements Serializable {
 
     public void setPryProyectoList(List<PryProyecto> pryProyectoList) {
         this.pryProyectoList = pryProyectoList;
+    }
+
+    public int getUsuarioId() {
+        return usuarioId;
+    }
+
+    public void setUsuarioId(int usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    @XmlTransient
+    public List<CajRubro> getCajRubroList() {
+        return cajRubroList;
+    }
+
+    public void setCajRubroList(List<CajRubro> cajRubroList) {
+        this.cajRubroList = cajRubroList;
     }
     
 }
