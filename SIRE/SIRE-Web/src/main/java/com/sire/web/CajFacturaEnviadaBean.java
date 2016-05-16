@@ -51,18 +51,20 @@ public class CajFacturaEnviadaBean {
     private List<PryProyecto> proyectos;
     private List<PrySubproyecto> subProyectos;
     private final Gson gson;
+    private CajFacturaEnviadaFacadeREST cajFacturaEnviadaFacadeREST;
     private PryProyectoFacadeREST pryProyectoFacadeREST;
 
     public CajFacturaEnviadaBean() {
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         pryProyectoFacadeREST = new PryProyectoFacadeREST();
+        cajFacturaEnviadaFacadeREST = new CajFacturaEnviadaFacadeREST();
         CajFacturaEnviadaPK cajFacturaEnviadaPK = new CajFacturaEnviadaPK();
         this.cajFacturaEnviada = new CajFacturaEnviada();
         this.cajFacturaEnviada.setCajFacturaEnviadaPK(cajFacturaEnviadaPK);
     }
 
-    public String enviar() {
+    public void enviar() {
         logger.log(Level.INFO, "file: {0}", file.getFileName());
         logger.log(Level.INFO, "cajFacturaEnviada: {0}", cajFacturaEnviada);
 
@@ -73,23 +75,15 @@ public class CajFacturaEnviadaBean {
         cajFacturaEnviada.setNombreUsuario(userManager.getCurrent());
         cajFacturaEnviada.getCajFacturaEnviadaPK().setCodSupervisor(Integer.valueOf(userManager.getCurrent().getNombreUsuario()));
         cajFacturaEnviada.setEstado("G");
-        CajFacturaEnviadaFacadeREST cajFacturaEnviadaFacadeREST = new CajFacturaEnviadaFacadeREST();
         Response response = cajFacturaEnviadaFacadeREST.save_JSON(cajFacturaEnviada);
         if (response.getStatus() == 200) {
             savePicture();
             addMessage("Factura enviada exitosamente.", "Num. Factura: " + cajFacturaEnviada.getCajFacturaEnviadaPK().getNumDocumento(), FacesMessage.SEVERITY_INFO);
-            FacesContext context = FacesContext.getCurrentInstance();
-            context.getExternalContext().getFlash().setKeepMessages(true);
-
-            limpiar();
-
-            return "index?faces-redirect=true";
         } else {
-            limpiar();
             logger.log(Level.SEVERE, "Por favor validar registro(s).");
             addMessage("Advertencia", "Por favor validar registro(s).", FacesMessage.SEVERITY_WARN);
-            return "cajas?faces-redirect=true";
         }
+        limpiar();
     }
 
     public void findProyectos() {
