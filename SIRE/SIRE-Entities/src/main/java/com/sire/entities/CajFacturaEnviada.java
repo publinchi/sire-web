@@ -46,7 +46,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CajFacturaEnviada.findByTotalDocumento", query = "SELECT c FROM CajFacturaEnviada c WHERE c.totalDocumento = :totalDocumento"),
     @NamedQuery(name = "CajFacturaEnviada.findByLugarTransaccion", query = "SELECT c FROM CajFacturaEnviada c WHERE c.lugarTransaccion = :lugarTransaccion"),
     @NamedQuery(name = "CajFacturaEnviada.findByEstado", query = "SELECT c FROM CajFacturaEnviada c WHERE c.estado = :estado"),
-    @NamedQuery(name = "CajFacturaEnviada.findByFechaEstado", query = "SELECT c FROM CajFacturaEnviada c WHERE c.fechaEstado = :fechaEstado")})
+    @NamedQuery(name = "CajFacturaEnviada.findByFechaEstado", query = "SELECT c FROM CajFacturaEnviada c WHERE c.fechaEstado = :fechaEstado"),
+    @NamedQuery(name = "CajFacturaEnviada.findByRucCiProveedorNumDocumento", query = "SELECT c FROM CajFacturaEnviada c WHERE c.cajFacturaEnviadaPK.rucCiProveedor = :rucCiProveedor and c.cajFacturaEnviadaPK.numDocumento = :numDocumento")})
 public class CajFacturaEnviada implements Serializable {
 
     private static final long serialVersionUID = 1L;
