@@ -7,7 +7,11 @@ package com.sire.ws.service;
 
 import com.sire.entities.CajFacturaEnviada;
 import com.sire.entities.CajFacturaEnviadaPK;
+import com.sire.errorhandling.AppException;
+import com.sire.errorhandling.ErrorMessage;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -138,9 +142,32 @@ public class CajFacturaEnviadaFacadeREST extends AbstractFacade<CajFacturaEnviad
     @Path("save")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response save(CajFacturaEnviada entity) {
-        super.create(entity);
         // TODO https://rodrigouchoa.wordpress.com/2014/10/22/cdi-ejb-sending-asynchronous-mail-on-transaction-success/
         // TODO: sendEmail(pago);
-        return Response.ok().build();
+        try {
+            validarFactura();
+            super.create(entity);
+
+            return Response.ok().build();
+        } catch (AppException ex) {
+            Logger.getLogger(CajFacturaEnviadaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+
+            return Response.status(ex.getStatus())
+                    .entity(new ErrorMessage(ex))
+                    .type(MediaType.APPLICATION_JSON).
+                    build();
+        }
+    }
+
+    private void validarFactura() throws AppException {
+        boolean exists = false;
+
+        if (exists) {
+            AppException appException = new AppException();
+            appException.setStatus(404);
+            appException.setCode(404);
+            appException.setDeveloperMessage("La factura enviada ya ha sido registrada anteriormente.");
+            throw appException; //To change body of generated methods, choose Tools | Templates.
+        }
     }
 }
