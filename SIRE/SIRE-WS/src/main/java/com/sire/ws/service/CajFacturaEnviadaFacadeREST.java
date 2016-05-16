@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -145,7 +146,7 @@ public class CajFacturaEnviadaFacadeREST extends AbstractFacade<CajFacturaEnviad
         // TODO https://rodrigouchoa.wordpress.com/2014/10/22/cdi-ejb-sending-asynchronous-mail-on-transaction-success/
         // TODO: sendEmail(pago);
         try {
-            validarFactura();
+            validarFactura(entity);
             super.create(entity);
 
             return Response.ok().build();
@@ -159,10 +160,13 @@ public class CajFacturaEnviadaFacadeREST extends AbstractFacade<CajFacturaEnviad
         }
     }
 
-    private void validarFactura() throws AppException {
-        boolean exists = false;
+    private void validarFactura(CajFacturaEnviada entity) throws AppException {
+        TypedQuery<CajFacturaEnviada> query = em.createNamedQuery("CajFacturaEnviada.findByRucCiProveedorNumDocumento", CajFacturaEnviada.class);
+        query.setParameter("rucCiProveedor", entity.getCajFacturaEnviadaPK().getRucCiProveedor());
+        query.setParameter("numDocumento", entity.getCajFacturaEnviadaPK().getNumDocumento());
+        List<CajFacturaEnviada> retorno = query.getResultList();
 
-        if (exists) {
+        if (!retorno.isEmpty()) {
             AppException appException = new AppException();
             appException.setStatus(404);
             appException.setCode(404);
