@@ -145,9 +145,9 @@ public class CajFacturaEnviadaFacadeREST extends AbstractFacade<CajFacturaEnviad
     public Response save(CajFacturaEnviada entity) {
         // TODO https://rodrigouchoa.wordpress.com/2014/10/22/cdi-ejb-sending-asynchronous-mail-on-transaction-success/
         // TODO: sendEmail(pago);
+        super.create(entity);
         try {
             validarFactura(entity);
-            super.create(entity);
 
             return Response.ok().build();
         } catch (AppException ex) {
