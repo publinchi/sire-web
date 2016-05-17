@@ -12,6 +12,7 @@ import com.sire.entities.CajFacturaEnviada;
 import com.sire.entities.CajFacturaEnviadaPK;
 import com.sire.entities.PryProyecto;
 import com.sire.entities.PrySubproyecto;
+import com.sire.errorhandling.ErrorMessage;
 import com.sire.rs.client.CajFacturaEnviadaFacadeREST;
 import com.sire.rs.client.PryProyectoFacadeREST;
 import java.io.File;
@@ -80,8 +81,9 @@ public class CajFacturaEnviadaBean {
             savePicture();
             addMessage("Factura enviada exitosamente.", "Num. Factura: " + cajFacturaEnviada.getCajFacturaEnviadaPK().getNumDocumento(), FacesMessage.SEVERITY_INFO);
         } else {
-            logger.log(Level.SEVERE, "Por favor validar registro(s).");
-            addMessage("Advertencia", "Por favor validar registro(s).", FacesMessage.SEVERITY_WARN);
+            ErrorMessage errorMessage = ((ErrorMessage) response.getEntity());
+            logger.log(Level.SEVERE, errorMessage.getDeveloperMessage());
+            addMessage("Advertencia", errorMessage.getDeveloperMessage(), FacesMessage.SEVERITY_WARN);
         }
         limpiar();
     }
