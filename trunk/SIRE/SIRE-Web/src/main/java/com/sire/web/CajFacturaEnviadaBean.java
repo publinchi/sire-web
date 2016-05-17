@@ -80,11 +80,15 @@ public class CajFacturaEnviadaBean {
         if (response.getStatus() == 200) {
             savePicture();
             addMessage("Factura enviada exitosamente.", "Num. Factura: " + cajFacturaEnviada.getCajFacturaEnviadaPK().getNumDocumento(), FacesMessage.SEVERITY_INFO);
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getFlash().setKeepMessages(true);
         } else if (response.getStatus() == 404) {
             savePicture();
             String developerMessage = response.readEntity(ErrorMessage.class).getDeveloperMessage();
             logger.log(Level.SEVERE, developerMessage);
             addMessage("Advertencia", developerMessage, FacesMessage.SEVERITY_WARN);
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getFlash().setKeepMessages(true);
         }
         limpiar();
     }
