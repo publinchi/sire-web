@@ -22,7 +22,7 @@ import javax.ws.rs.core.MediaType;
 
 /**
  *
- * @author publio
+ * @author Administrator
  */
 @Stateless
 @Path("com.sire.entities.gnrempresa")

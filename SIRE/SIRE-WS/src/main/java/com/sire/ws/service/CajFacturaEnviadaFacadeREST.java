@@ -145,18 +145,24 @@ public class CajFacturaEnviadaFacadeREST extends AbstractFacade<CajFacturaEnviad
     public Response save(CajFacturaEnviada entity) {
         // TODO https://rodrigouchoa.wordpress.com/2014/10/22/cdi-ejb-sending-asynchronous-mail-on-transaction-success/
         // TODO: sendEmail(pago);
-        super.create(entity);
+        boolean existeFactura = false;
+        AppException appException = null;
         try {
             validarFactura(entity);
-
-            return Response.ok().build();
         } catch (AppException ex) {
-            Logger.getLogger(CajFacturaEnviadaFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            existeFactura = true;
+            appException = ex;
+        }
 
-            return Response.status(ex.getStatus())
-                    .entity(new ErrorMessage(ex))
+        super.create(entity);
+
+        if (existeFactura) {
+            return Response.status(appException.getStatus())
+                    .entity(new ErrorMessage(appException))
                     .type(MediaType.APPLICATION_JSON).
                     build();
+        } else {
+            return Response.ok().build();
         }
     }
 
@@ -167,11 +173,8 @@ public class CajFacturaEnviadaFacadeREST extends AbstractFacade<CajFacturaEnviad
         List<CajFacturaEnviada> retorno = query.getResultList();
 
         if (!retorno.isEmpty()) {
-            AppException appException = new AppException();
-            appException.setStatus(404);
-            appException.setCode(404);
-            appException.setDeveloperMessage("La factura enviada ya ha sido registrada anteriormente.");
-            throw appException; //To change body of generated methods, choose Tools | Templates.
+            Logger.getLogger(CajFacturaEnviadaFacadeREST.class.getSimpleName()).info("retorni size: " + retorno.size());;
+            throw new AppException(404, 404, null, "La factura enviada ya ha sido registrada anteriormente.", null);
         }
     }
 }
