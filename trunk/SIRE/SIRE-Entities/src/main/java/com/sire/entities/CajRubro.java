@@ -29,7 +29,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "CajRubro.findAll", query = "SELECT c FROM CajRubro c"),
-    @NamedQuery(name = "CajRubro.findByCodEmpresa", query = "SELECT c FROM CajRubro c WHERE c.cajRubroPK.codEmpresa = :codEmpresa"),
+    @NamedQuery(name = "CajRubro.findByCodEmpresa", query = "SELECT c FROM CajRubro c WHERE c.cajRubroPK.codEmpresa = :codEmpresa and c.estado <> 'I'"),
     @NamedQuery(name = "CajRubro.findByCodRubro", query = "SELECT c FROM CajRubro c WHERE c.cajRubroPK.codRubro = :codRubro"),
     @NamedQuery(name = "CajRubro.findByDescripcionRubro", query = "SELECT c FROM CajRubro c WHERE c.descripcionRubro = :descripcionRubro"),
     @NamedQuery(name = "CajRubro.findByMontoRubro", query = "SELECT c FROM CajRubro c WHERE c.montoRubro = :montoRubro"),
