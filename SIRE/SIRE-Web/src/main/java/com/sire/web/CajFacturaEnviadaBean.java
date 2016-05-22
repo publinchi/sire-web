@@ -10,11 +10,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.CajFacturaEnviada;
 import com.sire.entities.CajFacturaEnviadaPK;
+import com.sire.entities.CajRubro;
 import com.sire.entities.PryProyecto;
 import com.sire.entities.PrySubproyecto;
 import com.sire.errorhandling.ErrorMessage;
 import com.sire.rs.client.CajFacturaEnviadaFacadeREST;
+import com.sire.rs.client.CajRubroFacadeREST;
 import com.sire.rs.client.PryProyectoFacadeREST;
+import com.sire.utils.Round;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -51,14 +54,17 @@ public class CajFacturaEnviadaBean {
     private UserManager userManager;
     private List<PryProyecto> proyectos;
     private List<PrySubproyecto> subProyectos;
+    private List<CajRubro> rubros;
     private final Gson gson;
     private CajFacturaEnviadaFacadeREST cajFacturaEnviadaFacadeREST;
     private PryProyectoFacadeREST pryProyectoFacadeREST;
+    private CajRubroFacadeREST cajRubroFacadeREST;
 
     public CajFacturaEnviadaBean() {
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         pryProyectoFacadeREST = new PryProyectoFacadeREST();
+        cajRubroFacadeREST = new CajRubroFacadeREST();
         cajFacturaEnviadaFacadeREST = new CajFacturaEnviadaFacadeREST();
         CajFacturaEnviadaPK cajFacturaEnviadaPK = new CajFacturaEnviadaPK();
         this.cajFacturaEnviada = new CajFacturaEnviada();
@@ -117,8 +123,29 @@ public class CajFacturaEnviadaBean {
         }.getType());
     }
 
+    public void findRubros() {
+        logger.info("findRubros()");
+        String codEmpresa = obtenerEmpresa();
+        logger.log(Level.INFO, "codEmpresa: {0}", codEmpresa);
+        if ((codEmpresa != null && rubros == null) || (codEmpresa != null && rubros.isEmpty())) {
+            String rubrosString = cajRubroFacadeREST.cajRubroByCodEmpresa(String.class, obtenerEmpresa());
+            rubros = gson.fromJson(rubrosString, new TypeToken<java.util.List<CajRubro>>() {
+            }.getType());
+        }
+    }
+
+    public List<CajRubro> getRubros() {
+        findRubros();
+        return rubros;
+    }
+
     public void calcularTotalDocumento() {
-        cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getTotalSinIva());
+        if (cajFacturaEnviada.getTotalConIva() != null) {
+            cajFacturaEnviada.setIvaDocumento(Round.round((cajFacturaEnviada.getTotalConIva() * 0.14), 2));
+        }
+        if (cajFacturaEnviada.getTotalConIva() != null && cajFacturaEnviada.getTotalSinIva() != null && cajFacturaEnviada.getIvaDocumento() != null) {
+            cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalSinIva());
+        }
     }
 
     private void savePicture() {
