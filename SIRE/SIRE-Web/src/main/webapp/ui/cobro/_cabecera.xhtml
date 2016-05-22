@@ -20,7 +20,10 @@
             <p:commandButton id="geolocalizar" type="button" 
                              onclick="getLocation();" value="Geolocalizar"
                              styleClass="ui-btn-inline"/>
-            <p:inputTextarea id="ubicacion" value="#{mapa.direccion}" readonly="true"/>
+            <p:inputTextarea id="ubicacion" value="#{mapa.direccion}" 
+                             label="Ubicación"
+                             readonly="true"
+                             required="true"/>
         </h:panelGrid>
     </pm:field>
 
