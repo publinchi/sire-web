@@ -25,6 +25,7 @@ import com.sire.entities.GnrLogHistoricoPK;
 import com.sire.entities.Pago;
 import com.sire.entities.VCliente;
 import com.sire.exception.ClienteException;
+import com.sire.exception.GPSException;
 import com.sire.exception.MailException;
 import com.sire.exception.RestException;
 import com.sire.exception.VendedorException;
@@ -219,6 +220,10 @@ public class CxcDocCobrarBean {
         logger.info("enviar()");
         BigDecimal numDocumentoResp = null;
         try {
+            if (mapa.getDireccion() == null) {
+                throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
+            }
+
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN", userManager.getCurrent().getNombreUsuario());
 
@@ -320,7 +325,7 @@ public class CxcDocCobrarBean {
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
 
-        } catch (RestException | ClienteException | VendedorException ex) {
+        } catch (RestException | ClienteException | GPSException | VendedorException ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
             return "cobro?faces-redirect=true";
