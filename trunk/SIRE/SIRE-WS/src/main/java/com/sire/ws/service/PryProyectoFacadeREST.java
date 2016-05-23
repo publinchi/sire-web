@@ -121,7 +121,11 @@ public class PryProyectoFacadeREST extends AbstractFacade<PryProyecto> {
         TypedQuery<PryProyecto> query = em.createNamedQuery("PryProyecto.findByCodEmpresa", PryProyecto.class);
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("estadoProyecto", 'A');
-        return query.getResultList();
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @GET
