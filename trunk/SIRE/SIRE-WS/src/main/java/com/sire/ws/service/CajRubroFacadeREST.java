@@ -115,8 +115,11 @@ public class CajRubroFacadeREST extends AbstractFacade<CajRubro> {
     public List<CajRubro> cajRubroByCodEmpresa(@PathParam("codEmpresa") String codEmpresa) {
         TypedQuery<CajRubro> query = em.createNamedQuery("CajRubro.findByCodEmpresa", CajRubro.class);
         query.setParameter("codEmpresa", codEmpresa);
-
-        return query.getResultList();
+        try {
+            return query.getResultList();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override
