@@ -18,9 +18,11 @@ import com.sire.rs.client.CajFacturaEnviadaFacadeREST;
 import com.sire.rs.client.CajRubroFacadeREST;
 import com.sire.rs.client.PryProyectoFacadeREST;
 import com.sire.utils.Round;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -29,10 +31,14 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.stream.FileImageOutputStream;
 import javax.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.io.FileUtils;
 import org.primefaces.model.UploadedFile;
 
 /**
@@ -90,7 +96,6 @@ public class CajFacturaEnviadaBean {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
         } else if (response.getStatus() == 404) {
-            savePicture();
             String developerMessage = response.readEntity(ErrorMessage.class).getDeveloperMessage();
             logger.log(Level.SEVERE, developerMessage);
             addMessage("Advertencia", developerMessage, FacesMessage.SEVERITY_WARN);
@@ -151,13 +156,34 @@ public class CajFacturaEnviadaBean {
 
     private void savePicture() {
         if (file != null) {
-            String currentUsersHomeDir = System.getProperty("user.home");
-            String photosFolder = currentUsersHomeDir + File.separator + "photos";
-
-            File targetFile = new File(photosFolder + File.separator + file.getFileName());
-
             try {
-                FileUtils.copyInputStreamToFile(file.getInputstream(), targetFile);
+                BufferedImage originalImage = ImageIO.read(file.getInputstream());
+
+                String imagesFolder = System.getProperty("imagesFolder");
+
+                if (imagesFolder == null) {
+                    String currentUsersHomeDir = System.getProperty("user.home");
+                    imagesFolder = currentUsersHomeDir + File.separator + "photos";
+                }
+
+                Iterator iter = ImageIO.getImageWritersByFormatName("jpeg");
+                ImageWriter writer = (ImageWriter) iter.next();
+                ImageWriteParam iwp = writer.getDefaultWriteParam();
+
+                iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+                float quality = 0.5f;  // reduce quality by 50%  
+                iwp.setCompressionQuality(quality);
+
+                File f = new File(imagesFolder + File.separator + file.getFileName());
+                FileImageOutputStream output = new FileImageOutputStream(f);
+                writer.setOutput(output);
+
+                IIOImage image = new IIOImage(originalImage, null, null);
+                writer.write(null, image, iwp);
+                writer.dispose();
+
+//                File targetFile = new File(imagesFolder + File.separator + file.getFileName());
+//                FileUtils.copyInputStreamToFile(file.getInputstream(), targetFile);
             } catch (IOException ex) {
                 logger.severe(ex.getMessage());
             }
