@@ -59,6 +59,7 @@ public class CajFacturaEnviadaBean {
     private CajFacturaEnviadaFacadeREST cajFacturaEnviadaFacadeREST;
     private PryProyectoFacadeREST pryProyectoFacadeREST;
     private CajRubroFacadeREST cajRubroFacadeREST;
+    private Double iva;
 
     public CajFacturaEnviadaBean() {
         GsonBuilder builder = new GsonBuilder();
@@ -141,7 +142,7 @@ public class CajFacturaEnviadaBean {
 
     public void calcularTotalDocumento() {
         if (cajFacturaEnviada.getTotalConIva() != null) {
-            cajFacturaEnviada.setIvaDocumento(Round.round((cajFacturaEnviada.getTotalConIva() * 0.14), 2));
+            cajFacturaEnviada.setIvaDocumento(Round.round((cajFacturaEnviada.getTotalConIva() * iva), 2));
         }
         if (cajFacturaEnviada.getTotalConIva() != null && cajFacturaEnviada.getTotalSinIva() != null && cajFacturaEnviada.getIvaDocumento() != null) {
             cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalSinIva());
