@@ -146,11 +146,12 @@ public class CajFacturaEnviadaBean {
     }
 
     public void calcularTotalDocumento() {
-        if (cajFacturaEnviada.getTotalConIva() != null) {
+        logger.info("iva: " + iva);
+        if (cajFacturaEnviada.getTotalConIva() != null && iva != null) {
             cajFacturaEnviada.setIvaDocumento(Round.round((cajFacturaEnviada.getTotalConIva() * iva), 2));
-        }
-        if (cajFacturaEnviada.getTotalConIva() != null && cajFacturaEnviada.getTotalSinIva() != null && cajFacturaEnviada.getIvaDocumento() != null) {
-            cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalSinIva());
+            if (cajFacturaEnviada.getTotalSinIva() != null && cajFacturaEnviada.getIvaDocumento() != null) {
+                cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalSinIva());
+            }
         }
     }
 
@@ -197,6 +198,7 @@ public class CajFacturaEnviadaBean {
         this.cajFacturaEnviada = new CajFacturaEnviada();
         this.cajFacturaEnviada.setCajFacturaEnviadaPK(cajFacturaEnviadaPK);
         proyectos.clear();
+        iva = null;
     }
 
     private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
