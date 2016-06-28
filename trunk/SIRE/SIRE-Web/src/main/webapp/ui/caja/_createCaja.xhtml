@@ -67,6 +67,18 @@
                         required="true"/>
         </pm:field>
         <pm:field>
+            <p:outputLabel for="iva" value="IVA:"/>
+            <p:selectOneMenu id="iva" 
+                             value="#{cajFacturaEnviadaBean.iva}"
+                             required="true">
+                <f:selectItem itemLabel="Seleccione IVA" itemValue="#{null}" 
+                              noSelectionOption="true"/>
+                <f:selectItem itemLabel="12%" itemValue="0.12" />
+                <f:selectItem itemLabel="14%" itemValue="0.14" />
+                <p:ajax listener="#{cajFacturaEnviadaBean.calcularTotalDocumento()}"/>
+            </p:selectOneMenu>
+        </pm:field>
+        <pm:field>
             <p:inputText id="totalConIva" 
                          label="Total con IVA"
                          placeholder="Total con IVA"
@@ -118,19 +130,6 @@
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalDocumento}"
                          required="true"
                          readonly="true"/>
-        </pm:field>
-        <pm:field>
-            <p:outputLabel for="iva" value="IVA:"/>
-            <p:selectOneMenu id="iva" 
-                             value="#{cajFacturaEnviadaBean.iva}"
-                             required="true">
-                <f:selectItem itemLabel="Seleccione IVA" itemValue="#{null}" 
-                              noSelectionOption="true"/>
-                <f:selectItem itemLabel="12%" itemValue="0.12" 
-                              noSelectionOption="true"/>
-                <f:selectItem itemLabel="14%" itemValue="0.14" 
-                              noSelectionOption="true"/>
-            </p:selectOneMenu>
         </pm:field>
 
         <p:commandButton value="Enviar" ajax="false" 
