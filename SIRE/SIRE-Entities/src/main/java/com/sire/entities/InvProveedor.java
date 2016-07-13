@@ -52,6 +52,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "InvProveedor.findByFechIniContribEspec", query = "SELECT i FROM InvProveedor i WHERE i.fechIniContribEspec = :fechIniContribEspec"),
     @NamedQuery(name = "InvProveedor.findByNumResolSri", query = "SELECT i FROM InvProveedor i WHERE i.numResolSri = :numResolSri")})
 public class InvProveedor implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invProveedor")
+    private List<PrySupervisor> prySupervisorList;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected InvProveedorPK invProveedorPK;
@@ -317,6 +320,15 @@ public class InvProveedor implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.InvProveedor[ invProveedorPK=" + invProveedorPK + " ]";
+    }
+
+    @XmlTransient
+    public List<PrySupervisor> getPrySupervisorList() {
+        return prySupervisorList;
+    }
+
+    public void setPrySupervisorList(List<PrySupervisor> prySupervisorList) {
+        this.prySupervisorList = prySupervisorList;
     }
     
 }

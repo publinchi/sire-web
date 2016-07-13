@@ -131,6 +131,13 @@
                          required="true"
                          readonly="true"/>
         </pm:field>
+        <pm:field>
+            <p:inputText id="observacion" 
+                         label="Observación"
+                         placeholder="Observación"
+                         value="#{cajFacturaEnviadaBean.cajFacturaEnviada.observacion}"
+                         required="true"/>
+        </pm:field>
 
         <p:commandButton value="Enviar" ajax="false" 
                          actionListener="#{cajFacturaEnviadaBean.enviar}" 

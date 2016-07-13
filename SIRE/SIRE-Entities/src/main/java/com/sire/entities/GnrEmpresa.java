@@ -52,6 +52,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrEmpresa.findByResponsable", query = "SELECT g FROM GnrEmpresa g WHERE g.responsable = :responsable")})
 public class GnrEmpresa implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<PrySupervisor> prySupervisorList;
+
     @Column(name = "ESTADO")
     private String estado;
     @Column(name = "FECHA_ESTADO")
@@ -451,6 +454,15 @@ public class GnrEmpresa implements Serializable {
 
     public void setCajRubroList(List<CajRubro> cajRubroList) {
         this.cajRubroList = cajRubroList;
+    }
+
+    @XmlTransient
+    public List<PrySupervisor> getPrySupervisorList() {
+        return prySupervisorList;
+    }
+
+    public void setPrySupervisorList(List<PrySupervisor> prySupervisorList) {
+        this.prySupervisorList = prySupervisorList;
     }
     
 }
