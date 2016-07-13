@@ -8,6 +8,8 @@ package com.sire.entities;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,10 +17,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -36,6 +40,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CajRubro.findByEstado", query = "SELECT c FROM CajRubro c WHERE c.estado = :estado"),
     @NamedQuery(name = "CajRubro.findByFechaEstado", query = "SELECT c FROM CajRubro c WHERE c.fechaEstado = :fechaEstado")})
 public class CajRubro implements Serializable {
+
+//    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cajRubro")
+//    private List<CajFacturaEnviada> cajFacturaEnviadaList;
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -148,5 +155,14 @@ public class CajRubro implements Serializable {
     public String toString() {
         return "com.sire.entities.CajRubro[ cajRubroPK=" + cajRubroPK + " ]";
     }
+
+//    @XmlTransient
+//    public List<CajFacturaEnviada> getCajFacturaEnviadaList() {
+//        return cajFacturaEnviadaList;
+//    }
+//
+//    public void setCajFacturaEnviadaList(List<CajFacturaEnviada> cajFacturaEnviadaList) {
+//        this.cajFacturaEnviadaList = cajFacturaEnviadaList;
+//    }
     
 }

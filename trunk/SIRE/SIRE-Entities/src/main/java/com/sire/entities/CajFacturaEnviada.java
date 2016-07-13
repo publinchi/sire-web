@@ -6,12 +6,14 @@
 package com.sire.entities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -49,6 +51,21 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CajFacturaEnviada.findByFechaEstado", query = "SELECT c FROM CajFacturaEnviada c WHERE c.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "CajFacturaEnviada.findByRucCiProveedorNumDocumento", query = "SELECT c FROM CajFacturaEnviada c WHERE c.cajFacturaEnviadaPK.rucCiProveedor = :rucCiProveedor and c.cajFacturaEnviadaPK.numDocumento = :numDocumento")})
 public class CajFacturaEnviada implements Serializable {
+
+    @Column(name = "MOTIVO_RECHAZO")
+    private String motivoRechazo;
+    @Column(name = "OBSERVACION")
+    private String observacion;
+//    @JoinColumns({
+//        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false),
+//        @JoinColumn(name = "COD_RUBRO", referencedColumnName = "COD_RUBRO")})
+//    @ManyToOne(optional = false)
+//    private CajRubro cajRubro;
+    @JoinColumns({
+        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false),
+        @JoinColumn(name = "COD_SUPERVISOR", referencedColumnName = "COD_SUPERVISOR", insertable = false, updatable = false)})
+    @ManyToOne(optional = false)
+    private PrySupervisor prySupervisor;
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
@@ -220,6 +237,38 @@ public class CajFacturaEnviada implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.CajFacturaEnviada[ cajFacturaEnviadaPK=" + cajFacturaEnviadaPK + " ]";
+    }
+
+    public String getMotivoRechazo() {
+        return motivoRechazo;
+    }
+
+    public void setMotivoRechazo(String motivoRechazo) {
+        this.motivoRechazo = motivoRechazo;
+    }
+
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
+    }
+
+//    public CajRubro getCajRubro() {
+//        return cajRubro;
+//    }
+//
+//    public void setCajRubro(CajRubro cajRubro) {
+//        this.cajRubro = cajRubro;
+//    }
+
+    public PrySupervisor getPrySupervisor() {
+        return prySupervisor;
+    }
+
+    public void setPrySupervisor(PrySupervisor prySupervisor) {
+        this.prySupervisor = prySupervisor;
     }
 
 }

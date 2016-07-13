@@ -18,6 +18,7 @@ import com.sire.rs.client.CajFacturaEnviadaFacadeREST;
 import com.sire.rs.client.CajRubroFacadeREST;
 import com.sire.rs.client.PryProyectoFacadeREST;
 import com.sire.utils.Round;
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -160,6 +161,13 @@ public class CajFacturaEnviadaBean {
             try {
                 BufferedImage originalImage = ImageIO.read(file.getInputstream());
 
+                BufferedImage outputImage = new BufferedImage((int)(originalImage.getWidth() * 0.1),
+                        (int)(originalImage.getHeight() * 0.1), originalImage.getType());
+
+                Graphics2D g2d = outputImage.createGraphics();
+                g2d.drawImage(originalImage, 0, 0, (int)(originalImage.getWidth() * 0.1), (int)(originalImage.getHeight() * 0.1), null);
+                g2d.dispose();
+                
                 String imagesFolder = System.getProperty("imagesFolder");
 
                 if (imagesFolder == null) {
@@ -172,19 +180,18 @@ public class CajFacturaEnviadaBean {
                 ImageWriteParam iwp = writer.getDefaultWriteParam();
 
                 iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                float quality = 0.5f;  // reduce quality by 50%  
+                float quality = 1.0f;  // reduce quality by 100%  
                 iwp.setCompressionQuality(quality);
 
                 File f = new File(imagesFolder + File.separator + file.getFileName());
                 FileImageOutputStream output = new FileImageOutputStream(f);
                 writer.setOutput(output);
 
-                IIOImage image = new IIOImage(originalImage, null, null);
+                IIOImage image = new IIOImage(outputImage, null, null);
                 writer.write(null, image, iwp);
                 writer.dispose();
 
-//                File targetFile = new File(imagesFolder + File.separator + file.getFileName());
-//                FileUtils.copyInputStreamToFile(file.getInputstream(), targetFile);
+                output.close();
             } catch (IOException ex) {
                 logger.severe(ex.getMessage());
             }
