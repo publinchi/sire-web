@@ -45,6 +45,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "PrySupervisor.findByCodigoCuenta", query = "SELECT p FROM PrySupervisor p WHERE p.codigoCuenta = :codigoCuenta")})
 public class PrySupervisor implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "prySupervisor")
+    private List<PrySupervisorUsuario> prySupervisorUsuarioList;
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected PrySupervisorPK prySupervisorPK;
@@ -207,6 +210,15 @@ public class PrySupervisor implements Serializable {
     @Override
     public String toString() {
         return "com.sire.entities.PrySupervisor[ prySupervisorPK=" + prySupervisorPK + " ]";
+    }
+
+    @XmlTransient
+    public List<PrySupervisorUsuario> getPrySupervisorUsuarioList() {
+        return prySupervisorUsuarioList;
+    }
+
+    public void setPrySupervisorUsuarioList(List<PrySupervisorUsuario> prySupervisorUsuarioList) {
+        this.prySupervisorUsuarioList = prySupervisorUsuarioList;
     }
     
 }
