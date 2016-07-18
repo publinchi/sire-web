@@ -49,13 +49,13 @@ public class PrySupervisorUsuarioFacadeREST {
 
     public <T> T find_XML(Class<T> responseType, String codEmpresa, String nombreUsuario) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("{0}/{1}", new Object[]{codEmpresa, nombreUsuario}));
+        resource = resource.path(java.text.MessageFormat.format("{0}&{1}", new Object[]{codEmpresa, nombreUsuario}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
     public <T> T find_JSON(Class<T> responseType, String codEmpresa, String nombreUsuario) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("{0}/{1}", new Object[]{codEmpresa, nombreUsuario}));
+        resource = resource.path(java.text.MessageFormat.format("{0}&{1}", new Object[]{codEmpresa, nombreUsuario}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
