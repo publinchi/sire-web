@@ -19,6 +19,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 
 /**
@@ -28,6 +29,7 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("com.sire.entities.invproveedor")
 public class InvProveedorFacadeREST extends AbstractFacade<InvProveedor> {
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
@@ -58,14 +60,14 @@ public class InvProveedorFacadeREST extends AbstractFacade<InvProveedor> {
 
     @POST
     @Override
-    @Consumes({"application/xml", "application/json"})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(InvProveedor entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
-    @Consumes({"application/xml", "application/json"})
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") PathSegment id, InvProveedor entity) {
         super.edit(entity);
     }
@@ -79,7 +81,7 @@ public class InvProveedorFacadeREST extends AbstractFacade<InvProveedor> {
 
     @GET
     @Path("{id}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public InvProveedor find(@PathParam("id") PathSegment id) {
         com.sire.entities.InvProveedorPK key = getPrimaryKey(id);
         return super.find(key);
@@ -87,21 +89,21 @@ public class InvProveedorFacadeREST extends AbstractFacade<InvProveedor> {
 
     @GET
     @Override
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<InvProveedor> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
-    @Produces({"application/xml", "application/json"})
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<InvProveedor> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
     @GET
     @Path("count")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
         return String.valueOf(super.count());
     }

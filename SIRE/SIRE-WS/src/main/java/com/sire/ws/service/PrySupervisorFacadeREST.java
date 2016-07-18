@@ -5,8 +5,8 @@
  */
 package com.sire.ws.service;
 
-import com.sire.entities.GnrPersona;
-import com.sire.entities.GnrPersonaPK;
+import com.sire.entities.PrySupervisor;
+import com.sire.entities.PrySupervisorPK;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -27,77 +27,77 @@ import javax.ws.rs.core.PathSegment;
  * @author Administrator
  */
 @Stateless
-@Path("com.sire.entities.gnrpersona")
-public class GnrPersonaFacadeREST extends AbstractFacade<GnrPersona> {
+@Path("com.sire.entities.prysupervisor")
+public class PrySupervisorFacadeREST extends AbstractFacade<PrySupervisor> {
 
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
-    private GnrPersonaPK getPrimaryKey(PathSegment pathSegment) {
+    private PrySupervisorPK getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;codEmpresa=codEmpresaValue;codPersona=codPersonaValue'.
+         * URI path part is supposed to be in form of 'somePath;codEmpresa=codEmpresaValue;codSupervisor=codSupervisorValue'.
          * Here 'somePath' is a result of getPath() method invocation and
          * it is ignored in the following code.
          * Matrix parameters are used as field names to build a primary key instance.
          */
-        com.sire.entities.GnrPersonaPK key = new com.sire.entities.GnrPersonaPK();
+        com.sire.entities.PrySupervisorPK key = new com.sire.entities.PrySupervisorPK();
         javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
         java.util.List<String> codEmpresa = map.get("codEmpresa");
         if (codEmpresa != null && !codEmpresa.isEmpty()) {
             key.setCodEmpresa(codEmpresa.get(0));
         }
-        java.util.List<String> codPersona = map.get("codPersona");
-        if (codPersona != null && !codPersona.isEmpty()) {
-            key.setCodPersona(new java.lang.Integer(codPersona.get(0)));
+        java.util.List<String> codSupervisor = map.get("codSupervisor");
+        if (codSupervisor != null && !codSupervisor.isEmpty()) {
+            key.setCodSupervisor(new java.lang.Integer(codSupervisor.get(0)));
         }
         return key;
     }
 
-    public GnrPersonaFacadeREST() {
-        super(GnrPersona.class);
+    public PrySupervisorFacadeREST() {
+        super(PrySupervisor.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(GnrPersona entity) {
+    public void create(PrySupervisor entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, GnrPersona entity) {
+    public void edit(@PathParam("id") PathSegment id, PrySupervisor entity) {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
-        com.sire.entities.GnrPersonaPK key = getPrimaryKey(id);
+        com.sire.entities.PrySupervisorPK key = getPrimaryKey(id);
         super.remove(super.find(key));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public GnrPersona find(@PathParam("id") PathSegment id) {
-        com.sire.entities.GnrPersonaPK key = getPrimaryKey(id);
+    public PrySupervisor find(@PathParam("id") PathSegment id) {
+        com.sire.entities.PrySupervisorPK key = getPrimaryKey(id);
         return super.find(key);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<GnrPersona> findAll() {
+    public List<PrySupervisor> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<GnrPersona> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<PrySupervisor> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
