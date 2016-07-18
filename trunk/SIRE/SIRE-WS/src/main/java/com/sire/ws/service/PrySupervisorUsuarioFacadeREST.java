@@ -11,6 +11,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -92,6 +93,17 @@ public class PrySupervisorUsuarioFacadeREST extends AbstractFacade<PrySupervisor
     }
 
     @GET
+    @Path("{codEmpresa}/{nombreUsuario}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public PrySupervisorUsuario find(@PathParam("codEmpresa") String codEmpresa, @PathParam("nombreUsuario") String nombreUsuario) {
+        TypedQuery<PrySupervisorUsuario> query = em.createNamedQuery("PrySupervisorUsuario.findByCodEmpresaNombreUsuario", PrySupervisorUsuario.class);
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("nombreUsuario", nombreUsuario.toUpperCase());
+        PrySupervisorUsuario prySupervisorUsuario = query.getSingleResult();
+        return prySupervisorUsuario;
+    }
+
+    @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<PrySupervisorUsuario> findAll() {
@@ -116,5 +128,5 @@ public class PrySupervisorUsuarioFacadeREST extends AbstractFacade<PrySupervisor
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
