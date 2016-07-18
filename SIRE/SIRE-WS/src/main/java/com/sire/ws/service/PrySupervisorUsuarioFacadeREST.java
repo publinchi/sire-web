@@ -93,7 +93,7 @@ public class PrySupervisorUsuarioFacadeREST extends AbstractFacade<PrySupervisor
     }
 
     @GET
-    @Path("{codEmpresa}/{nombreUsuario}")
+    @Path("{codEmpresa}&{nombreUsuario}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public PrySupervisorUsuario find(@PathParam("codEmpresa") String codEmpresa, @PathParam("nombreUsuario") String nombreUsuario) {
         TypedQuery<PrySupervisorUsuario> query = em.createNamedQuery("PrySupervisorUsuario.findByCodEmpresaNombreUsuario", PrySupervisorUsuario.class);
