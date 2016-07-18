@@ -13,10 +13,12 @@ import com.sire.entities.CajFacturaEnviadaPK;
 import com.sire.entities.CajRubro;
 import com.sire.entities.PryProyecto;
 import com.sire.entities.PrySubproyecto;
+import com.sire.entities.PrySupervisorUsuario;
 import com.sire.errorhandling.ErrorMessage;
 import com.sire.rs.client.CajFacturaEnviadaFacadeREST;
 import com.sire.rs.client.CajRubroFacadeREST;
 import com.sire.rs.client.PryProyectoFacadeREST;
+import com.sire.rs.client.PrySupervisorUsuarioFacadeREST;
 import com.sire.utils.Round;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
@@ -66,6 +68,7 @@ public class CajFacturaEnviadaBean {
     private CajFacturaEnviadaFacadeREST cajFacturaEnviadaFacadeREST;
     private PryProyectoFacadeREST pryProyectoFacadeREST;
     private CajRubroFacadeREST cajRubroFacadeREST;
+    private PrySupervisorUsuarioFacadeREST prySupervisorUsuarioFacadeREST;
     private Double iva;
 
     public CajFacturaEnviadaBean() {
@@ -74,6 +77,7 @@ public class CajFacturaEnviadaBean {
         pryProyectoFacadeREST = new PryProyectoFacadeREST();
         cajRubroFacadeREST = new CajRubroFacadeREST();
         cajFacturaEnviadaFacadeREST = new CajFacturaEnviadaFacadeREST();
+        prySupervisorUsuarioFacadeREST = new PrySupervisorUsuarioFacadeREST();
         CajFacturaEnviadaPK cajFacturaEnviadaPK = new CajFacturaEnviadaPK();
         this.cajFacturaEnviada = new CajFacturaEnviada();
         this.cajFacturaEnviada.setCajFacturaEnviadaPK(cajFacturaEnviadaPK);
@@ -88,7 +92,7 @@ public class CajFacturaEnviadaBean {
         cajFacturaEnviada.setFechaEstado(Calendar.getInstance().getTime());
         cajFacturaEnviada.setIdFoto(file.getFileName());
         cajFacturaEnviada.setNombreUsuario(userManager.getCurrent());
-        cajFacturaEnviada.getCajFacturaEnviadaPK().setCodSupervisor(Integer.valueOf(userManager.getCurrent().getNombreUsuario()));
+        cajFacturaEnviada.getCajFacturaEnviadaPK().setCodSupervisor(obtenerPrySupervisorUsuario().getPrySupervisor().getPrySupervisorPK().getCodSupervisor());
         cajFacturaEnviada.setEstado("G");
         Response response = cajFacturaEnviadaFacadeREST.save_JSON(cajFacturaEnviada);
         if (response.getStatus() == 200) {
@@ -161,13 +165,13 @@ public class CajFacturaEnviadaBean {
             try {
                 BufferedImage originalImage = ImageIO.read(file.getInputstream());
 
-                BufferedImage outputImage = new BufferedImage((int)(originalImage.getWidth() * 0.1),
-                        (int)(originalImage.getHeight() * 0.1), originalImage.getType());
+                BufferedImage outputImage = new BufferedImage((int) (originalImage.getWidth() * 0.1),
+                        (int) (originalImage.getHeight() * 0.1), originalImage.getType());
 
                 Graphics2D g2d = outputImage.createGraphics();
-                g2d.drawImage(originalImage, 0, 0, (int)(originalImage.getWidth() * 0.1), (int)(originalImage.getHeight() * 0.1), null);
+                g2d.drawImage(originalImage, 0, 0, (int) (originalImage.getWidth() * 0.1), (int) (originalImage.getHeight() * 0.1), null);
                 g2d.dispose();
-                
+
                 String imagesFolder = System.getProperty("imagesFolder");
 
                 if (imagesFolder == null) {
@@ -215,5 +219,9 @@ public class CajFacturaEnviadaBean {
 
     private String obtenerEmpresa() {
         return userManager.getGnrEmpresa().getCodEmpresa();
+    }
+
+    private PrySupervisorUsuario obtenerPrySupervisorUsuario() {
+        return prySupervisorUsuarioFacadeREST.find_JSON(PrySupervisorUsuario.class, obtenerEmpresa(), userManager.getUserName());
     }
 }
