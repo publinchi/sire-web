@@ -73,6 +73,8 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.InvUnidadAlternativaFacadeREST.class);
         resources.add(com.sire.ws.service.InvUnidadMedidaFacadeREST.class);
         resources.add(com.sire.ws.service.PryProyectoFacadeREST.class);
+        resources.add(com.sire.ws.service.PrySupervisorFacadeREST.class);
+        resources.add(com.sire.ws.service.PrySupervisorUsuarioFacadeREST.class);
         resources.add(com.sire.ws.service.UploadFileService.class);
         resources.add(com.sire.ws.service.VClienteFacadeREST.class);
         resources.add(org.netbeans.rest.application.config.DebugExceptionMapper.class);

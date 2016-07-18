@@ -55,6 +55,7 @@
     <class>com.sire.entities.PryProyecto</class>
     <class>com.sire.entities.CajRubro</class>
     <class>com.sire.entities.PrySupervisor</class>
+    <class>com.sire.entities.PrySupervisorUsuario</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="eclipselink.logging.level" value="FINE"/>
