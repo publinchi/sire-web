@@ -63,8 +63,13 @@
             <p:calendar id="fechaDocumento" 
                         label="Fecha Doc."
                         placeholder="Fecha Doc."
-                        value="#{cajFacturaEnviadaBean.cajFacturaEnviada.fechaDocumento}"
-                        required="true"/>
+                        value="#{cajFacturaEnviadaBean.fechaDocumento}"
+                        maxdate="#{cajFacturaEnviadaBean.maxDate}"
+                        required="true">
+                <f:attribute name="fechaDocumento" 
+                             value="#{cajFacturaEnviadaBean.cajFacturaEnviada.fechaDocumento}" />
+                <f:validator validatorId="primeDateRangeValidator" />
+            </p:calendar>
         </pm:field>
         <pm:field>
             <p:outputLabel for="iva" value="IVA:"/>
@@ -75,7 +80,9 @@
                               noSelectionOption="true"/>
                 <f:selectItem itemLabel="12%" itemValue="0.12" />
                 <f:selectItem itemLabel="14%" itemValue="0.14" />
-                <p:ajax listener="#{cajFacturaEnviadaBean.calcularTotalDocumento()}"/>
+                <f:selectItem itemLabel="Sin IVA" itemValue="0.0" />
+                <p:ajax update="cajas:cajasForm:totalConIva,cajas:cajasForm:totalDocumento,cajas:cajasForm:ivaDocumento"
+                        listener="#{cajFacturaEnviadaBean.calcularTotalDocumento()}"/>
             </p:selectOneMenu>
         </pm:field>
         <pm:field>
@@ -83,7 +90,8 @@
                          label="Total con IVA"
                          placeholder="Total con IVA"
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalConIva}"
-                         required="true">
+                         required="false"
+                         readonly="#{cajFacturaEnviadaBean.iva eq 0.0}">
                 <p:ajax event="blur" 
                         update="cajas:cajasForm:totalDocumento,cajas:cajasForm:ivaDocumento"
                         listener="#{cajFacturaEnviadaBean.calcularTotalDocumento()}"
@@ -95,7 +103,7 @@
                          label="Total sin IVA"
                          placeholder="Total sin IVA"
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.totalSinIva}"
-                         required="true">
+                         required="false">
                 <p:ajax event="blur" 
                         update="cajas:cajasForm:totalDocumento,cajas:cajasForm:ivaDocumento"
                         listener="#{cajFacturaEnviadaBean.calcularTotalDocumento()}"
@@ -136,7 +144,7 @@
                          label="Observación"
                          placeholder="Observación"
                          value="#{cajFacturaEnviadaBean.cajFacturaEnviada.observacion}"
-                         required="true"/>
+                         required="false"/>
         </pm:field>
 
         <p:commandButton value="Enviar" ajax="false" 

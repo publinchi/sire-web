@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,9 +40,12 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
+import org.joda.time.ReadableInstant;
+import javax.validation.constraints.Past;
 import javax.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.FilenameUtils;
 import org.primefaces.model.UploadedFile;
 
 /**
@@ -70,6 +74,10 @@ public class CajFacturaEnviadaBean {
     private CajRubroFacadeREST cajRubroFacadeREST;
     private PrySupervisorUsuarioFacadeREST prySupervisorUsuarioFacadeREST;
     private Double iva;
+    private Date maxDate;
+//    @Past
+    private Date fechaDocumento;
+    private String fileName;
 
     public CajFacturaEnviadaBean() {
         GsonBuilder builder = new GsonBuilder();
@@ -84,16 +92,26 @@ public class CajFacturaEnviadaBean {
     }
 
     public void enviar() {
-        logger.log(Level.INFO, "file: {0}", file.getFileName());
+        if (!file.getFileName().isEmpty()) {
+            logger.log(Level.INFO, "file: {0}", file.getFileName());
+            fileName = String.valueOf(Calendar.getInstance().getTimeInMillis()) + "." + FilenameUtils.getExtension(file.getFileName());
+        } else {
+            addMessage("Advertencia", "Imágen requerida.", FacesMessage.SEVERITY_WARN);
+            FacesContext context = FacesContext.getCurrentInstance();
+            context.getExternalContext().getFlash().setKeepMessages(true);
+            return;
+        }
+
         logger.log(Level.INFO, "cajFacturaEnviada: {0}", cajFacturaEnviada);
 
         cajFacturaEnviada.getCajFacturaEnviadaPK().setCodEmpresa(obtenerEmpresa());
         cajFacturaEnviada.getCajFacturaEnviadaPK().setSecuencial(null);
         cajFacturaEnviada.setFechaEstado(Calendar.getInstance().getTime());
-        cajFacturaEnviada.setIdFoto(file.getFileName());
+        cajFacturaEnviada.setIdFoto(fileName);
         cajFacturaEnviada.setNombreUsuario(userManager.getCurrent());
         cajFacturaEnviada.getCajFacturaEnviadaPK().setCodSupervisor(obtenerPrySupervisorUsuario().getPrySupervisor().getPrySupervisorPK().getCodSupervisor());
         cajFacturaEnviada.setEstado("G");
+        cajFacturaEnviada.setFechaDocumento(fechaDocumento);
         Response response = cajFacturaEnviadaFacadeREST.save_JSON(cajFacturaEnviada);
         if (response.getStatus() == 200) {
             savePicture();
@@ -101,6 +119,7 @@ public class CajFacturaEnviadaBean {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
         } else if (response.getStatus() == 404) {
+            savePicture();
             String developerMessage = response.readEntity(ErrorMessage.class).getDeveloperMessage();
             logger.log(Level.SEVERE, developerMessage);
             addMessage("Advertencia", developerMessage, FacesMessage.SEVERITY_WARN);
@@ -152,10 +171,17 @@ public class CajFacturaEnviadaBean {
 
     public void calcularTotalDocumento() {
         logger.info("iva: " + iva);
-        if (cajFacturaEnviada.getTotalConIva() != null && iva != null) {
+        if (iva.equals(0.0) || cajFacturaEnviada.getTotalConIva() == null) {
+            cajFacturaEnviada.setTotalConIva(0.0);
+        }
+
+        if (iva != null) {
             cajFacturaEnviada.setIvaDocumento(Round.round((cajFacturaEnviada.getTotalConIva() * iva), 2));
-            if (cajFacturaEnviada.getTotalSinIva() != null && cajFacturaEnviada.getIvaDocumento() != null) {
-                cajFacturaEnviada.setTotalDocumento(cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalSinIva());
+            if (cajFacturaEnviada.getTotalSinIva() == null) {
+                cajFacturaEnviada.setTotalSinIva(0.0);
+            }
+            if (cajFacturaEnviada.getIvaDocumento() != null) {
+                cajFacturaEnviada.setTotalDocumento(Round.round(cajFacturaEnviada.getTotalConIva() + cajFacturaEnviada.getIvaDocumento() + cajFacturaEnviada.getTotalSinIva(), 2));
             }
         }
     }
@@ -165,11 +191,11 @@ public class CajFacturaEnviadaBean {
             try {
                 BufferedImage originalImage = ImageIO.read(file.getInputstream());
 
-                BufferedImage outputImage = new BufferedImage((int) (originalImage.getWidth() * 0.1),
-                        (int) (originalImage.getHeight() * 0.1), originalImage.getType());
+                BufferedImage outputImage = new BufferedImage((int) (originalImage.getWidth() * 0.25),
+                        (int) (originalImage.getHeight() * 0.25), originalImage.getType());
 
                 Graphics2D g2d = outputImage.createGraphics();
-                g2d.drawImage(originalImage, 0, 0, (int) (originalImage.getWidth() * 0.1), (int) (originalImage.getHeight() * 0.1), null);
+                g2d.drawImage(originalImage, 0, 0, (int) (originalImage.getWidth() * 0.25), (int) (originalImage.getHeight() * 0.25), null);
                 g2d.dispose();
 
                 String imagesFolder = System.getProperty("imagesFolder");
@@ -184,10 +210,10 @@ public class CajFacturaEnviadaBean {
                 ImageWriteParam iwp = writer.getDefaultWriteParam();
 
                 iwp.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-                float quality = 1.0f;  // reduce quality by 100%  
+                float quality = 1.0f;  // reduce quality by 0%  
                 iwp.setCompressionQuality(quality);
 
-                File f = new File(imagesFolder + File.separator + file.getFileName());
+                File f = new File(imagesFolder + File.separator + fileName);
                 FileImageOutputStream output = new FileImageOutputStream(f);
                 writer.setOutput(output);
 
@@ -223,5 +249,9 @@ public class CajFacturaEnviadaBean {
 
     private PrySupervisorUsuario obtenerPrySupervisorUsuario() {
         return prySupervisorUsuarioFacadeREST.find_JSON(PrySupervisorUsuario.class, obtenerEmpresa(), userManager.getUserName());
+    }
+
+    public Date getMaxDate() {
+        return Calendar.getInstance().getTime();
     }
 }
