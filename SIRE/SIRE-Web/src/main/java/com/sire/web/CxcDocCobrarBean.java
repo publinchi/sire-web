@@ -156,7 +156,7 @@ public class CxcDocCobrarBean {
     }
 
     public List<CxcDocCobrar> getCxcDocCobrarList() {
-        if (cliente.getCliente() != null && cxcDocCobrarList == null) {
+        if (cliente.getCliente() != null) {
             loadCxcDocCobrarList();
             logger.log(Level.INFO, "cxcDocCobrarList.size(): {0}", cxcDocCobrarList.size());
         }
