@@ -248,33 +248,36 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setTotalCapital(totalCapital);
             cxcAbonoC.setTotalMora(BigInteger.ZERO);
 
-            logger.log(Level.INFO, "cxcDocCobrarList.size: {0}", cxcDocCobrarList.size());
             List<CxcAbonoD> cxcAbonoDList = new ArrayList<>();
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
-                if (cxcDocCobrar.getSaldoOri() == null) {
-                    cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
-                }
-                logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
-                logger.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
-                if (cxcDocCobrar.getSaldoOri() != null && !Objects.equals(cxcDocCobrar.getSaldoOri(), cxcDocCobrar.getSaldoDocumento())) {
-                    CxcAbonoD cxcAbonoD = new CxcAbonoD();
-                    CxcAbonoDPK cxcAbonoDPK = new CxcAbonoDPK();
-                    cxcAbonoDPK.setAuxiliar(i);
-                    cxcAbonoDPK.setCodDocumento("CIN");
-                    cxcAbonoDPK.setCodEmpresa(cxcDocCobrar.getCxcDocCobrarPK().getCodEmpresa());
-                    cxcAbonoDPK.setNumAbono(numDocumentoResp.intValue());
-                    cxcAbonoD.setCxcAbonoDPK(cxcAbonoDPK);
-                    cxcAbonoD.setCapital(cxcDocCobrar.getCapital());
-                    cxcAbonoD.setCodAbono(cxcDocCobrar.getCxcDocCobrarPK().getCodDocumento());
-                    cxcAbonoD.setDias(0);
-                    cxcAbonoD.setNumDocumento(cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento().intValue());
-                    cxcAbonoD.setNumeroCuota(cxcDocCobrar.getCxcDocCobrarPK().getNumeroCuota().intValue());
-                    cxcAbonoD.setPorcComision(BigDecimal.ZERO);
-                    cxcAbonoD.setValorMora(BigInteger.ZERO);
+                if (cxcDocCobrar.getCxcDocCobrarPK().getCodDocumento().equals(cxcDocCobrarSeleccionado.getCxcDocCobrarPK().getCodDocumento())) {
+                    logger.log(Level.INFO, "cxcDocCobrar: {0}", cxcDocCobrar);
 
-                    cxcAbonoDList.add(cxcAbonoD);
-                    i++;
+                    if (cxcDocCobrar.getSaldoOri() == null) {
+                        cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
+                    }
+                    logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
+                    logger.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
+                    if (cxcDocCobrar.getSaldoOri() != null && !Objects.equals(cxcDocCobrar.getSaldoOri(), cxcDocCobrar.getSaldoDocumento())) {
+                        CxcAbonoD cxcAbonoD = new CxcAbonoD();
+                        CxcAbonoDPK cxcAbonoDPK = new CxcAbonoDPK();
+                        cxcAbonoDPK.setAuxiliar(i);
+                        cxcAbonoDPK.setCodDocumento("CIN");
+                        cxcAbonoDPK.setCodEmpresa(cxcDocCobrar.getCxcDocCobrarPK().getCodEmpresa());
+                        cxcAbonoDPK.setNumAbono(numDocumentoResp.intValue());
+                        cxcAbonoD.setCxcAbonoDPK(cxcAbonoDPK);
+                        cxcAbonoD.setCapital(cxcDocCobrar.getCapital());
+                        cxcAbonoD.setCodAbono(cxcDocCobrar.getCxcDocCobrarPK().getCodDocumento());
+                        cxcAbonoD.setDias(0);
+                        cxcAbonoD.setNumDocumento(cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento().intValue());
+                        cxcAbonoD.setNumeroCuota(cxcDocCobrar.getCxcDocCobrarPK().getNumeroCuota().intValue());
+                        cxcAbonoD.setPorcComision(BigDecimal.ZERO);
+                        cxcAbonoD.setValorMora(BigInteger.ZERO);
+
+                        cxcAbonoDList.add(cxcAbonoD);
+                        i++;
+                    }
                 }
             }
 
@@ -338,7 +341,6 @@ public class CxcDocCobrarBean {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
-
         } catch (RestException | ClienteException | GPSException | VendedorException ex) {
             logger.log(Level.SEVERE, ex.getMessage(), ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
@@ -423,7 +425,8 @@ public class CxcDocCobrarBean {
         client = cliente.getCliente();
         BigInteger codCliente = cliente.getCliente().getCodCliente();
         CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
-        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findByCodCliente(String.class, codCliente.toString());
+        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findByCodCliente(String.class,
+                 codCliente.toString());
         cxcDocCobrarList = gson.fromJson(cxcDocCobrarListString, new TypeToken<List<CxcDocCobrar>>() {
         }.getType());
         calcularTotales();
@@ -446,7 +449,8 @@ public class CxcDocCobrarBean {
 
     private void loadBanCtaCtes() {
         BanCtaCteFacadeREST banCtaCteFacadeREST = new BanCtaCteFacadeREST();
-        String banCtaCtesString = banCtaCteFacadeREST.findAll_JSON(String.class);
+        String banCtaCtesString = banCtaCteFacadeREST.findAll_JSON(String.class
+        );
         banCtaCtes = gson.fromJson(banCtaCtesString, new TypeToken<List<BanCtaCte>>() {
         }.getType());
     }
@@ -473,10 +477,12 @@ public class CxcDocCobrarBean {
         BigInteger defCodVendedor = new BigInteger(facParametros.getDefCodVendedor().toString());
         logger.log(Level.INFO, "defCodVendedor: {0}", defCodVendedor);
         return defCodVendedor;
+
     }
 
     private FacParametros obtenerFacParametros() {
-        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
+        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class
+        );
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
