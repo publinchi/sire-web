@@ -181,22 +181,21 @@ public class CxcDocCobrarBean {
             cxcDocCobrarSeleccionado.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoOri());
         }
 
-        logger.info("antiguoSaldo: " + cxcDocCobrarSeleccionado.getSaldoDocumento());
+        logger.log(Level.INFO, "antiguoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
         if (capital != null && cxcDocCobrarSeleccionado.getSaldoDocumento() >= capital) {
 
             cxcDocCobrarSeleccionado.setCapital(capital);
             nuevoSaldo = cxcDocCobrarSeleccionado.getSaldoDocumento() - cxcDocCobrarSeleccionado.getCapital();
             cxcDocCobrarSeleccionado.setSaldoDocumento(nuevoSaldo);
-
-            logger.info("nuevoSaldo: " + cxcDocCobrarSeleccionado.getSaldoDocumento());
         }
+
+        logger.log(Level.INFO, "nuevoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
         diferencia = cxcDocCobrarSeleccionado.getSaldoDocumento();
 
         calcularTotales();
 //        calcularFormaPago();
-        capital = null;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
     }
 
