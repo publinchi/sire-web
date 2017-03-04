@@ -252,6 +252,9 @@ public class CxcDocCobrarBean {
             List<CxcAbonoD> cxcAbonoDList = new ArrayList<>();
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
+                if (cxcDocCobrar.getSaldoOri() == null) {
+                    cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
+                }
                 logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
                 logger.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
                 if (cxcDocCobrar.getSaldoOri() != null && !Objects.equals(cxcDocCobrar.getSaldoOri(), cxcDocCobrar.getSaldoDocumento())) {
