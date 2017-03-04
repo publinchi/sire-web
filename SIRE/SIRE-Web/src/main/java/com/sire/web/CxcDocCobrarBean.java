@@ -197,7 +197,6 @@ public class CxcDocCobrarBean {
         calcularTotales();
 //        calcularFormaPago();
         capital = null;
-        RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:diferenciaLabel");
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
     }
 
@@ -308,7 +307,6 @@ public class CxcDocCobrarBean {
             agregarLog(pago);
             logger.info("Enviando Pago ...");
             Response response = cxcDocCobrarFacadeREST.save_JSON(pago);
-            logger.info("Pago Enviado.");
 
             logger.info("Response: " + response.toString());
             logger.info("Status: " + response.getStatus());
@@ -317,6 +315,9 @@ public class CxcDocCobrarBean {
             if (response.getStatus() != 200) {
                 throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
             }
+
+            logger.info("Pago Enviado.");
+
             logger.info("Enviando Mail ...");
             enviarMail(pago);
             logger.info("Mail Enviado.");
