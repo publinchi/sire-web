@@ -212,7 +212,6 @@ public class CxcDocCobrarBean {
             botonAgegarChequeBloqueado = true;
             botonEnviarBloqueado = true;
         }
-        logger.info("botonAgegarChequeBloqueado: " + botonAgegarChequeBloqueado);
     }
 
     public String enviar() {
@@ -477,7 +476,6 @@ public class CxcDocCobrarBean {
         }
 
         BigInteger defCodVendedor = new BigInteger(facParametros.getDefCodVendedor().toString());
-        logger.log(Level.INFO, "defCodVendedor: {0}", defCodVendedor);
         return defCodVendedor;
 
     }
@@ -490,20 +488,15 @@ public class CxcDocCobrarBean {
 
         String nombreUsuario = userManager.getCurrent().getNombreUsuario();
         String codEmpresa = obtenerEmpresa();
-        logger.log(Level.INFO, "nombreUsuario: {0}", nombreUsuario);
-        logger.log(Level.INFO, "codEmpresa: {0}", codEmpresa);
 
         for (FacParametros facParametros : listaFacParametros) {
             String facNombreUsuario = facParametros.getFacParametrosPK().getNombreUsuario();
-            logger.log(Level.INFO, "facNombreUsuario: {0}", facNombreUsuario);
             String facCodEmpresa = facParametros.getFacParametrosPK().getCodEmpresa();
-            logger.log(Level.INFO, "facCodEmpresa: {0}", facCodEmpresa);
 
             if (facNombreUsuario.toLowerCase().
                     equals(nombreUsuario.toLowerCase())
                     && facCodEmpresa.
                             equals(codEmpresa)) {
-                logger.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
         }
@@ -516,7 +509,6 @@ public class CxcDocCobrarBean {
     }
 
     public boolean validarCheque() {
-        logger.info("fechaCheque: " + fechaCheque);
 //        cxcChequeFacadeREST.findByCodClienteCodEmpresaMes(String.class, obtenerCliente(), obtenerEmpresa(), codBanco)
         botonEnviarBloqueado = true;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
@@ -527,7 +519,6 @@ public class CxcDocCobrarBean {
 //        setInvMovimientoDtllSeleccionado(((InvMovimientoDtll) event.getData()));
         CxcCheque cxcCheque = (CxcCheque) event.getData();
 
-        logger.log(Level.INFO, "Auxiliar: {0}", cxcCheque.getCxcChequePK().getAuxiliar());
         totalCheques = totalCheques - cxcCheque.getValorCheque();
         calcularFormaPago();
         cxcCheques.remove(cxcCheque);
