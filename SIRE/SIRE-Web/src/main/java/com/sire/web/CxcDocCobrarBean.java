@@ -239,7 +239,7 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setFechaAbono(Calendar.getInstance().getTime());
             cxcAbonoC.setFechaEstado(Calendar.getInstance().getTime());
             cxcAbonoC.setNombreUsuario(userManager.getCurrent());
-            cxcAbonoC.setTotalCapital(totalCapital);
+            cxcAbonoC.setTotalCapital(cxcDocCobrarSeleccionado.getCapital());
             cxcAbonoC.setTotalMora(BigInteger.ZERO);
 
             List<CxcAbonoD> cxcAbonoDList = new ArrayList<>();
@@ -302,7 +302,7 @@ public class CxcDocCobrarBean {
             cxcPagoContado.setFechaDocumento(Calendar.getInstance().getTime());
             cxcPagoContado.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
             cxcPagoContado.setOtros(otros);
-            cxcPagoContado.setPagoTotal(totalCapital);
+            cxcPagoContado.setPagoTotal(cxcDocCobrarSeleccionado.getCapital());
             cxcPagoContado.setRetencion(retencion);
             cxcPagoContado.setRetencionIva(retencionIVA);
             cxcPagoContado.setTarjeta(BigInteger.ZERO);
