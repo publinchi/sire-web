@@ -274,8 +274,8 @@ public class CxcDocCobrarBean {
                     i++;
                 }
             }
-            
-             logger.log(Level.INFO, "cxcAbonoDList.size: {0}", cxcAbonoDList.size());
+
+            logger.log(Level.INFO, "cxcAbonoDList.size: {0}", cxcAbonoDList.size());
             cxcAbonoC.setCxcAbonoDList(cxcAbonoDList);
 
             CxcPagoContado cxcPagoContado = new CxcPagoContado();
