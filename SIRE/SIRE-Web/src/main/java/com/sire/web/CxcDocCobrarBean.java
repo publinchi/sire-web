@@ -194,7 +194,7 @@ public class CxcDocCobrarBean {
         
         calcularTotales();
 //        calcularFormaPago();
-        RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
+        RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotalLabel");
     }
     
     public void calcularFormaPago() {
@@ -323,9 +323,9 @@ public class CxcDocCobrarBean {
             logger.info("Enviando Pago ...");
             Response response = cxcDocCobrarFacadeREST.save_JSON(pago);
             
-            logger.info("Response: " + response.toString());
-            logger.info("Status: " + response.getStatus());
-            logger.info("Status info: " + response.getStatusInfo().getReasonPhrase());
+            logger.log(Level.INFO, "Response: {0}", response.toString());
+            logger.log(Level.INFO, "Status: {0}", response.getStatus());
+            logger.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
             
             if (response.getStatus() != 200) {
                 throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
@@ -376,16 +376,16 @@ public class CxcDocCobrarBean {
         } else {
             botonAgegarChequeBloqueado = true;
         }
-        logger.info("botonAgegarChequeBloqueado: " + botonAgegarChequeBloqueado);
+        logger.log(Level.INFO, "botonAgegarChequeBloqueado: {0}", botonAgegarChequeBloqueado);
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:chequesForm:agregarChequeButton");
     }
     
     public void agregarCheque() {
-        logger.info("codBanco: " + codBanco);
-        logger.info("fechaCheque: " + fechaCheque);
-        logger.info("numCheque: " + numCheque);
-        logger.info("numCuenta: " + numCuenta);
-        logger.info("valorCheque: " + valorCheque);
+        logger.log(Level.INFO, "codBanco: {0}", codBanco);
+        logger.log(Level.INFO, "fechaCheque: {0}", fechaCheque);
+        logger.log(Level.INFO, "numCheque: {0}", numCheque);
+        logger.log(Level.INFO, "numCuenta: {0}", numCuenta);
+        logger.log(Level.INFO, "valorCheque: {0}", valorCheque);
         
         CxcCheque cheque = new CxcCheque();
         cheque.setCodBanco(codBanco);
