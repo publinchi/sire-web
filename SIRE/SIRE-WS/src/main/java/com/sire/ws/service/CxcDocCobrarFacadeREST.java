@@ -5,6 +5,7 @@
  */
 package com.sire.ws.service;
 
+import com.sire.entities.CxcAbonoD;
 import com.sire.entities.CxcCheque;
 import com.sire.entities.CxcDocCobrar;
 import com.sire.entities.CxcDocCobrarPK;
@@ -194,7 +195,13 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
             super.edit(cxcDocCobrar);
         }
+
         getEntityManager().persist(pago.getCxcAbonoC());
+
+        for (CxcAbonoD cxcAbonoD : pago.getCxcAbonoC().getCxcAbonoDList()) {
+            getEntityManager().persist(cxcAbonoD);
+        }
+
         getEntityManager().persist(pago.getCxcPagoContado());
 
         for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
