@@ -257,6 +257,10 @@ public class CxcDocCobrarBean {
                     if (cxcDocCobrar.getSaldoOri() == null) {
                         cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
                     }
+
+                    logger.log(Level.INFO, "cxcDocCobrar.getCapital(): {0}", cxcDocCobrar.getCapital());
+                    logger.log(Level.INFO, "totalCapital: {0}", totalCapital);
+
                     cxcDocCobrar.setSaldoDocumento(cxcDocCobrar.getSaldoOri() - totalCapital);
 
                     logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
