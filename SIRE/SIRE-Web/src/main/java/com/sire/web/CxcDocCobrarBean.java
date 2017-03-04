@@ -258,10 +258,9 @@ public class CxcDocCobrarBean {
                         cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
                     }
 
-                    logger.log(Level.INFO, "cxcDocCobrar.getCapital(): {0}", cxcDocCobrar.getCapital());
-                    logger.log(Level.INFO, "totalCapital: {0}", totalCapital);
+                    logger.log(Level.INFO, "cxcDocCobrarSeleccionado.getSaldoDocumento(): {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
-                    cxcDocCobrar.setSaldoDocumento(cxcDocCobrar.getSaldoOri() - totalCapital);
+                    cxcDocCobrar.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoDocumento());
 
                     logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
                     logger.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
