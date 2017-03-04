@@ -301,6 +301,7 @@ public class CxcDocCobrarBean {
             for (CxcCheque cheque : cxcCheques) {
                 cheque.getCxcChequePK().setNumDocumento(numDocumentoResp.intValue());
             }
+            pago.setCxcAbonoDList(cxcAbonoC.getCxcAbonoDList());
             pago.setCxcChequeList(cxcCheques);
             pago.setCxcDocCobrarList(cxcDocCobrarList);
             pago.setCxcPagoContado(cxcPagoContado);

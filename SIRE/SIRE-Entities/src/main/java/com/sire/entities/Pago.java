@@ -19,6 +19,7 @@ public class Pago {
 
     private List<CxcDocCobrar> cxcDocCobrarList;
     private CxcAbonoC cxcAbonoC;
+    private List<CxcAbonoD> cxcAbonoDList;
     private CxcPagoContado cxcPagoContado;
     private List<CxcCheque> cxcChequeList;
     private GnrLogHistorico gnrLogHistorico;

@@ -198,7 +198,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
 
         getEntityManager().persist(pago.getCxcAbonoC());
 
-        for (CxcAbonoD cxcAbonoD : pago.getCxcAbonoC().getCxcAbonoDList()) {
+        for (CxcAbonoD cxcAbonoD : pago.getCxcAbonoDList()) {
             getEntityManager().persist(cxcAbonoD);
         }
 
