@@ -203,7 +203,7 @@ public class CxcDocCobrarBean {
 
     public void calcularFormaPago() {
         logger.info("calcularFormaPago()");
-        diferencia = totalCapital - retencion - retencionIVA - efectivo - deposito - otros - totalCheques;
+        diferencia = diferencia - retencion - retencionIVA - efectivo - deposito - otros - totalCheques;
         diferencia = Round.round(diferencia, 2);
         logger.info("diferencia: " + diferencia);
         if (diferencia == 0 && validarCheque()) {
