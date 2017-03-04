@@ -158,7 +158,6 @@ public class CxcDocCobrarBean {
     public List<CxcDocCobrar> getCxcDocCobrarList() {
         if (cliente.getCliente() != null) {
             loadCxcDocCobrarList();
-            logger.log(Level.INFO, "cxcDocCobrarList.size(): {0}", cxcDocCobrarList.size());
         }
         return cxcDocCobrarList;
     }
@@ -184,10 +183,9 @@ public class CxcDocCobrarBean {
         logger.log(Level.INFO, "antiguoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
         if (capital != null && cxcDocCobrarSeleccionado.getSaldoDocumento() >= capital) {
-
+            logger.info("## nuevoSaldo ##");
             cxcDocCobrarSeleccionado.setCapital(capital);
             nuevoSaldo = cxcDocCobrarSeleccionado.getSaldoDocumento() - cxcDocCobrarSeleccionado.getCapital();
-            cxcDocCobrarSeleccionado.setSaldoDocumento(nuevoSaldo);
         }
 
         logger.log(Level.INFO, "nuevoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
