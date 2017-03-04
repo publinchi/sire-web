@@ -192,9 +192,12 @@ public class CxcDocCobrarBean {
             logger.info("nuevoSaldo: " + cxcDocCobrarSeleccionado.getSaldoDocumento());
         }
 
+        diferencia = cxcDocCobrarSeleccionado.getSaldoDocumento();
+
         calcularTotales();
-        calcularFormaPago();
+//        calcularFormaPago();
         capital = null;
+        RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:diferenciaLabel");
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
     }
 
@@ -480,7 +483,7 @@ public class CxcDocCobrarBean {
             if (facNombreUsuario.toLowerCase().
                     equals(nombreUsuario.toLowerCase())
                     && facCodEmpresa.
-                    equals(codEmpresa)) {
+                            equals(codEmpresa)) {
                 logger.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
