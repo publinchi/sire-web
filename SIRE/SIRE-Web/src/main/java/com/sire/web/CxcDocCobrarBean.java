@@ -191,10 +191,8 @@ public class CxcDocCobrarBean {
         logger.log(Level.INFO, "nuevoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
         diferencia = cxcDocCobrarSeleccionado.getCapital();
-        totalCapital = cxcDocCobrarSeleccionado.getCapital();
         calcularTotales();
 //        calcularFormaPago();
-        RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotalLabel");
     }
 
     public void calcularFormaPago() {
