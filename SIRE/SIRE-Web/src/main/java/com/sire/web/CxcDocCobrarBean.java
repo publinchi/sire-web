@@ -71,21 +71,21 @@ import org.primefaces.mobile.event.SwipeEvent;
 @SessionScoped
 
 public class CxcDocCobrarBean {
-    
+
     private static final Logger logger = Logger.getLogger(CxcDocCobrarBean.class.getName());
-    
+
     private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final CxcChequeFacadeREST cxcChequeFacadeREST;
     private final Gson gson;
-    
+
     @Setter
     private List<CxcDocCobrar> cxcDocCobrarList;
-    
+
     @Getter
     @Setter
     @ManagedProperty("#{cliente}")
     private CustomerBean cliente;
-    
+
     @Getter
     @Setter
     @ManagedProperty(value = "#{user}")
@@ -94,58 +94,58 @@ public class CxcDocCobrarBean {
     @Setter
     @ManagedProperty("#{mapa}")
     private MapaBean mapa;
-    
+
     @Getter
     @Setter
     private Double totalSaldo, totalCapital, diferencia,
             retencion = 0.0, retencionIVA = 0.0, efectivo = 0.0, deposito = 0.0,
             otros = 0.0, valorCheque = 0.0, totalCheques = 0.0;
-    
+
     @Getter
     @Setter
     private VCliente client;
-    
+
     @Getter
     @Setter
     private CxcDocCobrar cxcDocCobrarSeleccionado;
-    
+
     @Getter
     @Setter
     private boolean botonEnviarBloqueado = true, botonAgegarChequeBloqueado = true;
-    
+
     @Getter
     @Setter
     private String numeroCuenta, codBanco, numCuenta;
-    
+
     @Getter
     @Setter
     private Date fechaCheque;
-    
+
     @Getter
     @Setter
     private BigInteger numCheque;
-    
+
     @Getter
     @Setter
     private List<BanCtaCte> banCtaCtes;
-    
+
     @Getter
     @Setter
     private List<CxcCheque> cxcCheques;
-    
+
     @Resource(name = "mail/gmail")
     private Session mailSession;
-    
+
     public CxcDocCobrarBean() {
         cxcChequeFacadeREST = new CxcChequeFacadeREST();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-        
+
         cxcCheques = new ArrayList<>();
         loadBanCtaCtes();
     }
-    
+
     public void findDocCobrar() {
 //        VCliente c = cliente.getCliente();
 //
@@ -154,49 +154,49 @@ public class CxcDocCobrarBean {
 //        }
 
     }
-    
+
     public List<CxcDocCobrar> getCxcDocCobrarList() {
         if (cliente.getCliente() != null) {
             loadCxcDocCobrarList();
         }
         return cxcDocCobrarList;
     }
-    
+
     public void seleccionarCxcDocCobrar(SelectEvent event) {
         CxcDocCobrar cxcDocCobrar = (CxcDocCobrar) event.getObject();
         logger.log(Level.INFO, "CxcDocCobrar 1 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
         cxcDocCobrarSeleccionado = cxcDocCobrarList.get(cxcDocCobrarList.indexOf(cxcDocCobrar));
         logger.log(Level.INFO, "CxcDocCobrar 2 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
     }
-    
+
     public void calcularSaldo() {
         Double nuevoSaldo;
-        
+
         logger.log(Level.INFO, "capital: {0}", cxcDocCobrarSeleccionado.getCapital());
-        
+
         if (cxcDocCobrarSeleccionado.getSaldoOri() == null) {
             cxcDocCobrarSeleccionado.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoDocumento());
         } else {
             cxcDocCobrarSeleccionado.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoOri());
         }
-        
+
         logger.log(Level.INFO, "antiguoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
-        
+
         if (cxcDocCobrarSeleccionado.getCapital() != null && cxcDocCobrarSeleccionado.getSaldoDocumento() >= cxcDocCobrarSeleccionado.getCapital()) {
             logger.info("## nuevoSaldo ##");
             nuevoSaldo = cxcDocCobrarSeleccionado.getSaldoDocumento() - cxcDocCobrarSeleccionado.getCapital();
             cxcDocCobrarSeleccionado.setSaldoDocumento(nuevoSaldo);
         }
-        
+
         logger.log(Level.INFO, "nuevoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
-        
+
         diferencia = cxcDocCobrarSeleccionado.getCapital();
-        
+        totalCapital = cxcDocCobrarSeleccionado.getCapital();
         calcularTotales();
 //        calcularFormaPago();
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotalLabel");
     }
-    
+
     public void calcularFormaPago() {
         logger.info("calcularFormaPago()");
         diferencia = cxcDocCobrarSeleccionado.getCapital() - retencion - retencionIVA - efectivo - deposito - otros - totalCheques;
@@ -213,7 +213,7 @@ public class CxcDocCobrarBean {
             botonEnviarBloqueado = true;
         }
     }
-    
+
     public String enviar() {
         logger.info("enviar()");
         BigDecimal numDocumentoResp = null;
@@ -221,10 +221,10 @@ public class CxcDocCobrarBean {
             if (mapa.getDireccion() == null) {
                 throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
             }
-            
+
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN", userManager.getCurrent().getNombreUsuario());
-            
+
             CxcAbonoC cxcAbonoC = new CxcAbonoC();
             CxcAbonoCPK cxcAbonoCPK = new CxcAbonoCPK();
             cxcAbonoCPK.setCodDocumento("CIN");
@@ -243,22 +243,22 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setNombreUsuario(userManager.getCurrent());
             cxcAbonoC.setTotalCapital(totalCapital);
             cxcAbonoC.setTotalMora(BigInteger.ZERO);
-            
+
             List<CxcAbonoD> cxcAbonoDList = new ArrayList<>();
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
                 if (cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento().equals(cxcDocCobrarSeleccionado.getCxcDocCobrarPK().getNumDocumento())) {
                     logger.log(Level.INFO, "cxcDocCobrar: {0}", cxcDocCobrar);
-                    
+
                     if (cxcDocCobrar.getSaldoOri() == null) {
                         cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
                     }
-                    
+
                     logger.log(Level.INFO, "cxcDocCobrarSeleccionado.getSaldoDocumento(): {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
-                    
+
                     cxcDocCobrar.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoDocumento());
                     cxcDocCobrar.setCapital(cxcDocCobrarSeleccionado.getCapital());
-                    
+
                     logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
                     logger.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
                     if (cxcDocCobrar.getSaldoOri() != null && !Objects.equals(cxcDocCobrar.getSaldoOri(), cxcDocCobrar.getSaldoDocumento())) {
@@ -276,16 +276,16 @@ public class CxcDocCobrarBean {
                         cxcAbonoD.setNumeroCuota(cxcDocCobrar.getCxcDocCobrarPK().getNumeroCuota().intValue());
                         cxcAbonoD.setPorcComision(BigDecimal.ZERO);
                         cxcAbonoD.setValorMora(BigInteger.ZERO);
-                        
+
                         cxcAbonoDList.add(cxcAbonoD);
                         i++;
                     }
                 }
             }
-            
+
             logger.log(Level.INFO, "cxcAbonoDList.size: {0}", cxcAbonoDList.size());
             cxcAbonoC.setCxcAbonoDList(cxcAbonoDList);
-            
+
             CxcPagoContado cxcPagoContado = new CxcPagoContado();
             CxcPagoContadoPK cxcPagoContadoPK = new CxcPagoContadoPK();
             cxcPagoContadoPK.setCodDocumento("CIN");
@@ -308,7 +308,7 @@ public class CxcDocCobrarBean {
             cxcPagoContado.setRetencion(retencion);
             cxcPagoContado.setRetencionIva(retencionIVA);
             cxcPagoContado.setTarjeta(BigInteger.ZERO);
-            
+
             CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
             Pago pago = new Pago();
             pago.setCxcAbonoC(cxcAbonoC);
@@ -322,23 +322,23 @@ public class CxcDocCobrarBean {
             agregarLog(pago);
             logger.info("Enviando Pago ...");
             Response response = cxcDocCobrarFacadeREST.save_JSON(pago);
-            
+
             logger.log(Level.INFO, "Response: {0}", response.toString());
             logger.log(Level.INFO, "Status: {0}", response.getStatus());
             logger.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
-            
+
             if (response.getStatus() != 200) {
                 throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
             }
-            
+
             logger.info("Pago Enviado.");
-            
+
             logger.info("Enviando Mail ...");
             enviarMail(pago);
             logger.info("Mail Enviado.");
-            
+
             limpiar();
-            
+
             addMessage("Cobro relizado exitosamente.", "Num. Cobro: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
@@ -356,7 +356,7 @@ public class CxcDocCobrarBean {
             return "index?faces-redirect=true";
         }
     }
-    
+
     public void calcularCheques() {
         logger.info("calcularCheques()");
         if (valorCheque > 0.0) {
@@ -379,14 +379,14 @@ public class CxcDocCobrarBean {
         logger.log(Level.INFO, "botonAgegarChequeBloqueado: {0}", botonAgegarChequeBloqueado);
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:chequesForm:agregarChequeButton");
     }
-    
+
     public void agregarCheque() {
         logger.log(Level.INFO, "codBanco: {0}", codBanco);
         logger.log(Level.INFO, "fechaCheque: {0}", fechaCheque);
         logger.log(Level.INFO, "numCheque: {0}", numCheque);
         logger.log(Level.INFO, "numCuenta: {0}", numCuenta);
         logger.log(Level.INFO, "valorCheque: {0}", valorCheque);
-        
+
         CxcCheque cheque = new CxcCheque();
         cheque.setCodBanco(codBanco);
         cheque.setCodDeposito(null);
@@ -404,7 +404,7 @@ public class CxcDocCobrarBean {
         }
         cheque.setDetalle(null);
         cheque.setEstado("G");
-        
+
         cheque.setFechaCheque(fechaCheque);
         cheque.setFechaEstado(Calendar.getInstance().getTime());
         cheque.setFechaRecepcion(Calendar.getInstance().getTime());
@@ -413,16 +413,16 @@ public class CxcDocCobrarBean {
         cheque.setNumDeposito(0L);
         cheque.setReferencia(null);
         cheque.setValorCheque(valorCheque);
-        
+
         cxcCheques.add(cheque);
         totalCheques += valorCheque;
-        
+
         calcularFormaPago();
         limpiarFormaCheque();
         botonAgegarChequeBloqueado = true;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:enviarButton");
     }
-    
+
     private void loadCxcDocCobrarList() {
         client = cliente.getCliente();
         BigInteger codCliente = cliente.getCliente().getCodCliente();
@@ -433,22 +433,22 @@ public class CxcDocCobrarBean {
         }.getType());
         calcularTotales();
     }
-    
+
     private void calcularTotales() {
         totalSaldo = 0.0;
         totalCapital = 0.0;
         for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
             totalSaldo += cxcDocCobrar.getSaldoDocumento();
-            
+
             if (cxcDocCobrar.getCapital() != null) {
                 totalCapital += cxcDocCobrar.getCapital();
             }
         }
-        
+
         totalSaldo = Round.round(totalSaldo, 2);
         totalCapital = Round.round(totalCapital, 2);
     }
-    
+
     private void loadBanCtaCtes() {
         BanCtaCteFacadeREST banCtaCteFacadeREST = new BanCtaCteFacadeREST();
         String banCtaCtesString = banCtaCteFacadeREST.findAll_JSON(String.class
@@ -456,44 +456,44 @@ public class CxcDocCobrarBean {
         banCtaCtes = gson.fromJson(banCtaCtesString, new TypeToken<List<BanCtaCte>>() {
         }.getType());
     }
-    
+
     private String obtenerEmpresa() {
         return userManager.getGnrEmpresa().getCodEmpresa();
     }
-    
+
     private CxcCliente obtenerCliente() throws ClienteException {
         if (cliente.getCliente() == null) {
             throw new ClienteException("Por favor seleccione el cliente.");
         }
-        
+
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
-    
+
     private BigInteger obtenerVendedor() throws VendedorException {
         FacParametros facParametros = obtenerFacParametros();
-        
+
         if (facParametros == null) {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
-        
+
         BigInteger defCodVendedor = new BigInteger(facParametros.getDefCodVendedor().toString());
         return defCodVendedor;
-        
+
     }
-    
+
     private FacParametros obtenerFacParametros() {
         String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class
         );
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
-        
+
         String nombreUsuario = userManager.getCurrent().getNombreUsuario();
         String codEmpresa = obtenerEmpresa();
-        
+
         for (FacParametros facParametros : listaFacParametros) {
             String facNombreUsuario = facParametros.getFacParametrosPK().getNombreUsuario();
             String facCodEmpresa = facParametros.getFacParametrosPK().getCodEmpresa();
-            
+
             if (facNombreUsuario.toLowerCase().
                     equals(nombreUsuario.toLowerCase())
                     && facCodEmpresa.
@@ -503,28 +503,28 @@ public class CxcDocCobrarBean {
         }
         return null;
     }
-    
+
     private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
         FacesMessage message = new FacesMessage(severity, summary, detail);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-    
+
     public boolean validarCheque() {
 //        cxcChequeFacadeREST.findByCodClienteCodEmpresaMes(String.class, obtenerCliente(), obtenerEmpresa(), codBanco)
         botonEnviarBloqueado = true;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
         return true;
     }
-    
+
     public void swipeleft(SwipeEvent event) {
 //        setInvMovimientoDtllSeleccionado(((InvMovimientoDtll) event.getData()));
         CxcCheque cxcCheque = (CxcCheque) event.getData();
-        
+
         totalCheques = totalCheques - cxcCheque.getValorCheque();
         calcularFormaPago();
         cxcCheques.remove(cxcCheque);
     }
-    
+
     private void limpiar() {
         mapa.limpiar();
         banCtaCtes.clear();
@@ -546,7 +546,7 @@ public class CxcDocCobrarBean {
         cliente.limpiar();
         limpiarFormaCheque();
     }
-    
+
     private void agregarLog(Pago pago) throws VendedorException {
         GnrLogHistorico gnrLogHistorico = new GnrLogHistorico();
         gnrLogHistorico.setDispositivo("Tablet");
@@ -562,7 +562,7 @@ public class CxcDocCobrarBean {
         gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
         pago.setGnrLogHistorico(gnrLogHistorico);
     }
-    
+
     private void limpiarFormaCheque() {
         codBanco = null;
         fechaCheque = null;
@@ -570,10 +570,10 @@ public class CxcDocCobrarBean {
         numCuenta = null;
         valorCheque = 0.0;
     }
-    
+
     private void enviarMail(Pago pago) throws MessagingException, MailException {
         Message message = new MimeMessage(mailSession);
-        
+
         if (cliente.getCliente().getMail() != null && !cliente.getCliente().getMail().isEmpty()) {
             String toUser = cliente.getCliente().getMail();
             String sub = "Cobro.";
@@ -603,7 +603,7 @@ public class CxcDocCobrarBean {
                 msg.append("Valor: ");
                 msg.append(cxcCheque.getValorCheque());
             }
-            
+
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(toUser));
             message.setText(msg.toString());
             message.setSubject(sub);
