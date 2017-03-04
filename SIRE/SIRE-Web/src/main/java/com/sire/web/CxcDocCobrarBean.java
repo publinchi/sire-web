@@ -251,7 +251,7 @@ public class CxcDocCobrarBean {
             List<CxcAbonoD> cxcAbonoDList = new ArrayList<>();
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
-                if (cxcDocCobrar.getCxcDocCobrarPK().getCodDocumento().equals(cxcDocCobrarSeleccionado.getCxcDocCobrarPK().getCodDocumento())) {
+                if (cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento().equals(cxcDocCobrarSeleccionado.getCxcDocCobrarPK().getNumDocumento())) {
                     logger.log(Level.INFO, "cxcDocCobrar: {0}", cxcDocCobrar);
 
                     if (cxcDocCobrar.getSaldoOri() == null) {
@@ -426,7 +426,7 @@ public class CxcDocCobrarBean {
         BigInteger codCliente = cliente.getCliente().getCodCliente();
         CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
         String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findByCodCliente(String.class,
-                 codCliente.toString());
+                codCliente.toString());
         cxcDocCobrarList = gson.fromJson(cxcDocCobrarListString, new TypeToken<List<CxcDocCobrar>>() {
         }.getType());
         calcularTotales();
