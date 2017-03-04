@@ -247,9 +247,13 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setNombreUsuario(userManager.getCurrent());
             cxcAbonoC.setTotalCapital(totalCapital);
             cxcAbonoC.setTotalMora(BigInteger.ZERO);
+
+            logger.log(Level.INFO, "cxcDocCobrarList.size: {0}", cxcDocCobrarList.size());
             List<CxcAbonoD> cxcAbonoDList = new ArrayList<>();
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
+                logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
+                logger.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
                 if (cxcDocCobrar.getSaldoOri() != null && !Objects.equals(cxcDocCobrar.getSaldoOri(), cxcDocCobrar.getSaldoDocumento())) {
                     CxcAbonoD cxcAbonoD = new CxcAbonoD();
                     CxcAbonoDPK cxcAbonoDPK = new CxcAbonoDPK();
@@ -270,6 +274,8 @@ public class CxcDocCobrarBean {
                     i++;
                 }
             }
+            
+             logger.log(Level.INFO, "cxcAbonoDList.size: {0}", cxcAbonoDList.size());
             cxcAbonoC.setCxcAbonoDList(cxcAbonoDList);
 
             CxcPagoContado cxcPagoContado = new CxcPagoContado();
