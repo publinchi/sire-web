@@ -97,7 +97,7 @@ public class CxcDocCobrarBean {
 
     @Getter
     @Setter
-    private Double totalSaldo, totalCapital, capital, diferencia,
+    private Double totalSaldo, totalCapital, diferencia,
             retencion = 0.0, retencionIVA = 0.0, efectivo = 0.0, deposito = 0.0,
             otros = 0.0, valorCheque = 0.0, totalCheques = 0.0;
 
@@ -172,7 +172,7 @@ public class CxcDocCobrarBean {
     public void calcularSaldo() {
         Double nuevoSaldo;
 
-        logger.info("capital: " + cxcDocCobrarSeleccionado.getCapital());
+        logger.log(Level.INFO, "capital: {0}", cxcDocCobrarSeleccionado.getCapital());
 
         if (cxcDocCobrarSeleccionado.getSaldoOri() == null) {
             cxcDocCobrarSeleccionado.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoDocumento());
@@ -182,9 +182,8 @@ public class CxcDocCobrarBean {
 
         logger.log(Level.INFO, "antiguoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
-        if (capital != null && cxcDocCobrarSeleccionado.getSaldoDocumento() >= capital) {
+        if (cxcDocCobrarSeleccionado.getCapital() != null && cxcDocCobrarSeleccionado.getSaldoDocumento() >= cxcDocCobrarSeleccionado.getCapital()) {
             logger.info("## nuevoSaldo ##");
-            cxcDocCobrarSeleccionado.setCapital(capital);
             nuevoSaldo = cxcDocCobrarSeleccionado.getSaldoDocumento() - cxcDocCobrarSeleccionado.getCapital();
         }
 
@@ -550,7 +549,6 @@ public class CxcDocCobrarBean {
         totalCheques = 0.0;
         totalSaldo = null;
         totalCapital = null;
-        capital = null;
         diferencia = null;
         cliente.limpiar();
         limpiarFormaCheque();
