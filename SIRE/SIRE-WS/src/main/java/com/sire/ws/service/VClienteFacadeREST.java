@@ -96,6 +96,17 @@ public class VClienteFacadeREST extends AbstractFacade<VCliente> {
         List<VCliente> retorno = query.getResultList();
         return retorno;
     }
+    
+    @GET
+    @Path("/findByRazonSocialEmpresa/{razonSocial}/{codEmpresa}")
+    @Produces({"application/json"})
+    public List<VCliente> findByRazonSocialEmpresa(@PathParam("razonSocial") String razonSocial, @PathParam("codEmpresa") String codEmpresa) {
+        TypedQuery<VCliente> query = em.createNamedQuery("VCliente.findByRazonSocialEmpresa", VCliente.class);
+        query.setParameter("razonSocial", razonSocial.toUpperCase());
+        query.setParameter("codEmpresa", codEmpresa);
+        List<VCliente> retorno = query.getResultList();
+        return retorno;
+    }
 
     @GET
     @Path("/findByClienteEmpresa/{codCliente}/{codEmpresa}")

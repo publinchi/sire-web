@@ -36,6 +36,8 @@ public class CustomersBean {
     @Getter
     @Setter
     private CustomerBean cliente;
+    @ManagedProperty(value = "#{user}")
+    private UserManager userManager;
     @Getter
     @Setter
     private List<VCliente> clientes;
@@ -72,7 +74,7 @@ public class CustomersBean {
         String clientesString = null;
         try {
             if (modo.equals("n") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByRazonSocial(String.class, input);
+                clientesString = vClienteFacadeREST.findByRazonSocialEmpresa(String.class, input, obtenerEmpresa());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
             } else if (modo.equals("c") && !input.isEmpty()) {
@@ -116,5 +118,9 @@ public class CustomersBean {
             clientes.clear();
         }
         input = null;
+    }
+
+    private String obtenerEmpresa() {
+        return userManager.getGnrEmpresa().getCodEmpresa();
     }
 }

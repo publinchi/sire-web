@@ -91,6 +91,12 @@ public class VClienteFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T findByRazonSocialEmpresa(Class<T> responseType, String razonSocial, String codEmpresa) {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByRazonSocialEmpresa/{0}/{1}", new Object[]{razonSocial, codEmpresa}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
     public <T> T findByClienteEmpresa(Class<T> responseType, String codCliente, String codEmpresa) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("findByClienteEmpresa/{0}/{1}", new Object[]{codCliente, codEmpresa}));
