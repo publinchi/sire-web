@@ -37,6 +37,8 @@ public class CustomersBean {
     @Setter
     private CustomerBean cliente;
     @ManagedProperty(value = "#{user}")
+    @Getter
+    @Setter
     private UserManager userManager;
     @Getter
     @Setter
