@@ -45,10 +45,10 @@
                 <p:column headerText="Código" priority="1">
                     <h:outputText value="#{c.codCliente}" />
                 </p:column>
-                <p:column headerText="Apellidos Nombres" priority="1" visible="#{customers.cambioModo eq 'n'}">
+                <p:column headerText="Apellidos Nombres" priority="1" visible="#{customers.cambioModo == 'n'}">
                     <h:outputText value="#{c.apellidos} #{c.nombres}" />
                 </p:column
-                <p:column headerText="Razón Social" priority="1" visible="#{customers.cambioModo eq 'r'}">
+                <p:column headerText="Razón Social" priority="1" visible="#{customers.cambioModo == 'r'}">
                     <h:outputText value="#{c.razonSocial}" />
                 </p:column>
             </p:dataTable>
