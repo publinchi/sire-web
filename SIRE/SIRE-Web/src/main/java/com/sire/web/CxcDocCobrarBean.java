@@ -197,7 +197,12 @@ public class CxcDocCobrarBean {
 
     public void calcularFormaPago() {
         logger.info("calcularFormaPago()");
-        diferencia = cxcDocCobrarSeleccionado.getCapital() - retencion - retencionIVA - efectivo - deposito - otros - totalCheques;
+        Double sumFormaPagos = retencion + retencionIVA + efectivo + deposito + otros + totalCheques;
+        if (sumFormaPagos > cxcDocCobrarSeleccionado.getCapital()) {
+            addMessage("Advertencia.", "Monto ingresado excede a la diferencia", FacesMessage.SEVERITY_WARN);
+            return;
+        }
+        diferencia = cxcDocCobrarSeleccionado.getCapital() - sumFormaPagos;
         diferencia = Round.round(diferencia, 2);
         logger.log(Level.INFO, "diferencia: {0}", diferencia);
         if (diferencia == 0 && validarCheque()) {
