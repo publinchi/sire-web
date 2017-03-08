@@ -75,7 +75,7 @@ public class CustomersBean {
         logger.info("findClientes");
         String clientesString = null;
         try {
-            if (modo.equals("n") && !input.isEmpty()) {
+            if (modo.equals("r") && !input.isEmpty()) {
                 clientesString = vClienteFacadeREST.findByRazonSocialEmpresa(String.class, input, obtenerEmpresa());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
