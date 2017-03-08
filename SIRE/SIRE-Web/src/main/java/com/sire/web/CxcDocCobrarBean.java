@@ -95,7 +95,6 @@ public class CxcDocCobrarBean {
     @ManagedProperty("#{mapa}")
     private MapaBean mapa;
 
-    @Getter
     @Setter
     private Double totalSaldo, totalCapital, diferencia,
             retencion = 0.0, retencionIVA = 0.0, efectivo = 0.0, deposito = 0.0,
@@ -197,7 +196,7 @@ public class CxcDocCobrarBean {
 
     public void calcularFormaPago(String formaPago) {
         logger.info("calcularFormaPago()");
-        Double sumFormaPagos = retencion + retencionIVA + efectivo + deposito + otros + totalCheques;
+        Double sumFormaPagos = getRetencion() + getRetencionIVA() + getEfectivo() + getDeposito() + getOtros() + getTotalCheques();
         if (sumFormaPagos > cxcDocCobrarSeleccionado.getCapital()) {
             switch (formaPago) {
                 case "retencion":
@@ -570,6 +569,27 @@ public class CxcDocCobrarBean {
         limpiarFormaCheque();
     }
 
+    public void limpiarFormaPago() {
+        mapa.limpiar();
+        banCtaCtes.clear();
+        cxcCheques.clear();
+        cxcDocCobrarList = null;
+        numeroCuenta = null;
+        botonEnviarBloqueado = true;
+        botonAgegarChequeBloqueado = true;
+        cxcDocCobrarSeleccionado = null;
+        retencion = 0.0;
+        retencionIVA = 0.0;
+        efectivo = 0.0;
+        deposito = 0.0;
+        otros = 0.0;
+        totalCheques = 0.0;
+        totalSaldo = null;
+        totalCapital = null;
+        diferencia = null;
+        limpiarFormaCheque();
+    }
+
     private void agregarLog(Pago pago) throws VendedorException {
         GnrLogHistorico gnrLogHistorico = new GnrLogHistorico();
         gnrLogHistorico.setDispositivo("Tablet");
@@ -634,5 +654,47 @@ public class CxcDocCobrarBean {
         } else {
             throw new MailException("Cliente no tiene e-mail");
         }
+    }
+
+    private Double getRetencion() {
+        if (retencion == null) {
+            retencion = 0.0;
+        }
+        return retencion;
+    }
+
+    private Double getRetencionIVA() {
+        if (retencionIVA == null) {
+            retencionIVA = 0.0;
+        }
+        return retencionIVA;
+    }
+
+    private double getEfectivo() {
+        if (efectivo == null) {
+            efectivo = 0.0;
+        }
+        return efectivo;
+    }
+
+    private double getDeposito() {
+        if (deposito == null) {
+            deposito = 0.0;
+        }
+        return deposito;
+    }
+
+    private double getOtros() {
+        if (otros == null) {
+            otros = 0.0;
+        }
+        return otros;
+    }
+
+    private double getTotalCheques() {
+        if (totalCheques == null) {
+            totalCheques = 0.0;
+        }
+        return totalCheques;
     }
 }

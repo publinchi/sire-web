@@ -40,6 +40,10 @@ public class CustomersBean {
     @Getter
     @Setter
     private UserManager userManager;
+    @ManagedProperty(value = "#{cxcDocCobrarBean}")
+    @Getter
+    @Setter
+    private CxcDocCobrarBean cxcDocCobrarBean;
     @Getter
     @Setter
     private List<VCliente> clientes;
@@ -112,6 +116,7 @@ public class CustomersBean {
         cliente.setCliente(vCliente);
 
         limpiar();
+        cxcDocCobrarBean.limpiarFormaPago();
         modo = "c";
     }
 
