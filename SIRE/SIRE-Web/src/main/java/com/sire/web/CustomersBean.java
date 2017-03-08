@@ -79,6 +79,10 @@ public class CustomersBean {
                 clientesString = vClienteFacadeREST.findByRazonSocialEmpresa(String.class, input, obtenerEmpresa());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
+            } else if (modo.equals("n") && !input.isEmpty()) {
+                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresa(String.class, input, obtenerEmpresa());
+                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                }.getType());
             } else if (modo.equals("c") && !input.isEmpty()) {
                 try {
                     clientesString = vClienteFacadeREST.find_JSON(String.class, input);

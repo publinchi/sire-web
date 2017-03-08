@@ -15,6 +15,7 @@
                               styleClass="selectRadio">
                 <f:selectItem itemLabel="Código" itemValue="c" />
                 <f:selectItem itemLabel="Razón Social" itemValue="r" />
+                <f:selectItem itemLabel="Apellidos Nombres" itemValue="n" />
                 <p:ajax event="change" listener="#{customers.cambioModo}"
                         update="@form"/>
             </p:selectOneRadio>
@@ -44,8 +45,11 @@
                 <p:column headerText="Código" priority="1">
                     <h:outputText value="#{c.codCliente}" />
                 </p:column>
-                <p:column headerText="Apellidos Nombres" priority="1">
+                <p:column headerText="Apellidos Nombres" priority="1" visible="#{customers.cambioModo} eq 'n'">
                     <h:outputText value="#{c.apellidos} #{c.nombres}" />
+                </p:column
+                <p:column headerText="Razón Social" priority="1" visible="#{customers.cambioModo} eq 'r'">
+                    <h:outputText value="#{c.razonSocial}" />
                 </p:column>
             </p:dataTable>
         </h:form>
