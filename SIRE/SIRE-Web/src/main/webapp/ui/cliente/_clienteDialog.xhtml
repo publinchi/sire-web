@@ -45,7 +45,7 @@
                 <p:column headerText="Código" priority="1">
                     <h:outputText value="#{c.codCliente}" />
                 </p:column>
-                <p:column headerText="Apellidos Nombres" priority="1" rendered="#{customers.modo == 'n'}">
+                <p:column headerText="Apellidos Nombres" priority="1" rendered="#{customers.modo == 'n' or customers.modo == 'c' }">
                     <h:outputText value="#{c.apellidos} #{c.nombres}" />
                 </p:column>
                 <p:column headerText="Razón Social" priority="1" rendered="#{customers.modo == 'r'}">
