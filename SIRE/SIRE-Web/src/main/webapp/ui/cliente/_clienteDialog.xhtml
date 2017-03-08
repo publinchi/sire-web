@@ -14,8 +14,7 @@
                               layout="lineDirection"
                               styleClass="selectRadio">
                 <f:selectItem itemLabel="Código" itemValue="c" />
-                <f:selectItem itemLabel="Razón Social" itemValue="r" />
-                <f:selectItem itemLabel="Apellidos Nombres" itemValue="n" />
+                <f:selectItem itemLabel="Nombre" itemValue="n" />
                 <p:ajax event="change" listener="#{customers.cambioModo}"
                         update="@form"/>
             </p:selectOneRadio>
@@ -47,7 +46,7 @@
                 </p:column>
                 <p:column headerText="Apellidos Nombres" priority="1">
                     <h:outputText value="#{c.apellidos} #{c.nombres}" />
-                </p:column
+                </p:column>
             </p:dataTable>
         </h:form>
     </p:dialog>
