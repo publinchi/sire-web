@@ -93,7 +93,7 @@ public class VClienteFacadeREST {
 
     public <T> T findByNombresApellidosEmpresa(Class<T> responseType, String input, String codEmpresa) {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findByNombresApellidosEmpresa/{0}", new Object[]{input, codEmpresa}));
+        resource = resource.path(java.text.MessageFormat.format("findByNombresApellidosEmpresa/{0}/{1}", new Object[]{input, codEmpresa}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
