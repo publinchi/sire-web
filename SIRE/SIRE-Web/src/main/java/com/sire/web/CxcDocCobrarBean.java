@@ -673,28 +673,28 @@ public class CxcDocCobrarBean {
         return retencionIVA;
     }
 
-    public double getEfectivo() {
+    public Double getEfectivo() {
         if (efectivo == null) {
             efectivo = 0.0;
         }
         return efectivo;
     }
 
-    public double getDeposito() {
+    public Double getDeposito() {
         if (deposito == null) {
             deposito = 0.0;
         }
         return deposito;
     }
 
-    public double getOtros() {
+    public Double getOtros() {
         if (otros == null) {
             otros = 0.0;
         }
         return otros;
     }
 
-    public double getTotalCheques() {
+    public Double getTotalCheques() {
         if (totalCheques == null) {
             totalCheques = 0.0;
         }
