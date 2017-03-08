@@ -195,10 +195,30 @@ public class CxcDocCobrarBean {
 //        calcularFormaPago();
     }
 
-    public void calcularFormaPago() {
+    public void calcularFormaPago(String formaPago) {
         logger.info("calcularFormaPago()");
         Double sumFormaPagos = retencion + retencionIVA + efectivo + deposito + otros + totalCheques;
         if (sumFormaPagos > cxcDocCobrarSeleccionado.getCapital()) {
+            switch (formaPago) {
+                case "retencion":
+                    retencion = 0.0;
+                    break;
+                case "retencionIVA":
+                    retencionIVA = 0.0;
+                    break;
+                case "efectivo":
+                    efectivo = 0.0;
+                    break;
+                case "deposito":
+                    deposito = 0.0;
+                    break;
+                case "otros":
+                    otros = 0.0;
+                    break;
+                case "totalCheques":
+                    totalCheques = 0.0;
+                    break;
+            }
             addMessage("Advertencia.", "Monto ingresado excede a la diferencia", FacesMessage.SEVERITY_WARN);
             return;
         }
@@ -420,7 +440,7 @@ public class CxcDocCobrarBean {
         cxcCheques.add(cheque);
         totalCheques += valorCheque;
 
-        calcularFormaPago();
+        calcularFormaPago("cheque");
         limpiarFormaCheque();
         botonAgegarChequeBloqueado = true;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:enviarButton");
@@ -524,7 +544,7 @@ public class CxcDocCobrarBean {
         CxcCheque cxcCheque = (CxcCheque) event.getData();
 
         totalCheques = totalCheques - cxcCheque.getValorCheque();
-        calcularFormaPago();
+        calcularFormaPago("cheque");
         cxcCheques.remove(cxcCheque);
     }
 

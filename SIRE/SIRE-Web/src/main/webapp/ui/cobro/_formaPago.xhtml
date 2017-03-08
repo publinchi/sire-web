@@ -20,7 +20,7 @@
                                                            value="Retención: "/>-->
                     <p:inputText id="retencion" 
                                  value="#{cxcDocCobrarBean.retencion}">
-                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago()}" 
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('retencion')}" 
                                 update="@form"/>
                     </p:inputText>
                     <!--</pm:field>-->
@@ -29,7 +29,7 @@
                     <!--                    <pm:field>
                                             <p:outputLabel id="retencionIVALabel" for="retencionIVA" value="Retención IVA: "/>-->
                     <p:inputText id="retencionIVA" value="#{cxcDocCobrarBean.retencionIVA}">
-                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago()}" 
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('retencionIVA')}" 
                                 update="@form"/>
                     </p:inputText>
                     <!--</pm:field>-->
@@ -38,7 +38,7 @@
                     <!--                    <pm:field>
                                             <p:outputLabel id="efectivoLabel" for="efectivo" value="Efectivo: "/>-->
                     <p:inputText id="efectivo" value="#{cxcDocCobrarBean.efectivo}">
-                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago()}" 
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('efectivo')}" 
                                 update="@form"/>
                     </p:inputText>
                     <!--</pm:field>-->
@@ -136,7 +136,7 @@
                     </p:selectOneMenu>
                     <!--</pm:field>-->
                     <p:inputText id="deposito" value="#{cxcDocCobrarBean.deposito}">
-                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago()}" 
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('deposito')}" 
                                 update="@form"/>
                     </p:inputText>
                 </p:tab>
@@ -144,7 +144,7 @@
                     <!--                    <pm:field>
                                             <p:outputLabel id="otrosLabel" for="otros" value="Otros: "/>-->
                     <p:inputText id="otros" value="#{cxcDocCobrarBean.otros}">
-                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago()}" 
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('otros')}" 
                                 update="@form"/>
                     </p:inputText>
                     <!--</pm:field>-->
