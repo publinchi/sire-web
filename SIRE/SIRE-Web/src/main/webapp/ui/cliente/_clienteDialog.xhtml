@@ -41,7 +41,9 @@
                          style="font-size:12px;">
                 <p:ajax event="tap" listener="#{customers.tapCliente}" 
                         oncomplete="PF('clienteDialog').hide();" 
-                        update="#{update},@form" />
+                        update="#{update}
+                        @form
+                        cobro:accordionPanel:formaPagoForm" />
                 <p:column headerText="Código" priority="1">
                     <h:outputText value="#{c.codCliente}" />
                 </p:column>
