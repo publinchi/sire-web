@@ -656,42 +656,42 @@ public class CxcDocCobrarBean {
         }
     }
 
-    private Double getRetencion() {
+    public Double getRetencion() {
         if (retencion == null) {
             retencion = 0.0;
         }
         return retencion;
     }
 
-    private Double getRetencionIVA() {
+    public Double getRetencionIVA() {
         if (retencionIVA == null) {
             retencionIVA = 0.0;
         }
         return retencionIVA;
     }
 
-    private double getEfectivo() {
+    public double getEfectivo() {
         if (efectivo == null) {
             efectivo = 0.0;
         }
         return efectivo;
     }
 
-    private double getDeposito() {
+    public double getDeposito() {
         if (deposito == null) {
             deposito = 0.0;
         }
         return deposito;
     }
 
-    private double getOtros() {
+    public double getOtros() {
         if (otros == null) {
             otros = 0.0;
         }
         return otros;
     }
 
-    private double getTotalCheques() {
+    public double getTotalCheques() {
         if (totalCheques == null) {
             totalCheques = 0.0;
         }
