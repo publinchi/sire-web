@@ -14,6 +14,15 @@
                           value="Pago Total: #{cxcDocCobrarBean.cxcDocCobrarSeleccionado.capital}"/>
             <!--</pm:field>-->
             <p:tabView id="bloqueA">
+                <p:tab title="Efectivo">
+                    <!--                    <pm:field>
+                                            <p:outputLabel id="efectivoLabel" for="efectivo" value="Efectivo: "/>-->
+                    <p:inputText id="efectivo" value="#{cxcDocCobrarBean.efectivo}">
+                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('efectivo')}" 
+                                update="@form"/>
+                    </p:inputText>
+                    <!--</pm:field>-->
+                </p:tab>
                 <p:tab title="Retención">
                     <!--                    <pm:field>
                                             <p:outputLabel id="retencionLabel" for="retencion" 
@@ -30,15 +39,6 @@
                                             <p:outputLabel id="retencionIVALabel" for="retencionIVA" value="Retención IVA: "/>-->
                     <p:inputText id="retencionIVA" value="#{cxcDocCobrarBean.retencionIVA}">
                         <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('retencionIVA')}" 
-                                update="@form"/>
-                    </p:inputText>
-                    <!--</pm:field>-->
-                </p:tab>
-                <p:tab title="Efectivo">
-                    <!--                    <pm:field>
-                                            <p:outputLabel id="efectivoLabel" for="efectivo" value="Efectivo: "/>-->
-                    <p:inputText id="efectivo" value="#{cxcDocCobrarBean.efectivo}">
-                        <p:ajax listener="#{cxcDocCobrarBean.calcularFormaPago('efectivo')}" 
                                 update="@form"/>
                     </p:inputText>
                     <!--</pm:field>-->
