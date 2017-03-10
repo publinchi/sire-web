@@ -17,7 +17,7 @@
                                  actionListener="${articulosBean.findArticulos}" 
                                  update="@form"/>
             </h:panelGrid>
-            <h:outputLabel value="No hay registros!!!" rendered="${articulosBean.articulos.size == 0}"/>
+            <h:outputLabel value="No hay registros!!! ${articulosBean.articulos.size()}"/>
             <p:dataTable id="dataListArticulo" var="articulo" 
                          value="#{articulosBean.articulos}" 
                          selectionMode="single" reflow="false" rows="5" 
