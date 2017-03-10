@@ -58,6 +58,12 @@ public class VClienteFacadeREST {
         resource = resource.path(java.text.MessageFormat.format("{0}", new Object[]{id}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
+    
+    public <T> T findByClienteEmpresaVendedor(Class<T> responseType, String input, String codEmpresa, Integer codVendedor) {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByClienteEmpresaVendedor/{0}/{1}/{2}", new Object[]{input, codEmpresa, codVendedor}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
 
     public <T> T findRange_XML(Class<T> responseType, String from, String to) throws ClientErrorException {
         WebTarget resource = webTarget;
@@ -106,6 +112,12 @@ public class VClienteFacadeREST {
     public <T> T findByRazonSocialEmpresa(Class<T> responseType, String razonSocial, String codEmpresa) {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("findByRazonSocialEmpresa/{0}/{1}", new Object[]{razonSocial, codEmpresa}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+    
+    public <T> T findByRazonSocialEmpresaVendedor(Class<T> responseType, String razonSocial, String codEmpresa, Integer codVendedor) {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByRazonSocialEmpresaVendedor/{0}/{1}/{2}", new Object[]{razonSocial, codEmpresa, codVendedor}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 

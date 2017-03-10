@@ -62,6 +62,19 @@ public class VClienteFacadeREST extends AbstractFacade<VCliente> {
     public VCliente find(@PathParam("id") BigInteger id) {
         return super.find(id);
     }
+    
+    @GET
+    @Path("/findByClienteEmpresaVendedor/{codCliente}/{codEmpresa}/{codVendedor}")
+    @Produces({"application/json"})
+    public List<VCliente> findByClienteEmpresaVendedor(@PathParam("codCliente") BigInteger codCliente, 
+            @PathParam("codEmpresa") String codEmpresa, @PathParam("codVendedor") Integer codVendedor) {
+        TypedQuery<VCliente> query = em.createNamedQuery("VCliente.findByClienteEmpresaVendedor", VCliente.class);
+        query.setParameter("codCliente", codCliente);
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("codVendedor", codVendedor);
+        List<VCliente> retorno = query.getResultList();
+        return retorno;
+    }
 
     @GET
     @Override
@@ -107,17 +120,30 @@ public class VClienteFacadeREST extends AbstractFacade<VCliente> {
         List<VCliente> retorno = query.getResultList();
         return retorno;
     }
+    
+    @GET
+    @Path("/findByRazonSocialEmpresaVendedor/{razonSocial}/{codEmpresa}/{codVendedor}")
+    @Produces({"application/json"})
+    public List<VCliente> findByRazonSocialEmpresaVendedor(@PathParam("razonSocial") String razonSocial, 
+            @PathParam("codEmpresa") String codEmpresa, @PathParam("codVendedor") Integer codVendedor) {
+        TypedQuery<VCliente> query = em.createNamedQuery("VCliente.findByRazonSocialEmpresaVendedor", VCliente.class);
+        query.setParameter("razonSocial", razonSocial.toUpperCase());
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("codVendedor", codVendedor);
+        List<VCliente> retorno = query.getResultList();
+        return retorno;
+    }
 
     @GET
     @Path("/findByNombresApellidosEmpresaVendedor/{input}/{codEmpresa}/{codVendedor}")
     @Produces({"application/json"})
     public List<VCliente> findByNombresApellidosEmpresaVendedor(@PathParam("input") String input,
-            @PathParam("codEmpresa") String codEmpresa, @PathParam("codVendedor") String codVendedor) {
+            @PathParam("codEmpresa") String codEmpresa, @PathParam("codVendedor") Integer codVendedor) {
         TypedQuery<VCliente> query = em.createNamedQuery("VCliente.findByNombresApellidosEmpresaVendedor", VCliente.class);
         query.setParameter("nombres", input.toUpperCase());
         query.setParameter("apellidos", input.toUpperCase());
         query.setParameter("codEmpresa", codEmpresa);
-        query.setParameter("codVendedor", Integer.parseInt(codVendedor));
+        query.setParameter("codVendedor", codVendedor);
         List<VCliente> retorno = query.getResultList();
         return retorno;
     }
