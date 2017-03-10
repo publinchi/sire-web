@@ -5,5 +5,14 @@
       xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html">
-
+    <h:form id="consultarPedidos">
+        <pm:field>
+            <h2>Fecha Inicio</h2>
+            <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" />
+        </pm:field>
+        <pm:field>
+            <h2>Fecha Fin</h2>
+            <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" />
+        </pm:field>
+    </h:form>
 </html>

@@ -6,6 +6,7 @@
 package com.sire.web;
 
 import com.sire.entities.FacTmpFactC;
+import java.util.Date;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import lombok.Getter;
@@ -20,5 +21,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PedidosBean {
-    private FacTmpFactC facTmpFactC;
+    private Date fechaInicio;
+    private Date fechaFin;
 }
