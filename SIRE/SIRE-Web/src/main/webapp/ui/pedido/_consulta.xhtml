@@ -15,9 +15,10 @@
             <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" />
         </pm:field>
         <pm:field>
-            <p:commandButton id="botonConsultar" icon="ui-icon-search" 
+            <p:commandButton id="botonConsultar" label="Consultar Pedido"
                              actionListener="${pedidosBean.consultarPedidos}"
                              update="@form"/>
         </pm:field>
     </h:form>
 </html>
+<!--icon="ui-icon-search" -->
