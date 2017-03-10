@@ -8,10 +8,12 @@
     <h:form id="consultarPedidos">
         <h2>Fecha Inicio</h2>
         <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" 
-                    pattern="MM/dd/yyyy" mask="true" requiredMessage="Seleccione fecha inicio." />
+                    pattern="MM/dd/yyyy" mask="true" required="true"
+                    requiredMessage="Seleccione fecha inicio."  />
         <h2>Fecha Fin</h2>
         <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" 
-                    pattern="MM/dd/yyyy" mask="true" requiredMessage="Seleccione fecha fin."/>
+                    pattern="MM/dd/yyyy" mask="true" required="true"
+                    requiredMessage="Seleccione fecha fin."/>
         <p:commandButton id="botonConsultar" label="Consultar Pedidos"
                          actionListener="${pedidosBean.consultarPedidos}"
                          value="Consultar Pedidos" update="@form"/>

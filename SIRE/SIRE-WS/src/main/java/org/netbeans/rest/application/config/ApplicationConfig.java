@@ -49,6 +49,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.FacCatalogoPrecioDFacadeREST.class);
         resources.add(com.sire.ws.service.FacDescVolFacadeREST.class);
         resources.add(com.sire.ws.service.FacParametrosFacadeREST.class);
+        resources.add(com.sire.ws.service.FacTmpFactCFacadeREST.class);
         resources.add(com.sire.ws.service.GnrContadorDocFacadeREST.class);
         resources.add(com.sire.ws.service.GnrDivisaFacadeREST.class);
         resources.add(com.sire.ws.service.GnrEmpresaFacadeREST.class);
