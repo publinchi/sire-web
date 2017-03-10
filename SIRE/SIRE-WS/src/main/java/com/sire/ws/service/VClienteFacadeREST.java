@@ -117,7 +117,7 @@ public class VClienteFacadeREST extends AbstractFacade<VCliente> {
         query.setParameter("nombres", input.toUpperCase());
         query.setParameter("apellidos", input.toUpperCase());
         query.setParameter("codEmpresa", codEmpresa);
-        query.setParameter("codVendedor", codVendedor);
+        query.setParameter("codVendedor", Integer.parseInt(codVendedor));
         List<VCliente> retorno = query.getResultList();
         return retorno;
     }
