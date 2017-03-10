@@ -21,6 +21,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PedidosBean {
+
     private Date fechaInicio;
     private Date fechaFin;
+
+    public void consultarPedidos() {
+        System.out.println("consultarPedidos");
+    }
 }
