@@ -116,6 +116,9 @@ public class CustomersBean {
         } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(CustomersBean.class.getName()).log(Level.SEVERE, null, ex);
         }
+        if (clientes == null || clientes.isEmpty()) {
+            addMessage("Información", "No hay registros.", FacesMessage.SEVERITY_INFO);
+        }
     }
 
     private void cleanClientes() {
