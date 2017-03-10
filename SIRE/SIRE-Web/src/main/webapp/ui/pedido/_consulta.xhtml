@@ -6,19 +6,13 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html">
     <h:form id="consultarPedidos">
-        <pm:field>
-            <h2>Fecha Inicio</h2>
-            <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" />
-        </pm:field>
-        <pm:field>
-            <h2>Fecha Fin</h2>
-            <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" />
-        </pm:field>
-        <pm:field>
-            <p:commandButton id="botonConsultar" label="Consultar Pedido"
-                             actionListener="${pedidosBean.consultarPedidos}"
-                             value="Consultar Pedido" update="@form"/>
-        </pm:field>
+        <h2>Fecha Inicio</h2>
+        <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" parent="MM/dd/yyyy" />
+        <h2>Fecha Fin</h2>
+        <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" parent="MM/dd/yyyy" />
+        <p:commandButton id="botonConsultar" label="Consultar Pedidos"
+                         actionListener="${pedidosBean.consultarPedidos}"
+                         value="Consultar Pedidos" update="@form"/>
     </h:form>
 </html>
 <!--icon="ui-icon-search" -->
