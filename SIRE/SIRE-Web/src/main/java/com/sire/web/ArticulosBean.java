@@ -167,10 +167,6 @@ public class ArticulosBean {
         } catch (ClientErrorException cee) {
             articulos = null;
         }
-
-        if (articulos == null || articulos.isEmpty()) {
-            addMessage("Información", "No hay registros.", FacesMessage.SEVERITY_INFO);
-        }
     }
 
     public void tapArticulo(SelectEvent event) {

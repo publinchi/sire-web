@@ -26,6 +26,7 @@
                                  actionListener="${customers.findClientes}"
                                  update="@form"/>
             </h:panelGrid>
+            <h:outputLabel value="No hay registros!!!" rendered="${customers.clientes eq 0}"/>
             <p:dataTable id="dataList" var="c" 
                          value="#{customers.clientes}" 
                          selectionMode="single" reflow="false" rows="5" 
