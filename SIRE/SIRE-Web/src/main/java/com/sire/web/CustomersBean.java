@@ -14,8 +14,11 @@ import com.sire.entities.VCliente;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.VClienteFacadeREST;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -87,11 +90,11 @@ public class CustomersBean {
         String clientesString = null;
         try {
             if (modo.equals("r") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByRazonSocialEmpresaVendedor(String.class, input, obtenerEmpresa(), obtenerVendedor());
+                clientesString = vClienteFacadeREST.findByRazonSocialEmpresaVendedor(String.class, URLEncoder.encode(input,"UTF-8"), obtenerEmpresa(), obtenerVendedor());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
             } else if (modo.equals("n") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresaVendedor(String.class, input, obtenerEmpresa(), obtenerVendedor());
+                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresaVendedor(String.class, URLEncoder.encode(input,"UTF-8"), obtenerEmpresa(), obtenerVendedor());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
             } else if (modo.equals("c") && !input.isEmpty()) {
@@ -110,6 +113,8 @@ public class CustomersBean {
         } catch (VendedorException ex) {
             logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(CustomersBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -144,7 +149,7 @@ public class CustomersBean {
     private String obtenerEmpresa() {
         return userManager.getGnrEmpresa().getCodEmpresa();
     }
-    
+
     private Integer obtenerVendedor() throws VendedorException {
         FacParametros facParametros = obtenerFacParametros();
 
@@ -161,7 +166,7 @@ public class CustomersBean {
         logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
-    
+
     private FacParametros obtenerFacParametros() {
         String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
@@ -173,7 +178,7 @@ public class CustomersBean {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
-                    equals(obtenerEmpresa())) {
+                            equals(obtenerEmpresa())) {
                 logger.info("Usuario *: " + facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
                 logger.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
@@ -181,7 +186,7 @@ public class CustomersBean {
         }
         return null;
     }
-    
+
     private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
         FacesMessage message = new FacesMessage(severity, summary, detail);
         FacesContext.getCurrentInstance().addMessage(null, message);
