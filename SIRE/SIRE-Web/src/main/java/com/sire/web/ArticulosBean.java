@@ -164,6 +164,9 @@ public class ArticulosBean {
             articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
             }.getType());
             logger.log(Level.INFO, "# articulos: {0}", articulos.size());
+            if (articulos != null && articulos.size() > 0) {
+                addMessage("Información", "No hay registros.", FacesMessage.SEVERITY_INFO);
+            }
         } catch (ClientErrorException cee) {
             articulos = null;
         }
@@ -898,7 +901,7 @@ public class ArticulosBean {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
-                    equals(obtenerEmpresa())) {
+                            equals(obtenerEmpresa())) {
                 logger.info("Usuario *: " + facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
                 logger.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
