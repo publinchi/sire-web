@@ -9,16 +9,21 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import com.sire.entities.FacParametros;
 import com.sire.entities.VCliente;
+import com.sire.exception.VendedorException;
+import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.VClienteFacadeREST;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.ws.rs.ClientErrorException;
 import lombok.Getter;
 import lombok.Setter;
@@ -48,6 +53,7 @@ public class CustomersBean {
     @Setter
     private List<VCliente> clientes;
     private final VClienteFacadeREST vClienteFacadeREST;
+    private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
     @Getter
@@ -58,6 +64,7 @@ public class CustomersBean {
     public CustomersBean() {
 
         vClienteFacadeREST = new VClienteFacadeREST();
+        facParametrosFacadeREST = new FacParametrosFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }
@@ -84,7 +91,7 @@ public class CustomersBean {
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
             } else if (modo.equals("n") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresa(String.class, input, obtenerEmpresa());
+                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresaVendedor(String.class, input, obtenerEmpresa(), obtenerVendedor());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
             } else if (modo.equals("c") && !input.isEmpty()) {
@@ -100,6 +107,9 @@ public class CustomersBean {
             }
         } catch (ClientErrorException cee) {
             clientes = null;
+        } catch (VendedorException ex) {
+            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
+            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
         }
     }
 
@@ -133,5 +143,47 @@ public class CustomersBean {
 
     private String obtenerEmpresa() {
         return userManager.getGnrEmpresa().getCodEmpresa();
+    }
+    
+    private Integer obtenerVendedor() throws VendedorException {
+        FacParametros facParametros = obtenerFacParametros();
+
+        if (facParametros == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        Integer defCodVendedor = facParametros.getDefCodVendedor();
+
+        if (defCodVendedor == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        return defCodVendedor;
+    }
+    
+    private FacParametros obtenerFacParametros() {
+        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
+        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
+        }.getType());
+
+        logger.info("Current user: " + userManager.getCurrent().getNombreUsuario().toLowerCase());
+
+        for (FacParametros facParametros : listaFacParametros) {
+            if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
+                    equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
+                    && facParametros.getFacParametrosPK().getCodEmpresa().
+                    equals(obtenerEmpresa())) {
+                logger.info("Usuario *: " + facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                return facParametros;
+            }
+        }
+        return null;
+    }
+    
+    private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
+        FacesMessage message = new FacesMessage(severity, summary, detail);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 }
