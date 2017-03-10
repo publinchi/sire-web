@@ -164,11 +164,12 @@ public class ArticulosBean {
             articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
             }.getType());
             logger.log(Level.INFO, "# articulos: {0}", articulos.size());
-            if (articulos == null || articulos.isEmpty()) {
-                addMessage("Información", "No hay registros.", FacesMessage.SEVERITY_INFO);
-            }
         } catch (ClientErrorException cee) {
             articulos = null;
+        }
+
+        if (articulos == null || articulos.isEmpty()) {
+            addMessage("Información", "No hay registros.", FacesMessage.SEVERITY_INFO);
         }
     }
 
