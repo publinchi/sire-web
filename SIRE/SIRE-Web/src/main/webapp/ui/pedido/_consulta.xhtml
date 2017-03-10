@@ -7,9 +7,11 @@
       xmlns:h="http://java.sun.com/jsf/html">
     <h:form id="consultarPedidos">
         <h2>Fecha Inicio</h2>
-        <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" pattern="MM/dd/yyyy" />
+        <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" 
+                    pattern="MM/dd/yyyy" mask="true" />
         <h2>Fecha Fin</h2>
-        <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" pattern="MM/dd/yyyy" />
+        <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" 
+                    pattern="MM/dd/yyyy" mask="true" />
         <p:commandButton id="botonConsultar" label="Consultar Pedidos"
                          actionListener="${pedidosBean.consultarPedidos}"
                          value="Consultar Pedidos" update="@form"/>
