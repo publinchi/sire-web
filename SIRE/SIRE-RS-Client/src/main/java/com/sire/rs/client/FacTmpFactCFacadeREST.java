@@ -5,6 +5,7 @@
  */
 package com.sire.rs.client;
 
+import java.util.Date;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -85,7 +86,7 @@ public class FacTmpFactCFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findByFechas_JSON(Class<T> responseType, String fechaInicio, String fechaFin) throws ClientErrorException {
+    public <T> T findByFechas_JSON(Class<T> responseType, Date fechaInicio, Date fechaFin) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("findByFechas/{0}/{1}", new Object[]{fechaInicio, fechaFin}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);

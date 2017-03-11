@@ -41,8 +41,8 @@ public class PedidosBean {
     public void consultarPedidos() {
         System.out.println("consultarPedidos");
         List<FacTmpFactC> list = gson.fromJson(facTmpFactCFacadeREST.
-                findByFechas_JSON(String.class, fechaInicio.toString(),
-                        fechaFin.toString()), new TypeToken<java.util.List<FacTmpFactC>>() {
+                findByFechas_JSON(String.class, fechaInicio,
+                        fechaFin), new TypeToken<java.util.List<FacTmpFactC>>() {
         }.getType());
         System.out.println("list: " + list.size());
     }
