@@ -108,7 +108,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
     }
 
     @GET
-    @Path("findByFechas/{fechaInicio}/{fechaFin}")
+    @Path("/findByFechas/{fechaInicio}/{fechaFin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacTmpFactC> findByFechas(@PathParam("fechaInicio") Date fechaInicio, @PathParam("fechaFin") Date fechaFin) {
         TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
