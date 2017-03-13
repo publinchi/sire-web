@@ -115,10 +115,15 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
     @Path("/findByFechas/{fechaInicio}/{fechaFin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacTmpFactC> findByFechas(@PathParam("fechaInicio") String fechaInicio, @PathParam("fechaFin") String fechaFin) {
-        TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
-        query.setParameter("fechaInicio", fechaInicio);
-        query.setParameter("fechaFin", fechaFin);
-        List<FacTmpFactC> retorno = query.getResultList();
+        List<FacTmpFactC> retorno = null;
+        try {
+            TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
+            query.setParameter("fechaInicio", new SimpleDateFormat("dd-MM-yyyy").parse(fechaInicio));
+            query.setParameter("fechaFin", new SimpleDateFormat("dd-MM-yyyy").parse(fechaFin));
+            retorno = query.getResultList();
+        } catch (ParseException ex) {
+            Logger.getLogger(FacTmpFactCFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return retorno;
     }
 
