@@ -10,6 +10,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.FacParametros;
 import com.sire.entities.FacTmpFactC;
+import com.sire.entities.FacTmpFactD;
 import com.sire.entities.Pedido;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.FacParametrosFacadeREST;
@@ -23,6 +24,7 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.event.SelectEvent;
 
 /**
  *
@@ -44,6 +46,13 @@ public class PedidosBean {
     @Getter
     @Setter
     private UserManager userManager;
+    @Getter
+    @Setter
+    private List<Pedido> pedidos;
+    @Getter
+    @Setter
+    private List<FacTmpFactD> detallesPedido;
+    private Pedido pedidoSeleccionado;
 
     public PedidosBean() {
         facTmpFactCFacadeREST = new FacTmpFactCFacadeREST();
@@ -54,16 +63,24 @@ public class PedidosBean {
 
     public void consultarPedidos() {
         try {
-            System.out.println("consultarPedidos");
-            List<Pedido> list = gson.fromJson(facTmpFactCFacadeREST.
+            logger.info("consultarPedidos");
+            pedidos = gson.fromJson(facTmpFactCFacadeREST.
                     findByFechas_JSON(String.class, fechaInicio,
                             fechaFin, obtenerEmpresa(), obtenerVendedor()), new TypeToken<java.util.List<Pedido>>() {
                     }.getType()
             );
-            System.out.println("list: " + list.size());
+            logger.log(Level.INFO, "pedidos: {0}", pedidos.size());
         } catch (VendedorException ex) {
             logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
         }
+    }
+
+    public void tapPedido(SelectEvent event) {
+        logger.log(Level.INFO, "\u00b7\u00b7 tapPedido \u00b7\u00b7 {0}", event.getObject());
+
+        pedidoSeleccionado = ((Pedido) event.getObject());
+        logger.log(Level.INFO, "# EgresoInv Pedido seleccionado: {0}",
+                pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv());
     }
 
     private String obtenerEmpresa() {

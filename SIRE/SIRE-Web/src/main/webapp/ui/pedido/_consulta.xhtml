@@ -17,6 +17,69 @@
         <p:commandButton id="botonConsultar" label="Consultar Pedidos"
                          actionListener="${pedidosBean.consultarPedidos}"
                          value="Consultar Pedidos" update="@form"/>
+        <h:outputLabel value="No hay pedidos!!!" rendered="${pedidosBean.pedidos.size() eq 0}"/>
+        <p:dataTable id="dataListPedidos" var="pedido" 
+                     value="#{pedidosBean.pedidos}" 
+                     selectionMode="single" reflow="false" rows="5" 
+                     paginator="true" 
+                     pageLinks="3"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {LastPageLink}"
+                     paginatorPosition="bottom" 
+                     paginatorAlwaysVisible="false"
+                     rowKey="#{pedido.facTmpFactC.facTmpFactCPK}" 
+                     tableStyleClass="ui-table-columntoggle"
+                     tableStyle="width:auto"
+                     rendered="#{pedidosBean.pedidos.size() gt 0}"
+                     style="font-size:9.5px;">
+            <p:ajax event="rowSelect" listener="#{pedidosBean.tapPedido}" 
+                    update="@form" />
+            <p:column headerText="# Despacho" priority="1">
+                <h:outputText value="#{pedido.facTmpFactC.facTmpFactCPK.egresoInv}" />
+            </p:column>
+            <p:column headerText="Cliente" priority="1">
+                <h:outputText value="#{pedido.facTmpFactC.codCliente}" />
+            </p:column>
+            <p:column headerText="Fecha" priority="1">
+                <h:outputText value="#{pedido.facTmpFactC.fechaFactura}" />
+            </p:column>
+            <p:column headerText="Total" priority="1">
+                <h:outputText value="&#36;#{pedido.facTmpFactC.totalConIva}" />
+            </p:column>
+        </p:dataTable>
+        <h:outputLabel value="No hay detalles!!!" rendered="${pedidosBean.detallesPedido.size() eq 0}"/>
+        <p:dataTable id="dataListDetallesPedido" var="detallePedido" 
+                     value="#{pedidosBean.detallesPedido}" 
+                     selectionMode="single" reflow="false" rows="5" 
+                     paginator="true" 
+                     pageLinks="3"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {LastPageLink}"
+                     paginatorPosition="bottom" 
+                     paginatorAlwaysVisible="false"
+                     rowKey="#{detallePedido.facTmpFactDPK}" 
+                     tableStyleClass="ui-table-columntoggle"
+                     tableStyle="width:auto"
+                     rendered="#{pedidosBean.detallesPedido.size() gt 0}"
+                     style="font-size:9.5px;">
+
+            <p:column headerText="Cod.Art." priority="1">
+                <h:outputText value="#{detallePedido.invUnidadAlternativa.invUnidadAlternativaPK.codArticulo}" />
+            </p:column>
+            <p:column headerText="Nom.Art." priority="1">
+                <h:outputText value="" />
+            </p:column>
+            <p:column headerText="Des.Art." priority="1">
+                <h:outputText value="" />
+            </p:column>
+            <p:column headerText="Uni.Med." priority="1">
+                <h:outputText value="" />
+            </p:column>
+            <p:column headerText="Cod.Uni." priority="1">
+                <h:outputText value="#{detallePedido.invUnidadAlternativa.invUnidadAlternativaPK.codUnidad}" />
+            </p:column>
+            <p:column headerText="Total" priority="1">
+                <h:outputText value="&#36;" />
+            </p:column>
+        </p:dataTable>
     </h:form>
 </html>
 <!--icon="ui-icon-search" -->

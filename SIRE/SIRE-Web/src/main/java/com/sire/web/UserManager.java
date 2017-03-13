@@ -77,8 +77,8 @@ public class UserManager {
         GnrUsuarioFacadeREST gnrUsuarioFacadeREST = new GnrUsuarioFacadeREST();
         List<GnrUsuarios> gnrUsuarios = gson.fromJson(gnrUsuarioFacadeREST.findAll_JSON(String.class),
                 new TypeToken<java.util.List<GnrUsuarios>>() {
-        }.getType());
-        System.out.println(gnrUsuarios.size());
+                }.getType());
+        logger.log(Level.INFO, "gnrUsuarios.size(): {0}", gnrUsuarios.size());
         for (GnrUsuarios gnrUsuario : gnrUsuarios) {
             if (gnrUsuario.getNombreUsuario().toUpperCase().equals(userName.toUpperCase())
                     && gnrUsuario.getClave().toUpperCase().equals(password.toUpperCase())) {
@@ -120,7 +120,7 @@ public class UserManager {
             String gnrUsuaModsString = gnrUsuaModFacadeREST.findByNombreUsuario(String.class, userName.toUpperCase());
             gnrUsuaMods = gson.fromJson(gnrUsuaModsString,
                     new TypeToken<java.util.List<GnrUsuaMod>>() {
-            }.getType());
+                    }.getType());
 
             checkPermission();
         }
