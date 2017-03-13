@@ -56,7 +56,7 @@
                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {LastPageLink}"
                      paginatorPosition="bottom" 
                      paginatorAlwaysVisible="false"
-                     rowKey="#{invArticulo.invArticuloPK}" 
+                     rowKey="#{invArticulo.invArticuloPK.codArticulo}" 
                      tableStyleClass="ui-table-columntoggle"
                      tableStyle="width:auto"
                      rendered="#{pedidosBean.invArticulos.size() gt 0}"
