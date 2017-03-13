@@ -7,8 +7,12 @@ package com.sire.ws.service;
 
 import com.sire.entities.FacTmpFactC;
 import com.sire.entities.FacTmpFactCPK;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -110,11 +114,16 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
     @GET
     @Path("/findByFechas/{fechaInicio}/{fechaFin}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<FacTmpFactC> findByFechas(@PathParam("fechaInicio") Date fechaInicio, @PathParam("fechaFin") Date fechaFin) {
-        TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
-        query.setParameter("fechaInicio", fechaInicio);
-        query.setParameter("fechaFin", fechaFin);
-        List<FacTmpFactC> retorno = query.getResultList();
+    public List<FacTmpFactC> findByFechas(@PathParam("fechaInicio") String fechaInicio, @PathParam("fechaFin") String fechaFin) {
+        List<FacTmpFactC> retorno = null;
+        try {
+            TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
+            query.setParameter("fechaInicio", new SimpleDateFormat("yyyy-MM-dd").parse(fechaInicio));
+            query.setParameter("fechaFin", new SimpleDateFormat("yyyy-MM-dd").parse(fechaFin));
+            retorno = query.getResultList();
+        } catch (ParseException ex) {
+            Logger.getLogger(FacTmpFactCFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return retorno;
     }
 
