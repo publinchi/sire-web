@@ -5,8 +5,8 @@
  */
 package com.sire.ws.service;
 
-import com.sire.entities.InvUnidadAlternativa;
-import com.sire.entities.InvUnidadAlternativaPK;
+import com.sire.entities.FacTmpFactD;
+import com.sire.entities.FacTmpFactDPK;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -25,100 +25,107 @@ import javax.ws.rs.core.PathSegment;
 
 /**
  *
- * @author Administrator
+ * @author root
  */
 @Stateless
-@Path("com.sire.entities.invunidadalternativa")
-public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlternativa> {
+@Path("com.sire.entities.factmpfactd")
+public class FacTmpFactDFacadeREST extends AbstractFacade<FacTmpFactD> {
 
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
 
-    private InvUnidadAlternativaPK getPrimaryKey(PathSegment pathSegment) {
+    private FacTmpFactDPK getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
-         * URI path part is supposed to be in form of 'somePath;codEmpresa=codEmpresaValue;codArticulo=codArticuloValue;codUnidad=codUnidadValue'.
+         * URI path part is supposed to be in form of 'somePath;codEmpresa=codEmpresaValue;ei=eiValue;egresoInv=egresoInvValue;auxiliar=auxiliarValue'.
          * Here 'somePath' is a result of getPath() method invocation and
          * it is ignored in the following code.
          * Matrix parameters are used as field names to build a primary key instance.
          */
-        com.sire.entities.InvUnidadAlternativaPK key = new com.sire.entities.InvUnidadAlternativaPK();
+        com.sire.entities.FacTmpFactDPK key = new com.sire.entities.FacTmpFactDPK();
         javax.ws.rs.core.MultivaluedMap<String, String> map = pathSegment.getMatrixParameters();
         java.util.List<String> codEmpresa = map.get("codEmpresa");
         if (codEmpresa != null && !codEmpresa.isEmpty()) {
             key.setCodEmpresa(codEmpresa.get(0));
         }
-        java.util.List<String> codArticulo = map.get("codArticulo");
-        if (codArticulo != null && !codArticulo.isEmpty()) {
-            key.setCodArticulo(new java.lang.Integer(codArticulo.get(0)));
+        java.util.List<String> ei = map.get("ei");
+        if (ei != null && !ei.isEmpty()) {
+            key.setEi(ei.get(0));
         }
-        java.util.List<String> codUnidad = map.get("codUnidad");
-        if (codUnidad != null && !codUnidad.isEmpty()) {
-            key.setCodUnidad(codUnidad.get(0));
+        java.util.List<String> egresoInv = map.get("egresoInv");
+        if (egresoInv != null && !egresoInv.isEmpty()) {
+            key.setEgresoInv(new java.lang.Integer(egresoInv.get(0)));
+        }
+        java.util.List<String> auxiliar = map.get("auxiliar");
+        if (auxiliar != null && !auxiliar.isEmpty()) {
+            key.setAuxiliar(new java.lang.Long(auxiliar.get(0)));
         }
         return key;
     }
 
-    public InvUnidadAlternativaFacadeREST() {
-        super(InvUnidadAlternativa.class);
+    public FacTmpFactDFacadeREST() {
+        super(FacTmpFactD.class);
     }
 
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(InvUnidadAlternativa entity) {
+    public void create(FacTmpFactD entity) {
         super.create(entity);
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, InvUnidadAlternativa entity) {
+    public void edit(@PathParam("id") PathSegment id, FacTmpFactD entity) {
         super.edit(entity);
     }
 
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
-        com.sire.entities.InvUnidadAlternativaPK key = getPrimaryKey(id);
+        com.sire.entities.FacTmpFactDPK key = getPrimaryKey(id);
         super.remove(super.find(key));
     }
 
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public InvUnidadAlternativa find(@PathParam("id") PathSegment id) {
-        com.sire.entities.InvUnidadAlternativaPK key = getPrimaryKey(id);
+    public FacTmpFactD find(@PathParam("id") PathSegment id) {
+        com.sire.entities.FacTmpFactDPK key = getPrimaryKey(id);
         return super.find(key);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<InvUnidadAlternativa> findAll() {
+    public List<FacTmpFactD> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<InvUnidadAlternativa> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<FacTmpFactD> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
     @GET
-    @Path("/findByCodArticulo/{codArticulo}")
-    @Produces({MediaType.APPLICATION_JSON})
-    public List<InvUnidadAlternativa> findByCodArticulo(@PathParam("codArticulo") String codArticulo) {
-        TypedQuery<InvUnidadAlternativa> query = em.createNamedQuery("InvUnidadAlternativa.findByCodArticulo", InvUnidadAlternativa.class);
-        query.setParameter("codArticulo", Integer.parseInt(codArticulo));
-        List<InvUnidadAlternativa> retorno = query.getResultList();
+    @Path("/findByFacTmpFactC/{codEmpresa}/{egresoInv}/{ei}")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public List<FacTmpFactD> findByFacTmpFactC(@PathParam("codEmpresa") String codEmpresa,
+            @PathParam("egresoInv") int egresoInv, @PathParam("ei") String ei) {
+        TypedQuery<FacTmpFactD> query = em.createNamedQuery("FacTmpFactC.findByFacTmpFactC", FacTmpFactD.class);
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("egresoInv", egresoInv);
+        query.setParameter("ei", ei);
+        List<FacTmpFactD> retorno = query.getResultList();
         return retorno;
     }
 
     @GET
     @Path("count")
-    @Produces("text/plain")
+    @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
         return String.valueOf(super.count());
     }
@@ -127,5 +134,5 @@ public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlte
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

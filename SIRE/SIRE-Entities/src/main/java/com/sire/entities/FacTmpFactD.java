@@ -49,7 +49,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacTmpFactD.findByPromocion", query = "SELECT f FROM FacTmpFactD f WHERE f.promocion = :promocion"),
     @NamedQuery(name = "FacTmpFactD.findByPorcDescProm", query = "SELECT f FROM FacTmpFactD f WHERE f.porcDescProm = :porcDescProm"),
     @NamedQuery(name = "FacTmpFactD.findByEntregado", query = "SELECT f FROM FacTmpFactD f WHERE f.entregado = :entregado"),
-    @NamedQuery(name = "FacTmpFactD.findByDetalle", query = "SELECT f FROM FacTmpFactD f WHERE f.detalle = :detalle")})
+    @NamedQuery(name = "FacTmpFactD.findByDetalle", query = "SELECT f FROM FacTmpFactD f WHERE f.detalle = :detalle"),
+    @NamedQuery(name = "FacTmpFactD.findByFacTmpFactC", query = "SELECT f FROM FacTmpFactD f WHERE f.facTmpFactDPK.codEmpresa = :codEmpresa AND "
+            + "f.facTmpFactDPK.egresoInv = :egresoInv AND f.facTmpFactDPK.ei = :ei")})
 public class FacTmpFactD implements Serializable {
 
     private static final long serialVersionUID = 1L;

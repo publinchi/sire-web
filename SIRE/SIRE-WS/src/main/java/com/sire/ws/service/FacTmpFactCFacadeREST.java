@@ -11,7 +11,6 @@ import com.sire.entities.Pedido;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -37,10 +36,10 @@ import javax.ws.rs.core.PathSegment;
 @Stateless
 @Path("com.sire.entities.factmpfactc")
 public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
-    
+
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
-    
+
     private FacTmpFactCPK getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
@@ -65,32 +64,32 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
         }
         return key;
     }
-    
+
     public FacTmpFactCFacadeREST() {
         super(FacTmpFactC.class);
     }
-    
+
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(FacTmpFactC entity) {
         super.create(entity);
     }
-    
+
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") PathSegment id, FacTmpFactC entity) {
         super.edit(entity);
     }
-    
+
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
         com.sire.entities.FacTmpFactCPK key = getPrimaryKey(id);
         super.remove(super.find(key));
     }
-    
+
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -98,21 +97,21 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
         com.sire.entities.FacTmpFactCPK key = getPrimaryKey(id);
         return super.find(key);
     }
-    
+
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacTmpFactC> findAll() {
         return super.findAll();
     }
-    
+
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacTmpFactC> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
-    
+
     @GET
     @Path("/findByFechas/{fechaInicio}/{fechaFin}/{codEmpresa}/{codVendedor}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -152,7 +151,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
     public String countREST() {
         return String.valueOf(super.count());
     }
-    
+
     @Override
     protected EntityManager getEntityManager() {
         return em;

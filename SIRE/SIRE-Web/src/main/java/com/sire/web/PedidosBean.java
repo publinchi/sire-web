@@ -9,12 +9,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.FacParametros;
-import com.sire.entities.FacTmpFactC;
 import com.sire.entities.FacTmpFactD;
 import com.sire.entities.Pedido;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.FacTmpFactCFacadeREST;
+import com.sire.rs.client.FacTmpFactDFacadeREST;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -39,6 +39,7 @@ public class PedidosBean {
     @Setter
     private Date fechaInicio, fechaFin;
     private final FacTmpFactCFacadeREST facTmpFactCFacadeREST;
+    private final FacTmpFactDFacadeREST facTmpFactDFacadeREST;
     private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
@@ -56,6 +57,7 @@ public class PedidosBean {
 
     public PedidosBean() {
         facTmpFactCFacadeREST = new FacTmpFactCFacadeREST();
+        facTmpFactDFacadeREST = new FacTmpFactDFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
@@ -81,6 +83,9 @@ public class PedidosBean {
         pedidoSeleccionado = ((Pedido) event.getObject());
         logger.log(Level.INFO, "# EgresoInv Pedido seleccionado: {0}",
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv());
+        detallesPedido = gson.fromJson(facTmpFactDFacadeREST.findByFacTmpFactC_JSON(String.class, obtenerEmpresa(),
+                pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv(), pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEi()), new TypeToken<java.util.List<Pedido>>() {
+        }.getType());
     }
 
     private String obtenerEmpresa() {
