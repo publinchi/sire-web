@@ -84,7 +84,8 @@ public class PedidosBean {
         logger.log(Level.INFO, "# EgresoInv Pedido seleccionado: {0}",
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv());
         detallesPedido = gson.fromJson(facTmpFactDFacadeREST.findByFacTmpFactC_JSON(String.class, obtenerEmpresa(),
-                pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv(), pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEi()), new TypeToken<java.util.List<Pedido>>() {
+                pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv(),
+                pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEi()), new TypeToken<java.util.List<FacTmpFactD>>() {
         }.getType());
     }
 

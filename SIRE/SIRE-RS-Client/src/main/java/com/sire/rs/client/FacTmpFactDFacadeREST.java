@@ -77,7 +77,7 @@ public class FacTmpFactDFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findByFacTmpFactC_JSON(Class<T> responseType, String codEmpresa, int egresoInv, String ei) throws ClientErrorException {
+    public <T> T findByFacTmpFactC_JSON(Class<T> responseType, String codEmpresa, Integer egresoInv, String ei) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("findByFacTmpFactC/{0}/{1}/{2}", new Object[]{codEmpresa, egresoInv, ei}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);

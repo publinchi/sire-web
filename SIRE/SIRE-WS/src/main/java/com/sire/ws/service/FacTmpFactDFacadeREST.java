@@ -114,7 +114,7 @@ public class FacTmpFactDFacadeREST extends AbstractFacade<FacTmpFactD> {
     @Path("/findByFacTmpFactC/{codEmpresa}/{egresoInv}/{ei}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacTmpFactD> findByFacTmpFactC(@PathParam("codEmpresa") String codEmpresa,
-            @PathParam("egresoInv") int egresoInv, @PathParam("ei") String ei) {
+            @PathParam("egresoInv") Integer egresoInv, @PathParam("ei") String ei) {
         TypedQuery<FacTmpFactD> query = em.createNamedQuery("FacTmpFactC.findByFacTmpFactC", FacTmpFactD.class);
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("egresoInv", egresoInv);
