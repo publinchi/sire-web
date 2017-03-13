@@ -127,6 +127,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
             for (FacTmpFactC facTmpFactC : retorno) {
                 Pedido pedido = new Pedido();
                 pedido.setFacTmpFactC(facTmpFactC);
+                pedidos.add(pedido);
             }
         } catch (ParseException ex) {
             Logger.getLogger(FacTmpFactCFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
