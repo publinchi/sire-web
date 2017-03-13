@@ -132,6 +132,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
                 FacTmpFactC newFacTmpFactC = new FacTmpFactC();
                 FacTmpFactCPK facTmpFactCPK = new FacTmpFactCPK();
                 facTmpFactCPK.setEgresoInv(facTmpFactC.getFacTmpFactCPK().getEgresoInv());
+                facTmpFactCPK.setEi(facTmpFactC.getFacTmpFactCPK().getEi());
                 newFacTmpFactC.setFacTmpFactCPK(facTmpFactCPK);
                 newFacTmpFactC.setCodCliente(facTmpFactC.getCodCliente());
                 newFacTmpFactC.setFechaFactura(facTmpFactC.getFechaFactura());
@@ -144,7 +145,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
         }
         return pedidos;
     }
-    
+
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
@@ -156,5 +157,5 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }
