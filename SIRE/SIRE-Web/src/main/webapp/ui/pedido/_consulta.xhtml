@@ -46,6 +46,7 @@
                 <h:outputText value="&#36;#{pedido.facTmpFactC.totalConIva}" />
             </p:column>
         </p:dataTable>
+        <br />
         <h:outputLabel value="No hay detalles!!!" rendered="${pedidosBean.detallesPedido.size() eq 0}"/>
         <p:dataTable id="dataListDetallesPedido" var="detallePedido" 
                      value="#{pedidosBean.detallesPedido}" 
