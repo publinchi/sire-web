@@ -7,6 +7,7 @@ package com.sire.ws.service;
 
 import com.sire.entities.FacTmpFactD;
 import com.sire.entities.FacTmpFactDPK;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -116,10 +117,15 @@ public class FacTmpFactDFacadeREST extends AbstractFacade<FacTmpFactD> {
     public List<FacTmpFactD> findByFacTmpFactC(@PathParam("codEmpresa") String codEmpresa,
             @PathParam("egresoInv") Integer egresoInv, @PathParam("ei") String ei) {
         TypedQuery<FacTmpFactD> query = em.createNamedQuery("FacTmpFactD.findByFacTmpFactC", FacTmpFactD.class);
-        query.setParameter("codEmpresa", codEmpresa);
-        query.setParameter("egresoInv", egresoInv);
-        query.setParameter("ei", ei);
-        List<FacTmpFactD> retorno = query.getResultList();
+        List<FacTmpFactD> retorno = new ArrayList<>();
+        for (FacTmpFactD facTmpFactD : query.getResultList()) {
+            FacTmpFactD newFacTmpFactD = new FacTmpFactD();
+            newFacTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK()
+                    .setCodEmpresa(facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodEmpresa());
+            newFacTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK()
+                    .setCodArticulo(facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodArticulo());
+            retorno.add(newFacTmpFactD);
+        }
         return retorno;
     }
 
