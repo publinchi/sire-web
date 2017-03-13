@@ -26,7 +26,7 @@ public class FacTmpFactDFacadeREST {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8080/SIRE-WS/webresources";
+    private static final String BASE_URI = "http://localhost:9080/SIRE-WS/webresources";
 
     public FacTmpFactDFacadeREST() {
         client = javax.ws.rs.client.ClientBuilder.newClient();
