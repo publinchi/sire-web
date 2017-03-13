@@ -114,14 +114,18 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
     }
 
     @GET
-    @Path("/findByFechas/{fechaInicio}/{fechaFin}")
+    @Path("/findByFechas/{fechaInicio}/{fechaFin}/{codEmpresa}/{codVendedor}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Pedido> findByFechas(@PathParam("fechaInicio") String fechaInicio, @PathParam("fechaFin") String fechaFin) {
+    public List<Pedido> findByFechas(@PathParam("fechaInicio") String fechaInicio,
+            @PathParam("fechaFin") String fechaFin, @PathParam("codEmpresa") String codEmpresa,
+            @PathParam("codVendedor") Integer codVendedor) {
         List<Pedido> pedidos = null;
         try {
             TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
             query.setParameter("fechaInicio", new SimpleDateFormat("dd-MM-yyyy").parse(fechaInicio));
             query.setParameter("fechaFin", new SimpleDateFormat("dd-MM-yyyy").parse(fechaFin));
+            query.setParameter("codEmpresa", codEmpresa);
+            query.setParameter("codVendedor", codVendedor);
             List<FacTmpFactC> retorno = query.getResultList();
             pedidos = new ArrayList<>();
             for (FacTmpFactC facTmpFactC : retorno) {

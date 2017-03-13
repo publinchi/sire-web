@@ -87,11 +87,12 @@ public class FacTmpFactCFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_XML).get(responseType);
     }
 
-    public <T> T findByFechas_JSON(Class<T> responseType, Date fechaInicio, Date fechaFin) throws ClientErrorException {
+    public <T> T findByFechas_JSON(Class<T> responseType, Date fechaInicio, Date fechaFin,
+            String codEmpresa, Integer codVendedor) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findByFechas/{0}/{1}",
+        resource = resource.path(java.text.MessageFormat.format("findByFechas/{0}/{1}/{2}/{3}",
                 new Object[]{new SimpleDateFormat("dd-MM-yyyy").format(fechaInicio),
-                    new SimpleDateFormat("dd-MM-yyyy").format(fechaFin)}));
+                    new SimpleDateFormat("dd-MM-yyyy").format(fechaFin), codEmpresa, codVendedor}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
