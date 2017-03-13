@@ -715,7 +715,7 @@ public class ArticulosBean {
             Double _subTotal = Round.round(invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue()) - descuento, 2);
             logger.log(Level.INFO, "_subTotal: {0}", _subTotal);
 
-            Double _iva = invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getPorcentajeIva().doubleValue() / 100);
+            Double _iva = invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue()) * (invMovimientoDtll1.getPorcentajeIva().doubleValue() / 100);
             logger.log(Level.INFO, "_iva: {0}", _iva);
 
             subTotal += Round.round(_subTotal, 2);
