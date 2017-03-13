@@ -41,6 +41,8 @@ public class PedidosBean {
     private final GsonBuilder builder;
     private final Gson gson;
     @ManagedProperty(value = "#{user}")
+    @Getter
+    @Setter
     private UserManager userManager;
 
     public PedidosBean() {
