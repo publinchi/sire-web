@@ -102,6 +102,8 @@ public class PedidosBean {
             );
             invArticulos.add(invArticulo);
         }
+
+        logger.log(Level.INFO, "# Articulos: {0}", invArticulos.size());
     }
 
     private String obtenerEmpresa() {
