@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.FacTmpFactC;
+import com.sire.entities.Pedido;
 import com.sire.rs.client.FacTmpFactCFacadeREST;
 import java.util.Date;
 import java.util.List;
@@ -40,10 +41,10 @@ public class PedidosBean {
 
     public void consultarPedidos() {
         System.out.println("consultarPedidos");
-        List<FacTmpFactC> list = gson.fromJson(facTmpFactCFacadeREST.
+        List<Pedido> list = gson.fromJson(facTmpFactCFacadeREST.
                 findByFechas_JSON(String.class, fechaInicio,
-                        fechaFin), new TypeToken<java.util.List<FacTmpFactC>>() {
-        }.getType());
+                        fechaFin), new TypeToken<java.util.List<Pedido>>() {
+                }.getType());
         System.out.println("list: " + list.size());
     }
 }
