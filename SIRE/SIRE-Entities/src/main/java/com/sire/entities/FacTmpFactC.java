@@ -355,7 +355,6 @@ public class FacTmpFactC implements Serializable {
     }
 
 //    @XmlTransient
-    @XmlTransient
     public List<FacTmpFactD> getFacTmpFactDList() {
         return facTmpFactDList;
     }
