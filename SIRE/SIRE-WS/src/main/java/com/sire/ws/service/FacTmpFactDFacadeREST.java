@@ -120,10 +120,7 @@ public class FacTmpFactDFacadeREST extends AbstractFacade<FacTmpFactD> {
         List<FacTmpFactD> retorno = new ArrayList<>();
         for (FacTmpFactD facTmpFactD : query.getResultList()) {
             FacTmpFactD newFacTmpFactD = new FacTmpFactD();
-            newFacTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK()
-                    .setCodEmpresa(facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodEmpresa());
-            newFacTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK()
-                    .setCodArticulo(facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodArticulo());
+            newFacTmpFactD.setInvUnidadAlternativa(facTmpFactD.getInvUnidadAlternativa());
             retorno.add(newFacTmpFactD);
         }
         return retorno;
