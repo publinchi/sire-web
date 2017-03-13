@@ -10,11 +10,14 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.FacParametros;
 import com.sire.entities.FacTmpFactD;
+import com.sire.entities.InvArticulo;
 import com.sire.entities.Pedido;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.FacTmpFactCFacadeREST;
 import com.sire.rs.client.FacTmpFactDFacadeREST;
+import com.sire.rs.client.InvArticuloFacadeREST;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,9 +56,14 @@ public class PedidosBean {
     @Getter
     @Setter
     private List<FacTmpFactD> detallesPedido;
+    @Getter
+    @Setter
+    private List<InvArticulo> invArticulos;
     private Pedido pedidoSeleccionado;
+    private final InvArticuloFacadeREST invArticuloFacadeREST;
 
     public PedidosBean() {
+        invArticuloFacadeREST = new InvArticuloFacadeREST();
         facTmpFactCFacadeREST = new FacTmpFactCFacadeREST();
         facTmpFactDFacadeREST = new FacTmpFactDFacadeREST();
         builder = new GsonBuilder();
@@ -79,7 +87,7 @@ public class PedidosBean {
 
     public void tapPedido(SelectEvent event) {
         logger.log(Level.INFO, "\u00b7\u00b7 tapPedido \u00b7\u00b7 {0}", event.getObject());
-
+        invArticulos = new ArrayList<>();
         pedidoSeleccionado = ((Pedido) event.getObject());
         logger.log(Level.INFO, "# EgresoInv Pedido seleccionado: {0}",
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv());
@@ -87,6 +95,13 @@ public class PedidosBean {
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv(),
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEi()), new TypeToken<java.util.List<FacTmpFactD>>() {
         }.getType());
+
+        for (FacTmpFactD facTmpFactD : detallesPedido) {
+            InvArticulo invArticulo = gson.fromJson(invArticuloFacadeREST.find_JSON(
+                    String.class, String.valueOf(facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodArticulo())), new TypeToken<java.util.List<InvArticulo>>() {
+            }.getType());
+            invArticulos.add(invArticulo);
+        }
     }
 
     private String obtenerEmpresa() {

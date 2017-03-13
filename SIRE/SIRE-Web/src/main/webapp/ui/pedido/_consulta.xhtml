@@ -47,38 +47,32 @@
             </p:column>
         </p:dataTable>
         <br />
-        <h:outputLabel value="No hay detalles!!!" rendered="${pedidosBean.detallesPedido.size() eq 0}"/>
-        <p:dataTable id="dataListDetallesPedido" var="detallePedido" 
-                     value="#{pedidosBean.detallesPedido}" 
+        <h:outputLabel value="No hay detalles!!!" rendered="${pedidosBean.invArticulos.size() eq 0}"/>
+        <p:dataTable id="dataListInvArticulos" var="invArticulo" 
+                     value="#{pedidosBean.invArticulos}" 
                      selectionMode="single" reflow="false" rows="5" 
                      paginator="true" 
                      pageLinks="3"
                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {LastPageLink}"
                      paginatorPosition="bottom" 
                      paginatorAlwaysVisible="false"
-                     rowKey="#{detallePedido.facTmpFactDPK}" 
+                     rowKey="#{invArticulo.invArticuloPK}" 
                      tableStyleClass="ui-table-columntoggle"
                      tableStyle="width:auto"
-                     rendered="#{pedidosBean.detallesPedido.size() gt 0}"
+                     rendered="#{pedidosBean.invArticulos.size() gt 0}"
                      style="font-size:9.5px;">
 
             <p:column headerText="Cod.Art." priority="1">
-                <h:outputText value="#{detallePedido.invUnidadAlternativa.invUnidadAlternativaPK.codArticulo}" />
+                <h:outputText value="#{invArticulo.invArticuloPK.codArticulo}" />
             </p:column>
             <p:column headerText="Nom.Art." priority="1">
-                <h:outputText value="" />
+                <h:outputText value="#{invArticulo.nombreArticulo}" />
             </p:column>
             <p:column headerText="Des.Art." priority="1">
-                <h:outputText value="" />
-            </p:column>
-            <p:column headerText="Uni.Med." priority="1">
-                <h:outputText value="" />
+                <h:outputText value="#{invArticulo.descArticulo}" />
             </p:column>
             <p:column headerText="Cod.Uni." priority="1">
-                <h:outputText value="#{detallePedido.invUnidadAlternativa.invUnidadAlternativaPK.codUnidad}" />
-            </p:column>
-            <p:column headerText="Total" priority="1">
-                <h:outputText value="&#36;" />
+                <h:outputText value="#{invArticulo.codUnidad}" />
             </p:column>
         </p:dataTable>
     </h:form>
