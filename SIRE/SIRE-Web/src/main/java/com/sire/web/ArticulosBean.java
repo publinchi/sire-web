@@ -205,19 +205,15 @@ public class ArticulosBean {
         invMovimientoDtll.setInvArticulo(invArticuloSeleccionado);
         invMovimientoDtll.setCodUnidad(invArticuloSeleccionado.getCodUnidad().getCodUnidad());
 
-        if (invArticuloSeleccionado.getExistencia().doubleValue() <= 0) {
+        if (invArticuloSeleccionado.getExistencia().doubleValue() > 0) {
+            invMovimientoDtlls.add(invMovimientoDtll);
+            input = null;
+            articulos.clear();
+            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticles:buscar");
+            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticles:dataListArticulo");
+        } else {
             addMessage("Advertencia", "Producto no disponible", FacesMessage.SEVERITY_INFO);
         }
-
-//        if (invArticuloSeleccionado.getExistencia().doubleValue() > 0) {
-        invMovimientoDtlls.add(invMovimientoDtll);
-        input = null;
-        articulos.clear();
-        RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticles:buscar");
-        RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticles:dataListArticulo");
-//        } else {
-//            addMessage("Advertencia", "Producto no disponible", FacesMessage.SEVERITY_INFO);
-//        }
     }
 
     public void tapArticuloFinal(SelectEvent event) {
