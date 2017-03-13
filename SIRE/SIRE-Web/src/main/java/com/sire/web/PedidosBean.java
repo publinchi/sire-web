@@ -97,9 +97,9 @@ public class PedidosBean {
         }.getType());
 
         for (FacTmpFactD facTmpFactD : detallesPedido) {
-            InvArticulo invArticulo = gson.fromJson(invArticuloFacadeREST.find_JSON(
-                    String.class, "id;codEmpresa=" + facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodEmpresa() + ";codArticulo=" + facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodEmpresa()), new TypeToken<java.util.List<InvArticulo>>() {
-            }.getType());
+            InvArticulo invArticulo = invArticuloFacadeREST.find_JSON(
+                    InvArticulo.class, "id;codEmpresa=" + facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodEmpresa() + ";codArticulo=" + facTmpFactD.getInvUnidadAlternativa().getInvUnidadAlternativaPK().getCodArticulo()
+            );
             invArticulos.add(invArticulo);
         }
     }
