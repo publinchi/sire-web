@@ -72,6 +72,7 @@ public class PedidosBean {
     }
 
     public void consultarPedidos() {
+        invArticulos = null;
         try {
             logger.info("consultarPedidos");
             pedidos = gson.fromJson(facTmpFactCFacadeREST.
