@@ -37,12 +37,12 @@ import javax.ws.rs.core.Response;
 @Stateless
 @Path("com.sire.entities.cxcdoccobrar")
 public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
-    
+
     @Inject
     private Event<MailEvent> eventProducer;
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
-    
+
     private CxcDocCobrarPK getPrimaryKey(PathSegment pathSegment) {
         /*
          * pathSemgent represents a URI path segment and any associated matrix parameters.
@@ -71,32 +71,32 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         }
         return key;
     }
-    
+
     public CxcDocCobrarFacadeREST() {
         super(CxcDocCobrar.class);
     }
-    
+
     @POST
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(CxcDocCobrar entity) {
         super.create(entity);
     }
-    
+
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") PathSegment id, CxcDocCobrar entity) {
         super.edit(entity);
     }
-    
+
     @DELETE
     @Path("{id}")
     public void remove(@PathParam("id") PathSegment id) {
         com.sire.entities.CxcDocCobrarPK key = getPrimaryKey(id);
         super.remove(super.find(key));
     }
-    
+
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
@@ -104,33 +104,33 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         com.sire.entities.CxcDocCobrarPK key = getPrimaryKey(id);
         return super.find(key);
     }
-    
+
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<CxcDocCobrar> findAll() {
         return super.findAll();
     }
-    
+
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<CxcDocCobrar> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
-    
+
     @GET
     @Path("count")
     @Produces(MediaType.TEXT_PLAIN)
     public String countREST() {
         return String.valueOf(super.count());
     }
-    
+
     @Override
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
     @GET
     @Path("/findByCodCliente/{codCliente}")
     @Produces({"application/json"})
@@ -140,7 +140,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         List<CxcDocCobrar> retorno = query.getResultList();
         return retorno;
     }
-    
+
     @GET
     @Path("/sumSaldoDocumentoByCodClienteCodEmpresaFechaFac/{codCliente}/{codEmpresa}/{fechaFac}")
     @Produces({"application/json"})
@@ -149,7 +149,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         query.setParameter("codCliente", new BigInteger(codCliente));
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("fechaFac", fechaFac);
-        
+
         Double sum = query.getSingleResult();
         if (sum != null) {
             return sum.toString();
@@ -157,7 +157,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
             return "";
         }
     }
-    
+
     @GET
     @Path("/sumCapitalByCodClienteCodEmpresaFechaRecepcion/{codCliente}/{codEmpresa}/{fechaFac}")
     @Produces({"application/json"})
@@ -166,9 +166,9 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         q.setParameter("codCliente", new BigInteger(codCliente));
         q.setParameter("codEmpresa", codEmpresa);
         q.setParameter("fechaRecepcion", fechaRecepcion);
-        
+
         List<CxcCheque> cxcCheques = q.getResultList();
-        
+
         Double total = 0.0;
         for (CxcCheque cxcCheque : cxcCheques) {
             TypedQuery<Double> query = em.createNamedQuery("CxcDocCobrar.sumCapitalByCodClienteCodEmpresaFechaEmision", Double.class);
@@ -176,7 +176,7 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
             query.setParameter("codDocumento", cxcCheque.getCxcChequePK().getCodDocumento());
             query.setParameter("numDocumento", cxcCheque.getCxcChequePK().getNumDocumento());
             query.setParameter("fechaEmision", fechaRecepcion);
-            
+
             Double sum = query.getSingleResult();
             if (sum != null) {
                 total += sum;
@@ -184,37 +184,37 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
         }
         return total.toString();
     }
-    
+
     @PUT
     @Path("save")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response save(Pago pago) {
-//        getEntityManager().persist(pago.getGnrLogHistorico());
-//        
-//        for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
-//            super.edit(cxcDocCobrar);
-//        }
-//        
-//        pago.getCxcAbonoC().setCxcAbonoDList(pago.getCxcAbonoDList());
-//        
-//        getEntityManager().persist(pago.getCxcAbonoC());
-//
-//        getEntityManager().persist(pago.getCxcPagoContado());
-//        
-//        for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
-//            getEntityManager().persist(cxcCheque);
-//        }
+        getEntityManager().persist(pago.getGnrLogHistorico());
+
+        for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
+            super.edit(cxcDocCobrar);
+        }
+
+        pago.getCxcAbonoC().setCxcAbonoDList(pago.getCxcAbonoDList());
+
+        getEntityManager().persist(pago.getCxcAbonoC());
+
+        getEntityManager().persist(pago.getCxcPagoContado());
+
+        for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
+            getEntityManager().persist(cxcCheque);
+        }
 
         // TODO https://rodrigouchoa.wordpress.com/2014/10/22/cdi-ejb-sending-asynchronous-mail-on-transaction-success/
         // TODO: sendEmail(pago);
         return Response.ok().build();
     }
-    
+
     private void sendEmail(Pago pago) {
         MailEvent event = new MailEvent();
         event.setTo(pago.getClientMail());
         event.setSubject("Cobro.");
-        
+
         String saltoLinea = System.getProperty("line.separator");
         StringBuilder msg = new StringBuilder();
         msg.append("Documento Nº: ");
@@ -241,9 +241,9 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
             msg.append("Valor: ");
             msg.append(cxcCheque.getValorCheque());
         }
-        
+
         event.setMessage(msg.toString());
-        
+
         eventProducer.fire(event); //firing event!
     }
 }
