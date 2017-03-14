@@ -162,7 +162,7 @@ public class ArticulosBean {
         String articulosString;
         String codEmpresa = obtenerEmpresa();
         try {
-            articulosString = invArticuloFacadeREST.findParaVenta(String.class, URLEncoder.encode(input,"UTF-8"), codEmpresa);
+            articulosString = invArticuloFacadeREST.findParaVenta(String.class, URLEncoder.encode(input, "UTF-8"), codEmpresa);
             articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
             }.getType());
             logger.log(Level.INFO, "# articulos: {0}", articulos.size());
