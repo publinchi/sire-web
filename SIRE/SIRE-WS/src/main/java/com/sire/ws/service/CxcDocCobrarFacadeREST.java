@@ -5,7 +5,6 @@
  */
 package com.sire.ws.service;
 
-import com.sire.entities.CxcAbonoD;
 import com.sire.entities.CxcCheque;
 import com.sire.entities.CxcDocCobrar;
 import com.sire.entities.CxcDocCobrarPK;

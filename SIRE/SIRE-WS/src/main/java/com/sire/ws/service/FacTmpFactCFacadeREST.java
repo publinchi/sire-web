@@ -11,6 +11,7 @@ import com.sire.entities.Pedido;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +40,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
 
     @PersistenceContext(unitName = "com.sire_SIRE-WS_war_1.0.0PU")
     private EntityManager em;
+    private static final Logger logger = Logger.getLogger(FacTmpFactCFacadeREST.class.getName());
 
     private FacTmpFactCPK getPrimaryKey(PathSegment pathSegment) {
         /*
@@ -122,7 +124,11 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
         try {
             TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
             query.setParameter("fechaInicio", new SimpleDateFormat("dd-MM-yyyy").parse(fechaInicio));
-            query.setParameter("fechaFin", new SimpleDateFormat("dd-MM-yyyy").parse(fechaFin));
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            Calendar c = Calendar.getInstance();
+            c.setTime(sdf.parse(fechaFin));
+            c.add(Calendar.DATE, 1);
+            query.setParameter("fechaFin", sdf.format(c.getTime()));
             query.setParameter("codEmpresa", codEmpresa);
             query.setParameter("codVendedor", codVendedor);
             List<FacTmpFactC> retorno = query.getResultList();
@@ -141,7 +147,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
                 pedidos.add(pedido);
             }
         } catch (ParseException ex) {
-            Logger.getLogger(FacTmpFactCFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
         return pedidos;
     }

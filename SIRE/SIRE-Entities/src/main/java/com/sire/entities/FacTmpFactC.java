@@ -59,8 +59,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacTmpFactC.findByTotalConIva", query = "SELECT f FROM FacTmpFactC f WHERE f.totalConIva = :totalConIva"),
     @NamedQuery(name = "FacTmpFactC.findByFechaEstado", query = "SELECT f FROM FacTmpFactC f WHERE f.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "FacTmpFactC.findByTotalFactura", query = "SELECT f FROM FacTmpFactC f WHERE f.totalFactura = :totalFactura"),
-    @NamedQuery(name = "FacTmpFactC.findByFechas", query = "SELECT f FROM FacTmpFactC f WHERE ((f.fechaFactura BETWEEN :fechaInicio AND :fechaFin) "
-            + "OR f.fechaFactura = :fechaInicio) AND f.facTmpFactCPK.codEmpresa = :codEmpresa AND f.codVendedor = :codVendedor")})
+    @NamedQuery(name = "FacTmpFactC.findByFechas", query = "SELECT f FROM FacTmpFactC f WHERE (f.fechaFactura BETWEEN :fechaInicio AND :fechaFin) "
+            + "AND f.facTmpFactCPK.codEmpresa = :codEmpresa AND f.codVendedor = :codVendedor")})
 public class FacTmpFactC implements Serializable {
 
     private static final long serialVersionUID = 1L;
