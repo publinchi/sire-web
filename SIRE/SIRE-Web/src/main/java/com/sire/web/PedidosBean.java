@@ -67,7 +67,7 @@ public class PedidosBean {
         facTmpFactCFacadeREST = new FacTmpFactCFacadeREST();
         facTmpFactDFacadeREST = new FacTmpFactDFacadeREST();
         builder = new GsonBuilder();
-        gson = builder.setDateFormat("dd-MM-yyyy'T'HH:mm:ss").create();
+        gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
     }
 
