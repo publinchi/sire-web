@@ -8,12 +8,8 @@ package com.sire.ws.service;
 import com.sire.entities.FacTmpFactC;
 import com.sire.entities.FacTmpFactCPK;
 import com.sire.entities.Pedido;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -119,29 +115,25 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
             @PathParam("fechaFin") String fechaFin, @PathParam("codEmpresa") String codEmpresa,
             @PathParam("codVendedor") Integer codVendedor) {
         List<Pedido> pedidos = null;
-        try {
-            TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
-            query.setParameter("fechaInicio", new SimpleDateFormat("dd-MM-yyyy").parse(fechaInicio));
-            query.setParameter("fechaFin", new SimpleDateFormat("dd-MM-yyyy").parse(fechaFin));
-            query.setParameter("codEmpresa", codEmpresa);
-            query.setParameter("codVendedor", codVendedor);
-            List<FacTmpFactC> retorno = query.getResultList();
-            pedidos = new ArrayList<>();
-            for (FacTmpFactC facTmpFactC : retorno) {
-                Pedido pedido = new Pedido();
-                FacTmpFactC newFacTmpFactC = new FacTmpFactC();
-                FacTmpFactCPK facTmpFactCPK = new FacTmpFactCPK();
-                facTmpFactCPK.setEgresoInv(facTmpFactC.getFacTmpFactCPK().getEgresoInv());
-                facTmpFactCPK.setEi(facTmpFactC.getFacTmpFactCPK().getEi());
-                newFacTmpFactC.setFacTmpFactCPK(facTmpFactCPK);
-                newFacTmpFactC.setCodCliente(facTmpFactC.getCodCliente());
-                newFacTmpFactC.setFechaFactura(facTmpFactC.getFechaFactura());
-                newFacTmpFactC.setTotalFactura(facTmpFactC.getTotalFactura());
-                pedido.setFacTmpFactC(newFacTmpFactC);
-                pedidos.add(pedido);
-            }
-        } catch (ParseException ex) {
-            Logger.getLogger(FacTmpFactCFacadeREST.class.getName()).log(Level.SEVERE, null, ex);
+        TypedQuery<FacTmpFactC> query = em.createNamedQuery("FacTmpFactC.findByFechas", FacTmpFactC.class);
+        query.setParameter("fechaInicio", fechaInicio);
+        query.setParameter("fechaFin", fechaFin);
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("codVendedor", codVendedor);
+        List<FacTmpFactC> retorno = query.getResultList();
+        pedidos = new ArrayList<>();
+        for (FacTmpFactC facTmpFactC : retorno) {
+            Pedido pedido = new Pedido();
+            FacTmpFactC newFacTmpFactC = new FacTmpFactC();
+            FacTmpFactCPK facTmpFactCPK = new FacTmpFactCPK();
+            facTmpFactCPK.setEgresoInv(facTmpFactC.getFacTmpFactCPK().getEgresoInv());
+            facTmpFactCPK.setEi(facTmpFactC.getFacTmpFactCPK().getEi());
+            newFacTmpFactC.setFacTmpFactCPK(facTmpFactCPK);
+            newFacTmpFactC.setCodCliente(facTmpFactC.getCodCliente());
+            newFacTmpFactC.setFechaFactura(facTmpFactC.getFechaFactura());
+            newFacTmpFactC.setTotalFactura(facTmpFactC.getTotalFactura());
+            pedido.setFacTmpFactC(newFacTmpFactC);
+            pedidos.add(pedido);
         }
         return pedidos;
     }
