@@ -8,11 +8,11 @@
     <h:form id="consultarPedidos">
         <h2>Fecha Inicio</h2>
         <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" 
-                    pattern="MM/dd/yyyy" mask="true" required="true"
+                    pattern="dd/MM/yyyy" mask="true" required="true"
                     requiredMessage="Seleccione fecha inicio."  />
         <h2>Fecha Fin</h2>
         <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" 
-                    pattern="MM/dd/yyyy" mask="true" required="true"
+                    pattern="dd/MM/yyyy" mask="true" required="true"
                     requiredMessage="Seleccione fecha fin."/>
         <p:commandButton id="botonConsultar" label="Consultar Pedidos"
                          actionListener="${pedidosBean.consultarPedidos}"
@@ -33,7 +33,7 @@
                      style="font-size:9.5px;">
             <p:ajax event="rowSelect" listener="#{pedidosBean.tapPedido}" 
                     update="@form" />
-            <p:column headerText="# Despacho" priority="1">
+            <p:column headerText="# Pedido" priority="1">
                 <h:outputText value="#{pedido.facTmpFactC.facTmpFactCPK.egresoInv}" />
             </p:column>
             <p:column headerText="Cliente" priority="1">
@@ -68,11 +68,8 @@
             <p:column headerText="Nom.Art." priority="1">
                 <h:outputText value="#{invArticulo.nombreArticulo}" />
             </p:column>
-            <p:column headerText="Des.Art." priority="1">
-                <h:outputText value="#{invArticulo.descArticulo}" />
-            </p:column>
-            <p:column headerText="Cod.Uni." priority="1">
-                <h:outputText value="#{invArticulo.codUnidad.codUnidad}" />
+            <p:column headerText="Pre.Uni." priority="1">
+                <h:outputText value="#{invArticulo.precio}" />
             </p:column>
         </p:dataTable>
     </h:form>
