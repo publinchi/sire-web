@@ -8,20 +8,6 @@
     <ui:include src="../fecha/_fecha.xhtml"/>
 
     <pm:field>
-        <h:form>
-            <p:outputLabel for="tipoPago" value="Tipo Pago:" />
-            <p:selectOneMenu id="tipoPago" value="#{articulosBean.formaPago}">
-                <f:selectItem itemLabel="Seleccione Forma Pago" itemValue="" />
-                <f:selectItems value="#{formaPagoBean.formaPagos}"  
-                               var="formaPago" 
-                               itemLabel="#{formaPago.descripcion}" 
-                               itemValue="#{formaPago.cxcFormaPagoPK.codPago}"/>
-                <p:ajax listener="#{articulosBean.loadTipoPago()}"/>
-            </p:selectOneMenu>
-        </h:form>
-    </pm:field>
-
-    <pm:field>
         <h:outputText id="vendedor" value="Vendedor: #{user.current.nombreUsuario}"/>
     </pm:field>
 
@@ -48,4 +34,19 @@
                          process="@this" partialSubmit="true" 
                          update="pedido:accordionPanel:ubicacion"/>
     </h:form>
+
+    <pm:field>
+        <h:form>
+            <p:outputLabel for="tipoPago" value="Tipo Pago:" />
+            <p:selectOneMenu id="tipoPago" value="#{articulosBean.formaPago}">
+                <f:selectItem itemLabel="Seleccione Forma Pago" itemValue="" />
+                <f:selectItems value="#{formaPagoBean.formaPagos}"  
+                               var="formaPago" 
+                               itemLabel="#{formaPago.descripcion}" 
+                               itemValue="#{formaPago.cxcFormaPagoPK.codPago}"/>
+                <p:ajax listener="#{articulosBean.loadTipoPago()}"/>
+            </p:selectOneMenu>
+        </h:form>
+    </pm:field>
+
 </html>
