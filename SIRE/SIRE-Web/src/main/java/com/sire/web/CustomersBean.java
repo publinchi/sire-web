@@ -11,6 +11,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.FacParametros;
 import com.sire.entities.VCliente;
+import com.sire.exception.FacParametrosException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.VClienteFacadeREST;
@@ -87,34 +88,12 @@ public class CustomersBean {
 
     public void findClientes() {
         logger.info("findClientes");
-        String clientesString = null;
         try {
-            if (modo.equals("r") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByRazonSocialEmpresaVendedor(String.class, URLEncoder.encode(input,"UTF-8"), obtenerEmpresa(), obtenerVendedor());
-                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
-                }.getType());
-            } else if (modo.equals("n") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresaVendedor(String.class, URLEncoder.encode(input,"UTF-8"), obtenerEmpresa(), obtenerVendedor());
-                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
-                }.getType());
-            } else if (modo.equals("c") && !input.isEmpty()) {
-                try {
-                    clientesString = vClienteFacadeREST.findByClienteEmpresaVendedor(String.class, input, obtenerEmpresa(), obtenerVendedor());
-                    clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
-                    }.getType());
-                } catch (JsonSyntaxException jse) {
-                    VCliente vcliente = gson.fromJson(clientesString, VCliente.class);
-                    clientes = new ArrayList<>();
-                    clientes.add(vcliente);
-                }
-            }
-        } catch (ClientErrorException cee) {
-            clientes = null;
+            vendedorBuscarClientes();
         } catch (VendedorException ex) {
+            entregadorBuscarClientes();
             logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
-        } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(CustomersBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -150,11 +129,11 @@ public class CustomersBean {
         return userManager.getGnrEmpresa().getCodEmpresa();
     }
 
-    private Integer obtenerVendedor() throws VendedorException {
+    private Integer obtenerVendedor() throws VendedorException, FacParametrosException {
         FacParametros facParametros = obtenerFacParametros();
 
         if (facParametros == null) {
-            throw new VendedorException("Vendedor no asociado a facturación.");
+            throw new FacParametrosException("No se pudo obtener parámetros.");
         }
 
         Integer defCodVendedor = facParametros.getDefCodVendedor();
@@ -172,14 +151,14 @@ public class CustomersBean {
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
-        logger.info("Current user: " + userManager.getCurrent().getNombreUsuario().toLowerCase());
+        logger.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
 
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                logger.info("Usuario *: " + facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
                 logger.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
@@ -190,5 +169,66 @@ public class CustomersBean {
     private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
         FacesMessage message = new FacesMessage(severity, summary, detail);
         FacesContext.getCurrentInstance().addMessage(null, message);
+    }
+
+    private void vendedorBuscarClientes() throws VendedorException {
+        String clientesString = null;
+        try {
+            if (modo.equals("r") && !input.isEmpty()) {
+                clientesString = vClienteFacadeREST.findByRazonSocialEmpresaVendedor(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa(), obtenerVendedor());
+                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                }.getType());
+            } else if (modo.equals("n") && !input.isEmpty()) {
+                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresaVendedor(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa(), obtenerVendedor());
+                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                }.getType());
+            } else if (modo.equals("c") && !input.isEmpty()) {
+                try {
+                    clientesString = vClienteFacadeREST.findByClienteEmpresaVendedor(String.class, input, obtenerEmpresa(), obtenerVendedor());
+                    clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                    }.getType());
+                } catch (JsonSyntaxException jse) {
+                    VCliente vcliente = gson.fromJson(clientesString, VCliente.class);
+                    clientes = new ArrayList<>();
+                    clientes.add(vcliente);
+                }
+            }
+        } catch (ClientErrorException cee) {
+            clientes = null;
+        } catch (FacParametrosException ex) {
+            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
+            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
+        } catch (UnsupportedEncodingException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void entregadorBuscarClientes() {
+        String clientesString = null;
+        try {
+            if (modo.equals("r") && !input.isEmpty()) {
+                clientesString = vClienteFacadeREST.findByRazonSocialEmpresa(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa());
+                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                }.getType());
+            } else if (modo.equals("n") && !input.isEmpty()) {
+                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresa(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa());
+                clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                }.getType());
+            } else if (modo.equals("c") && !input.isEmpty()) {
+                try {
+                    clientesString = vClienteFacadeREST.findByClienteEmpresa(String.class, input, obtenerEmpresa());
+                    clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
+                    }.getType());
+                } catch (JsonSyntaxException jse) {
+                    VCliente vcliente = gson.fromJson(clientesString, VCliente.class);
+                    clientes = new ArrayList<>();
+                    clientes.add(vcliente);
+                }
+            }
+        } catch (ClientErrorException cee) {
+            clientes = null;
+        } catch (UnsupportedEncodingException ex) {
+            logger.log(Level.SEVERE, null, ex);
+        }
     }
 }
