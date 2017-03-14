@@ -15,13 +15,27 @@ import org.primefaces.model.SortOrder;
  */
 public class LazySorter implements Comparator<InvArticulo> {
 
+    private String sortField;
+     
+    private SortOrder sortOrder;
+     
     public LazySorter(String sortField, SortOrder sortOrder) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        this.sortField = sortField;
+        this.sortOrder = sortOrder;
     }
-
-    @Override
-    public int compare(InvArticulo t, InvArticulo t1) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+ 
+    public int compare(InvArticulo invArticulo1, InvArticulo invArticulo2) {
+        try {
+            Object value1 = InvArticulo.class.getField(this.sortField).get(invArticulo1);
+            Object value2 = InvArticulo.class.getField(this.sortField).get(invArticulo2);
+ 
+            int value = ((Comparable)value1).compareTo(value2);
+             
+            return SortOrder.ASCENDING.equals(sortOrder) ? value : -1 * value;
+        }
+        catch(Exception e) {
+            throw new RuntimeException();
+        }
     }
     
 }
