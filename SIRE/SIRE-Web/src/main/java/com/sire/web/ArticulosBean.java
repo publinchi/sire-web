@@ -169,7 +169,7 @@ public class ArticulosBean {
         } catch (ClientErrorException cee) {
             articulos = null;
         } catch (UnsupportedEncodingException ex) {
-            Logger.getLogger(ArticulosBean.class.getName()).log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, null, ex);
         }
     }
 
