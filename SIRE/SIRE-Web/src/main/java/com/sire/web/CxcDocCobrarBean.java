@@ -258,7 +258,7 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setCxcAbonoCPK(cxcAbonoCPK);
             cxcAbonoC.setCodDivisa("01");
             cxcAbonoC.setCodMotivo("");
-            cxcAbonoC.setCodVendedor(obtenerVendedor());
+            cxcAbonoC.setCodVendedor(BigInteger.valueOf(obtenerCliente().getCodVendedor()));
             cxcAbonoC.setCxcCliente(obtenerCliente());
             cxcAbonoC.setCxcInforme(null);
             cxcAbonoC.setDetalle("Pago Web");
@@ -494,19 +494,16 @@ public class CxcDocCobrarBean {
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
 
-    private BigInteger obtenerVendedor() throws VendedorException, ClienteException {
+    private BigInteger obtenerVendedor() throws VendedorException {
         FacParametros facParametros = obtenerFacParametros();
-        int codVendedor;
+
         if (facParametros == null) {
-            codVendedor = obtenerCliente().getCodVendedor();
-            if (codVendedor != 0) {
-                return BigInteger.valueOf(codVendedor);
-            }
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
         BigInteger defCodVendedor = new BigInteger(facParametros.getDefCodVendedor().toString());
         return defCodVendedor;
+
     }
 
     private FacParametros obtenerFacParametros() {
