@@ -502,16 +502,12 @@ public class CxcDocCobrarBean {
         }
 
         Integer codVendedor = facParametros.getDefCodVendedor();
-        logger.info("obtenerVendedor() codVendedor: " + codVendedor);
         BigInteger defCodVendedor;
         if (codVendedor != null) {
             defCodVendedor = new BigInteger(codVendedor.toString());
-            logger.info("obtenerVendedor() defCodVendedor: " + defCodVendedor);
             return defCodVendedor;
         } else {
-            logger.info("obtenerVendedor() cliente.getCliente().getCodVendedor()+: " + cliente.getCliente().getCodVendedor());
             defCodVendedor = BigInteger.valueOf(cliente.getCliente().getCodVendedor());
-            logger.info("obtenerVendedor() defCodVendedor+: " + defCodVendedor);
             return defCodVendedor;
         }
     }
