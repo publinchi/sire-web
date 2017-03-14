@@ -258,7 +258,7 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setCxcAbonoCPK(cxcAbonoCPK);
             cxcAbonoC.setCodDivisa("01");
             cxcAbonoC.setCodMotivo("");
-            cxcAbonoC.setCodVendedor(BigInteger.valueOf(obtenerCliente().getCodVendedor()));
+            cxcAbonoC.setCodVendedor(obtenerVendedor());
             cxcAbonoC.setCxcCliente(obtenerCliente());
             cxcAbonoC.setCxcInforme(null);
             cxcAbonoC.setDetalle("Pago Web");
@@ -509,8 +509,8 @@ public class CxcDocCobrarBean {
             logger.info("obtenerVendedor() defCodVendedor: " + defCodVendedor);
             return defCodVendedor;
         } else {
-            logger.info("obtenerVendedor() obtenerCliente().getCodVendedor()+: " + obtenerCliente().getCodVendedor());
-            defCodVendedor = BigInteger.valueOf(obtenerCliente().getCodVendedor());
+            logger.info("obtenerVendedor() cliente.getCliente().getCodVendedor()+: " + cliente.getCliente().getCodVendedor());
+            defCodVendedor = BigInteger.valueOf(cliente.getCliente().getCodVendedor());
             logger.info("obtenerVendedor() defCodVendedor+: " + defCodVendedor);
             return defCodVendedor;
         }
