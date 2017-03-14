@@ -494,16 +494,21 @@ public class CxcDocCobrarBean {
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
 
-    private BigInteger obtenerVendedor() throws VendedorException {
+    private BigInteger obtenerVendedor() throws VendedorException, ClienteException {
         FacParametros facParametros = obtenerFacParametros();
 
         if (facParametros == null) {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        BigInteger defCodVendedor = new BigInteger(facParametros.getDefCodVendedor().toString());
-        return defCodVendedor;
-
+        Integer codVendedor = facParametros.getDefCodVendedor();
+        BigInteger defCodVendedor;
+        if (codVendedor != null) {
+            defCodVendedor = new BigInteger(codVendedor.toString());
+            return defCodVendedor;
+        } else {
+            return BigInteger.valueOf(obtenerCliente().getCodVendedor());
+        }
     }
 
     private FacParametros obtenerFacParametros() {
