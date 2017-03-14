@@ -509,7 +509,9 @@ public class CxcDocCobrarBean {
             logger.info("obtenerVendedor() defCodVendedor: " + defCodVendedor);
             return defCodVendedor;
         } else {
-            return BigInteger.valueOf(obtenerCliente().getCodVendedor());
+            defCodVendedor = BigInteger.valueOf(obtenerCliente().getCodVendedor());
+            logger.info("obtenerVendedor() obtenerCliente().getCodVendedor(): " + defCodVendedor);
+            return defCodVendedor;
         }
     }
 
