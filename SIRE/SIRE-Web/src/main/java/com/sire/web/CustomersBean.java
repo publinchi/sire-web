@@ -90,7 +90,7 @@ public class CustomersBean {
         logger.info("findClientes");
         try {
             vendedorBuscarClientes();
-        } catch (VendedorException ex) {
+        } catch (VendedorException | FacParametrosException ex) {
             entregadorBuscarClientes();
             logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
@@ -171,7 +171,7 @@ public class CustomersBean {
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
 
-    private void vendedorBuscarClientes() throws VendedorException {
+    private void vendedorBuscarClientes() throws VendedorException, FacParametrosException {
         String clientesString = null;
         try {
             if (modo.equals("r") && !input.isEmpty()) {
@@ -195,9 +195,6 @@ public class CustomersBean {
             }
         } catch (ClientErrorException cee) {
             clientes = null;
-        } catch (FacParametrosException ex) {
-            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
-            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
         } catch (UnsupportedEncodingException ex) {
             logger.log(Level.SEVERE, null, ex);
         }
