@@ -128,7 +128,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
             Calendar c = Calendar.getInstance();
             c.setTime(sdf.parse(fechaFin));
             c.add(Calendar.DATE, 1);
-            query.setParameter("fechaFin", sdf.format(c.getTime()));
+            query.setParameter("fechaFin", c.getTime());
             query.setParameter("codEmpresa", codEmpresa);
             query.setParameter("codVendedor", codVendedor);
             List<FacTmpFactC> retorno = query.getResultList();
