@@ -21,7 +21,7 @@ import org.primefaces.model.SortOrder;
  */
 public class LazyInvArticuloDataModel extends LazyDataModel<InvArticulo> {
 
-    private List<InvArticulo> datasource;
+    private final List<InvArticulo> datasource;
 
     public LazyInvArticuloDataModel(List<InvArticulo> datasource) {
         this.datasource = datasource;
@@ -29,8 +29,10 @@ public class LazyInvArticuloDataModel extends LazyDataModel<InvArticulo> {
 
     @Override
     public InvArticulo getRowData(String rowKey) {
+        System.out.println("rowKey: " + rowKey);
         for (InvArticulo invArticulo : datasource) {
             if (String.valueOf(invArticulo.getInvArticuloPK().getCodArticulo()).equals(rowKey)) {
+                System.out.println("Match: " + invArticulo);
                 return invArticulo;
             }
         }
@@ -82,6 +84,7 @@ public class LazyInvArticuloDataModel extends LazyDataModel<InvArticulo> {
         //rowCount
         int dataSize = data.size();
         this.setRowCount(dataSize);
+        System.out.println("RowCount: " + this.getRowCount());
 
         //paginate
         if (dataSize > pageSize) {
