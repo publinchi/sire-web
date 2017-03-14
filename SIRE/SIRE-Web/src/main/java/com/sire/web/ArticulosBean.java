@@ -75,6 +75,7 @@ import lombok.Setter;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.SelectEvent;
 import org.primefaces.mobile.event.SwipeEvent;
+import org.primefaces.model.LazyDataModel;
 
 /**
  *
@@ -128,6 +129,7 @@ public class ArticulosBean {
     private CustomersBean clientes;
     @ManagedProperty("#{mapa}")
     private MapaBean mapa;
+    private LazyDataModel<InvArticulo> lazyModel;
 
     //Resumen
     Double subTotal, iva, total, totalSinIva, totalConIva, limiteFactura;

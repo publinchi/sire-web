@@ -15,15 +15,16 @@ import org.primefaces.model.SortOrder;
  */
 public class LazySorter implements Comparator<InvArticulo> {
 
-    private String sortField;
+    private final String sortField;
      
-    private SortOrder sortOrder;
+    private final SortOrder sortOrder;
      
     public LazySorter(String sortField, SortOrder sortOrder) {
         this.sortField = sortField;
         this.sortOrder = sortOrder;
     }
  
+    @Override
     public int compare(InvArticulo invArticulo1, InvArticulo invArticulo2) {
         try {
             Object value1 = InvArticulo.class.getField(this.sortField).get(invArticulo1);
@@ -33,7 +34,7 @@ public class LazySorter implements Comparator<InvArticulo> {
              
             return SortOrder.ASCENDING.equals(sortOrder) ? value : -1 * value;
         }
-        catch(Exception e) {
+        catch(IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException e) {
             throw new RuntimeException();
         }
     }

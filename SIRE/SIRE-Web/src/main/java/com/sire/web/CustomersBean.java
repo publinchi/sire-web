@@ -105,7 +105,7 @@ public class CustomersBean {
     public void tapCliente(SelectEvent event) {
         logger.info("tapCliente");
         VCliente vCliente = ((VCliente) event.getObject());
-        logger.log(Level.INFO, "Cliente seleccionado: {0} {1}", new Object[]{vCliente.getApellidos(), vCliente.getNombres()});
+        logger.log(Level.INFO, "Cliente seleccionado: {0} {1} / codVendedor: {2}", new Object[]{vCliente.getApellidos(), vCliente.getNombres(), vCliente.getCodVendedor()});
         cliente.setCliente(vCliente);
 
         limpiar();
