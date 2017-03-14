@@ -30,7 +30,8 @@
                          tableStyleClass="ui-table-columntoggle"
                          tableStyle="width:auto"
                          rendered="#{articulosBean.articulos.size() gt 0}"
-                         style="font-size:9.5px;">
+                         style="font-size:9.5px;"
+                         lazy="true">
                 <p:ajax event="rowSelect" listener="#{articulosBean.tapArticulo}" 
                         update="@form,pedido:accordionPanel:formTablaArticulos" />
                 <p:column headerText="Cod." priority="1">
