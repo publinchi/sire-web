@@ -8,6 +8,7 @@ package com.sire.web;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.sire.datamodel.lazy.LazyInvArticuloDataModel;
 import com.sire.entities.CxcCliente;
 import com.sire.entities.FacCatalogoPrecioD;
 import com.sire.entities.FacDescVol;
@@ -168,6 +169,7 @@ public class ArticulosBean {
             articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
             }.getType());
             logger.log(Level.INFO, "# articulos: {0}", articulos.size());
+            lazyModel = new LazyInvArticuloDataModel(articulos);
         } catch (ClientErrorException cee) {
             articulos = null;
         } catch (UnsupportedEncodingException ex) {

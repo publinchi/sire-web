@@ -189,25 +189,21 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
     @Path("save")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response save(Pago pago) {
-        getEntityManager().persist(pago.getGnrLogHistorico());
-        
-        for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
-            super.edit(cxcDocCobrar);
-        }
-        
-        pago.getCxcAbonoC().setCxcAbonoDList(pago.getCxcAbonoDList());
-        
-        getEntityManager().persist(pago.getCxcAbonoC());
-
-//        for (CxcAbonoD cxcAbonoD : pago.getCxcAbonoDList()) {
-//            cxcAbonoD.setCxcAbonoC(pago.getCxcAbonoC());
-//            getEntityManager().persist(cxcAbonoD);
+//        getEntityManager().persist(pago.getGnrLogHistorico());
+//        
+//        for (CxcDocCobrar cxcDocCobrar : pago.getCxcDocCobrarList()) {
+//            super.edit(cxcDocCobrar);
 //        }
-        getEntityManager().persist(pago.getCxcPagoContado());
-        
-        for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
-            getEntityManager().persist(cxcCheque);
-        }
+//        
+//        pago.getCxcAbonoC().setCxcAbonoDList(pago.getCxcAbonoDList());
+//        
+//        getEntityManager().persist(pago.getCxcAbonoC());
+//
+//        getEntityManager().persist(pago.getCxcPagoContado());
+//        
+//        for (CxcCheque cxcCheque : pago.getCxcChequeList()) {
+//            getEntityManager().persist(cxcCheque);
+//        }
 
         // TODO https://rodrigouchoa.wordpress.com/2014/10/22/cdi-ejb-sending-asynchronous-mail-on-transaction-success/
         // TODO: sendEmail(pago);

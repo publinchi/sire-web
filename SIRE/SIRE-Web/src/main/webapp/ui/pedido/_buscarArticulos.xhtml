@@ -17,9 +17,9 @@
                                  actionListener="${articulosBean.findArticulos}" 
                                  update="@form"/>
             </h:panelGrid>
-            <h:outputLabel value="No hay registros!!!" rendered="${articulosBean.articulos.size() eq 0}"/>
+            <h:outputLabel value="No hay registros!!!" rendered="${articulosBean.lazyModel.size() eq 0}"/>
             <p:dataTable id="dataListArticulo" var="articulo" 
-                         value="#{articulosBean.articulos}" 
+                         value="#{articulosBean.lazyModel}" 
                          selectionMode="single" reflow="false" rows="5" 
                          paginator="true" 
                          pageLinks="3"
@@ -29,7 +29,7 @@
                          rowKey="#{articulo.invArticuloPK}" 
                          tableStyleClass="ui-table-columntoggle"
                          tableStyle="width:auto"
-                         rendered="#{articulosBean.articulos.size() gt 0}"
+                         rendered="#{articulosBean.lazyModel.size() gt 0}"
                          style="font-size:9.5px;">
                 <p:ajax event="rowSelect" listener="#{articulosBean.tapArticulo}" 
                         update="@form,pedido:accordionPanel:formTablaArticulos" />
