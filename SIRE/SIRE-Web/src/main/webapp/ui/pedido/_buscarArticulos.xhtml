@@ -21,7 +21,7 @@
             <p:dataTable id="dataListArticulo" var="articulo" 
                          value="#{articulosBean.articulos}" 
                          selectionMode="single" reflow="false" rows="5" 
-                         paginator="false" 
+                         paginator="true" 
                          pageLinks="3"
                          paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PageLinks} {LastPageLink}"
                          paginatorPosition="bottom" 
@@ -42,7 +42,7 @@
                 <p:column headerText="Uni." priority="1">
                     <h:outputText value="#{articulo.unidad}" />
                 </p:column>
-                <p:column headerText="Pre." priority="1">
+                <p:column headerText="Pre." priority="2">
                     <h:outputText value="&#36;#{articulo.precio}" />
                 </p:column>
                 <p:column headerText="Exi." priority="2">
