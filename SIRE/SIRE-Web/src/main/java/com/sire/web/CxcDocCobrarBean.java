@@ -94,11 +94,11 @@ public class CxcDocCobrarBean {
     @Setter
     @ManagedProperty("#{mapa}")
     private MapaBean mapa;
-    
+
     @Getter
     @Setter
     private Double totalSaldo, totalCapital, diferencia, valorCheque = 0.0;
-    
+
     @Setter
     private Double retencion = 0.0, retencionIVA = 0.0, efectivo = 0.0, deposito = 0.0,
             otros = 0.0, totalCheques = 0.0;
@@ -494,16 +494,19 @@ public class CxcDocCobrarBean {
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
 
-    private BigInteger obtenerVendedor() throws VendedorException {
+    private BigInteger obtenerVendedor() throws VendedorException, ClienteException {
         FacParametros facParametros = obtenerFacParametros();
-
+        int codVendedor;
         if (facParametros == null) {
+            codVendedor = obtenerCliente().getCodVendedor();
+            if (codVendedor != 0) {
+                return BigInteger.valueOf(codVendedor);
+            }
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
         BigInteger defCodVendedor = new BigInteger(facParametros.getDefCodVendedor().toString());
         return defCodVendedor;
-
     }
 
     private FacParametros obtenerFacParametros() {

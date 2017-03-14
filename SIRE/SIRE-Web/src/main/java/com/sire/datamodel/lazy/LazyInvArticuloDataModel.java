@@ -5,9 +5,15 @@
  */
 package com.sire.datamodel.lazy;
 
+import com.sire.datamodel.sorter.LazySorter;
 import com.sire.entities.InvArticulo;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortOrder;
 
 /**
  *
@@ -35,59 +41,56 @@ public class LazyInvArticuloDataModel extends LazyDataModel<InvArticulo> {
     public Object getRowKey(InvArticulo invArticulo) {
         return invArticulo.getInvArticuloPK().getCodArticulo();
     }
-    
+
     @Override
-    public List<InvArticulo> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String,Object> filters) {
-        List<InvArticulo> data = new ArrayList<InvArticulo>();
- 
+    public List<InvArticulo> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+        List<InvArticulo> data = new ArrayList<>();
+
         //filter
-        for(InvArticulo invArticulo : datasource) {
+        for (InvArticulo invArticulo : datasource) {
             boolean match = true;
- 
+
             if (filters != null) {
                 for (Iterator<String> it = filters.keySet().iterator(); it.hasNext();) {
                     try {
                         String filterProperty = it.next();
                         Object filterValue = filters.get(filterProperty);
-                        String fieldValue = String.valueOf(car.getClass().getField(filterProperty).get(car));
- 
-                        if(filterValue == null || fieldValue.startsWith(filterValue.toString())) {
+                        String fieldValue = String.valueOf(invArticulo.getClass().getField(filterProperty).get(invArticulo));
+
+                        if (filterValue == null || fieldValue.startsWith(filterValue.toString())) {
                             match = true;
-                    }
-                    else {
+                        } else {
                             match = false;
                             break;
                         }
-                    } catch(Exception e) {
+                    } catch (IllegalAccessException | IllegalArgumentException | NoSuchFieldException | SecurityException e) {
                         match = false;
                     }
                 }
             }
- 
-            if(match) {
+
+            if (match) {
                 data.add(invArticulo);
             }
         }
- 
+
         //sort
-        if(sortField != null) {
+        if (sortField != null) {
             Collections.sort(data, new LazySorter(sortField, sortOrder));
         }
- 
+
         //rowCount
         int dataSize = data.size();
         this.setRowCount(dataSize);
- 
+
         //paginate
-        if(dataSize > pageSize) {
+        if (dataSize > pageSize) {
             try {
                 return data.subList(first, first + pageSize);
-            }
-            catch(IndexOutOfBoundsException e) {
+            } catch (IndexOutOfBoundsException e) {
                 return data.subList(first, first + (dataSize % pageSize));
             }
-        }
-        else {
+        } else {
             return data;
         }
     }
