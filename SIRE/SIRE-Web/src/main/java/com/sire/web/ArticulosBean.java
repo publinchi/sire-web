@@ -52,8 +52,10 @@ import com.sire.rs.client.InvUnidadAlternativaFacadeREST;
 import com.sire.rs.client.VClienteFacadeREST;
 import com.sire.utils.Round;
 import com.sire.utils.bodega.BodegaUtil;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -160,12 +162,14 @@ public class ArticulosBean {
         String articulosString;
         String codEmpresa = obtenerEmpresa();
         try {
-            articulosString = invArticuloFacadeREST.findParaVenta(String.class, input.toUpperCase(Locale.ENGLISH).replace("%AC", "$WC"), codEmpresa);
+            articulosString = invArticuloFacadeREST.findParaVenta(String.class, URLEncoder.encode(input,"UTF-8"), codEmpresa);
             articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
             }.getType());
             logger.log(Level.INFO, "# articulos: {0}", articulos.size());
         } catch (ClientErrorException cee) {
             articulos = null;
+        } catch (UnsupportedEncodingException ex) {
+            Logger.getLogger(ArticulosBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

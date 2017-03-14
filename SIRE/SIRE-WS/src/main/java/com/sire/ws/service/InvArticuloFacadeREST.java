@@ -120,7 +120,7 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     @Produces({"application/json"})
     public List<InvArticulo> findParaVenta(@PathParam("nombreArticulo") String nombreArticulo, @PathParam("codEmpresa") String codEmpresa) {
         TypedQuery<Object[]> query = em.createNamedQuery("InvArticulo.findParaVenta", Object[].class);
-        query.setParameter("nombreArticulo", nombreArticulo.replace("$WC", "%AC"));
+        query.setParameter("nombreArticulo", nombreArticulo);
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("estado", "A");
         List<Object[]> retorno = query.getResultList();
