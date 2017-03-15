@@ -60,7 +60,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacTmpFactC.findByFechaEstado", query = "SELECT f FROM FacTmpFactC f WHERE f.fechaEstado = :fechaEstado"),
     @NamedQuery(name = "FacTmpFactC.findByTotalFactura", query = "SELECT f FROM FacTmpFactC f WHERE f.totalFactura = :totalFactura"),
     @NamedQuery(name = "FacTmpFactC.findByFechas", query = "SELECT f FROM FacTmpFactC f WHERE (f.fechaFactura BETWEEN :fechaInicio AND :fechaFin) "
-            + "AND f.facTmpFactCPK.codEmpresa = :codEmpresa AND f.codVendedor = :codVendedor")})
+            + "AND f.facTmpFactCPK.codEmpresa = :codEmpresa AND f.codVendedor = :codVendedor ORDER BY f.fechaFactura DESC")})
 public class FacTmpFactC implements Serializable {
 
     private static final long serialVersionUID = 1L;
