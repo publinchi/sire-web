@@ -30,8 +30,7 @@
                                             value="Cantidad: #{articulosBean.cantidadExcedida}" 
                                             style="color: #{articulosBean.colorCantidadExcedida}"/>-->
                     <p:inputText id="cantidad" 
-                                 value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}" 
-                                 converterMessage="Por favor, ingrese solo un valor entero o decimal.">
+                                 value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}">
                         <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
                     </p:inputText>
                     <!--</pm:field>-->
