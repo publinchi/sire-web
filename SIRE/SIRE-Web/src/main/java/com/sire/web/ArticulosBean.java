@@ -404,6 +404,9 @@ public class ArticulosBean {
         logger.log(Level.INFO, "existencia: {0}", existence);
 
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
+        if (cantidad == null) {
+            cantidad = new BigDecimal(0);
+        }
         logger.log(Level.INFO, "cantidad: {0}", cantidad.doubleValue());
         if (existence >= cantidad.doubleValue()) {
 
