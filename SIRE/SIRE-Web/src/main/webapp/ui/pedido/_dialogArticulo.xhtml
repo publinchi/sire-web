@@ -30,7 +30,8 @@
                                             value="Cantidad: #{articulosBean.cantidadExcedida}" 
                                             style="color: #{articulosBean.colorCantidadExcedida}"/>-->
                     <p:inputText id="cantidad" 
-                                 value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}">
+                                 value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}"
+                                 required="true">
                         <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
                     </p:inputText>
                     <!--</pm:field>-->
