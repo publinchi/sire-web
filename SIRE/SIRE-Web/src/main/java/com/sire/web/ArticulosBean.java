@@ -170,7 +170,6 @@ public class ArticulosBean {
             }.getType());
             logger.log(Level.INFO, "# articulos: {0}", articulos.size());
             lazyModel = new LazyInvArticuloDataModel(articulos);
-            logger.log(Level.INFO, "# articulos lazy: {0}", lazyModel.getRowCount());
         } catch (ClientErrorException cee) {
             articulos = null;
         } catch (UnsupportedEncodingException ex) {

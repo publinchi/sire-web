@@ -84,14 +84,23 @@ public class LazyInvArticuloDataModel extends LazyDataModel<InvArticulo> {
         //rowCount
         int dataSize = data.size();
         this.setRowCount(dataSize);
-        System.out.println("RowCount: " + this.getRowCount());
 
         //paginate
         if (dataSize > pageSize) {
             try {
                 return data.subList(first, first + pageSize);
             } catch (IndexOutOfBoundsException e) {
-                return data.subList(first, first + (dataSize % pageSize));
+                try {
+                    return data.subList(first, first + (dataSize % pageSize));
+                } catch (IndexOutOfBoundsException ex) {
+                    System.err.println("Error al obtener arreglo paginado.");
+                    System.err.println("first: " + first);
+                    System.err.println("dataSize: " + dataSize);
+                    System.err.println("pageSize: " + pageSize);
+                    System.err.println("dataSize % pageSize: " + dataSize % pageSize);
+                    System.err.println("data.size(): " + data.size());
+                    return null;
+                }
             }
         } else {
             return data;
