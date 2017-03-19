@@ -137,6 +137,27 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     }
 
     @GET
+    @Path("/findByCodigo/{codArticulo}/{codEmpresa}")
+    @Produces({"application/json"})
+    public List<InvArticulo> findByCodigo(@PathParam("codArticulo") Integer codArticulo, @PathParam("codEmpresa") String codEmpresa) {
+        TypedQuery<Object[]> query = em.createNamedQuery("InvArticulo.findByCodigo", Object[].class);
+        query.setParameter("codArticulo", codArticulo);
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("estado", "A");
+        List<Object[]> retorno = query.getResultList();
+
+        List<InvArticulo> list = new ArrayList<>();
+        for (Object[] objects : retorno) {
+            ((InvArticulo) objects[0]).setPrecio(((FacCatalogoPrecioD) objects[1]).getPrecioVenta1());
+            ((InvArticulo) objects[0]).setUnidad(((FacCatalogoPrecioD) objects[1]).getCodUnidad());
+            ((InvArticulo) objects[0]).setExistencia((BigDecimal) objects[2]);
+            list.add((InvArticulo) objects[0]);
+        }
+
+        return list;
+    }
+
+    @GET
     @Path("/findByArticuloEmpresa/{codArticulo}/{codEmpresa}")
     @Produces({"application/json"})
     public List<InvArticulo> findByArticuloEmpresa(@PathParam("codArticulo") String codArticulo, @PathParam("codEmpresa") String codEmpresa) {

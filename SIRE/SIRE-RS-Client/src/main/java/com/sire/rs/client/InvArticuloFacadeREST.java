@@ -105,6 +105,12 @@ public class InvArticuloFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T findByCodigo(Class<T> responseType, String codArticulo, String codEmpresa) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("findByCodigo/{0}/{1}", new Object[]{codArticulo, codEmpresa}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
     public <T> T findByArticuloEmpresa(Class<T> responseType, String codigoArticulo, String codEmpresa) throws ClientErrorException {
         WebTarget resource = webTarget;
         resource = resource.path(java.text.MessageFormat.format("findByArticuloEmpresa/{0}/{1}", new Object[]{codigoArticulo, codEmpresa}));
