@@ -43,6 +43,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.CxcDocCobrarFacadeREST.class);
         resources.add(com.sire.ws.service.CxcFormaPagoFacadeREST.class);
         resources.add(com.sire.ws.service.CxcInformeFacadeREST.class);
+        resources.add(com.sire.ws.service.CxcPagoContadoFacadeREST.class);
         resources.add(com.sire.ws.service.CxcSectorFacadeREST.class);
         resources.add(com.sire.ws.service.CxcZonaFacadeREST.class);
         resources.add(com.sire.ws.service.FacCatalogoPrecioCFacadeREST.class);

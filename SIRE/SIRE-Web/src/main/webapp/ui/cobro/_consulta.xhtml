@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:form id="consultarCobros">
+        <h2>Fecha Inicio</h2>
+        <p:calendar id="fechaInicio" value="${cobrosBean.fechaInicio}" 
+                    pattern="dd/MM/yyyy" mask="true" required="true"
+                    requiredMessage="Seleccione fecha inicio."  />
+        <h2>Fecha Fin</h2>
+        <p:calendar id="fechaFin" value="${cobrosBean.fechaFin}" 
+                    pattern="dd/MM/yyyy" mask="true" required="true"
+                    requiredMessage="Seleccione fecha fin."/>
+        <p:commandButton id="botonConsultar" label="Consultar Cobros"
+                         actionListener="${cobrosBean.consultarCobros}"
+                         value="Consultar Cobros" update="@form"/>
+        <h:outputLabel value="No hay cobros!!!" rendered="${cobrosBean.pagos.size() eq 0}"/>
+        <p:dataTable id="dataListCobros" var="cobro" 
+                     value="#{cobrosBean.pagos}" 
+                     selectionMode="single" reflow="false" rows="5" 
+                     paginator="true" 
+                     pageLinks="3"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                     paginatorPosition="bottom" 
+                     paginatorAlwaysVisible="false"
+                     rowKey="#{cobro.cxcPagoContado.cxcPagoContadoPK}" 
+                     tableStyleClass="ui-table-columntoggle"
+                     tableStyle="width:auto"
+                     rendered="#{cobrosBean.pagos.size() gt 0}"
+                     style="font-size:9.5px;">
+            <p:ajax event="rowSelect" listener="#{cobrosBean.tapCobro}" 
+                    update="@form" />
+            <p:column headerText="# Pago" priority="1">
+                <h:outputText value="#{cobro.cxcPagoContado.cxcPagoContadoPK.numPago}" />
+            </p:column>
+            <p:column headerText="Fec.Doc." priority="1">
+                <h:outputText value="#{cobro.cxcPagoContado.fechaDocumento}" />
+            </p:column>
+            <p:column headerText="Cod.Cli." priority="1">
+                <h:outputText value="#{cobro.cxcPagoContado.cxcCliente.cxcClientePK.codCliente}" />
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</html>
+<!--icon="ui-icon-search" -->
