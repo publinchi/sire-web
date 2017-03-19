@@ -3,6 +3,17 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:form id="formArticles">
+        <p:selectOneRadio id="modo" 
+                          value="#{customers.modo}" 
+                          columns="1" 
+                          immediate="true"
+                          layout="lineDirection"
+                          styleClass="selectRadio">
+            <f:selectItem itemLabel="Código" itemValue="c" />
+            <f:selectItem itemLabel="Nombre" itemValue="n" />
+            <p:ajax event="change" listener="#{articulosBean.cambioModo}"
+                    update="@form"/>
+        </p:selectOneRadio>
         <p:panel id="buscarArticulos" header="Buscar Artículos:" 
                  toggleable="true" collapsed="true">
             <h:panelGrid columns="2">

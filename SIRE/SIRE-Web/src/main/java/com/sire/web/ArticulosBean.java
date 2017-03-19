@@ -61,7 +61,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -101,7 +100,7 @@ public class ArticulosBean {
 
     private final GsonBuilder builder;
     private final Gson gson;
-    private String input;
+    private String input, modo = "c";
     private List<InvArticulo> articulos;
     private List<InvMovimientoDtll> invMovimientoDtlls;
     private FacTmpFactC facTmpFactC;
@@ -165,9 +164,15 @@ public class ArticulosBean {
         String articulosString;
         String codEmpresa = obtenerEmpresa();
         try {
-            articulosString = invArticuloFacadeREST.findParaVenta(String.class, URLEncoder.encode(input, "UTF-8"), codEmpresa);
-            articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
-            }.getType());
+            if (modo.equals("c") && !input.isEmpty()) {
+                articulosString = invArticuloFacadeREST.findParaVenta(String.class, URLEncoder.encode(input, "UTF-8"), codEmpresa);
+                articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
+                }.getType());
+            } else if (modo.equals("n") && !input.isEmpty()) {
+                articulosString = invArticuloFacadeREST.findParaVenta(String.class, URLEncoder.encode(input, "UTF-8"), codEmpresa);
+                articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
+                }.getType());
+            }
             logger.log(Level.INFO, "# articulos: {0}", articulos.size());
             lazyModel = new LazyInvArticuloDataModel(articulos);
         } catch (ClientErrorException cee) {
@@ -242,7 +247,8 @@ public class ArticulosBean {
             id.append(codArticle);
 
             FacCatalogoPrecioDFacadeREST facCatalogoPrecioDFacadeREST = new FacCatalogoPrecioDFacadeREST();
-            String response = facCatalogoPrecioDFacadeREST.find_JSON(String.class, id.toString());
+            String response = facCatalogoPrecioDFacadeREST.find_JSON(String.class,
+                    id.toString());
 
             facCatalogoPrecioD = gson.fromJson(response, new TypeToken<FacCatalogoPrecioD>() {
             }.getType());
@@ -285,6 +291,17 @@ public class ArticulosBean {
         if (invMovimientoDtll.getCantidad() != null) {
             calcularResumen();
         }
+    }
+
+    public void cambioModo() {
+        limpiarBusquedaArticulos();
+    }
+
+    public void limpiarBusquedaArticulos() {
+        if (articulos != null) {
+            articulos.clear();
+        }
+        input = null;
     }
 
     public void loadInventariosByBodega() {
@@ -473,7 +490,8 @@ public class ArticulosBean {
         id.append(";");
         id.append("codArticulo=");
         id.append(codArticle);
-        InvUnidadAlternativa invUnidadAlternativa = invUnidadAlternativaFacadeREST.find_JSON(InvUnidadAlternativa.class, id.toString());
+        InvUnidadAlternativa invUnidadAlternativa = invUnidadAlternativaFacadeREST.find_JSON(InvUnidadAlternativa.class,
+                id.toString());
         invMovimientoDtll.setInvUnidadAlternativa(invUnidadAlternativa);
         BigDecimal auxPrecio = BigDecimal.ZERO;
         BigDecimal factor = BigDecimal.ZERO;
@@ -534,7 +552,8 @@ public class ArticulosBean {
             }
 
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
-            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
+            BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class,
+                    "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
             prepararInvMovimientoCab(numDocumentoResp);
             prepararInvMovimientoDtlls(numDocumentoResp);
 
@@ -617,14 +636,17 @@ public class ArticulosBean {
         }
 
         return cliente.getCliente();
+
     }
 
     private BigDecimal buscarDescuento() throws ClienteException {
-        String articulosString = invArticuloFacadeREST.findByArticuloEmpresa(String.class, String.valueOf(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo()), obtenerEmpresa());
+        String articulosString = invArticuloFacadeREST.findByArticuloEmpresa(String.class,
+                String.valueOf(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo()), obtenerEmpresa());
         List<InvArticulo> listaArticulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
         }.getType());
 
-        String clientesString = vClienteFacadeREST.findByClienteEmpresa(String.class, String.valueOf(obtenerVCliente().getCodCliente()), obtenerEmpresa());
+        String clientesString = vClienteFacadeREST.findByClienteEmpresa(String.class,
+                String.valueOf(obtenerVCliente().getCodCliente()), obtenerEmpresa());
 
         List<VCliente> listaClientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
         }.getType());
@@ -669,7 +691,8 @@ public class ArticulosBean {
                 "codGrupo3=");
         id.append(facDescVolPK.getCodGrupo3());
 
-        FacDescVol facDescVol = facDescVolFacadeREST.find_JSON(FacDescVol.class, id.toString());
+        FacDescVol facDescVol = facDescVolFacadeREST.find_JSON(FacDescVol.class,
+                id.toString());
 
         if (facDescVol
                 != null) {
@@ -688,7 +711,8 @@ public class ArticulosBean {
         id.append("codIva=");
         id.append(invArticuloSeleccionado.getCodIva());
 
-        InvIva invIva = invIvaFacadeREST.find_JSON(InvIva.class, id.toString());
+        InvIva invIva = invIvaFacadeREST.find_JSON(InvIva.class,
+                id.toString());
 
         return invIva.getValor();
     }
@@ -893,10 +917,12 @@ public class ArticulosBean {
         }
 
         invMovimientoCab.setSubtotal(subtotal);
+
     }
 
     private FacParametros obtenerFacParametros() {
-        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
+        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class
+        );
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
@@ -974,7 +1000,8 @@ public class ArticulosBean {
         id.append("codArticulo=");
         id.append(codArticle);
 
-        InvUnidadAlternativa invUnidadAlternativa = invUnidadAlternativaFacadeREST.find_JSON(InvUnidadAlternativa.class, id.toString());
+        InvUnidadAlternativa invUnidadAlternativa = invUnidadAlternativaFacadeREST.find_JSON(InvUnidadAlternativa.class,
+                id.toString());
         invMovimientoDtll.setInvUnidadAlternativa(invUnidadAlternativa);
 
         return invUnidadAlternativa;
