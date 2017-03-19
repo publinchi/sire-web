@@ -76,7 +76,7 @@ public class CobrosBean {
         logger.info("consultarCobros");
         invArticulos = null;
         try {
-            if (cliente == null) {
+            if (cliente.getCliente() == null) {
                 throw new ClienteException("Por favor, seleccione el cliente.");
             } else {
                 pagos = gson.fromJson(cxcPagoContadoFacadeREST.findByFechas_JSON(String.class, fechaInicio,
