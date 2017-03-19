@@ -12,7 +12,6 @@ import com.sire.entities.FacParametros;
 import com.sire.entities.FacTmpFactD;
 import com.sire.entities.InvArticulo;
 import com.sire.entities.Pago;
-import com.sire.entities.Pedido;
 import com.sire.exception.ClienteException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.CxcPagoContadoFacadeREST;
@@ -80,7 +79,7 @@ public class PagosBean {
                 throw new ClienteException("Por favor, seleccione el cliente.");
             } else {
                 pagos = gson.fromJson(cxcPagoContadoFacadeREST.findByFechas_JSON(String.class, fechaInicio,
-                        fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pedido>>() {
+                        fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pago>>() {
                 }.getType()
                 );
                 logger.log(Level.INFO, "pagos: {0}", pagos.size());
