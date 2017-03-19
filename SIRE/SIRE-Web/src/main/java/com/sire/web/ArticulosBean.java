@@ -165,7 +165,7 @@ public class ArticulosBean {
         String codEmpresa = obtenerEmpresa();
         try {
             if (modo.equals("c") && !input.isEmpty()) {
-                articulosString = invArticuloFacadeREST.findParaVenta(String.class, URLEncoder.encode(input, "UTF-8"), codEmpresa);
+                articulosString = invArticuloFacadeREST.find_JSON(String.class, "id;codEmpresa=" + codEmpresa + ";codArticulo=" + input);
                 articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
                 }.getType());
             } else if (modo.equals("n") && !input.isEmpty()) {
