@@ -13,6 +13,7 @@ import com.sire.entities.FacTmpFactD;
 import com.sire.entities.InvArticulo;
 import com.sire.entities.Pago;
 import com.sire.entities.Pedido;
+import com.sire.exception.ClienteException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.CxcPagoContadoFacadeREST;
 import com.sire.rs.client.FacParametrosFacadeREST;
@@ -20,9 +21,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
 import org.primefaces.event.SelectEvent;
@@ -46,6 +49,10 @@ public class CobrosBean {
     @Getter
     @Setter
     private UserManager userManager;
+    @ManagedProperty("#{cliente}")
+    @Getter
+    @Setter
+    private CustomerBean cliente;
     @Getter
     @Setter
     private List<Pago> pagos;
@@ -68,15 +75,20 @@ public class CobrosBean {
     public void consultarCobros() {
         invArticulos = null;
         try {
-            logger.info("consultarCobros");
-            pagos = gson.fromJson(cxcPagoContadoFacadeREST.findByFechas_JSON(String.class, fechaInicio,
-                    fechaFin, obtenerEmpresa(), obtenerVendedor()), new TypeToken<java.util.List<Pedido>>() {
-                    }.getType()
-            );
-            logger.log(Level.INFO, "cobros: {0}", pagos.size());
-        } catch (VendedorException ex) {
-            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
+            if (cliente == null) {
+                throw new ClienteException("Por favor, seleccione el cliente.");
+            }
+        } catch (ClienteException ex) {
+            logger.log(Level.WARNING, null, ex);
+            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
         }
+        logger.info("consultarCobros");
+        pagos = gson.fromJson(cxcPagoContadoFacadeREST.findByFechas_JSON(String.class, fechaInicio,
+                fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pedido>>() {
+        }.getType()
+        );
+        logger.log(Level.INFO, "cobros: {0}", pagos.size());
+
     }
 
     public void tapCobro(SelectEvent event) {
@@ -139,5 +151,10 @@ public class CobrosBean {
             }
         }
         return null;
+    }
+
+    private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
+        FacesMessage message = new FacesMessage(severity, summary, detail);
+        FacesContext.getCurrentInstance().addMessage(null, message);
     }
 }
