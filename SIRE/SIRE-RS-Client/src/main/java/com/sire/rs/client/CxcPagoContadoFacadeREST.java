@@ -5,6 +5,7 @@
  */
 package com.sire.rs.client;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
@@ -88,7 +89,9 @@ public class CxcPagoContadoFacadeREST {
 
     public <T> T findByFechas_JSON(Class<T> responseType, Date fechaInicio, Date fechaFin, String codEmpresa, Integer codVendedor) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findByFechas/{0}/{1}/{2}/{3}", new Object[]{fechaInicio, fechaFin, codEmpresa, codVendedor}));
+        resource = resource.path(java.text.MessageFormat.format("findByFechas/{0}/{1}/{2}/{3}",
+                new Object[]{new SimpleDateFormat("dd-MM-yyyy").format(fechaInicio),
+                    new SimpleDateFormat("dd-MM-yyyy").format(fechaFin), codEmpresa, codVendedor}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
