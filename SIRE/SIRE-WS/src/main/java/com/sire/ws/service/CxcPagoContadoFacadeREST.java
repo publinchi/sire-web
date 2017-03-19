@@ -145,6 +145,7 @@ public class CxcPagoContadoFacadeREST extends AbstractFacade<CxcPagoContado> {
                 newCxcPagoContado.setFechaDocumento(cxcPagoContado.getFechaDocumento());
                 newCxcPagoContado.setNombreUsuario(cxcPagoContado.getNombreUsuario());
                 newCxcPagoContado.setCxcCliente(cxcPagoContado.getCxcCliente());
+                newCxcPagoContado.setPagoTotal(cxcPagoContado.getPagoTotal());
                 pago.setCxcPagoContado(newCxcPagoContado);
                 pagos.add(pago);
             }
