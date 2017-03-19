@@ -218,6 +218,7 @@ public class ArticulosBean {
         invMovimientoDtll.setInvArticulo(invArticuloSeleccionado);
         invMovimientoDtll.setCodUnidad(invArticuloSeleccionado.getCodUnidad().getCodUnidad());
 
+        logger.log(Level.INFO, "invArticuloSeleccionado.getExistencia(): {0}", invArticuloSeleccionado.getExistencia());
         if (invArticuloSeleccionado.getExistencia().doubleValue() > 0) {
             invMovimientoDtlls.add(invMovimientoDtll);
             input = null;
