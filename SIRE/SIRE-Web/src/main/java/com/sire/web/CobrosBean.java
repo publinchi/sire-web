@@ -73,21 +73,22 @@ public class CobrosBean {
     }
 
     public void consultarCobros() {
+        logger.info("consultarCobros");
         invArticulos = null;
         try {
             if (cliente == null) {
                 throw new ClienteException("Por favor, seleccione el cliente.");
+            } else {
+                pagos = gson.fromJson(cxcPagoContadoFacadeREST.findByFechas_JSON(String.class, fechaInicio,
+                        fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pedido>>() {
+                }.getType()
+                );
+                logger.log(Level.INFO, "cobros: {0}", pagos.size());
             }
         } catch (ClienteException ex) {
             logger.log(Level.WARNING, null, ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
         }
-        logger.info("consultarCobros");
-        pagos = gson.fromJson(cxcPagoContadoFacadeREST.findByFechas_JSON(String.class, fechaInicio,
-                fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pedido>>() {
-        }.getType()
-        );
-        logger.log(Level.INFO, "cobros: {0}", pagos.size());
 
     }
 
