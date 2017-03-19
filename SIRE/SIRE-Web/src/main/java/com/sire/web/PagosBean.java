@@ -34,11 +34,11 @@ import org.primefaces.event.SelectEvent;
  *
  * @author root
  */
-@ManagedBean(name = "cobrosBean")
+@ManagedBean(name = "pagosBean")
 @SessionScoped
-public class CobrosBean {
+public class PagosBean {
 
-    private static final Logger logger = Logger.getLogger(CobrosBean.class.getName());
+    private static final Logger logger = Logger.getLogger(PagosBean.class.getName());
     @Getter
     @Setter
     private Date fechaInicio, fechaFin;
@@ -65,15 +65,15 @@ public class CobrosBean {
     private Pago pagoSeleccionado;
     private final CxcPagoContadoFacadeREST cxcPagoContadoFacadeREST;
 
-    public CobrosBean() {
+    public PagosBean() {
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         cxcPagoContadoFacadeREST = new CxcPagoContadoFacadeREST();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
     }
 
-    public void consultarCobros() {
-        logger.info("consultarCobros");
+    public void consultarPagos() {
+        logger.info("consultarPagos");
         invArticulos = null;
         try {
             if (cliente.getCliente() == null) {
@@ -83,7 +83,7 @@ public class CobrosBean {
                         fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pedido>>() {
                 }.getType()
                 );
-                logger.log(Level.INFO, "cobros: {0}", pagos.size());
+                logger.log(Level.INFO, "pagos: {0}", pagos.size());
             }
         } catch (ClienteException ex) {
             logger.log(Level.WARNING, null, ex);
@@ -92,8 +92,8 @@ public class CobrosBean {
 
     }
 
-    public void tapCobro(SelectEvent event) {
-//        logger.log(Level.INFO, "\u00b7\u00b7 tapCobro \u00b7\u00b7 {0}", event.getObject());
+    public void tapPago(SelectEvent event) {
+//        logger.log(Level.INFO, "\u00b7\u00b7 tapPago \u00b7\u00b7 {0}", event.getObject());
 //        invArticulos = new ArrayList<>();
 //        pagoSeleccionado = ((Pago) event.getObject());
 //        logger.log(Level.INFO, "# NumPago pago seleccionado: {0}",

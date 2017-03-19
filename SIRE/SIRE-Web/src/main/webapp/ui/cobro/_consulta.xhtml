@@ -5,42 +5,42 @@
       xmlns:pm="http://primefaces.org/mobile"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html">
-    <h:form id="consultarCobros">
+    <h:form id="consultarPagos">
         <h2>Fecha Inicio</h2>
-        <p:calendar id="fechaInicio" value="${cobrosBean.fechaInicio}" 
+        <p:calendar id="fechaInicio" value="${pagosBean.fechaInicio}" 
                     pattern="dd/MM/yyyy" mask="true" required="true"
                     requiredMessage="Seleccione fecha inicio."  />
         <h2>Fecha Fin</h2>
-        <p:calendar id="fechaFin" value="${cobrosBean.fechaFin}" 
+        <p:calendar id="fechaFin" value="${pagosBean.fechaFin}" 
                     pattern="dd/MM/yyyy" mask="true" required="true"
                     requiredMessage="Seleccione fecha fin."/>
-        <p:commandButton id="botonConsultar" label="Consultar Cobros"
-                         actionListener="${cobrosBean.consultarCobros}"
-                         value="Consultar Cobros" update="@form"/>
-        <h:outputLabel value="No hay cobros!!!" rendered="${cobrosBean.pagos.size() eq 0}"/>
-        <p:dataTable id="dataListCobros" var="cobro" 
-                     value="#{cobrosBean.pagos}" 
+        <p:commandButton id="botonConsultar" label="Consultar Pagos"
+                         actionListener="${pagosBean.consultarPagos}"
+                         value="Consultar Pagos" update="@form"/>
+        <h:outputLabel value="No hay pagos!!!" rendered="${pagosBean.pagos.size() eq 0}"/>
+        <p:dataTable id="dataListPagos" var="pago" 
+                     value="#{pagosBean.pagos}" 
                      selectionMode="single" reflow="false" rows="5" 
                      paginator="true" 
                      pageLinks="3"
                      paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
                      paginatorPosition="bottom" 
                      paginatorAlwaysVisible="false"
-                     rowKey="#{cobro.cxcPagoContado.cxcPagoContadoPK}" 
+                     rowKey="#{pago.cxcPagoContado.cxcPagoContadoPK}" 
                      tableStyleClass="ui-table-columntoggle"
                      tableStyle="width:auto"
-                     rendered="#{cobrosBean.pagos.size() gt 0}"
+                     rendered="#{pagosBean.pagos.size() gt 0}"
                      style="font-size:9.5px;">
-            <p:ajax event="rowSelect" listener="#{cobrosBean.tapCobro}" 
+            <p:ajax event="rowSelect" listener="#{pagosBean.tapPago}" 
                     update="@form" />
             <p:column headerText="# Pago" priority="1">
-                <h:outputText value="#{cobro.cxcPagoContado.cxcPagoContadoPK.numPago}" />
+                <h:outputText value="#{pago.cxcPagoContado.cxcPagoContadoPK.numPago}" />
             </p:column>
             <p:column headerText="Fec.Doc." priority="1">
-                <h:outputText value="#{cobro.cxcPagoContado.fechaDocumento}" />
+                <h:outputText value="#{pago.cxcPagoContado.fechaDocumento}" />
             </p:column>
             <p:column headerText="Cod.Cli." priority="1">
-                <h:outputText value="#{cobro.cxcPagoContado.cxcCliente.cxcClientePK.codCliente}" />
+                <h:outputText value="#{pago.cxcPagoContado.cxcCliente.cxcClientePK.codCliente}" />
             </p:column>
         </p:dataTable>
     </h:form>
