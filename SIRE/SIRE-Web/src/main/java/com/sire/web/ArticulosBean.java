@@ -745,6 +745,10 @@ public class ArticulosBean {
                 logger.info(descuento.toString());
             }
 
+            if (invMovimientoDtll1.getCantidad() == null) {
+                invMovimientoDtll1.setCantidad(new BigDecimal(0));
+            }
+
             Double _subTotal = Round.round(invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue()) - descuento, 2);
             logger.log(Level.INFO, "_subTotal: {0}", _subTotal);
 
