@@ -753,7 +753,11 @@ public class ArticulosBean {
                 invMovimientoDtll1.setDescuento(new BigDecimal(0));
             }
 
-            Double _subTotal = Round.round(invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue()) - descuento, 2);
+            if (invMovimientoDtll1.getCostoUnitario() == null) {
+                invMovimientoDtll1.setCostoUnitario(0.0);
+            }
+
+            Double _subTotal = Round.round((invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue())) - descuento, 2);
             logger.log(Level.INFO, "_subTotal: {0}", _subTotal);
 
             Double _iva = invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue()) * (invMovimientoDtll1.getPorcentajeIva().doubleValue() / 100);
