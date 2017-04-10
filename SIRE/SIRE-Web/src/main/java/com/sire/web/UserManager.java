@@ -8,18 +8,22 @@ package com.sire.web;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.sire.entities.FacParametros;
 import com.sire.entities.GnrEmpresa;
 import com.sire.entities.GnrUsuaMod;
 import com.sire.entities.GnrUsuarios;
+import com.sire.entities.VVendedor;
+import com.sire.exception.VendedorException;
+import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.GnrUsuaModFacadeREST;
 import com.sire.rs.client.GnrUsuarioFacadeREST;
+import com.sire.rs.client.VVendedorFacadeREST;
 import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Getter;
@@ -58,12 +62,10 @@ public class UserManager {
     private final static String NOMINA = "10";
     @Getter
     private boolean pedidoVisible = false, cobroVisible = false, cajasVisible = false, nominaVisible = false;
-    @ManagedProperty(value = "#{vendedor}")
-    @Getter
-    @Setter
-    private SellerBean vendedor;
+    private final VVendedorFacadeREST vVendedorFacadeREST;
 
     public UserManager() {
+        vVendedorFacadeREST = new VVendedorFacadeREST();
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         gnrEmpresa = new GnrEmpresa();
@@ -88,7 +90,7 @@ public class UserManager {
                     && gnrUsuario.getClave().toUpperCase().equals(password.toUpperCase())) {
                 current = gnrUsuario;
                 FacesContext context = FacesContext.getCurrentInstance();
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Exitoso", "Bienvenido " + vendedor.getNombresVendedor() + "."));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Exitoso", "Bienvenido " + getNombresVendedor() + "."));
                 context.getExternalContext().getFlash().setKeepMessages(true);
                 try {
                     loadAuthorizedModules();
@@ -155,5 +157,59 @@ public class UserManager {
                     break;
             }
         }
+    }
+
+    public String getNombresVendedor() {
+        String nombresVendedor;
+        try {
+            VVendedor vVendedor = vVendedorFacadeREST.find_JSON(VVendedor.class, obtenerVendedor().toString());
+            nombresVendedor = vVendedor.getNombresVendedor();
+        } catch (VendedorException ex) {
+            Logger.getLogger(SellerBean.class.getName()).log(Level.SEVERE, null, ex);
+            nombresVendedor = current.getNombreUsuario();
+        }
+        return nombresVendedor;
+    }
+
+    private Integer obtenerVendedor() throws VendedorException {
+        FacParametros facParametros = obtenerFacParametros();
+
+        if (facParametros == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        Integer defCodVendedor = facParametros.getDefCodVendedor();
+
+        if (defCodVendedor == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        return defCodVendedor;
+    }
+
+    private FacParametros obtenerFacParametros() {
+        FacParametrosFacadeREST facParametrosFacadeREST = new FacParametrosFacadeREST();
+        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
+        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
+        }.getType());
+
+        logger.log(Level.INFO, "Current user: {0}", current.getNombreUsuario().toLowerCase());
+
+        for (FacParametros facParametros : listaFacParametros) {
+            if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
+                    equals(current.getNombreUsuario().toLowerCase())
+                    && facParametros.getFacParametrosPK().getCodEmpresa().
+                            equals(obtenerEmpresa())) {
+                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                return facParametros;
+            }
+        }
+        return null;
+    }
+
+    private String obtenerEmpresa() {
+        return getGnrEmpresa().getCodEmpresa();
     }
 }
