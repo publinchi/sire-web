@@ -48,7 +48,7 @@ public class SellerBean {
         try {
             VVendedor vVendedor = vVendedorFacadeREST.find_JSON(VVendedor.class, obtenerVendedor().toString());
             nombresVendedor = vVendedor.getNombresVendedor();
-            if (nombresVendedor == null) {
+            if (nombresVendedor == null || nombresVendedor.isEmpty()) {
                 nombresVendedor = userManager.getCurrent().getNombreUsuario();
             }
         } catch (VendedorException ex) {
