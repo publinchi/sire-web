@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Getter;
@@ -57,6 +58,10 @@ public class UserManager {
     private final static String NOMINA = "10";
     @Getter
     private boolean pedidoVisible = false, cobroVisible = false, cajasVisible = false, nominaVisible = false;
+    @ManagedProperty(value = "#{vendedor}")
+    @Getter
+    @Setter
+    private SellerBean vendedor;
 
     public UserManager() {
         GsonBuilder builder = new GsonBuilder();
@@ -83,7 +88,7 @@ public class UserManager {
                     && gnrUsuario.getClave().toUpperCase().equals(password.toUpperCase())) {
                 current = gnrUsuario;
                 FacesContext context = FacesContext.getCurrentInstance();
-                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Exitoso", "Bienvenido " + current.getNombreUsuario() + "."));
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Login Exitoso", "Bienvenido " + vendedor.getNombresVendedor() + "."));
                 context.getExternalContext().getFlash().setKeepMessages(true);
                 try {
                     loadAuthorizedModules();
