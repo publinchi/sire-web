@@ -5,34 +5,97 @@
  */
 package com.sire.web;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+import com.sire.entities.FacParametros;
+import com.sire.entities.VVendedor;
+import com.sire.exception.VendedorException;
+import com.sire.rs.client.FacParametrosFacadeREST;
+import com.sire.rs.client.VVendedorFacadeREST;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  *
  * @author pestupinan
  */
-@ManagedBean
+@ManagedBean(name = "vendedor")
 public class SellerBean {
 
-    private String nombre;
-    private String apellido;
+    private static final Logger logger = Logger.getLogger(PedidosBean.class.getName());
+    private String nombresVendedor;
+    @ManagedProperty(value = "#{user}")
+    @Getter
+    @Setter
+    private UserManager userManager;
+    private final GsonBuilder builder;
+    private final Gson gson;
+    private final VVendedorFacadeREST vVendedorFacadeREST;
 
-    public String getNombre() {
-        nombre = "Publio";
-        return nombre;
+    public SellerBean() {
+        vVendedorFacadeREST = new VVendedorFacadeREST();
+        builder = new GsonBuilder();
+        gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public String getNombresVendedor() {
+        try {
+            VVendedor vVendedor = vVendedorFacadeREST.find_JSON(VVendedor.class, obtenerVendedor().toString());
+            nombresVendedor = vVendedor.getNombresVendedor();
+            if (nombresVendedor == null) {
+                nombresVendedor = userManager.getCurrent().getNombreUsuario();
+            }
+        } catch (VendedorException ex) {
+            Logger.getLogger(SellerBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return nombresVendedor;
     }
 
-    public String getApellido() {
-        apellido = "Estupiñán";
-        return apellido;
+    private Integer obtenerVendedor() throws VendedorException {
+        FacParametros facParametros = obtenerFacParametros();
+
+        if (facParametros == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        Integer defCodVendedor = facParametros.getDefCodVendedor();
+
+        if (defCodVendedor == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        return defCodVendedor;
     }
 
-    public void setApellido(String apellido) {
-        this.apellido = apellido;
+    private FacParametros obtenerFacParametros() {
+        FacParametrosFacadeREST facParametrosFacadeREST = new FacParametrosFacadeREST();
+        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
+        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
+        }.getType());
+
+        logger.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
+
+        for (FacParametros facParametros : listaFacParametros) {
+            if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
+                    equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
+                    && facParametros.getFacParametrosPK().getCodEmpresa().
+                            equals(obtenerEmpresa())) {
+                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                return facParametros;
+            }
+        }
+        return null;
     }
 
+    private String obtenerEmpresa() {
+        return userManager.getGnrEmpresa().getCodEmpresa();
+    }
 }

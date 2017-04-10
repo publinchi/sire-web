@@ -46,7 +46,7 @@ public class UserManager {
     @Getter
     @Setter
     private int activeindex;
-    private static Logger logger;
+    private static final Logger logger = Logger.getLogger(UserManager.class.getName());
     @Getter
     @Setter
     private List<GnrUsuaMod> gnrUsuaMods;
@@ -59,7 +59,6 @@ public class UserManager {
     private boolean pedidoVisible = false, cobroVisible = false, cajasVisible = false, nominaVisible = false;
 
     public UserManager() {
-        logger = Logger.getLogger(UserManager.class.getName());
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
         gnrEmpresa = new GnrEmpresa();
@@ -127,21 +126,28 @@ public class UserManager {
     }
 
     private void checkPermission() {
-        logger.info("gnrUsuaMods size: " + gnrUsuaMods.size());
+        logger.log(Level.INFO, "gnrUsuaMods size: {0}", gnrUsuaMods.size());
 
         for (GnrUsuaMod gnrUsuaMod : gnrUsuaMods) {
-            if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(PEDIDOS_Y_DESPACHOS)) {
-                pedidoVisible = true;
-                logger.info("pedidoVisible: " + pedidoVisible);
-            } else if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(CUENTAS_POR_COBRAR)) {
-                cobroVisible = true;
-                logger.info("cobroVisible: " + cobroVisible);
-            } else if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(CAJAS)) {
-                cajasVisible = true;
-                logger.info("cajasVisible: " + cajasVisible);
-            } else if (gnrUsuaMod.getGnrUsuaModPK().getCodModulo().equals(NOMINA)) {
-                nominaVisible = true;
-                logger.info("nominaVisible: " + nominaVisible);
+            switch (gnrUsuaMod.getGnrUsuaModPK().getCodModulo()) {
+                case PEDIDOS_Y_DESPACHOS:
+                    pedidoVisible = true;
+                    logger.log(Level.INFO, "pedidoVisible: {0}", pedidoVisible);
+                    break;
+                case CUENTAS_POR_COBRAR:
+                    cobroVisible = true;
+                    logger.log(Level.INFO, "cobroVisible: {0}", cobroVisible);
+                    break;
+                case CAJAS:
+                    cajasVisible = true;
+                    logger.log(Level.INFO, "cajasVisible: {0}", cajasVisible);
+                    break;
+                case NOMINA:
+                    nominaVisible = true;
+                    logger.log(Level.INFO, "nominaVisible: {0}", nominaVisible);
+                    break;
+                default:
+                    break;
             }
         }
     }

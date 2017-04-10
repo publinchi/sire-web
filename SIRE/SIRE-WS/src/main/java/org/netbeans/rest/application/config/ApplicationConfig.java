@@ -80,6 +80,7 @@ public class ApplicationConfig extends Application {
         resources.add(com.sire.ws.service.PrySupervisorUsuarioFacadeREST.class);
         resources.add(com.sire.ws.service.UploadFileService.class);
         resources.add(com.sire.ws.service.VClienteFacadeREST.class);
+        resources.add(com.sire.ws.service.VVendedorFacadeREST.class);
         resources.add(org.netbeans.rest.application.config.DebugExceptionMapper.class);
     }
 
