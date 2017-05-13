@@ -24,6 +24,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.PathSegment;
+import org.eclipse.persistence.config.CacheUsage;
+import org.eclipse.persistence.config.QueryHints;
 
 /**
  *
@@ -140,8 +142,8 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     @Path("/findByCodigo/{codArticulo}/{codEmpresa}")
     @Produces({"application/json"})
     public List<InvArticulo> findByCodigo(@PathParam("codArticulo") Integer codArticulo, @PathParam("codEmpresa") String codEmpresa) {
-        em.getEntityManagerFactory().getCache().evictAll();
-        TypedQuery<Object[]> query = em.createNamedQuery("InvArticulo.findByCodigo", Object[].class);
+        TypedQuery<Object[]> query = em.createNamedQuery("InvArticulo.findByCodigo", Object[].class)
+                .setHint(QueryHints.CACHE_USAGE, CacheUsage.DoNotCheckCache);
         query.setParameter("codArticulo", codArticulo);
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("estado", "A");
