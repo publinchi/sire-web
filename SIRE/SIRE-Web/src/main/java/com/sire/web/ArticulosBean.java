@@ -219,6 +219,7 @@ public class ArticulosBean {
         invMovimientoDtll.setCodUnidad(invArticuloSeleccionado.getCodUnidad().getCodUnidad());
 
         logger.log(Level.INFO, "invArticuloSeleccionado.getExistencia(): {0}", invArticuloSeleccionado.getExistencia());
+        logger.log(Level.INFO, "obtenerFacParametros().getExistNeg(): {0}", obtenerFacParametros().getExistNeg());
         if (invArticuloSeleccionado.getExistencia().doubleValue() > 0 || "S".equals(obtenerFacParametros().getExistNeg())) {
             invMovimientoDtlls.add(invMovimientoDtll);
             input = null;
