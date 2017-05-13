@@ -142,8 +142,7 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     @Path("/findByCodigo/{codArticulo}/{codEmpresa}")
     @Produces({"application/json"})
     public List<InvArticulo> findByCodigo(@PathParam("codArticulo") Integer codArticulo, @PathParam("codEmpresa") String codEmpresa) {
-        TypedQuery<Object[]> query = em.createNamedQuery("InvArticulo.findByCodigo", Object[].class)
-                .setHint(QueryHints.CACHE_USAGE, CacheUsage.DoNotCheckCache);
+        TypedQuery<Object[]> query = em.createNamedQuery("InvArticulo.findByCodigo", Object[].class);
         query.setParameter("codArticulo", codArticulo);
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("estado", "A");
