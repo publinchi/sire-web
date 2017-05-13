@@ -62,7 +62,7 @@ public class CustomersBean {
     @Getter
     @Setter
     private String input, modo = "c";
-    private static final Logger logger = Logger.getLogger(CustomersBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CustomersBean.class.getName());
 
     public CustomersBean() {
 
@@ -77,21 +77,21 @@ public class CustomersBean {
     }
 
     private void loadClientes() {
-        logger.info("loadClientes");
+        LOGGER.info("loadClientes");
         List<VCliente> list = gson.fromJson(vClienteFacadeREST.findAll_JSON(String.class), new TypeToken<java.util.List<VCliente>>() {
         }.getType());
         cleanClientes();
         setClientes(list);
-        logger.log(Level.INFO, "# clientes: {0}", clientes.size());
+        LOGGER.log(Level.INFO, "# clientes: {0}", clientes.size());
     }
 
     public void findClientes() {
-        logger.info("findClientes");
+        LOGGER.info("findClientes");
         try {
             vendedorBuscarClientes();
         } catch (VendedorException | FacParametrosException ex) {
             entregadorBuscarClientes();
-            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
         }
     }
@@ -103,9 +103,9 @@ public class CustomersBean {
     }
 
     public void tapCliente(SelectEvent event) {
-        logger.info("tapCliente");
+        LOGGER.info("tapCliente");
         VCliente vCliente = ((VCliente) event.getObject());
-        logger.log(Level.INFO, "Cliente seleccionado: {0} {1} / codVendedor: {2}", new Object[]{vCliente.getApellidos(), vCliente.getNombres(), vCliente.getCodVendedor()});
+        LOGGER.log(Level.INFO, "Cliente seleccionado: {0} {1} / codVendedor: {2}", new Object[]{vCliente.getApellidos(), vCliente.getNombres(), vCliente.getCodVendedor()});
         cliente.setCliente(vCliente);
 
         limpiar();
@@ -141,7 +141,7 @@ public class CustomersBean {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
 
@@ -150,15 +150,15 @@ public class CustomersBean {
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
-        logger.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
+        LOGGER.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
 
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
         }
@@ -195,7 +195,7 @@ public class CustomersBean {
         } catch (ClientErrorException cee) {
             clientes = null;
         } catch (UnsupportedEncodingException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
     }
 
@@ -224,7 +224,7 @@ public class CustomersBean {
         } catch (ClientErrorException cee) {
             clientes = null;
         } catch (UnsupportedEncodingException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
     }
 }

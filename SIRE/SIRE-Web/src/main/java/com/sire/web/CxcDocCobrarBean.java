@@ -30,7 +30,6 @@ import com.sire.exception.MailException;
 import com.sire.exception.RestException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.BanCtaCteFacadeREST;
-import com.sire.rs.client.CxcChequeFacadeREST;
 import com.sire.rs.client.CxcDocCobrarFacadeREST;
 import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.GnrContadorDocFacadeREST;
@@ -72,10 +71,9 @@ import org.primefaces.mobile.event.SwipeEvent;
 
 public class CxcDocCobrarBean {
 
-    private static final Logger logger = Logger.getLogger(CxcDocCobrarBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CxcDocCobrarBean.class.getName());
 
     private final FacParametrosFacadeREST facParametrosFacadeREST;
-    private final CxcChequeFacadeREST cxcChequeFacadeREST;
     private final Gson gson;
 
     @Setter
@@ -139,7 +137,6 @@ public class CxcDocCobrarBean {
     private Session mailSession;
 
     public CxcDocCobrarBean() {
-        cxcChequeFacadeREST = new CxcChequeFacadeREST();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
@@ -166,15 +163,15 @@ public class CxcDocCobrarBean {
 
     public void seleccionarCxcDocCobrar(SelectEvent event) {
         CxcDocCobrar cxcDocCobrar = (CxcDocCobrar) event.getObject();
-        logger.log(Level.INFO, "CxcDocCobrar 1 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
+        LOGGER.log(Level.INFO, "CxcDocCobrar 1 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
         cxcDocCobrarSeleccionado = cxcDocCobrarList.get(cxcDocCobrarList.indexOf(cxcDocCobrar));
-        logger.log(Level.INFO, "CxcDocCobrar 2 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
+        LOGGER.log(Level.INFO, "CxcDocCobrar 2 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
     }
 
     public void calcularSaldo() {
         Double nuevoSaldo;
 
-        logger.log(Level.INFO, "capital: {0}", cxcDocCobrarSeleccionado.getCapital());
+        LOGGER.log(Level.INFO, "capital: {0}", cxcDocCobrarSeleccionado.getCapital());
 
         if (cxcDocCobrarSeleccionado.getSaldoOri() == null) {
             cxcDocCobrarSeleccionado.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoDocumento());
@@ -182,15 +179,15 @@ public class CxcDocCobrarBean {
             cxcDocCobrarSeleccionado.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoOri());
         }
 
-        logger.log(Level.INFO, "antiguoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
+        LOGGER.log(Level.INFO, "antiguoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
         if (cxcDocCobrarSeleccionado.getCapital() != null && cxcDocCobrarSeleccionado.getSaldoDocumento() >= cxcDocCobrarSeleccionado.getCapital()) {
-            logger.info("## nuevoSaldo ##");
+            LOGGER.info("## nuevoSaldo ##");
             nuevoSaldo = cxcDocCobrarSeleccionado.getSaldoDocumento() - cxcDocCobrarSeleccionado.getCapital();
             cxcDocCobrarSeleccionado.setSaldoDocumento(nuevoSaldo);
         }
 
-        logger.log(Level.INFO, "nuevoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
+        LOGGER.log(Level.INFO, "nuevoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
         diferencia = cxcDocCobrarSeleccionado.getCapital();
         calcularTotales();
@@ -198,7 +195,7 @@ public class CxcDocCobrarBean {
     }
 
     public void calcularFormaPago(String formaPago) {
-        logger.info("calcularFormaPago()");
+        LOGGER.info("calcularFormaPago()");
         Double sumFormaPagos = getRetencion() + getRetencionIVA() + getEfectivo() + getDeposito() + getOtros() + getTotalCheques();
         if (sumFormaPagos > cxcDocCobrarSeleccionado.getCapital()) {
             switch (formaPago) {
@@ -226,7 +223,7 @@ public class CxcDocCobrarBean {
         }
         diferencia = cxcDocCobrarSeleccionado.getCapital() - sumFormaPagos;
         diferencia = Round.round(diferencia, 2);
-        logger.log(Level.INFO, "diferencia: {0}", diferencia);
+        LOGGER.log(Level.INFO, "diferencia: {0}", diferencia);
         if (diferencia == 0 && validarCheque()) {
             botonAgegarChequeBloqueado = true;
             botonEnviarBloqueado = false;
@@ -240,7 +237,7 @@ public class CxcDocCobrarBean {
     }
 
     public String enviar() {
-        logger.info("enviar()");
+        LOGGER.info("enviar()");
         BigDecimal numDocumentoResp = null;
         try {
             if (mapa.getDireccion() == null) {
@@ -273,19 +270,19 @@ public class CxcDocCobrarBean {
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
                 if (cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento().equals(cxcDocCobrarSeleccionado.getCxcDocCobrarPK().getNumDocumento())) {
-                    logger.log(Level.INFO, "cxcDocCobrar: {0}", cxcDocCobrar);
+                    LOGGER.log(Level.INFO, "cxcDocCobrar: {0}", cxcDocCobrar);
 
                     if (cxcDocCobrar.getSaldoOri() == null) {
                         cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
                     }
 
-                    logger.log(Level.INFO, "cxcDocCobrarSeleccionado.getSaldoDocumento(): {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
+                    LOGGER.log(Level.INFO, "cxcDocCobrarSeleccionado.getSaldoDocumento(): {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
 
                     cxcDocCobrar.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoDocumento());
                     cxcDocCobrar.setCapital(cxcDocCobrarSeleccionado.getCapital());
 
-                    logger.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
-                    logger.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
+                    LOGGER.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
+                    LOGGER.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
                     if (cxcDocCobrar.getSaldoOri() != null && !Objects.equals(cxcDocCobrar.getSaldoOri(), cxcDocCobrar.getSaldoDocumento())) {
                         CxcAbonoD cxcAbonoD = new CxcAbonoD();
                         CxcAbonoDPK cxcAbonoDPK = new CxcAbonoDPK();
@@ -308,7 +305,7 @@ public class CxcDocCobrarBean {
                 }
             }
 
-            logger.log(Level.INFO, "cxcAbonoDList.size: {0}", cxcAbonoDList.size());
+            LOGGER.log(Level.INFO, "cxcAbonoDList.size: {0}", cxcAbonoDList.size());
             cxcAbonoC.setCxcAbonoDList(cxcAbonoDList);
 
             CxcPagoContado cxcPagoContado = new CxcPagoContado();
@@ -345,22 +342,22 @@ public class CxcDocCobrarBean {
             pago.setCxcDocCobrarList(cxcDocCobrarList);
             pago.setCxcPagoContado(cxcPagoContado);
             agregarLog(pago);
-            logger.info("Enviando Pago ...");
+            LOGGER.info("Enviando Pago ...");
             Response response = cxcDocCobrarFacadeREST.save_JSON(pago);
 
-            logger.log(Level.INFO, "Response: {0}", response.toString());
-            logger.log(Level.INFO, "Status: {0}", response.getStatus());
-            logger.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
+            LOGGER.log(Level.INFO, "Response: {0}", response.toString());
+            LOGGER.log(Level.INFO, "Status: {0}", response.getStatus());
+            LOGGER.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
 
             if (response.getStatus() != 200) {
                 throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
             }
 
-            logger.info("Pago Enviado.");
+            LOGGER.info("Pago Enviado.");
 
-            logger.info("Enviando Mail ...");
+            LOGGER.info("Enviando Mail ...");
             enviarMail(pago);
-            logger.info("Mail Enviado.");
+            LOGGER.info("Mail Enviado.");
 
             limpiar();
 
@@ -369,12 +366,12 @@ public class CxcDocCobrarBean {
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
         } catch (RestException | ClienteException | GPSException | VendedorException ex) {
-            logger.log(Level.SEVERE, ex.getMessage(), ex);
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
             return "cobro?faces-redirect=true";
         } catch (MessagingException | MailException ex) {
             limpiar();
-            logger.log(Level.WARNING, ex.getMessage(), ex);
+            LOGGER.log(Level.WARNING, ex.getMessage());
             addMessage("Cobro relizado exitosamente.", "Num. Cobro: " + numDocumentoResp + ",  pero no se pudo enviar e-mail.", FacesMessage.SEVERITY_WARN);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
@@ -383,11 +380,11 @@ public class CxcDocCobrarBean {
     }
 
     public void calcularCheques() {
-        logger.info("calcularCheques()");
+        LOGGER.info("calcularCheques()");
         if (valorCheque > 0.0) {
             Double dif = totalCapital - retencion - retencionIVA - efectivo - deposito - otros - totalCheques - valorCheque;
             dif = Round.round(dif, 2);
-            logger.info("dif: " + dif);
+            LOGGER.log(Level.INFO, "dif: {0}", dif);
             if (dif.equals(0.0) && validarCheque()) {
                 botonAgegarChequeBloqueado = false;
                 botonEnviarBloqueado = false;
@@ -401,16 +398,16 @@ public class CxcDocCobrarBean {
         } else {
             botonAgegarChequeBloqueado = true;
         }
-        logger.log(Level.INFO, "botonAgegarChequeBloqueado: {0}", botonAgegarChequeBloqueado);
+        LOGGER.log(Level.INFO, "botonAgegarChequeBloqueado: {0}", botonAgegarChequeBloqueado);
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:chequesForm:agregarChequeButton");
     }
 
     public void agregarCheque() {
-        logger.log(Level.INFO, "codBanco: {0}", codBanco);
-        logger.log(Level.INFO, "fechaCheque: {0}", fechaCheque);
-        logger.log(Level.INFO, "numCheque: {0}", numCheque);
-        logger.log(Level.INFO, "numCuenta: {0}", numCuenta);
-        logger.log(Level.INFO, "valorCheque: {0}", valorCheque);
+        LOGGER.log(Level.INFO, "codBanco: {0}", codBanco);
+        LOGGER.log(Level.INFO, "fechaCheque: {0}", fechaCheque);
+        LOGGER.log(Level.INFO, "numCheque: {0}", numCheque);
+        LOGGER.log(Level.INFO, "numCuenta: {0}", numCuenta);
+        LOGGER.log(Level.INFO, "valorCheque: {0}", valorCheque);
 
         CxcCheque cheque = new CxcCheque();
         cheque.setCodBanco(codBanco);

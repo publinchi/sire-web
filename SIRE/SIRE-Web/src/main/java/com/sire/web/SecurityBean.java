@@ -23,7 +23,7 @@ import lombok.Setter;
 @RequestScoped
 public class SecurityBean {
 
-    private static Logger logger = Logger.getLogger(SecurityBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(SecurityBean.class.getName());
     @Getter
     @Setter
     @ManagedProperty(value = "#{user}")
@@ -35,12 +35,12 @@ public class SecurityBean {
             try {
                 String contextPath = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
                 FacesContext.getCurrentInstance().getExternalContext().redirect(contextPath + loginURL);
-                Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "No Autorizado");
+                LOGGER.log(Level.INFO, "No Autorizado");
             } catch (IOException ex) {
-                Logger.getLogger(SecurityBean.class.getName()).log(Level.SEVERE, null, ex);
+                LOGGER.log(Level.SEVERE, ex.getMessage());
             }
         } else {
-            Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "Autorizado");
+            LOGGER.log(Level.INFO, "Autorizado");
         }
     }
 }

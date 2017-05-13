@@ -29,7 +29,7 @@ import org.primefaces.model.map.MapModel;
 @SessionScoped
 public class MapaBean {
 
-    private static final Logger logger = Logger.getLogger(MapaBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(MapaBean.class.getName());
     @Getter
     @Setter
     private String direccion;
@@ -52,16 +52,16 @@ public class MapaBean {
             Map map = context.getExternalContext().getRequestParameterMap();
             String lat = (String) map.get("lat");
             String lng = (String) map.get("lng");
-            logger.log(Level.INFO, "lat: {0}", lat);
-            logger.log(Level.INFO, "lng: {0}", lng);
+            LOGGER.log(Level.INFO, "lat: {0}", lat);
+            LOGGER.log(Level.INFO, "lng: {0}", lng);
             GeoApiContext googleContext = new GeoApiContext().setApiKey("AIzaSyDoXgacFtGDCtWfYPQeJO4Kz7NUEQWkNAA");
             LatLng location = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
             GeocodingResult[] results = GeocodingApi.reverseGeocode(googleContext, location).await();
             direccion = results[0].formattedAddress;
-            logger.log(Level.INFO, "Direcci\u00f3n: {0}", direccion);
+            LOGGER.log(Level.INFO, "Direcci\u00f3n: {0}", direccion);
 //             RequestContext.getCurrentInstance().update("pedido:accordionPanel:ubicacion");
         } catch (Exception ex) {
-            Logger.getLogger(MapaBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(MapaBean.class.getName()).log(Level.SEVERE, ex.getMessage());
         }
     }
 

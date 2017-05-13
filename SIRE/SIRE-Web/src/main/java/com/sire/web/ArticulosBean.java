@@ -178,7 +178,7 @@ public class ArticulosBean {
         } catch (ClientErrorException cee) {
             articulos = null;
         } catch (UnsupportedEncodingException ex) {
-            logger.log(Level.SEVERE, null, ex);
+            logger.log(Level.SEVERE, ex.getMessage());
         }
     }
 
@@ -579,7 +579,7 @@ public class ArticulosBean {
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
         } catch (NullPointerException | PayWayException | GPSException | EmptyException | LimitException | ClienteException | VendedorException ex) {
-            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
+            logger.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "pedido?faces-redirect=true";
         }

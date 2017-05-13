@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.sire.entities.CxcFormaPago;
-import com.sire.entities.InvArticulo;
 import com.sire.rs.client.CxcFormaPagoFacadeREST;
 import java.util.List;
 import javax.faces.bean.ManagedBean;

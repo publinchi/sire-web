@@ -40,8 +40,6 @@ import javax.imageio.ImageIO;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.stream.FileImageOutputStream;
-import org.joda.time.ReadableInstant;
-import javax.validation.constraints.Past;
 import javax.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
@@ -58,7 +56,7 @@ import org.primefaces.model.UploadedFile;
 @Setter
 public class CajFacturaEnviadaBean {
 
-    private static final Logger logger = Logger.getLogger(CajFacturaEnviadaBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(CajFacturaEnviadaBean.class.getName());
 
     private UploadedFile file;
     private String cliente;
@@ -93,7 +91,7 @@ public class CajFacturaEnviadaBean {
 
     public void enviar() {
         if (!file.getFileName().isEmpty()) {
-            logger.log(Level.INFO, "file: {0}", file.getFileName());
+            LOGGER.log(Level.INFO, "file: {0}", file.getFileName());
             fileName = String.valueOf(Calendar.getInstance().getTimeInMillis()) + "." + FilenameUtils.getExtension(file.getFileName());
         } else {
             addMessage("Advertencia", "Imágen requerida.", FacesMessage.SEVERITY_WARN);
@@ -102,7 +100,7 @@ public class CajFacturaEnviadaBean {
             return;
         }
 
-        logger.log(Level.INFO, "cajFacturaEnviada: {0}", cajFacturaEnviada);
+        LOGGER.log(Level.INFO, "cajFacturaEnviada: {0}", cajFacturaEnviada);
 
         cajFacturaEnviada.getCajFacturaEnviadaPK().setCodEmpresa(obtenerEmpresa());
         cajFacturaEnviada.getCajFacturaEnviadaPK().setSecuencial(null);
@@ -121,7 +119,7 @@ public class CajFacturaEnviadaBean {
         } else if (response.getStatus() == 404) {
             savePicture();
             String developerMessage = response.readEntity(ErrorMessage.class).getDeveloperMessage();
-            logger.log(Level.SEVERE, developerMessage);
+            LOGGER.log(Level.SEVERE, developerMessage);
             addMessage("Advertencia", developerMessage, FacesMessage.SEVERITY_WARN);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
@@ -130,9 +128,9 @@ public class CajFacturaEnviadaBean {
     }
 
     public void findProyectos() {
-        logger.info("findProyectos()");
+        LOGGER.info("findProyectos()");
         String codEmpresa = obtenerEmpresa();
-        logger.log(Level.INFO, "codEmpresa: {0}", codEmpresa);
+        LOGGER.log(Level.INFO, "codEmpresa: {0}", codEmpresa);
         if ((codEmpresa != null && proyectos == null) || (codEmpresa != null && proyectos.isEmpty())) {
             String proyectosString = pryProyectoFacadeREST.findByCodEmpresa_JSON(String.class, obtenerEmpresa());
             proyectos = gson.fromJson(proyectosString, new TypeToken<java.util.List<PryProyecto>>() {
@@ -146,17 +144,17 @@ public class CajFacturaEnviadaBean {
     }
 
     public void findSubProyecto() {
-        logger.log(Level.INFO, "findSubProyecto()");
-        logger.log(Level.INFO, "CodProyecto: {0}", cajFacturaEnviada.getCajFacturaEnviadaPK().getCodProyecto());
+        LOGGER.log(Level.INFO, "findSubProyecto()");
+        LOGGER.log(Level.INFO, "CodProyecto: {0}", cajFacturaEnviada.getCajFacturaEnviadaPK().getCodProyecto());
         String subProyectosString = pryProyectoFacadeREST.findSubByCodProyectoCodEmpresa_JSON(String.class, String.valueOf(cajFacturaEnviada.getCajFacturaEnviadaPK().getCodProyecto()), obtenerEmpresa());
         subProyectos = gson.fromJson(subProyectosString, new TypeToken<java.util.List<PrySubproyecto>>() {
         }.getType());
     }
 
     public void findRubros() {
-        logger.info("findRubros()");
+        LOGGER.info("findRubros()");
         String codEmpresa = obtenerEmpresa();
-        logger.log(Level.INFO, "codEmpresa: {0}", codEmpresa);
+        LOGGER.log(Level.INFO, "codEmpresa: {0}", codEmpresa);
         if ((codEmpresa != null && rubros == null) || (codEmpresa != null && rubros.isEmpty())) {
             String rubrosString = cajRubroFacadeREST.cajRubroByCodEmpresa(String.class, obtenerEmpresa());
             rubros = gson.fromJson(rubrosString, new TypeToken<java.util.List<CajRubro>>() {
@@ -170,7 +168,7 @@ public class CajFacturaEnviadaBean {
     }
 
     public void calcularTotalDocumento() {
-        logger.info("iva: " + iva);
+        LOGGER.log(Level.INFO, "iva: {0}", iva);
         if (iva.equals(0.0) || cajFacturaEnviada.getTotalConIva() == null) {
             cajFacturaEnviada.setTotalConIva(0.0);
         }
@@ -214,16 +212,15 @@ public class CajFacturaEnviadaBean {
                 iwp.setCompressionQuality(quality);
 
                 File f = new File(imagesFolder + File.separator + fileName);
-                FileImageOutputStream output = new FileImageOutputStream(f);
-                writer.setOutput(output);
+                try (FileImageOutputStream output = new FileImageOutputStream(f)) {
+                    writer.setOutput(output);
 
-                IIOImage image = new IIOImage(outputImage, null, null);
-                writer.write(null, image, iwp);
-                writer.dispose();
-
-                output.close();
+                    IIOImage image = new IIOImage(outputImage, null, null);
+                    writer.write(null, image, iwp);
+                    writer.dispose();
+                }
             } catch (IOException ex) {
-                logger.severe(ex.getMessage());
+                LOGGER.severe(ex.getMessage());
             }
         }
     }

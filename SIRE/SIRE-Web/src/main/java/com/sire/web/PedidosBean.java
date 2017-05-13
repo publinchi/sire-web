@@ -37,7 +37,7 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 public class PedidosBean {
 
-    private static final Logger logger = Logger.getLogger(PedidosBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PedidosBean.class.getName());
     @Getter
     @Setter
     private Date fechaInicio, fechaFin;
@@ -74,23 +74,23 @@ public class PedidosBean {
     public void consultarPedidos() {
         invArticulos = null;
         try {
-            logger.info("consultarPedidos");
+            LOGGER.info("consultarPedidos");
             pedidos = gson.fromJson(facTmpFactCFacadeREST.
                     findByFechas_JSON(String.class, fechaInicio,
                             fechaFin, obtenerEmpresa(), obtenerVendedor()), new TypeToken<java.util.List<Pedido>>() {
                     }.getType()
             );
-            logger.log(Level.INFO, "pedidos: {0}", pedidos.size());
+            LOGGER.log(Level.INFO, "pedidos: {0}", pedidos.size());
         } catch (VendedorException ex) {
-            logger.log(Level.SEVERE, "Por favor validar registro(s).", ex);
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
     }
 
     public void tapPedido(SelectEvent event) {
-        logger.log(Level.INFO, "\u00b7\u00b7 tapPedido \u00b7\u00b7 {0}", event.getObject());
+        LOGGER.log(Level.INFO, "\u00b7\u00b7 tapPedido \u00b7\u00b7 {0}", event.getObject());
         invArticulos = new ArrayList<>();
         pedidoSeleccionado = ((Pedido) event.getObject());
-        logger.log(Level.INFO, "# EgresoInv Pedido seleccionado: {0}",
+        LOGGER.log(Level.INFO, "# EgresoInv Pedido seleccionado: {0}",
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv());
         detallesPedido = gson.fromJson(facTmpFactDFacadeREST.findByFacTmpFactC_JSON(String.class, obtenerEmpresa(),
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv(),
@@ -104,7 +104,7 @@ public class PedidosBean {
             invArticulos.add(invArticulo);
         }
 
-        logger.log(Level.INFO, "# Articulos: {0}", invArticulos.size());
+        LOGGER.log(Level.INFO, "# Articulos: {0}", invArticulos.size());
     }
 
     private String obtenerEmpresa() {
@@ -124,7 +124,7 @@ public class PedidosBean {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
 
@@ -133,15 +133,15 @@ public class PedidosBean {
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
-        logger.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
+        LOGGER.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
 
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
         }

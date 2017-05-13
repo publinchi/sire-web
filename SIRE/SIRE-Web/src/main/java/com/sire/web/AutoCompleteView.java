@@ -10,10 +10,7 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
-
 import org.primefaces.event.SelectEvent;
-//import org.primefaces.showcase.domain.Theme;
-//import org.primefaces.showcase.service.ThemeService;
 
 @ManagedBean
 public class AutoCompleteView {
@@ -28,7 +25,7 @@ public class AutoCompleteView {
     private String txt8;
 
     public List<String> completeText(String query) {
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             results.add(query + i);
         }

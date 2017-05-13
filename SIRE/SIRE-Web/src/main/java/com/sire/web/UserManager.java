@@ -51,7 +51,7 @@ public class UserManager {
     @Getter
     @Setter
     private int activeindex;
-    private static final Logger logger = Logger.getLogger(UserManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UserManager.class.getName());
     @Getter
     @Setter
     private List<GnrUsuaMod> gnrUsuaMods;
@@ -77,14 +77,14 @@ public class UserManager {
     }
 
     public void login() {
-        logger.log(Level.INFO, "User: {0}", userName);
-        logger.log(Level.INFO, "Password: {0}", password);
-        logger.log(Level.INFO, "Empresa: {0}", gnrEmpresa);
+        LOGGER.log(Level.INFO, "User: {0}", userName);
+        LOGGER.log(Level.INFO, "Password: {0}", password);
+        LOGGER.log(Level.INFO, "Empresa: {0}", gnrEmpresa);
         GnrUsuarioFacadeREST gnrUsuarioFacadeREST = new GnrUsuarioFacadeREST();
         List<GnrUsuarios> gnrUsuarios = gson.fromJson(gnrUsuarioFacadeREST.findAll_JSON(String.class),
                 new TypeToken<java.util.List<GnrUsuarios>>() {
                 }.getType());
-        logger.log(Level.INFO, "gnrUsuarios.size(): {0}", gnrUsuarios.size());
+        LOGGER.log(Level.INFO, "gnrUsuarios.size(): {0}", gnrUsuarios.size());
         for (GnrUsuarios gnrUsuario : gnrUsuarios) {
             if (gnrUsuario.getNombreUsuario().toUpperCase().equals(userName.toUpperCase())
                     && gnrUsuario.getClave().toUpperCase().equals(password.toUpperCase())) {
@@ -96,7 +96,7 @@ public class UserManager {
                     loadAuthorizedModules();
                     context.getExternalContext().redirect(context.getExternalContext().getRequestContextPath() + "/ui/index.xhtml");
                 } catch (IOException ex) {
-                    Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(UserManager.class.getName()).log(Level.SEVERE, ex.getMessage());
                 }
                 Logger.getLogger(SecurityBean.class.getName()).log(Level.INFO, "Login OK");
                 return;
@@ -133,25 +133,25 @@ public class UserManager {
     }
 
     private void checkPermission() {
-        logger.log(Level.INFO, "gnrUsuaMods size: {0}", gnrUsuaMods.size());
+        LOGGER.log(Level.INFO, "gnrUsuaMods size: {0}", gnrUsuaMods.size());
 
         for (GnrUsuaMod gnrUsuaMod : gnrUsuaMods) {
             switch (gnrUsuaMod.getGnrUsuaModPK().getCodModulo()) {
                 case PEDIDOS_Y_DESPACHOS:
                     pedidoVisible = true;
-                    logger.log(Level.INFO, "pedidoVisible: {0}", pedidoVisible);
+                    LOGGER.log(Level.INFO, "pedidoVisible: {0}", pedidoVisible);
                     break;
                 case CUENTAS_POR_COBRAR:
                     cobroVisible = true;
-                    logger.log(Level.INFO, "cobroVisible: {0}", cobroVisible);
+                    LOGGER.log(Level.INFO, "cobroVisible: {0}", cobroVisible);
                     break;
                 case CAJAS:
                     cajasVisible = true;
-                    logger.log(Level.INFO, "cajasVisible: {0}", cajasVisible);
+                    LOGGER.log(Level.INFO, "cajasVisible: {0}", cajasVisible);
                     break;
                 case NOMINA:
                     nominaVisible = true;
-                    logger.log(Level.INFO, "nominaVisible: {0}", nominaVisible);
+                    LOGGER.log(Level.INFO, "nominaVisible: {0}", nominaVisible);
                     break;
                 default:
                     break;
@@ -165,7 +165,7 @@ public class UserManager {
             VVendedor vVendedor = vVendedorFacadeREST.find_JSON(VVendedor.class, obtenerVendedor().toString());
             nombresVendedor = vVendedor.getNombresVendedor();
         } catch (VendedorException ex) {
-            Logger.getLogger(SellerBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SellerBean.class.getName()).log(Level.SEVERE, ex.getMessage());
             nombresVendedor = current.getNombreUsuario();
         }
         return nombresVendedor;
@@ -184,7 +184,7 @@ public class UserManager {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
 
@@ -194,15 +194,15 @@ public class UserManager {
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
-        logger.log(Level.INFO, "Current user: {0}", current.getNombreUsuario().toLowerCase());
+        LOGGER.log(Level.INFO, "Current user: {0}", current.getNombreUsuario().toLowerCase());
 
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(current.getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
         }

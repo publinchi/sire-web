@@ -37,7 +37,7 @@ import org.primefaces.event.SelectEvent;
 @SessionScoped
 public class PagosBean {
 
-    private static final Logger logger = Logger.getLogger(PagosBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PagosBean.class.getName());
     @Getter
     @Setter
     private Date fechaInicio, fechaFin;
@@ -72,7 +72,7 @@ public class PagosBean {
     }
 
     public void consultarPagos() {
-        logger.info("consultarPagos");
+        LOGGER.info("consultarPagos");
         invArticulos = null;
         try {
             if (cliente.getCliente() == null) {
@@ -82,10 +82,10 @@ public class PagosBean {
                         fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pago>>() {
                 }.getType()
                 );
-                logger.log(Level.INFO, "pagos: {0}", pagos.size());
+                LOGGER.log(Level.INFO, "pagos: {0}", pagos.size());
             }
         } catch (ClienteException ex) {
-            logger.log(Level.WARNING, null, ex);
+            LOGGER.log(Level.WARNING, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
         }
 
@@ -129,7 +129,7 @@ public class PagosBean {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
 
@@ -138,15 +138,15 @@ public class PagosBean {
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
-        logger.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
+        LOGGER.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
 
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
         }

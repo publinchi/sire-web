@@ -28,7 +28,7 @@ import lombok.Setter;
 @ManagedBean(name = "vendedor")
 public class SellerBean {
 
-    private static final Logger logger = Logger.getLogger(PedidosBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PedidosBean.class.getName());
     private String nombresVendedor;
     @ManagedProperty(value = "#{user}")
     @Getter
@@ -49,7 +49,7 @@ public class SellerBean {
             VVendedor vVendedor = vVendedorFacadeREST.find_JSON(VVendedor.class, obtenerVendedor().toString());
             nombresVendedor = vVendedor.getNombresVendedor();
         } catch (VendedorException ex) {
-            Logger.getLogger(SellerBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(SellerBean.class.getName()).log(Level.SEVERE, ex.getMessage());
             nombresVendedor = userManager.getCurrent().getNombreUsuario();
         }
         return nombresVendedor;
@@ -68,7 +68,7 @@ public class SellerBean {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
 
@@ -78,15 +78,15 @@ public class SellerBean {
         List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
         }.getType());
 
-        logger.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
+        LOGGER.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
 
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                logger.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
         }
