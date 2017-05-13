@@ -29,10 +29,8 @@ public class LazyInvArticuloDataModel extends LazyDataModel<InvArticulo> {
 
     @Override
     public InvArticulo getRowData(String rowKey) {
-        System.out.println("rowKey: " + rowKey);
         for (InvArticulo invArticulo : datasource) {
             if (String.valueOf(invArticulo.getInvArticuloPK().getCodArticulo()).equals(rowKey)) {
-                System.out.println("Match: " + invArticulo);
                 return invArticulo;
             }
         }
@@ -93,12 +91,6 @@ public class LazyInvArticuloDataModel extends LazyDataModel<InvArticulo> {
                 try {
                     return data.subList(first, first + (dataSize % pageSize));
                 } catch (IndexOutOfBoundsException ex) {
-                    System.err.println("Error al obtener arreglo paginado.");
-                    System.err.println("first: " + first);
-                    System.err.println("dataSize: " + dataSize);
-                    System.err.println("pageSize: " + pageSize);
-                    System.err.println("dataSize % pageSize: " + dataSize % pageSize);
-                    System.err.println("data.size(): " + data.size());
                     return null;
                 }
             }

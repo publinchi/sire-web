@@ -23,7 +23,6 @@ public class UploadFileService {
     public Response uploadFile(
             @FormDataParam("file") InputStream fileInputStream,
             @FormDataParam("file") FormDataContentDisposition fileMetaData) {
-        System.out.println("com.sire.ws.service.UploadFileService.uploadFile()");
         String UPLOAD_PATH = "/home/publio/temp/";
         try {
             int read = 0;
