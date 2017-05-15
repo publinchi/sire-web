@@ -84,14 +84,15 @@ public class FacParametrosFacadeREST extends AbstractFacade<FacParametros> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public FacParametros find(@PathParam("id") PathSegment id) {
         com.sire.entities.FacParametrosPK key = getPrimaryKey(id);
-        return super.find(key);
+        FacParametros facParametros = super.find(key);
+        em.refresh(facParametros);
+        return facParametros;
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacParametros> findAll() {
-        em.getEntityManagerFactory().getCache().evictAll();
         return super.findAll();
     }
 

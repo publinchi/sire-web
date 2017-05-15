@@ -218,8 +218,6 @@ public class ArticulosBean {
         invMovimientoDtll.setInvArticulo(invArticuloSeleccionado);
         invMovimientoDtll.setCodUnidad(invArticuloSeleccionado.getCodUnidad().getCodUnidad());
 
-        LOGGER.log(Level.INFO, "invArticuloSeleccionado.getExistencia(): {0}", invArticuloSeleccionado.getExistencia());
-        LOGGER.log(Level.INFO, "obtenerFacParametros().getExistNeg(): {0}", obtenerFacParametros().getExistNeg());
         if (invArticuloSeleccionado.getExistencia().doubleValue() > 0 || "S".equals(obtenerFacParametros().getExistNeg())) {
             invMovimientoDtlls.add(invMovimientoDtll);
             input = null;
@@ -939,24 +937,10 @@ public class ArticulosBean {
     }
 
     private FacParametros obtenerFacParametros() {
-        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
-        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString,
-                new TypeToken<java.util.List<FacParametros>>() {
-                }.getType());
-
-        LOGGER.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
-
-        for (FacParametros facParametros : listaFacParametros) {
-            if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
-                    equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
-                    && facParametros.getFacParametrosPK().getCodEmpresa().
-                            equals(obtenerEmpresa())) {
-                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
-                return facParametros;
-            }
-        }
-        return null;
+        FacParametros facParametros = facParametrosFacadeREST.find_JSON(
+                FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
+                + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario().toLowerCase());
+        return facParametros;
     }
 
     private Integer obtenerVendedor() throws VendedorException {
