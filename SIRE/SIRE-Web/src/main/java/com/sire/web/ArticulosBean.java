@@ -939,7 +939,7 @@ public class ArticulosBean {
     private FacParametros obtenerFacParametros() {
         FacParametros facParametros = facParametrosFacadeREST.find_JSON(
                 FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
-                + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario().toLowerCase());
+                + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
         return facParametros;
     }
 
