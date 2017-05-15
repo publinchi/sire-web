@@ -87,7 +87,7 @@ import org.primefaces.model.LazyDataModel;
 @Setter
 public class ArticulosBean {
 
-    private static final Logger logger = Logger.getLogger(ArticulosBean.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(ArticulosBean.class.getName());
 
     private final InvArticuloFacadeREST invArticuloFacadeREST;
     private final VClienteFacadeREST vClienteFacadeREST;
@@ -159,7 +159,7 @@ public class ArticulosBean {
 
     // Medotos del negocio
     public void findArticulos() {
-        logger.log(Level.INFO, "Invocando findArticulos: {0}", input);
+        LOGGER.log(Level.INFO, "Invocando findArticulos: {0}", input);
 
         String articulosString;
         String codEmpresa = obtenerEmpresa();
@@ -173,21 +173,21 @@ public class ArticulosBean {
                 articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
                 }.getType());
             }
-            logger.log(Level.INFO, "# articulos: {0}", articulos.size());
+            LOGGER.log(Level.INFO, "# articulos: {0}", articulos.size());
             lazyModel = new LazyInvArticuloDataModel(articulos);
         } catch (ClientErrorException cee) {
             articulos = null;
         } catch (UnsupportedEncodingException ex) {
-            logger.log(Level.SEVERE, ex.getMessage());
+            LOGGER.log(Level.SEVERE, ex.getMessage());
         }
     }
 
     public void tapArticulo(SelectEvent event) {
-        logger.log(Level.INFO, "\u00b7\u00b7 tapArticulo \u00b7\u00b7 {0}", event.getObject());
+        LOGGER.log(Level.INFO, "\u00b7\u00b7 tapArticulo \u00b7\u00b7 {0}", event.getObject());
 
         invArticuloSeleccionado = ((InvArticulo) event.getObject());
-        logger.log(Level.INFO, "Articulo seleccionado: {0}", invArticuloSeleccionado.getNombreArticulo());
-        logger.log(Level.INFO, "codUnidad: {0}", invArticuloSeleccionado.getCodUnidad().getCodUnidad());
+        LOGGER.log(Level.INFO, "Articulo seleccionado: {0}", invArticuloSeleccionado.getNombreArticulo());
+        LOGGER.log(Level.INFO, "codUnidad: {0}", invArticuloSeleccionado.getCodUnidad().getCodUnidad());
         setCodArticulo(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo());
 
         InvMovimientoDtll invMovimientoDtll = new InvMovimientoDtll();
@@ -218,8 +218,8 @@ public class ArticulosBean {
         invMovimientoDtll.setInvArticulo(invArticuloSeleccionado);
         invMovimientoDtll.setCodUnidad(invArticuloSeleccionado.getCodUnidad().getCodUnidad());
 
-        logger.log(Level.INFO, "invArticuloSeleccionado.getExistencia(): {0}", invArticuloSeleccionado.getExistencia());
-        logger.log(Level.INFO, "obtenerFacParametros().getExistNeg(): {0}", obtenerFacParametros().getExistNeg());
+        LOGGER.log(Level.INFO, "invArticuloSeleccionado.getExistencia(): {0}", invArticuloSeleccionado.getExistencia());
+        LOGGER.log(Level.INFO, "obtenerFacParametros().getExistNeg(): {0}", obtenerFacParametros().getExistNeg());
         if (invArticuloSeleccionado.getExistencia().doubleValue() > 0 || "S".equals(obtenerFacParametros().getExistNeg())) {
             invMovimientoDtlls.add(invMovimientoDtll);
             input = null;
@@ -237,7 +237,7 @@ public class ArticulosBean {
             InvMovimientoDtll invMovimientoDtll = obtenerMovimientoSeleccionado();
 
             String codArticle = String.valueOf(invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo());
-            logger.log(Level.INFO, "Articulo seleccionado final: {0}", codArticle);
+            LOGGER.log(Level.INFO, "Articulo seleccionado final: {0}", codArticle);
 
             String codEmpresa = obtenerEmpresa();
 
@@ -257,7 +257,7 @@ public class ArticulosBean {
 
             invMovimientoDtll.setPrecioVenta(facCatalogoPrecioD.getPrecioVenta1());
 
-            logger.log(Level.INFO, "invMovimientoDtll.getPrecioVenta(): {0}", invMovimientoDtll.getPrecioVenta());
+            LOGGER.log(Level.INFO, "invMovimientoDtll.getPrecioVenta(): {0}", invMovimientoDtll.getPrecioVenta());
 
             if (invArticuloSeleccionado.getDescuento() == null) {
                 if (obtenerCliente() != null) {
@@ -277,14 +277,14 @@ public class ArticulosBean {
         setInvMovimientoDtllSeleccionado(((InvMovimientoDtll) event.getData()));
         InvMovimientoDtll invMovimientoDtll = obtenerMovimientoSeleccionado();
 
-        logger.log(Level.INFO, "Posicion: {0}", invMovimientoDtll.getPosicion());
+        LOGGER.log(Level.INFO, "Posicion: {0}", invMovimientoDtll.getPosicion());
 
         InvMovimientoDtll forDelete;
         for (InvMovimientoDtll invMovimientoDtll1 : invMovimientoDtlls) {
             if (invMovimientoDtll1.getPosicion() == invMovimientoDtll.getPosicion()) {
                 forDelete = invMovimientoDtll1;
                 invMovimientoDtlls.remove(forDelete);
-                logger.log(Level.INFO, "Articulo removido: {0}", forDelete.getPosicion());
+                LOGGER.log(Level.INFO, "Articulo removido: {0}", forDelete.getPosicion());
 
                 break;
             }
@@ -320,16 +320,16 @@ public class ArticulosBean {
         String codUnidad = movimientoSeleccionado.getCodUnidad();
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
 
-        logger.info("Articulo a ser agregado: ");
-        logger.log(Level.INFO, "codBodega: {0}", codBodega);
-        logger.log(Level.INFO, "codInventario: {0}", codInventario);
-        logger.log(Level.INFO, "codUnidad: {0}", codUnidad);
-        logger.log(Level.INFO, "cantidad: {0}", cantidad);
-        logger.log(Level.INFO, "precioUnitario: {0}", movimientoSeleccionado.getCostoUnitario());
-        logger.log(Level.INFO, "descuento: {0}", invArticuloSeleccionado.getDescArticulo());
-        logger.log(Level.INFO, "total: {0}", movimientoSeleccionado.getCostoTotal());
-        logger.log(Level.INFO, "iva: {0}", invArticuloSeleccionado.getCodIva());
-        logger.log(Level.INFO, "totalIVA: {0}", totalIVA);
+        LOGGER.info("Articulo a ser agregado: ");
+        LOGGER.log(Level.INFO, "codBodega: {0}", codBodega);
+        LOGGER.log(Level.INFO, "codInventario: {0}", codInventario);
+        LOGGER.log(Level.INFO, "codUnidad: {0}", codUnidad);
+        LOGGER.log(Level.INFO, "cantidad: {0}", cantidad);
+        LOGGER.log(Level.INFO, "precioUnitario: {0}", movimientoSeleccionado.getCostoUnitario());
+        LOGGER.log(Level.INFO, "descuento: {0}", invArticuloSeleccionado.getDescArticulo());
+        LOGGER.log(Level.INFO, "total: {0}", movimientoSeleccionado.getCostoTotal());
+        LOGGER.log(Level.INFO, "iva: {0}", invArticuloSeleccionado.getCodIva());
+        LOGGER.log(Level.INFO, "totalIVA: {0}", totalIVA);
 
         // codBodega
         movimientoSeleccionado.getInvBodegaArt().getInvBodegaArtPK().setCodBodega(codBodega);
@@ -365,25 +365,25 @@ public class ArticulosBean {
         Double auxCantidad = 0.0;
         switch (operador) {
             case "+":
-                logger.info("1:::");
+                LOGGER.info("1:::");
                 auxCantidad = cantidad.doubleValue() + factor.doubleValue();
                 break;
             case "-":
-                logger.info("2:::");
+                LOGGER.info("2:::");
                 auxCantidad = cantidad.doubleValue() - factor.doubleValue();
                 break;
             case "*":
-                logger.info("3:::");
+                LOGGER.info("3:::");
                 auxCantidad = cantidad.doubleValue() / factor.doubleValue();
                 break;
             case "/":
-                logger.info("4::");
+                LOGGER.info("4::");
                 auxCantidad = cantidad.doubleValue() * factor.doubleValue();
                 break;
             default:
                 break;
         }
-        logger.log(Level.INFO, "5::: {0}", auxCantidad);
+        LOGGER.log(Level.INFO, "5::: {0}", auxCantidad);
         movimientoSeleccionado.setAuxCantidad(auxCantidad);
         movimientoSeleccionado.setDescuento(invArticuloSeleccionado.getDescuento());
         movimientoSeleccionado.setFactor(facCatalogoPrecioD.getFactor());
@@ -414,15 +414,15 @@ public class ArticulosBean {
     }
 
     public void loadPrecioTotalByCantidad() {
-        logger.log(Level.INFO, "precio venta: {0}", invArticuloSeleccionado.getPrecio());
+        LOGGER.log(Level.INFO, "precio venta: {0}", invArticuloSeleccionado.getPrecio());
 
         InvMovimientoDtll movimientoSeleccionado = obtenerMovimientoSeleccionado();
 
         Double existence = this.existencia;
-        logger.log(Level.INFO, "existencia: {0}", existence);
+        LOGGER.log(Level.INFO, "existencia: {0}", existence);
 
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
-        logger.log(Level.INFO, "cantidad: {0}", cantidad.doubleValue());
+        LOGGER.log(Level.INFO, "cantidad: {0}", cantidad.doubleValue());
         if (existence >= cantidad.doubleValue() || "S".equals(obtenerFacParametros().getExistNeg())) {
 
             Double precioTotal;
@@ -431,17 +431,17 @@ public class ArticulosBean {
                 descuento = (movimientoSeleccionado.getCostoUnitario() * cantidad.doubleValue() * invArticuloSeleccionado.getDescuento().doubleValue()) / 100;
             }
 
-            logger.log(Level.INFO, "descuento: {0}", descuento);
+            LOGGER.log(Level.INFO, "descuento: {0}", descuento);
 
             precioTotal = (movimientoSeleccionado.getCostoUnitario() * cantidad.doubleValue()) - descuento;
 
             precioTotal = Round.round(precioTotal, 2);
 
-            logger.log(Level.INFO, "precioTotal: {0}", precioTotal);
+            LOGGER.log(Level.INFO, "precioTotal: {0}", precioTotal);
             movimientoSeleccionado.setCostoTotal(precioTotal);
 
             Double totalPlusIVA = precioTotal * (1 + invArticuloSeleccionado.getIva().doubleValue() / 100);
-            logger.log(Level.INFO, "totalPlusIVA: {0}", totalPlusIVA);
+            LOGGER.log(Level.INFO, "totalPlusIVA: {0}", totalPlusIVA);
             invArticuloSeleccionado.setTotalPlusIVA(Round.round(totalPlusIVA, 2));
 
             agregarBloqueado = false;
@@ -505,9 +505,9 @@ public class ArticulosBean {
             operador = invUnidadAlternativa.getOperador();
         }
 
-        logger.log(Level.INFO, "auxPrecio: {0}", auxPrecio);
-        logger.log(Level.INFO, "factor: {0}", factor);
-        logger.log(Level.INFO, "operador: {0}", operador);
+        LOGGER.log(Level.INFO, "auxPrecio: {0}", auxPrecio);
+        LOGGER.log(Level.INFO, "factor: {0}", factor);
+        LOGGER.log(Level.INFO, "operador: {0}", operador);
 
         Double precio;
         switch (operador) {
@@ -533,7 +533,7 @@ public class ArticulosBean {
 
         invMovimientoDtll.setCostoUnitario(Round.round(precio, 4));
 
-        logger.log(Level.INFO, "$$$$$$$$$$ precio venta: {0}", invMovimientoDtll.getCostoUnitario());
+        LOGGER.log(Level.INFO, "$$$$$$$$$$ precio venta: {0}", invMovimientoDtll.getCostoUnitario());
 
         if (invMovimientoDtll.getCantidad() != null) {
             loadPrecioTotalByCantidad();
@@ -568,9 +568,9 @@ public class ArticulosBean {
             pedido.setInvMovimientoCab(invMovimientoCab);
             agregarLog(pedido);
 
-            logger.info("Enviando Documento ...");
+            LOGGER.info("Enviando Documento ...");
             invMovimientoCabFacadeREST.create_JSON(pedido);
-            logger.info("Documento Enviado.");
+            LOGGER.info("Documento Enviado.");
 
             limpiar();
 
@@ -579,7 +579,7 @@ public class ArticulosBean {
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
         } catch (NullPointerException | PayWayException | GPSException | EmptyException | LimitException | ClienteException | VendedorException ex) {
-            logger.log(Level.SEVERE, ex.getMessage());
+            LOGGER.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "pedido?faces-redirect=true";
         }
@@ -737,13 +737,13 @@ public class ArticulosBean {
             BigDecimal cantidad = BigDecimal.ZERO;
             if (invMovimientoDtll1.getCantidad() != null) {
                 cantidad = invMovimientoDtll1.getCantidad();
-                logger.info(cantidad.toString());
+                LOGGER.info(cantidad.toString());
             }
 
             Double descuento = 0.0;
             if (invMovimientoDtll1.getDescuento() != null) {
                 descuento = (invMovimientoDtll1.getCostoUnitario() * cantidad.doubleValue() * invMovimientoDtll1.getDescuento().doubleValue()) / 100;
-                logger.info(descuento.toString());
+                LOGGER.info(descuento.toString());
             }
 
             if (invMovimientoDtll1.getCantidad() == null) {
@@ -759,21 +759,21 @@ public class ArticulosBean {
             }
 
             Double _subTotal = Round.round((invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue())) - descuento, 2);
-            logger.log(Level.INFO, "_subTotal: {0}", _subTotal);
+            LOGGER.log(Level.INFO, "_subTotal: {0}", _subTotal);
 
             if (invMovimientoDtll1.getPorcentajeIva() == null) {
                 invMovimientoDtll1.setPorcentajeIva(new BigDecimal(0));
             }
 
             Double _iva = invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue()) * (invMovimientoDtll1.getPorcentajeIva().doubleValue() / 100);
-            logger.log(Level.INFO, "_iva: {0}", _iva);
+            LOGGER.log(Level.INFO, "_iva: {0}", _iva);
 
             subTotal += Round.round(_subTotal, 2);
-            logger.log(Level.INFO, "subTotal: {0}", subTotal);
+            LOGGER.log(Level.INFO, "subTotal: {0}", subTotal);
             iva += Round.round(_iva, 2);
-            logger.log(Level.INFO, "iva: {0}", iva);
+            LOGGER.log(Level.INFO, "iva: {0}", iva);
             total += Round.round((_subTotal + _iva), 2);
-            logger.log(Level.INFO, "total: {0}", total);
+            LOGGER.log(Level.INFO, "total: {0}", total);
         }
         total = Round.round(total, 2);
         subTotal = Round.round(subTotal, 2);
@@ -837,7 +837,7 @@ public class ArticulosBean {
             facTmpFactD.setPorcDescProm(BigDecimal.ZERO); //TODO
             facTmpFactD.setPorcDescVol(invMovimientoDtll.getPorcDesc1()); //TODO
             facTmpFactD.setPorcentajeIva(invMovimientoDtll.getPorcentajeIva());
-            logger.log(Level.INFO, "CostoUnitario: {0}", invMovimientoDtll.getCostoUnitario());
+            LOGGER.log(Level.INFO, "CostoUnitario: {0}", invMovimientoDtll.getCostoUnitario());
             facTmpFactD.setPrecioUnitario(invMovimientoDtll.getCostoUnitario()); //TODO
             facTmpFactD.setPromocion(null); //TODO
             facTmpFactD.setSerie(null); //TODO
@@ -900,7 +900,7 @@ public class ArticulosBean {
         invMovimientoCab.setNombreUsuario(obtenerUsuario());
         invMovimientoCab.setRazonSocial(clientes.getCliente().getCliente().getRazonSocial());
 
-        logger.log(Level.INFO, "enviar ::::::::::::::: {0} articulos", invMovimientoCab.getInvMovimientoDtllList().size());
+        LOGGER.log(Level.INFO, "enviar ::::::::::::::: {0} articulos", invMovimientoCab.getInvMovimientoDtllList().size());
     }
 
     private void prepararInvMovimientoDtlls(BigDecimal numDocumentoResp) throws EmptyException {
@@ -914,7 +914,7 @@ public class ArticulosBean {
 
             String codBodega = new BodegaUtil().obtenerCodBodega(invMovimientoDtll.getInvArticulo().getInvArticuloPK().getCodArticulo());
 
-            logger.log(Level.INFO, "codBodega recuperado: {0}", codBodega);
+            LOGGER.log(Level.INFO, "codBodega recuperado: {0}", codBodega);
 
             invBodegaArt.getInvBodegaArtPK().setCodBodega(codBodega);
 
@@ -928,9 +928,9 @@ public class ArticulosBean {
             }
 
             if (invMovimientoDtll.getInvMovimientoDtllPK() != null) {
-                logger.log(Level.INFO, "InvMovimientoDtllPK: {0}", invMovimientoDtll.getInvMovimientoDtllPK().toString());
+                LOGGER.log(Level.INFO, "InvMovimientoDtllPK: {0}", invMovimientoDtll.getInvMovimientoDtllPK().toString());
             } else {
-                logger.info("InvMovimientoDtllPK: null");
+                LOGGER.info("InvMovimientoDtllPK: null");
             }
         }
 
@@ -939,20 +939,20 @@ public class ArticulosBean {
     }
 
     private FacParametros obtenerFacParametros() {
-        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class
-        );
-        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
-        }.getType());
+        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
+        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString,
+                new TypeToken<java.util.List<FacParametros>>() {
+                }.getType());
 
-        logger.info("Current user: " + userManager.getCurrent().getNombreUsuario().toLowerCase());
+        LOGGER.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
 
         for (FacParametros facParametros : listaFacParametros) {
             if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                logger.info("Usuario *: " + facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                logger.log(Level.INFO, "facParametros: {0}", facParametros);
+                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
+                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
                 return facParametros;
             }
         }
@@ -972,13 +972,13 @@ public class ArticulosBean {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        logger.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
 
     private GnrUsuarios obtenerUsuario() {
         GnrUsuarios gnrUsuarios = obtenerFacParametros().getGnrUsuarios();
-        logger.log(Level.INFO, "gnrUsuarios: {0}", gnrUsuarios);
+        LOGGER.log(Level.INFO, "gnrUsuarios: {0}", gnrUsuarios);
         return gnrUsuarios;
     }
 
@@ -1028,11 +1028,11 @@ public class ArticulosBean {
     private boolean facturacionLimitada() {
         if (invMovimientoCab.getFormaPago().equals("1")) {
             Double sumSaldoDocumento = obtenerSumSaldoDocumento();
-            logger.log(Level.INFO, "sumSaldoDocumento: {0}", sumSaldoDocumento);
+            LOGGER.log(Level.INFO, "sumSaldoDocumento: {0}", sumSaldoDocumento);
             Double sumCapital = obtenerSumCapital();
-            logger.log(Level.INFO, "sumCapital: {0}", sumCapital);
+            LOGGER.log(Level.INFO, "sumCapital: {0}", sumCapital);
             limiteFactura = obtenerLimiteFactura();
-            logger.log(Level.INFO, "limiteFactura: {0}", limiteFactura);
+            LOGGER.log(Level.INFO, "limiteFactura: {0}", limiteFactura);
 
             Double saldoActual = sumSaldoDocumento + sumCapital;
 
@@ -1045,7 +1045,7 @@ public class ArticulosBean {
 
     private Double obtenerLimiteFactura() {
         Double limiteFact = cliente.getCliente().getLimiteFactura();
-        logger.log(Level.INFO, "limiteFactura: {0}", limiteFact);
+        LOGGER.log(Level.INFO, "limiteFactura: {0}", limiteFact);
         return limiteFact;
     }
 

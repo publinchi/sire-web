@@ -21,8 +21,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
-import org.eclipse.persistence.config.CacheUsage;
-import org.eclipse.persistence.config.QueryHints;
 
 /**
  *
@@ -93,11 +91,8 @@ public class FacParametrosFacadeREST extends AbstractFacade<FacParametros> {
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacParametros> findAll() {
-        javax.persistence.criteria.CriteriaQuery cq = getEntityManager().getCriteriaBuilder().createQuery();
-        cq.select(cq.from(FacParametros.class));
-        return getEntityManager().createQuery(cq)
-                .setHint(QueryHints.CACHE_USAGE, CacheUsage.DoNotCheckCache)
-                .getResultList();
+        em.getEntityManagerFactory().getCache().evictAll();
+        return super.findAll();
     }
 
     @GET
