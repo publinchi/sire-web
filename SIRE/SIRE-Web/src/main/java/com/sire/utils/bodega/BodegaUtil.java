@@ -70,6 +70,10 @@ public class BodegaUtil {
             }
         });
 
-        return map.get(tmp.get(0));
+        if (!tmp.isEmpty()) {
+            return map.get(tmp.get(0));
+        } else {
+            return "01";
+        }
     }
 }
