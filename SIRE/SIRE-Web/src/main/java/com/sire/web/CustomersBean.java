@@ -174,16 +174,16 @@ public class CustomersBean {
         String clientesString = null;
         try {
             if (modo.equals("r") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByRazonSocialEmpresaVendedor(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa(), obtenerVendedor());
+                clientesString = vClienteFacadeREST.findByRazonSocialEmpresa(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
             } else if (modo.equals("n") && !input.isEmpty()) {
-                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresaVendedor(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa(), obtenerVendedor());
+                clientesString = vClienteFacadeREST.findByNombresApellidosEmpresa(String.class, URLEncoder.encode(input, "UTF-8"), obtenerEmpresa());
                 clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                 }.getType());
             } else if (modo.equals("c") && !input.isEmpty()) {
                 try {
-                    clientesString = vClienteFacadeREST.findByClienteEmpresaVendedor(String.class, input, obtenerEmpresa(), obtenerVendedor());
+                    clientesString = vClienteFacadeREST.findByClienteEmpresa(String.class, input, obtenerEmpresa());
                     clientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
                     }.getType());
                 } catch (JsonSyntaxException jse) {

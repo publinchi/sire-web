@@ -121,6 +121,8 @@ public class FacTmpFactC implements Serializable {
     private Date fechaEstado;
     @Column(name = "TOTAL_FACTURA")
     private BigDecimal totalFactura;
+    @Column(name = "OBSERVACION")
+    private String observacion;
     @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private GnrEmpresa gnrEmpresa;
@@ -351,6 +353,14 @@ public class FacTmpFactC implements Serializable {
 
     public void setNombreUsuario(GnrUsuarios nombreUsuario) {
         this.nombreUsuario = nombreUsuario;
+    }
+    
+    public String getObservacion() {
+        return observacion;
+    }
+
+    public void setObservacion(String observacion) {
+        this.observacion = observacion;
     }
 
 //    @XmlTransient
