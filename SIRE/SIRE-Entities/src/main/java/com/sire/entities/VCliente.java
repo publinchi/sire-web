@@ -76,7 +76,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "VCliente.findByRazonSocialEmpresa", query = "SELECT v FROM VCliente v WHERE v.razonSocial like :razonSocial AND v.codEmpresa = :codEmpresa ORDER BY v.razonSocial"),
     @NamedQuery(name = "VCliente.findByRazonSocialEmpresaVendedor", query = "SELECT v FROM VCliente v WHERE v.razonSocial like :razonSocial AND v.codEmpresa = :codEmpresa AND v.codVendedor = :codVendedor ORDER BY v.razonSocial"),
     @NamedQuery(name = "VCliente.findByClienteEmpresa", query = "SELECT v FROM VCliente v WHERE v.codCliente = :codCliente AND v.codEmpresa = :codEmpresa ORDER BY v.razonSocial"),
-    @NamedQuery(name = "VCliente.findByClienteEmpresaVendedor", query = ">SELECT v FROM VCliente v WHERE v.codCliente = :codCliente AND v.codEmpresa = :codEmpresa AND v.codVendedor = :codVendedor ORDER BY v.razonSocial")})
+    @NamedQuery(name = "VCliente.findByClienteEmpresaVendedor", query = "SELECT v FROM VCliente v WHERE v.codCliente = :codCliente AND v.codEmpresa = :codEmpresa AND v.codVendedor = :codVendedor ORDER BY v.razonSocial")})
 public class VCliente implements Serializable {
 
     private static final long serialVersionUID = 1L;
