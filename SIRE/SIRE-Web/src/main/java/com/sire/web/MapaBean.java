@@ -32,7 +32,7 @@ public class MapaBean {
     private static final Logger LOGGER = Logger.getLogger(MapaBean.class.getName());
     @Getter
     @Setter
-    private String direccion;
+    private String direccion, lat, lng;
     @Getter
     @Setter
     private MapModel emptyModel;
@@ -50,8 +50,8 @@ public class MapaBean {
         try {
             FacesContext context = FacesContext.getCurrentInstance();
             Map map = context.getExternalContext().getRequestParameterMap();
-            String lat = (String) map.get("lat");
-            String lng = (String) map.get("lng");
+            lat = (String) map.get("lat");
+            lng = (String) map.get("lng");
             LOGGER.log(Level.INFO, "lat: {0}", lat);
             LOGGER.log(Level.INFO, "lng: {0}", lng);
             GeoApiContext googleContext = new GeoApiContext().setApiKey("AIzaSyDoXgacFtGDCtWfYPQeJO4Kz7NUEQWkNAA");

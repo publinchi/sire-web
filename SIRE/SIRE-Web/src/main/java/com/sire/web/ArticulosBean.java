@@ -1075,6 +1075,8 @@ public class ArticulosBean {
         gnrLogHistorico.setGnrLogHistoricoPK(gnrLogHistoricoPK);
         gnrLogHistorico.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
         gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
+        gnrLogHistorico.setLatitud(mapa.getLat());
+        gnrLogHistorico.setLongitud(mapa.getLng());
         pedido.setGnrLogHistorico(gnrLogHistorico);
     }
 }
