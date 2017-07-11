@@ -52,9 +52,9 @@ public class GnrLogHistorico implements Serializable {
     @Column(name = "ESTADO")
     private String estado;
     @Column(name = "LATITUD")
-    private String latitud;
+    private Double latitud;
     @Column(name = "LONGITUD")
-    private String longitud;
+    private Double longitud;
     @Column(name = "FECHA_ESTADO")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaEstado;
@@ -118,19 +118,19 @@ public class GnrLogHistorico implements Serializable {
         this.estado = estado;
     }
 
-    public String getLatitud() {
+    public Double getLatitud() {
         return latitud;
     }
 
-    public void setLatitud(String latitud) {
+    public void setLatitud(Double latitud) {
         this.latitud = latitud;
     }
 
-    public String getLongitud() {
+    public Double getLongitud() {
         return longitud;
     }
 
-    public void setLongitud(String longitud) {
+    public void setLongitud(Double longitud) {
         this.longitud = longitud;
     }
 

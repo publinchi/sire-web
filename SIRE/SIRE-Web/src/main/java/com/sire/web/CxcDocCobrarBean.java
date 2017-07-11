@@ -609,8 +609,8 @@ public class CxcDocCobrarBean {
         gnrLogHistorico.setGnrLogHistoricoPK(gnrLogHistoricoPK);
         gnrLogHistorico.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
         gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
-        gnrLogHistorico.setLatitud(mapa.getLat());
-        gnrLogHistorico.setLongitud(mapa.getLng());
+        gnrLogHistorico.setLatitud(Double.valueOf(mapa.getLat()));
+        gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
         pago.setGnrLogHistorico(gnrLogHistorico);
     }
 
