@@ -51,8 +51,9 @@
 
             <p:outputLabel for="observacion" value="Observacion:" />
             <p:inputTextarea id="observacion" rows="6" cols="33" value="#{articulosBean.observacion}"/>
-            
-            <p:commandButton value="Enviar" action="#{articulosBean.enviar()}" update="@form:message" />
+
+            <p:commandButton value="Enviar" action="#{articulosBean.enviar()}" update="@form:message" 
+                             onclick="getLocation();"/>
         </h:form>
     </p:panel>
 </html>

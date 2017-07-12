@@ -154,7 +154,8 @@
             <h:outputText id="diferenciaLabel" value="Diferencia: &#36; #{cxcDocCobrarBean.diferencia}"/>
             <p:commandButton id="enviarButton" value="Enviar" 
                              action="#{cxcDocCobrarBean.enviar()}"
-                             disabled="#{cxcDocCobrarBean.botonEnviarBloqueado}"/>
+                             disabled="#{cxcDocCobrarBean.botonEnviarBloqueado}"
+                             onclick="getLocation();"/>
         </h:form>
     </p:panel>
 </html>
