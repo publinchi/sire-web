@@ -10,6 +10,7 @@
                 <p:menuitem value="Inicio" icon="ui-icon-home" action="pm:inicio?transition=flip" iconPos="top" update="inicio"/>
                 <p:menuitem value="Pedido" icon="ui-icon-shop" action="pm:pedido?transition=flip" iconPos="top" update="pedido" rendered="#{user.pedidoVisible}"/>
                 <p:menuitem value="Cobro" icon="ui-icon-action" action="pm:cobro?transition=flip" iconPos="top" update="cobro" rendered="#{user.cobroVisible}"/>
+                <p:menuitem value="Visita" icon="ui-icon-tag" action="pm:visita?transition=flip" iconPos="top" update="visita" rendered="#{user.visitaVisible}"/>
                 <p:menuitem value="Cajas" icon="ui-icon-grid" action="pm:cajas?transition=flip" iconPos="top" update="cajas" rendered="#{user.cajasVisible}"/>
                 <p:menuitem value="Asistencia" icon="ui-icon-clock" action="pm:asistencia?transition=flip" iconPos="top" update="asistencia" rendered="#{user.nominaVisible}"/>
                 <p:menuitem value="Salir" icon="ui-icon-power" iconPos="top" action="${user.logout()}" ajax="false" />

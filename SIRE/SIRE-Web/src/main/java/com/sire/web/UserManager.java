@@ -61,7 +61,7 @@ public class UserManager {
     private final static String CAJAS = "19";
     private final static String NOMINA = "10";
     @Getter
-    private boolean pedidoVisible = false, cobroVisible = false, cajasVisible = false, nominaVisible = false;
+    private boolean pedidoVisible = false, cobroVisible = false, cajasVisible = false, nominaVisible = false, visitaVisible = false;
     private final VVendedorFacadeREST vVendedorFacadeREST;
 
     public UserManager() {
@@ -140,6 +140,8 @@ public class UserManager {
                 case PEDIDOS_Y_DESPACHOS:
                     pedidoVisible = true;
                     LOGGER.log(Level.INFO, "pedidoVisible: {0}", pedidoVisible);
+                    visitaVisible = true;
+                    LOGGER.log(Level.INFO, "visitaVisible: {0}", visitaVisible);
                     break;
                 case CUENTAS_POR_COBRAR:
                     cobroVisible = true;
