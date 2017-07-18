@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <ui:include src="../fecha/_fecha.xhtml"/>
+
+    <pm:field>
+        <h:outputText id="vendedor" value="Vendedor: #{vendedor.nombresVendedor}"/>
+    </pm:field>
+
+    <ui:include src="../cliente/_buscarCliente.xhtml">
+        <ui:param name="buscarButton" value="btn-cliente-pedido"/>
+    </ui:include>
+
+    <!--    <pm:field>
+            <p:outputLabel for="ubicacion" value="Ubicación:" />
+            <h:panelGrid columns="2" columnClasses="verticalAlignMiddle">
+                <p:commandButton id="geolocalizar" type="button" 
+                                 onclick="getLocation();" value="Geolocalizar"
+                                 styleClass="ui-btn-inline"/>
+                <p:inputTextarea id="ubicacion" value="#{mapa.direccion}" 
+                                 label="Ubicación"
+                                 readonly="true"
+                                 required="true"/>
+            </h:panelGrid>
+        </pm:field>-->
+
+    <h:form id="formId">
+        <p:remoteCommand name="processLocation" 
+                         actionListener="#{mapa.processLocation()}"
+                         process="@this" partialSubmit="true"/>
+    </h:form>
+
+    <pm:field>
+        <h:form>
+            <p:outputLabel for="tipoPago" value="Tipo Pago:" />
+            <p:selectOneMenu id="tipoPago" value="#{articulosBean.formaPago}">
+                <f:selectItem itemLabel="Seleccione Forma Pago" itemValue="" />
+                <f:selectItems value="#{formaPagoBean.formaPagos}"  
+                               var="formaPago" 
+                               itemLabel="#{formaPago.descripcion}" 
+                               itemValue="#{formaPago.cxcFormaPagoPK.codPago}"/>
+                <p:ajax listener="#{articulosBean.loadTipoPago()}"/>
+            </p:selectOneMenu>
+        </h:form>
+    </pm:field>
+
+</html>

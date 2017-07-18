@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <p:accordionPanel id="accordionPanel" style="opacity: 0.97;">
+        <p:tab title="CABECERA">
+            <ui:include src="_cabecera.xhtml" />
+        </p:tab>
+
+        <p:tab title="DETALLE">
+            <ui:include src="_detalle.xhtml" />
+        </p:tab>
+
+        <!--        <p:tab title="CONSULTA">
+                    <ui:include src="_consulta.xhtml" />
+                </p:tab>-->
+    </p:accordionPanel>
+
+    <ui:include src="../cliente/_clienteDialog.xhtml" >
+        <ui:param name="update" value="visita:clienteOverlayPanel" />
+    </ui:include>
+
+    <ui:include src="../cliente/_clienteOverlayPanel.xhtml">
+        <ui:param name="buscarButton" value="visita:accordionPanel:btn-cliente-visita"/>
+    </ui:include>
+</html>

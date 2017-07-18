@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <!--<pm:header title="SIRE Mobil" fixed="true">-->
+    <pm:header fixed="true">
+        <h:form>
+            <p:tabMenu activeIndex="#{index}" >
+                <p:menuitem value="Inicio" icon="ui-icon-home" action="pm:inicio?transition=flip" iconPos="top" update="inicio"/>
+                <p:menuitem value="Pedido" icon="ui-icon-shop" action="pm:pedido?transition=flip" iconPos="top" update="pedido" rendered="#{user.pedidoVisible}"/>
+                <p:menuitem value="Cobro" icon="ui-icon-action" action="pm:cobro?transition=flip" iconPos="top" update="cobro" rendered="#{user.cobroVisible}"/>
+                <p:menuitem value="Visita" icon="ui-icon-tag" action="pm:visita?transition=flip" iconPos="top" update="visita" rendered="#{user.visitaVisible}"/>
+                <p:menuitem value="Cajas" icon="ui-icon-grid" action="pm:cajas?transition=flip" iconPos="top" update="cajas" rendered="#{user.cajasVisible}"/>
+                <p:menuitem value="Asistencia" icon="ui-icon-clock" action="pm:asistencia?transition=flip" iconPos="top" update="asistencia" rendered="#{user.nominaVisible}"/>
+                <p:menuitem value="Salir" icon="ui-icon-power" iconPos="top" action="${user.logout()}" ajax="false" />
+            </p:tabMenu>
+        </h:form>
+    </pm:header>
+</html>

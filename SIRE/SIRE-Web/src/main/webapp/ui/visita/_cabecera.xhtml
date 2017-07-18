@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <ui:include src="../fecha/_fecha.xhtml"/>
+
+    <pm:field>
+        <h:outputText id="vendedor" value="Vendedor: #{vendedor.nombresVendedor}"/>
+    </pm:field>
+
+    <ui:include src="../cliente/_buscarCliente.xhtml">
+        <ui:param name="buscarButton" value="btn-cliente-visita"/>
+    </ui:include>
+
+    <h:form id="formId">
+        <p:remoteCommand name="processLocation" 
+                         actionListener="#{mapa.processLocation()}"
+                         process="@this" partialSubmit="true"/>
+    </h:form>
+
+</html>

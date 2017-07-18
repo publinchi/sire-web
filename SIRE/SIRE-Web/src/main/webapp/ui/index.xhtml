@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{securityMB.checkLogIn()}" />
+    </f:metadata>
+    <h:head> 
+        <h:outputStylesheet name="main/css/customStyles.css" />
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/mobile/jquery-mobile.css.xhtml?ln=primefaces"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/mobile/primefaces-mobile.css.xhtml?ln=primefaces"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/fa/font-awesome.css.xhtml?ln=primefaces"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/mobile/css/demo.css.xhtml"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/main/css/sh.css.xhtml"/>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoXgacFtGDCtWfYPQeJO4Kz7NUEQWkNAA" type="text/javascript" />
+        <script>
+            function getLocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(showPosition);
+                } else {
+                    alert('Por favor activar GPS.');
+                }
+            }
+
+            function showPosition(position) {
+                processLocation([{name: 'lat', value: position.coords.latitude}, {name: 'lng', value: position.coords.longitude}]);
+            }
+        </script>
+
+        <script type="text/javascript">
+            var map;
+            function renderMap() {
+                PF('gmap').render();
+            }
+            function findMe() {
+                navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            map = PF('gmap').getMap();
+                            latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                            map.setCenter(latlng);
+                            var marker = new google.maps.Marker({
+                                position: latlng
+                            });
+                            marker.setMap(map);
+                        },
+                        function (error) {
+                            alert(error.message);
+                        },
+                        {
+                            enableHighAccuracy: true
+                        });
+            }
+        </script>
+
+        <script type="text/javascript" src="https://api.bridgeit.mobi/bridgeit/bridgeit.js"></script>
+        <script type="text/javascript">
+            var photo;
+            function onAfterPhotoCapture(event) {
+                photo = event.preview;
+                if (photo) {
+                    //show the thumbnail preview
+                    var thumbnailElem = document.getElementById("cajas:graphicImage");
+                    thumbnailElem.setAttribute("src", photo);
+                }
+            }
+
+            function sendForm() {
+                alert(photo);
+                rc(photo);
+            }
+
+            function onAfterCaptureScan(event) {
+                var text = event.value;
+                var scans = document.getElementById("asistencia:scans");
+                scans.innerHTML = text;
+            }
+        </script>
+    </h:head>
+
+    <h:body>
+        <!--DIPRO-->
+        <ui:param name="indexIndex" value="0" />
+        <ui:param name="indexPedido" value="1" />
+        <ui:param name="indexCobro" value="2" />
+        <ui:param name="indexVisita" value="3" />
+        <ui:param name="indexCajas" value="4" />
+        <ui:param name="indexAsistencia" value="5" />
+
+        <!--STDRIVE
+        <ui:param name="indexIndex" value="0" />
+        <ui:param name="indexPedido" value="3" />
+        <ui:param name="indexCobro" value="4" />
+        <ui:param name="indexCajas" value="1" />
+        <ui:param name="indexAsistencia" value="2" />-->
+
+        <pm:page id="inicio">
+            <pm:header title="Inicio" fixed="true">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="#{indexIndex}" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+                <ui:include src="inicio/_inicio.xhtml" />
+            </pm:content>
+            <pm:footer fixed="true">
+                <p:outputLabel value="SIRE, Copyright © 2016" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
+
+        <pm:page id="pedido">
+            <pm:header title="Pedido" fixed="true">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="#{indexPedido}" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+                <ui:include src="pedido/_createPedido.xhtml" />
+            </pm:content>
+            <pm:footer fixed="true">
+                <p:outputLabel value="SIRE, Copyright © 2016" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
+
+        <pm:page id="cobro">
+            <pm:header title="Cobro" fixed="true">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="#{indexCobro}" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+                <ui:include src="cobro/_createCobro.xhtml" />
+            </pm:content>
+            <pm:footer fixed="true">
+                <p:outputLabel value="SIRE, Copyright © 2016" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
+
+        <pm:page id="visita">
+            <pm:header title="Visita" fixed="true">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="#{indexVisita}" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+                <ui:include src="visita/_createVisita.xhtml" />
+            </pm:content>
+            <pm:footer fixed="true">
+                <p:outputLabel value="SIRE, Copyright © 2016" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
+
+        <pm:page id="cajas">
+            <pm:header title="Cajas" fixed="true">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="#{indexCajas}" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+                <ui:include src="caja/_createCaja.xhtml" />
+            </pm:content>
+            <pm:footer fixed="true">
+                <p:outputLabel value="SIRE, Copyright © 2016" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
+
+        <pm:page id="asistencia">
+            <pm:header title="Asistencia" fixed="true">
+                <ui:include src="menu/_cabecera.xhtml" >
+                    <ui:param name="index" value="#{indexAsistencia}" />
+                </ui:include>
+            </pm:header>
+            <pm:content>
+                <ui:include src="asistencia/_createAsistencia.xhtml"/>
+            </pm:content>
+            <pm:footer fixed="true">
+                <p:outputLabel value="SIRE, Copyright © 2016" style="text-align: center"/>
+            </pm:footer>
+        </pm:page>
+    </h:body>
+
+</html>

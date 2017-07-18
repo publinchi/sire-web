@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.sire_SIRE-Entities_jar_1.0.0PU" transaction-type="RESOURCE_LOCAL">
+    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+    <class>com.sire.entities.FacParametros</class>
+    <class>com.sire.entities.CxcFormaPago</class>
+    <class>com.sire.entities.CxcCheque</class>
+    <class>com.sire.entities.CxcPagoContado</class>
+    <class>com.sire.entities.CxcDocCobrar</class>
+    <class>com.sire.entities.BanBancos</class>
+    <class>com.sire.entities.FacTarCredito</class>
+    <class>com.sire.entities.CxcAbonoD</class>
+    <class>com.sire.entities.CxcAbonoC</class>
+    <class>com.sire.entities.CxcInforme</class>
+    <class>com.sire.entities.BanCtaCte</class>
+    <class>com.sire.entities.GnrUsuaMod</class>
+    <class>com.sire.entities.VCobros</class>
+    <class>com.sire.entities.GnrLogHistorico</class>
+    <class>com.sire.entities.VVendedor</class>
+    <class>com.sire.entities.ComVisitaCliente</class>
+    <properties>
+      <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:49161:XE"/>
+      <property name="javax.persistence.jdbc.password" value="dipronor"/>
+      <property name="javax.persistence.jdbc.driver" value="oracle.jdbc.OracleDriver"/>
+      <property name="javax.persistence.jdbc.user" value="dipronor"/>
+    </properties>
+  </persistence-unit>
+</persistence>

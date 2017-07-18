@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+  <persistence-unit name="com.sire_SIRE-WS_war_1.0.0PU" transaction-type="JTA">
+    <jta-data-source>jdbc/sire</jta-data-source>
+    <class>com.sire.entities.FacCatalogoGeneral</class>
+    <class>com.sire.entities.FacCatalogoPrecioC</class>
+    <class>com.sire.entities.FacCatalogoPrecioD</class>
+    <class>com.sire.entities.GnrDivisa</class>
+    <class>com.sire.entities.GnrEmpresa</class>
+    <class>com.sire.entities.GnrPersona</class>
+    <class>com.sire.entities.GnrUsuarios</class>
+    <class>com.sire.entities.InvArticulo</class>
+    <class>com.sire.entities.InvBodega</class>
+    <class>com.sire.entities.InvBodegaArt</class>
+    <class>com.sire.entities.InvGrupo1</class>
+    <class>com.sire.entities.InvGrupo2</class>
+    <class>com.sire.entities.InvGrupo3</class>
+    <class>com.sire.entities.InvGrupoProveedor</class>
+    <class>com.sire.entities.InvInventario</class>
+    <class>com.sire.entities.InvMarcas</class>
+    <class>com.sire.entities.InvMovimientoCab</class>
+    <class>com.sire.entities.InvMovimientoCabF</class>
+    <class>com.sire.entities.InvMovimientoDtll</class>
+    <class>com.sire.entities.InvMovimientoDtllF</class>
+    <class>com.sire.entities.InvProveedor</class>
+    <class>com.sire.entities.InvTransacciones</class>
+    <class>com.sire.entities.InvUnidadAlternativa</class>
+    <class>com.sire.entities.InvUnidadMedida</class>
+    <class>com.sire.entities.VCliente</class>
+    <class>com.sire.entities.CxcClaseCliente</class>
+    <class>com.sire.entities.CxcCliente</class>
+    <class>com.sire.entities.CxcSector</class>
+    <class>com.sire.entities.CxcZona</class>
+    <class>com.sire.entities.GnrContadorDoc</class>
+    <class>com.sire.entities.GnrModuloDoc</class>
+    <class>com.sire.entities.FacTmpFactC</class>
+    <class>com.sire.entities.FacTmpFactD</class>
+    <class>com.sire.entities.FacDescVol</class>
+    <class>com.sire.entities.InvIva</class>
+    <class>com.sire.entities.CxcFormaPago</class>
+    <class>com.sire.entities.FacParametros</class>
+    <class>com.sire.entities.BanBancos</class>
+    <class>com.sire.entities.BanCtaCte</class>
+    <class>com.sire.entities.CxcAbonoC</class>
+    <class>com.sire.entities.CxcAbonoD</class>
+    <class>com.sire.entities.CxcCheque</class>
+    <class>com.sire.entities.CxcDocCobrar</class>
+    <class>com.sire.entities.CxcInforme</class>
+    <class>com.sire.entities.CxcPagoContado</class>
+    <class>com.sire.entities.FacTarCredito</class>
+    <class>com.sire.entities.GnrUsuaMod</class>
+    <class>com.sire.entities.VCobros</class>
+    <class>com.sire.entities.GnrLogHistorico</class>
+    <class>com.sire.entities.CajFacturaEnviada</class>
+    <class>com.sire.entities.PryProyecto</class>
+    <class>com.sire.entities.CajRubro</class>
+    <class>com.sire.entities.PrySupervisor</class>
+    <class>com.sire.entities.PrySupervisorUsuario</class>
+    <class>com.sire.entities.VVendedor</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
+    <properties>
+      <property name="eclipselink.logging.level" value="FINE"/>
+      <property name="eclipselink.logging.level.sql" value="FINE"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
+    </properties>
+  </persistence-unit>
+</persistence>

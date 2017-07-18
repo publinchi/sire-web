@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <p:dialog id="clienteDialog" header="Clientes" widgetVar="clienteDialog" showEffect="pop"
+              resizable="false" appendTo="@(body)" positionType="absolute" 
+              position="center">
+        <h:form id="form">
+            <p:selectOneRadio id="modo" 
+                              value="#{customers.modo}" 
+                              columns="1" 
+                              immediate="true"
+                              layout="lineDirection"
+                              styleClass="selectRadio">
+                <f:selectItem itemLabel="Código" itemValue="c" />
+                <f:selectItem itemLabel="Razón Social" itemValue="r" />
+                <f:selectItem itemLabel="Apellidos Nombres" itemValue="n" />
+                <p:ajax event="change" listener="#{customers.cambioModo}"
+                        update="@form"/>
+            </p:selectOneRadio>
+            <h:panelGrid columns="2">
+                <p:inputText id="busca" placeholder="Buscar Cliente" type="search" 
+                             value="${customers.input}"/>
+                <p:commandButton id="botonBuscar" icon="ui-icon-search" 
+                                 actionListener="${customers.findClientes}"
+                                 update="@form"/>
+            </h:panelGrid>
+            <h:outputLabel value="No hay registros!!!" rendered="${customers.clientes.size() eq 0}"/>
+            <p:dataTable id="dataList" var="c" 
+                         value="#{customers.clientes}" 
+                         selectionMode="single" reflow="false" rows="5" 
+                         paginator="true"  
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                         paginatorPosition="bottom" 
+                         paginatorAlwaysVisible="false"
+                         pageLinks="3"
+                         rowKey="#{c.codCliente}" 
+                         tableStyleClass="ui-table-columntoggle"
+                         tableStyle="width:auto"
+                         rendered="#{customers.clientes.size() gt 0}"
+                         style="font-size:12px;">
+                <p:ajax event="tap" listener="#{customers.tapCliente}" 
+                        oncomplete="PF('clienteDialog').hide();" 
+                        update="#{update}
+                        @form
+                        cobro:accordionPanel:formaPagoForm" />
+                <p:column headerText="Código" priority="1">
+                    <h:outputText value="#{c.codCliente}" />
+                </p:column>
+                <p:column headerText="Apellidos Nombres" priority="1" rendered="#{customers.modo == 'n' or customers.modo == 'c' }">
+                    <h:outputText value="#{c.apellidos} #{c.nombres}" />
+                </p:column>
+                <p:column headerText="Razón Social" priority="1" rendered="#{customers.modo == 'r'}">
+                    <h:outputText value="#{c.razonSocial}" />
+                </p:column>          
+            </p:dataTable>
+        </h:form>
+    </p:dialog>
+</html>

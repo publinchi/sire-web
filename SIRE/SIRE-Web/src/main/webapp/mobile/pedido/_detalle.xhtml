@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <pm:field>
+        <p:outputLabel for="articulo" value="Artículo:" />
+        <p:commandButton id="articulo" value="Buscar Artículo" onclick="PF('dlg2').show();" type="button" />               
+    </pm:field>
+    
+    <ui:include src="_dialogArticulos.xhtml" />
+    
+    <ui:include src="_formTablaArticulos.xhtml" />
+
+    <ui:include src="_dialogArticulo.xhtml" />
+    
+</html>

@@ -1,0 +1,31 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">
+        Administración - <span class="subitem">Pedido</span>
+    </ui:define>
+
+    <ui:define name="description">
+        Registro de Pedido
+    </ui:define>
+
+    <ui:define name="implementation">
+
+        <h:form id="form"> 
+            <p:commandButton id="crear" value="Crear" onclick="PF('dlg2').show();" />
+            <p:messages id="messages" autoUpdate="false" closable="true"/>
+
+            <br></br>
+
+            <!--<ui:include src="_listAreas.xhtml" />-->
+        </h:form> 
+
+        <ui:include src="_createVisita.xhtml" />
+        <!--<ui:include src="_editAreas.xhtml" />-->
+    </ui:define>
+</ui:composition>
+

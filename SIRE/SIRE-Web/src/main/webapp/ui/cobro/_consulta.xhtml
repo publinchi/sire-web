@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:form id="consultarPagos">
+        <h2>Fecha Inicio</h2>
+        <p:calendar id="fechaInicio" value="${pagosBean.fechaInicio}" 
+                    pattern="dd/MM/yyyy" mask="true" required="true"
+                    requiredMessage="Seleccione fecha inicio."  />
+        <h2>Fecha Fin</h2>
+        <p:calendar id="fechaFin" value="${pagosBean.fechaFin}" 
+                    pattern="dd/MM/yyyy" mask="true" required="true"
+                    requiredMessage="Seleccione fecha fin."/>
+        <p:commandButton id="botonConsultar" label="Consultar Pagos"
+                         actionListener="${pagosBean.consultarPagos}"
+                         value="Consultar Pagos" update="@form"/>
+        <h:outputLabel value="No hay pagos!!!" rendered="${pagosBean.pagos.size() eq 0}"/>
+        <p:dataTable id="dataListPagos" var="pago" 
+                     value="#{pagosBean.pagos}" 
+                     selectionMode="single" reflow="false" rows="5" 
+                     paginator="true" 
+                     pageLinks="3"
+                     paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                     paginatorPosition="bottom" 
+                     paginatorAlwaysVisible="false"
+                     rowKey="#{pago.cxcPagoContado.cxcPagoContadoPK}" 
+                     tableStyleClass="ui-table-columntoggle"
+                     tableStyle="width:auto"
+                     rendered="#{pagosBean.pagos.size() gt 0}"
+                     style="font-size:9.5px;">
+            <p:ajax event="rowSelect" listener="#{pagosBean.tapPago}" 
+                    update="@form" />
+            <p:column headerText="# Pago" priority="1">
+                <h:outputText value="#{pago.cxcPagoContado.cxcPagoContadoPK.numPago}" />
+            </p:column>
+            <p:column headerText="Fec.Doc." priority="1">
+                <h:outputText value="#{pago.cxcPagoContado.fechaDocumento}" />
+            </p:column>
+            <p:column headerText="Cod.Cli." priority="1">
+                <h:outputText value="#{pago.cxcPagoContado.cxcCliente.cxcClientePK.codCliente}" />
+            </p:column>
+            <p:column headerText="Pag.Tot." priority="1">
+                <h:outputText value="&#36;#{pago.cxcPagoContado.pagoTotal}" />
+            </p:column>
+        </p:dataTable>
+    </h:form>
+</html>
+<!--icon="ui-icon-search" -->
