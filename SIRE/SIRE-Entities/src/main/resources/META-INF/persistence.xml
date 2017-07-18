@@ -17,6 +17,7 @@
     <class>com.sire.entities.VCobros</class>
     <class>com.sire.entities.GnrLogHistorico</class>
     <class>com.sire.entities.VVendedor</class>
+    <class>com.sire.entities.ComVisitaCliente</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:oracle:thin:@localhost:49161:XE"/>
       <property name="javax.persistence.jdbc.password" value="dipronor"/>

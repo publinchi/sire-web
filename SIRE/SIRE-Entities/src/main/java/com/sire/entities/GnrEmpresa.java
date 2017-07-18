@@ -53,6 +53,9 @@ import javax.xml.bind.annotation.XmlTransient;
 public class GnrEmpresa implements Serializable {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<ComVisitaCliente> comVisitaClienteList;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<PrySupervisor> prySupervisorList;
 
     @Column(name = "ESTADO")
@@ -463,6 +466,15 @@ public class GnrEmpresa implements Serializable {
 
     public void setPrySupervisorList(List<PrySupervisor> prySupervisorList) {
         this.prySupervisorList = prySupervisorList;
+    }
+
+    @XmlTransient
+    public List<ComVisitaCliente> getComVisitaClienteList() {
+        return comVisitaClienteList;
+    }
+
+    public void setComVisitaClienteList(List<ComVisitaCliente> comVisitaClienteList) {
+        this.comVisitaClienteList = comVisitaClienteList;
     }
     
 }
