@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+
+    <h:form id="form">
+        <p:growl id="message" showDetail="true" sticky="true" autoUpdate="true"/>
+
+        <p:outputLabel for="observacion" value="Observacion:" />
+        <p:inputTextarea id="observacion" rows="6" cols="33" value="#{articulosBean.observacion}"/>
+
+        <p:commandButton value="Enviar" update="@form:message" 
+                         onclick="getLocation();"/>
+    </h:form>
+</html>

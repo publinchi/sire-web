@@ -1,0 +1,83 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <p:panel id="cxcDocCobrarPanel" widgetVar="cxcDocCobrarPanel" 
+             header="Documentos por cobrar:"
+             toggleable="true" collapsed="false" >
+        <p:outputLabel id="infoClienteLabel"
+                       value="Cliente: #{cliente.cliente.codCliente} - #{cliente.cliente.razonSocial}"
+                       rendered="#{cliente.cliente.codCliente gt 0}"/>
+        <p:outputLabel id="seleccioneClienteLabel"
+                       value="Por favor seleccione el cliente."
+                       rendered="#{cliente.cliente.codCliente eq null}"/>
+        <p:dataTable id="cxcDocCobrarDataTable"
+                     value="#{cxcDocCobrarBean.cxcDocCobrarList}" 
+                     var="cxcDocCobrar" 
+                     rowKey="#{cxcDocCobrar.cxcDocCobrarPK.numDocumento}"
+                     selectionMode="single" 
+                     reflow="false" 
+                     rows="5" 
+                     paginator="true" 
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}"
+                     paginatorPosition="bottom" 
+                     paginatorAlwaysVisible="false"
+                     tableStyleClass="ui-table-columntoggle"
+                     tableStyle="width:auto;height:auto"
+                     rendered="#{cxcDocCobrarBean.cxcDocCobrarList.size() gt 0}"
+                     style="font-size:12px;">
+            <p:ajax event="tap" listener="#{cxcDocCobrarBean.seleccionarCxcDocCobrar}" 
+                    update="cobro:accordionPanel:dialogDocCobrar" 
+                    oncomplete="PF('dialogDocCobrar').show();"/>
+            <p:column headerText="Cod. Doc." priority="2"
+                      style="vertical-align: middle">
+                <h:outputText value="#{cxcDocCobrar.cxcDocCobrarPK.codDocumento}" />
+            </p:column>
+            <p:column headerText="Num Doc." priority="1"
+                      style="vertical-align: middle">
+                <h:outputText value="#{cxcDocCobrar.cxcDocCobrarPK.numDocumento}" />
+            </p:column>
+            <p:column headerText="Fec. Emi." priority="2"
+                      style="vertical-align: middle">
+                <h:outputText value="#{cxcDocCobrar.fechaEmision}" >
+                    <f:convertDateTime pattern="dd-MM-yyyy" />
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Fec. Ven." priority="2"
+                      style="vertical-align: middle">
+                <h:outputText value="#{cxcDocCobrar.fechaVencimiento}" >
+                    <f:convertDateTime pattern="dd-MM-yyyy" />
+                </h:outputText>
+            </p:column>
+            <p:column headerText="Capital" priority="1"
+                      style="vertical-align: middle">
+                <h:outputText value="&#36; #{cxcDocCobrar.capital}" />
+            </p:column>
+            <p:column headerText="Valor" priority="1"
+                      style="vertical-align: middle">
+                <!--pe:inputNumber value="#{cxcDocCobrar.valorDocumento}" 
+                                readonly="true" symbol="$ "  
+                                roundMethod="B"  
+                                decimalPlaces="2" type="text"/-->  
+                <h:outputText value="&#36; #{cxcDocCobrar.valorDocumento}" />
+            </p:column>
+            <p:column headerText="Saldo" priority="1"
+                      style="vertical-align: middle;">
+                <!--<pe:inputNumber value="#{cxcDocCobrar.saldoDocumento}"
+                readonly="true" symbol="$ "  
+                roundMethod="B"  
+                decimalPlaces="2"/>  --> 
+                <h:outputText value="&#36; #{cxcDocCobrar.saldoDocumento}" />
+            </p:column>
+            <p:columnGroup type="footer">
+                <p:row>
+                    <p:column style="text-align:right" footerText="T. Capital:" />
+                    <p:column footerText="&#36; #{cxcDocCobrarBean.totalCapital}" />
+                    <p:column style="text-align:right" footerText="T. Saldo:"/>
+                    <p:column footerText="&#36; #{cxcDocCobrarBean.totalSaldo}" />
+                </p:row>
+            </p:columnGroup>
+        </p:dataTable>
+    </p:panel>
+</html>

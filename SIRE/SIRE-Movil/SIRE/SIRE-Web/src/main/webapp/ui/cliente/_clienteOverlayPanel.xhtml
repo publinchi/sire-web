@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <p:overlayPanel id="clienteOverlayPanel" for="#{buscarButton}" 
+                    widgetVar="pnlCliente" 
+                    at="right" 
+                    showEffect="overlay">
+        <h2>Cliente</h2>
+        <ui:include src="_cliente.xhtml" id="_cliente"/>
+    </p:overlayPanel>
+</html>

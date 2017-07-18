@@ -1,0 +1,13 @@
+{
+    "elements": {
+        "ion-nav": {},
+        "ion-menu": {},
+        "ion-header": {},
+        "p-accordion": {},
+        "p:clock": {},
+        "ion-content": {},
+        "p:tab": {},
+        "p-accordionTab": {}
+    },
+    "attributes": {}
+}

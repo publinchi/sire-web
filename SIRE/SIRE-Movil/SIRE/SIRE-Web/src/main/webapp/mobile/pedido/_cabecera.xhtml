@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pm="http://primefaces.org/mobile"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
+    <pm:field>
+        <p:outputLabel for="fechaHora"  value="Fecha:" />
+        <p:clock id="fechaHora" pattern="dd/MM/yyyy HH:mm:ss" mode="server" />
+    </pm:field>
+
+    <pm:field>
+        <p:outputLabel for="tipoPago" value="Tipo Pago:" />
+        <p:selectOneMenu id="tipoPago" value="#{articulosBean.invMovimientoCab.formaPago}">
+            <f:selectItem itemLabel="Seleccione Tipo" itemValue="" />
+            <f:selectItem itemLabel="CONTADO" itemValue="0" />
+            <f:selectItem itemLabel="CREDITO" itemValue="1" />
+        </p:selectOneMenu>
+    </pm:field>
+
+    <pm:field>
+        <p:outputLabel for="ubicacion" value="Ubicación:" />
+        <p:commandButton id="btn" type="button" value="Ver Mapa" onclick="renderMap();
+                PF('gmapDialog').show()" />
+    </pm:field>
+
+    <pm:field>
+        <h:inputHidden id="lat" value="#{addMarkersView.lat}" />
+        <h:inputHidden id="lng" value="#{addMarkersView.lng}" />
+        <p:inputText id="ubicacion" value="#{mapaBean.ciudad}, #{mapaBean.direccion}" readonly="false"/>
+    </pm:field>
+
+    <pm:field>
+        <p:outputLabel for="vendedor" value="Vendedor:" />
+        <h:outputText id="vendedor" value="#{user.current.nombreUsuario}"/>
+    </pm:field>
+
+    <pm:field>
+        <p:outputLabel for="cliente" value="Cliente:" />
+        <!--<p:inputText id="cliente" placeholder="Buscar Cliente" type="search"/>-->
+        <p:commandButton id="cliente" value="Buscar Cliente" onclick="PF('dlg1').show();" type="button" />               
+    </pm:field>
+
+    <pm:field>
+        <p:commandButton id="btn-cliente" value="Cliente" type="button"/>
+    </pm:field>
+    <p:overlayPanel id="overlayPanel" for="btn-cliente" widgetVar="pnlCliente" at="right" showEffect="overlay">
+        <h2>Cliente</h2>
+        <ui:include src="_cliente.xhtml" id="_cliente"/>
+    </p:overlayPanel>
+
+    <p:dialog header="Clientes" widgetVar="dlg1" showEffect="pop">
+        <h:form id="form">
+            <p:outputLabel for="busca" value="Busca:" />
+            <h:panelGrid columns="2">
+                <p:inputText id="busca" placeholder="Buscar Cliente" type="search" value="${customers.input}"/>
+                <p:commandButton id="botonBuscar" icon="ui-icon-search" actionListener="${customers.findClientes}" update="@form:dataList"/>
+            </h:panelGrid>
+            <p:dataList id="dataList" value="#{customers.clientes}" var="c" pt:data-inset="true">
+                <p:ajax event="tap" listener="#{customers.tapCliente}" update="pedido:accordionPanel:overlayPanel" oncomplete="PF('dlg1').hide();"/>
+                <h:outputText value="#{c.codCliente} - #{c.apellidos} #{c.nombres}" />
+            </p:dataList>
+        </h:form>
+    </p:dialog>
+
+    <p:dialog id="gmapDialog" widgetVar="gmapDialog" modal="true" style="width:100%;height:100%">
+        <p:gmap 
+            id="gmap"
+            center="41.381542, 2.122893"
+            zoom="15" 
+            type="ROADMAP" 
+            style="width: 100%;height: 400px" 
+            mapTypeControl="true"
+            navigationControl="true"
+            widgetVar="gmap" 
+            model="#{mapaBean.emptyModel}"/>
+        <p:separator />
+        <h:form>
+            <p:commandButton value="Mi Localización" 
+                             actionListener="#{mapaBean.seleccionarLocalizacion}" 
+                             onclick="findMe()"
+                             update="pedido:accordionPanel:ubicacion"/>
+        </h:form>
+    </p:dialog>
+
+</html>

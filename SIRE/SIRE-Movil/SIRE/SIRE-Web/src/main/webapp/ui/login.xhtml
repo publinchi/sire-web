@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pm="http://primefaces.org/mobile">
+    <f:view renderKitId="PRIMEFACES_MOBILE" />
+    <h:head>
+        <title>Login</title>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/mobile/jquery-mobile.css.xhtml?ln=primefaces"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/mobile/primefaces-mobile.css.xhtml?ln=primefaces"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/fa/font-awesome.css.xhtml?ln=primefaces"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/mobile/css/demo.css.xhtml"/>
+        <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/main/css/sh.css.xhtml"/>
+
+    </h:head>
+    <h:body>
+        <pm:page id="login">
+            <h:form id="frmLogin" >                
+                <p:growl id="growl" sticky="false" showDetail="true" life="3000" />
+                <p:panel id="basic" header="Ingresar Usuario" style="margin-bottom:20px">
+                    <pm:content>
+                        <p:outputLabel for="username" value="Usuario:" />
+                        <p:inputText id="username" value="#{user.userName}" required="true" label="Usuario" />
+                    </pm:content>
+                    <pm:content>
+                        <p:outputLabel for="password" value="Contraseña:" />
+                        <p:password id="password" value="#{user.password}" required="true" label="Contraseña" />
+                    </pm:content>
+                    <pm:content>
+                        <p:outputLabel for="empresa" value="Empresa:" />
+                        <p:selectOneMenu id="empresa" value="#{user.gnrEmpresa.codEmpresa}" required="true" >
+                            <f:selectItems value="#{empresasBean.gnrEmpresas}" 
+                                           var="empresa" 
+                                           itemLabel="#{empresa.descEmpresa}" 
+                                           itemValue="#{empresa.codEmpresa}" />
+                        </p:selectOneMenu>
+                    </pm:content>
+                    <pm:content>
+                        <p:commandButton value="Login" update="growl" actionListener="#{user.login()}"/>                                  
+                    </pm:content>
+                </p:panel>
+            </h:form>
+        </pm:page>
+    </h:body>
+</html>
+
