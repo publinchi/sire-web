@@ -67,8 +67,17 @@ public class VisitasBean {
     }
 
     public String enviar() {
-        LOGGER.info("LAT: " + mapa.getLat());
-        LOGGER.info("LNG: " + mapa.getLng());
+        String lat = FacesContext.getCurrentInstance().
+                getExternalContext().getRequestParameterMap().get("lat");
+
+        String lng = FacesContext.getCurrentInstance().
+                getExternalContext().getRequestParameterMap().get("lng");
+
+        LOGGER.info("#" + lat);
+        LOGGER.info("#" + lng);
+
+        mapa.setLat(lat);
+        mapa.setLng(lng);
         mapa._processLocation();
 
         try {
