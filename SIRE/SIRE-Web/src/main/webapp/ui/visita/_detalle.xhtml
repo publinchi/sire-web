@@ -11,9 +11,9 @@
         <p:growl id="message" showDetail="true" sticky="true" autoUpdate="true"/>
 
         <p:outputLabel for="observacion" value="Observacion:" />
-        <p:inputTextarea id="observacion" rows="6" cols="33" value="#{articulosBean.observacion}"/>
+        <p:inputTextarea id="observacion" rows="6" cols="33" value="#{visitasBean.observacion}"/>
 
         <p:commandButton value="Enviar" update="@form:message" 
-                         onclick="getLocation();"/>
+                         action="#{visitasBean.enviar()}" onclick="getLocation();"/>
     </h:form>
 </html>
