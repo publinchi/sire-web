@@ -10,39 +10,13 @@ import com.google.gson.GsonBuilder;
 import com.sire.entities.ComVisitaCliente;
 import com.sire.entities.ComVisitaClientePK;
 import com.sire.entities.CxcCliente;
-import com.sire.entities.FacCatalogoPrecioD;
-import com.sire.entities.FacParametros;
-import com.sire.entities.FacTmpFactC;
-import com.sire.entities.FacTmpFactD;
 import com.sire.entities.GnrEmpresa;
-import com.sire.entities.GnrLogHistorico;
-import com.sire.entities.GnrLogHistoricoPK;
-import com.sire.entities.GnrUsuarios;
-import com.sire.entities.InvArticulo;
-import com.sire.entities.InvMovimientoCab;
-import com.sire.entities.InvMovimientoDtll;
-import com.sire.entities.Pedido;
-import com.sire.entities.VCliente;
 import com.sire.exception.ClienteException;
 import com.sire.exception.EmptyException;
 import com.sire.exception.GPSException;
-import com.sire.exception.LimitException;
-import com.sire.exception.PayWayException;
-import com.sire.exception.VendedorException;
 import com.sire.rs.client.ComVisitaClienteFacadeREST;
-import com.sire.rs.client.CxcDocCobrarFacadeREST;
-import com.sire.rs.client.FacDescVolFacadeREST;
-import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.GnrContadorDocFacadeREST;
-import com.sire.rs.client.InvArticuloFacadeREST;
-import com.sire.rs.client.InvIvaFacadeREST;
-import com.sire.rs.client.InvMovimientoCabFacadeREST;
-import com.sire.rs.client.InvUnidadAlternativaFacadeREST;
-import com.sire.rs.client.VClienteFacadeREST;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -53,7 +27,6 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.model.LazyDataModel;
 
 /**
  *
@@ -79,7 +52,6 @@ public class VisitasBean {
     private CustomersBean clientes;
     @ManagedProperty("#{mapa}")
     private MapaBean mapa;
-    private LazyDataModel<InvArticulo> lazyModel;
 
     //Mensaje
     private String cantidadExcedida, colorCantidadExcedida = "black", observacion;
@@ -132,14 +104,14 @@ public class VisitasBean {
 
             limpiar();
 
-            addMessage("Pedido enviado exitosamente.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
+            addMessage("Visita enviado exitosamente.", "Num. Pedido: " + "???", FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
         } catch (NullPointerException | GPSException | EmptyException | ClienteException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
-            return "pedido?faces-redirect=true";
+            return "visita?faces-redirect=true";
         }
     }
 
