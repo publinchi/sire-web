@@ -11,7 +11,8 @@
         <p:growl id="message" showDetail="true" sticky="true" autoUpdate="true"/>
 
         <p:outputLabel for="observacion" value="Observacion:" />
-        <p:inputTextarea id="observacion" rows="6" cols="33" value="#{visitasBean.observacion}"/>
+        <p:inputTextarea id="observacion" rows="6" cols="33" 
+                         value="#{visitasBean.observacion}" />
 
         <p:commandButton id="geolocalizar" type="button" 
                          onclick="getLocation();" value="Geolocalizar"
@@ -19,7 +20,7 @@
 
         <p:remoteCommand name="processLocation" 
                          actionListener="#{mapa.processLocation()}"
-                         action="#{visitasBean.enviar()}"
+                         action="#{visitasBean.enviar(visitasBean.observacion)}"
                          process="@this" partialSubmit="true"/>
 
     </h:form>

@@ -29,7 +29,6 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
-import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -66,7 +65,7 @@ public class VisitasBean {
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }
 
-    public String enviar() {
+    public String enviar(String observacion) {
         try {
             if (mapa.getDireccion() == null) {
                 throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
