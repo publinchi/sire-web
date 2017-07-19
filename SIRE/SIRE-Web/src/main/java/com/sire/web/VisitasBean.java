@@ -67,17 +67,6 @@ public class VisitasBean {
     }
 
     public String enviar() {
-        RequestContext.getCurrentInstance().execute("layer.on('click‌​', getLocation)");
-
-        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
-
-        String lat = params.get("lat");
-        String lng = params.get("lng");
-
-        mapa.setLat(lat);
-        mapa.setLng(lng);
-        mapa._processLocation();
-
         try {
             if (mapa.getDireccion() == null) {
                 throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");

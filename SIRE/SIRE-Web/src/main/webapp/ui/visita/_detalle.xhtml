@@ -13,15 +13,14 @@
         <p:outputLabel for="observacion" value="Observacion:" />
         <p:inputTextarea id="observacion" rows="6" cols="33" value="#{visitasBean.observacion}"/>
 
-        <p:remoteCommand name="processLocation" partialSubmit="true" process="@this"  
-                         action="#{visitasBean.enviar()}"/>
+        <p:commandButton id="geolocalizar" type="button" 
+                         onclick="getLocation();" value="Geolocalizar"
+                         styleClass="ui-btn-inline"/>
 
+        <p:remoteCommand name="processLocation" 
+                         actionListener="#{mapa.processLocation()}"
+                         action="#{visitasBean.enviar()}"
+                         process="@this" partialSubmit="true"/>
 
-        <!--        <p:remoteCommand name="processLocation" 
-                                 actionListener="#{mapa.processLocation()}"
-                                 process="@this" partialSubmit="true"/>-->
-        <!--        <p:commandButton value="Enviar" update="@form:message" 
-                                 actionListener="#{visitasBean.enviar()}"
-                                 onstart="getLocation()" />-->
     </h:form>
 </html>
