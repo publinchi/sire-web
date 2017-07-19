@@ -152,10 +152,15 @@
             </p:tabView>
 
             <h:outputText id="diferenciaLabel" value="Diferencia: &#36; #{cxcDocCobrarBean.diferencia}"/>
+
             <p:commandButton id="enviarButton" value="Enviar" 
-                             action="#{cxcDocCobrarBean.enviar()}"
                              disabled="#{cxcDocCobrarBean.botonEnviarBloqueado}"
                              onclick="getLocation();"/>
+
+            <p:remoteCommand name="processLocation" 
+                             actionListener="#{mapa.processLocation()}"
+                             process="@form" partialSubmit="true"
+                             action="#{cxcDocCobrarBean.enviar()}"/>
         </h:form>
     </p:panel>
 </html>
