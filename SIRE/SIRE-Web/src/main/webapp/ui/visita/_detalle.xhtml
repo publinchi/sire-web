@@ -18,5 +18,9 @@
                          onclick="getLocation();" value="Enviar"
                          styleClass="ui-btn-inline" process="@form"
                          action="#{visitasBean.enviar(visitasBean.observacion)}"/>
+
+        <p:remoteCommand name="processLocation" 
+                         actionListener="#{mapa.processLocation()}"
+                         process="@form" partialSubmit="true"/>
     </h:form>
 </html>
