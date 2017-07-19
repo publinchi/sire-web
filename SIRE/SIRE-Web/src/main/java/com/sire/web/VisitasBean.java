@@ -17,6 +17,8 @@ import com.sire.exception.GPSException;
 import com.sire.rs.client.ComVisitaClienteFacadeREST;
 import com.sire.rs.client.GnrContadorDocFacadeREST;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
@@ -65,9 +67,8 @@ public class VisitasBean {
     }
 
     public String enviar() {
-        RequestContext.getCurrentInstance().execute("alert('Before getLocation');");
-        RequestContext.getCurrentInstance().execute("getLocation();");
-        RequestContext.getCurrentInstance().execute("alert('After getLocation');");
+        LOGGER.info("LAT: " + mapa.getLat());
+        LOGGER.info("LNG: " + mapa.getLng());
 
         try {
             if (mapa.getDireccion() == null) {
