@@ -67,19 +67,12 @@ public class VisitasBean {
     }
 
     public String enviar() {
-        Map map = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap();
+        RequestContext.getCurrentInstance().execute("layer.on('click‌​', getLocation)");
 
-        LOGGER.info("KEYS: " + map.keySet().toString());
+        Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 
-        String lat = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("visita:accordionPanel:visitaForm:lat_input");
-
-        String lng = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("visita:accordionPanel:visitaForm:lng_input");
-
-        LOGGER.info("#" + lat);
-        LOGGER.info("#" + lng);
+        String lat = params.get("lat");
+        String lng = params.get("lng");
 
         mapa.setLat(lat);
         mapa.setLng(lng);
