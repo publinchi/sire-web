@@ -73,10 +73,10 @@ public class VisitasBean {
         LOGGER.info("KEYS: " + map.keySet().toString());
 
         String lat = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("lat");
+                getExternalContext().getRequestParameterMap().get("visita:accordionPanel:visitaForm:lat_input,");
 
         String lng = FacesContext.getCurrentInstance().
-                getExternalContext().getRequestParameterMap().get("lng");
+                getExternalContext().getRequestParameterMap().get("visita:accordionPanel:visitaForm:lng_input,");
 
         LOGGER.info("#" + lat);
         LOGGER.info("#" + lng);
