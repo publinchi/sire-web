@@ -67,6 +67,11 @@ public class VisitasBean {
     }
 
     public String enviar() {
+        Map map = FacesContext.getCurrentInstance().
+                getExternalContext().getRequestParameterMap();
+
+        LOGGER.info("KEYS: " + map.keySet().toString());
+
         String lat = FacesContext.getCurrentInstance().
                 getExternalContext().getRequestParameterMap().get("lat");
 
