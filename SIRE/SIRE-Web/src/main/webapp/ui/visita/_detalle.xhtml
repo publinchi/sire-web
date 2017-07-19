@@ -7,13 +7,16 @@
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
-    <h:form id="form">
+    <h:form id="visitaForm">
+        <h:inputHidden id="lat" value="#{visitasBean.mapa.lat}" />
+        <h:inputHidden id="lng" value="#{visitasBean.mapa.lng}" />
+
         <p:growl id="message" showDetail="true" sticky="true" autoUpdate="true"/>
 
         <p:outputLabel for="observacion" value="Observacion:" />
         <p:inputTextarea id="observacion" rows="6" cols="33" value="#{visitasBean.observacion}"/>
 
         <p:commandButton value="Enviar" update="@form:message" 
-                         action="#{visitasBean.enviar()}"/>
+                         action="#{visitasBean.enviar()}" onclick="getLocation()"/>
     </h:form>
 </html>
