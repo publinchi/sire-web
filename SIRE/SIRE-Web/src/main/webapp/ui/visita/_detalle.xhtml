@@ -18,6 +18,6 @@
 
         <p:commandButton value="Enviar" update="@form:message" 
                          actionListener="#{visitasBean.enviar()}"
-                         onclick="getLocation()"/>
+                         onstart="getLocation()" />
     </h:form>
 </html>
