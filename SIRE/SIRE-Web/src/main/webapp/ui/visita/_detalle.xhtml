@@ -8,10 +8,10 @@
       xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 
     <h:form id="visitaForm">
-        <h:inputHidden id="lat" value="#{visitasBean.mapa.lat}" />
-        <h:inputHidden id="lng" value="#{visitasBean.mapa.lng}" />
-
         <p:growl id="message" showDetail="true" sticky="true" autoUpdate="true"/>
+
+        <p:inputText id="lat" type="hidden" value="#{visitasBean.mapa.lat}"/>
+        <p:inputText id="lng" type="hidden" value="#{visitasBean.mapa.lng}"/>
 
         <p:outputLabel for="observacion" value="Observacion:" />
         <p:inputTextarea id="observacion" rows="6" cols="33" value="#{visitasBean.observacion}"/>
