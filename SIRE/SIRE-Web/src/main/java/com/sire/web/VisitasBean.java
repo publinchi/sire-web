@@ -106,7 +106,7 @@ public class VisitasBean {
 
             limpiar();
 
-            addMessage("Visita enviada exitosamente.", "Num. Pedido: " + "???", FacesMessage.SEVERITY_INFO);
+            addMessage("Visita enviada exitosamente.", "Num. Visita: " + "???", FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
