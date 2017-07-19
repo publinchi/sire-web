@@ -17,7 +17,7 @@
         <p:commandButton id="geolocalizar" type="button" 
                          onclick="getLocation();" value="Enviar"
                          styleClass="ui-btn-inline" process="@form"
-                         action="#{visitasBean.enviar(visitasBean.observacion)}"/>
+                         action="#{visitasBean.enviar()}"/>
 
         <p:remoteCommand name="processLocation" 
                          actionListener="#{mapa.processLocation()}"

@@ -65,7 +65,7 @@ public class VisitasBean {
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }
 
-    public String enviar(String observacion) {
+    public String enviar() {
         try {
             if (mapa.getDireccion() == null) {
                 throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
