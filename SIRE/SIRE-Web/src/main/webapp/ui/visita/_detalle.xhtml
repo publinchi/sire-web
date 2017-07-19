@@ -16,7 +16,7 @@
 
         <p:commandButton id="geolocalizar" type="button" 
                          onclick="getLocation();" value="Enviar"
-                         styleClass="ui-btn-inline"
+                         styleClass="ui-btn-inline" process="@form"
                          action="#{visitasBean.enviar(visitasBean.observacion)}"/>
     </h:form>
 </html>
