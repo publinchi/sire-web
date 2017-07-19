@@ -27,6 +27,7 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import lombok.Getter;
 import lombok.Setter;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -64,6 +65,10 @@ public class VisitasBean {
     }
 
     public String enviar() {
+        RequestContext.getCurrentInstance().execute("alert('Before getLocation');");
+        RequestContext.getCurrentInstance().execute("getLocation();");
+        RequestContext.getCurrentInstance().execute("alert('After getLocation');");
+
         try {
             if (mapa.getDireccion() == null) {
                 throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
@@ -104,7 +109,7 @@ public class VisitasBean {
 
             limpiar();
 
-            addMessage("Visita enviado exitosamente.", "Num. Pedido: " + "???", FacesMessage.SEVERITY_INFO);
+            addMessage("Visita enviada exitosamente.", "Num. Pedido: " + "???", FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";

@@ -14,6 +14,6 @@
         <p:inputTextarea id="observacion" rows="6" cols="33" value="#{visitasBean.observacion}"/>
 
         <p:commandButton value="Enviar" update="@form:message" 
-                         action="#{visitasBean.enviar()}" onclick="getLocation();"/>
+                         action="#{visitasBean.enviar()}"/>
     </h:form>
 </html>
