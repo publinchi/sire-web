@@ -569,6 +569,7 @@ public class ArticulosBean {
 
             LOGGER.info("Enviando Documento ...");
             invMovimientoCabFacadeREST.create_JSON(pedido);
+            invMovimientoCabFacadeREST.close();
             LOGGER.info("Documento Enviado.");
 
             limpiar();

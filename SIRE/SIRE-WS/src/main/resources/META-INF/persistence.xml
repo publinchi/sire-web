@@ -57,6 +57,7 @@
     <class>com.sire.entities.PrySupervisor</class>
     <class>com.sire.entities.PrySupervisorUsuario</class>
     <class>com.sire.entities.VVendedor</class>
+    <class>com.sire.entities.ComVisitaCliente</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="eclipselink.logging.level" value="FINE"/>
