@@ -28,8 +28,8 @@
             }
 
             function showPosition(position) {
-                document.getElementById("visitaForm:lat").value = position.coords.latitude;
-                document.getElementById("visitaForm:lng").value = position.coords.longitude;
+                document.getElementById("visita:accordionPanel:visitaForm:lat").value = position.coords.latitude;
+                document.getElementById("visita:accordionPanel:visitaForm:lng").value = position.coords.longitude;
                 processLocation([{name: 'lat', value: position.coords.latitude}, {name: 'lng', value: position.coords.longitude}]);
             }
         </script>

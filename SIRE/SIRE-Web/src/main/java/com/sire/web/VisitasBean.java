@@ -69,6 +69,7 @@ public class VisitasBean {
     public String enviar() {
         LOGGER.info("LAT: " + mapa.getLat());
         LOGGER.info("LNG: " + mapa.getLng());
+        mapa._processLocation();
 
         try {
             if (mapa.getDireccion() == null) {

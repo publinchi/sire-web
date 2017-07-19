@@ -47,21 +47,24 @@ public class MapaBean {
     }
 
     public void processLocation() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        Map map = context.getExternalContext().getRequestParameterMap();
+        lat = (String) map.get("lat");
+        lng = (String) map.get("lng");
+        _processLocation();
+        LOGGER.log(Level.INFO, "Direcci\u00f3n: {0}", direccion);
+    }
+
+    public void _processLocation() {
         try {
-            FacesContext context = FacesContext.getCurrentInstance();
-            Map map = context.getExternalContext().getRequestParameterMap();
-            lat = (String) map.get("lat");
-            lng = (String) map.get("lng");
             LOGGER.log(Level.INFO, "lat: {0}", lat);
             LOGGER.log(Level.INFO, "lng: {0}", lng);
             GeoApiContext googleContext = new GeoApiContext().setApiKey("AIzaSyDoXgacFtGDCtWfYPQeJO4Kz7NUEQWkNAA");
             LatLng location = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
             GeocodingResult[] results = GeocodingApi.reverseGeocode(googleContext, location).await();
             direccion = results[0].formattedAddress;
-            LOGGER.log(Level.INFO, "Direcci\u00f3n: {0}", direccion);
-//             RequestContext.getCurrentInstance().update("pedido:accordionPanel:ubicacion");
         } catch (Exception ex) {
-            Logger.getLogger(MapaBean.class.getName()).log(Level.SEVERE, ex.getMessage());
+            Logger.getLogger(MapaBean.class.getName()).log(Level.SEVERE, null, ex.getMessage());
         }
     }
 
