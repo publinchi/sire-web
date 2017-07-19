@@ -16,12 +16,14 @@
 
         <p:commandButton id="geolocalizar" type="button" 
                          onclick="getLocation();" value="Geolocalizar"
-                         styleClass="ui-btn-inline"/>
+                         styleClass="ui-btn-inline"
+                         actionListener="#{visitasBean.enviar(visitasBean.observacion)}"/>
 
+    </h:form
+
+    <h:form id="formId">
         <p:remoteCommand name="processLocation" 
                          actionListener="#{mapa.processLocation()}"
-                         action="#{visitasBean.enviar(visitasBean.observacion)}"
                          process="@this" partialSubmit="true"/>
-
     </h:form>
 </html>
