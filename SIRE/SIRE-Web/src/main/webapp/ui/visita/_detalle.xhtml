@@ -16,7 +16,8 @@
         <p:outputLabel for="observacion" value="Observacion:" />
         <p:inputTextarea id="observacion" rows="6" cols="33" value="#{visitasBean.observacion}"/>
 
-        <p:commandButton value="Enviar" update="@form:message" ajax="false"
-                         action="#{visitasBean.enviar()}" onclick="getLocation()"/>
+        <p:commandButton value="Enviar" update="@form:message" 
+                         actionListener="#{visitasBean.enviar()}"
+                         onclick="getLocation()"/>
     </h:form>
 </html>
