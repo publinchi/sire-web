@@ -238,14 +238,6 @@ public class GnrUsuarios implements Serializable {
         this.pryProyectoList = pryProyectoList;
     }
 
-    public int getUsuarioId() {
-        return usuarioId;
-    }
-
-    public void setUsuarioId(int usuarioId) {
-        this.usuarioId = usuarioId;
-    }
-
     @XmlTransient
     public List<CajRubro> getCajRubroList() {
         return cajRubroList;
@@ -253,6 +245,10 @@ public class GnrUsuarios implements Serializable {
 
     public void setCajRubroList(List<CajRubro> cajRubroList) {
         this.cajRubroList = cajRubroList;
+    }
+
+    public Integer getUsuarioId() {
+        return usuarioId;
     }
 
     public void setUsuarioId(Integer usuarioId) {
