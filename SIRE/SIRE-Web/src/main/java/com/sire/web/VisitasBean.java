@@ -10,9 +10,11 @@ import com.google.gson.GsonBuilder;
 import com.sire.entities.ComVisitaCliente;
 import com.sire.entities.ComVisitaClientePK;
 import com.sire.entities.CxcCliente;
+import com.sire.entities.FacParametros;
 import com.sire.entities.GnrEmpresa;
 import com.sire.entities.GnrLogHistorico;
 import com.sire.entities.GnrLogHistoricoPK;
+import com.sire.entities.GnrUsuarios;
 import com.sire.entities.VCliente;
 import com.sire.exception.ClienteException;
 import com.sire.exception.EmptyException;
@@ -20,6 +22,7 @@ import com.sire.exception.GPSException;
 import com.sire.exception.RestException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.ComVisitaClienteFacadeREST;
+import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.GnrContadorDocFacadeREST;
 import java.math.BigDecimal;
 import java.util.Calendar;
@@ -48,6 +51,7 @@ public class VisitasBean {
     private static final Logger LOGGER = Logger.getLogger(VisitasBean.class.getName());
 
     private final ComVisitaClienteFacadeREST comVisitaClienteFacadeREST;
+    private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
 
@@ -66,6 +70,7 @@ public class VisitasBean {
     public VisitasBean() {
         observacion = new String();
         comVisitaClienteFacadeREST = new ComVisitaClienteFacadeREST();
+        facParametrosFacadeREST = new FacParametrosFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
     }
@@ -105,6 +110,7 @@ public class VisitasBean {
             comVisitaCliente.setLongitud(new BigDecimal(mapa.getLng()));
             comVisitaCliente.setObservacion(observacion);
             comVisitaCliente.setUbicacionGeografica(mapa.getDireccion());
+            comVisitaCliente.setNombreUsuario(obtenerUsuario());
 
             agregarLog(comVisitaCliente);
 
@@ -191,6 +197,19 @@ public class VisitasBean {
 
         return cliente.getCliente();
 
+    }
+
+    private GnrUsuarios obtenerUsuario() {
+        GnrUsuarios gnrUsuarios = obtenerFacParametros().getGnrUsuarios();
+        LOGGER.log(Level.INFO, "gnrUsuarios: {0}", gnrUsuarios);
+        return gnrUsuarios;
+    }
+
+    private FacParametros obtenerFacParametros() {
+        FacParametros facParametros = facParametrosFacadeREST.find_JSON(
+                FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
+                + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
+        return facParametros;
     }
 
 }
