@@ -61,14 +61,6 @@ public class ComVisitaCliente implements Serializable {
     @Size(max = 400)
     @Column(name = "OBSERVACION")
     private String observacion;
-    @Size(max = 200)
-    @Column(name = "UBICACION_GEOGRAFICA")
-    private String ubicacionGeografica;
-    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
-    @Column(name = "LATITUD")
-    private BigDecimal latitud;
-    @Column(name = "LONGITUD")
-    private BigDecimal longitud;
     @Size(max = 1)
     @Column(name = "ESTADO")
     private String estado;
@@ -143,30 +135,6 @@ public class ComVisitaCliente implements Serializable {
 
     public void setObservacion(String observacion) {
         this.observacion = observacion;
-    }
-
-    public String getUbicacionGeografica() {
-        return ubicacionGeografica;
-    }
-
-    public void setUbicacionGeografica(String ubicacionGeografica) {
-        this.ubicacionGeografica = ubicacionGeografica;
-    }
-
-    public BigDecimal getLatitud() {
-        return latitud;
-    }
-
-    public void setLatitud(BigDecimal latitud) {
-        this.latitud = latitud;
-    }
-
-    public BigDecimal getLongitud() {
-        return longitud;
-    }
-
-    public void setLongitud(BigDecimal longitud) {
-        this.longitud = longitud;
     }
 
     public String getEstado() {
