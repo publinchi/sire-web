@@ -81,7 +81,7 @@ public class VisitasBean {
 
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class,
-                    "01", "03", "VIS", userManager.getCurrent().getNombreUsuario());
+                    "01", "04", "VIS", userManager.getCurrent().getNombreUsuario());
 
             ComVisitaCliente comVisitaCliente = new ComVisitaCliente();
             comVisitaCliente.setCodCliente(obtenerCliente().getCxcClientePK().getCodCliente().toString());
