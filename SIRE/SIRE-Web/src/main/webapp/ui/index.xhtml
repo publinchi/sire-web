@@ -19,7 +19,10 @@
         <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/main/css/sh.css.xhtml"/>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoXgacFtGDCtWfYPQeJO4Kz7NUEQWkNAA" type="text/javascript" />
         <script>
-            function getLocation() {
+            var b;
+
+            function getLocation(bean) {
+                b = bean;
                 if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(showPosition);
                 } else {
@@ -28,7 +31,8 @@
             }
 
             function showPosition(position) {
-                processLocation([{name: 'lat', value: position.coords.latitude}, {name: 'lng', value: position.coords.longitude}]);
+                eval(b)([{name: 'lat', value: position.coords.latitude}, {name: 'lng', value: position.coords.longitude}]);
+//                processLocation([{name: 'lat', value: position.coords.latitude}, {name: 'lng', value: position.coords.longitude}]);
             }
         </script>
 

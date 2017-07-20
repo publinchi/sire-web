@@ -21,8 +21,6 @@ import com.sire.rs.client.ComVisitaClienteFacadeREST;
 import com.sire.rs.client.GnrContadorDocFacadeREST;
 import java.math.BigDecimal;
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.faces.application.FacesMessage;
