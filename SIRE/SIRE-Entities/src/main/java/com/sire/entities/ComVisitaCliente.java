@@ -45,6 +45,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ComVisitaCliente.findByEstado", query = "SELECT c FROM ComVisitaCliente c WHERE c.estado = :estado")
     , @NamedQuery(name = "ComVisitaCliente.findByFechaEstado", query = "SELECT c FROM ComVisitaCliente c WHERE c.fechaEstado = :fechaEstado")})
 public class ComVisitaCliente implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ComVisitaClientePK comVisitaClientePK;
@@ -78,7 +79,8 @@ public class ComVisitaCliente implements Serializable {
     @ManyToOne(optional = false)
     private GnrEmpresa gnrEmpresa;
     @JoinColumns({
-        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)})
+        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
+        , @JoinColumn(name = "COD_CLIENTE", referencedColumnName = "COD_CLIENTE", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private CxcCliente cxcCliente;
     @JoinColumns({
@@ -91,7 +93,7 @@ public class ComVisitaCliente implements Serializable {
     private GnrUsuarios nombreUsuario;
     @Transient
     private GnrLogHistorico gnrLogHistorico;
-    
+
     public ComVisitaCliente() {
     }
 
@@ -222,7 +224,7 @@ public class ComVisitaCliente implements Serializable {
     public void setGnrLogHistorico(GnrLogHistorico gnrLogHistorico) {
         this.gnrLogHistorico = gnrLogHistorico;
     }
-    
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -247,5 +249,5 @@ public class ComVisitaCliente implements Serializable {
     public String toString() {
         return "com.sire.entities.ComVisitaCliente[ comVisitaClientePK=" + comVisitaClientePK + " ]";
     }
-    
+
 }
