@@ -74,7 +74,7 @@ public class ComVisitaCliente implements Serializable {
     private CxcCliente cxcCliente;
     @JoinColumns({
         @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
-        , @JoinColumn(name = "COD_VENDEDOR", referencedColumnName = "COD_VENDEDOR", insertable = false, updatable = false)})
+        , @JoinColumn(name = "COD_VENDEDOR", referencedColumnName = "COD_VENDEDOR")})
     @ManyToOne(optional = false)
     private FacVendedor facVendedor;
     @JoinColumn(name = "NOMBRE_USUARIO", referencedColumnName = "NOMBRE_USUARIO")
