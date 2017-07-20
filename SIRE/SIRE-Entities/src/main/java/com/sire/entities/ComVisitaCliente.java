@@ -39,9 +39,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ComVisitaCliente.findByCodCliente", query = "SELECT c FROM ComVisitaCliente c WHERE c.codCliente = :codCliente")
     , @NamedQuery(name = "ComVisitaCliente.findByDescCliente", query = "SELECT c FROM ComVisitaCliente c WHERE c.descCliente = :descCliente")
     , @NamedQuery(name = "ComVisitaCliente.findByObservacion", query = "SELECT c FROM ComVisitaCliente c WHERE c.observacion = :observacion")
-    , @NamedQuery(name = "ComVisitaCliente.findByUbicacionGeografica", query = "SELECT c FROM ComVisitaCliente c WHERE c.ubicacionGeografica = :ubicacionGeografica")
-    , @NamedQuery(name = "ComVisitaCliente.findByLatitud", query = "SELECT c FROM ComVisitaCliente c WHERE c.latitud = :latitud")
-    , @NamedQuery(name = "ComVisitaCliente.findByLongitud", query = "SELECT c FROM ComVisitaCliente c WHERE c.longitud = :longitud")
     , @NamedQuery(name = "ComVisitaCliente.findByEstado", query = "SELECT c FROM ComVisitaCliente c WHERE c.estado = :estado")
     , @NamedQuery(name = "ComVisitaCliente.findByFechaEstado", query = "SELECT c FROM ComVisitaCliente c WHERE c.fechaEstado = :fechaEstado")})
 public class ComVisitaCliente implements Serializable {
