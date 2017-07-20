@@ -14,9 +14,8 @@
         <p:inputTextarea id="observacion" rows="6" cols="33" 
                          value="#{visitasBean.observacion}" />
 
-        <p:commandButton id="geolocalizar" type="button" 
-                         onclick="getLocation('visitasBean');" value="Enviar"
-                         styleClass="ui-btn-inline"/>
+        <p:commandButton id="enviarButton" value="Enviar"
+                         onclick="getLocation('visitasBean');" />
 
         <p:remoteCommand name="visitasBean" 
                          actionListener="#{mapa.processLocation()}"
