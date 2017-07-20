@@ -14,22 +14,4 @@
         <ui:param name="buscarButton" value="btn-cliente-cobro"/>
     </ui:include>
 
-    <!--    <pm:field>
-            <p:outputLabel for="ubicacion" value="Ubicación:" />
-            <h:panelGrid columns="2" columnClasses="verticalAlignMiddle">
-                <p:commandButton id="geolocalizar" type="button" 
-                                 onclick="getLocation();" value="Geolocalizar"
-                                 styleClass="ui-btn-inline"/>
-                <p:inputTextarea id="ubicacion" value="#{mapa.direccion}" 
-                                 label="Ubicación"
-                                 readonly="true"
-                                 required="true"/>
-            </h:panelGrid>
-        </pm:field>-->
-
-    <h:form id="formId">
-        <p:remoteCommand name="processLocation" 
-                         actionListener="#{mapa.processLocation()}"
-                         process="@form" partialSubmit="true"/>
-    </h:form>
 </html>

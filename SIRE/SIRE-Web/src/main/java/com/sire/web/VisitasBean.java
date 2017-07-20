@@ -118,7 +118,6 @@ public class VisitasBean {
             return "index?faces-redirect=true";
         } catch (NullPointerException | GPSException | EmptyException | ClienteException | VendedorException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
-            System.out.println(ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "visita?faces-redirect=true";
         }

@@ -155,9 +155,9 @@
 
             <p:commandButton id="enviarButton" value="Enviar" 
                              disabled="#{cxcDocCobrarBean.botonEnviarBloqueado}"
-                             onclick="getLocation();"/>
+                             onclick="getLocation('cxcDocCobrarBean');"/>
 
-            <p:remoteCommand name="processLocation" 
+            <p:remoteCommand name="cxcDocCobrarBean" 
                              actionListener="#{mapa.processLocation()}"
                              process="@form" partialSubmit="true"
                              action="#{cxcDocCobrarBean.enviar()}"/>

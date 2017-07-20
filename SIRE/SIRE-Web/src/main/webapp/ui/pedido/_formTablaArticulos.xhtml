@@ -54,9 +54,9 @@
                              value="#{articulosBean.observacion}"/>
 
             <p:commandButton id="enviarButton" value="Enviar" 
-                             onclick="getLocation();"/>
+                             onclick="getLocation('articulosBean');"/>
 
-            <p:remoteCommand name="processLocation" 
+            <p:remoteCommand name="articulosBean" 
                              actionListener="#{mapa.processLocation()}"
                              process="@form" partialSubmit="true"
                              action="#{articulosBean.enviar()}"/>
