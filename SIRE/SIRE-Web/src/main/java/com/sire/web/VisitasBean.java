@@ -13,6 +13,7 @@ import com.sire.entities.CxcCliente;
 import com.sire.entities.GnrEmpresa;
 import com.sire.entities.GnrLogHistorico;
 import com.sire.entities.GnrLogHistoricoPK;
+import com.sire.entities.VCliente;
 import com.sire.exception.ClienteException;
 import com.sire.exception.EmptyException;
 import com.sire.exception.GPSException;
@@ -77,14 +78,14 @@ public class VisitasBean {
                 throw new EmptyException("Por favor ingrese observación.");
             }
 
-            CxcCliente cxcCliente = obtenerCliente();
+            VCliente vCliente = obtenerVCliente();
 
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class,
                     "01", "04", "VIS", userManager.getCurrent().getNombreUsuario());
 
             ComVisitaCliente comVisitaCliente = new ComVisitaCliente();
-            comVisitaCliente.setCodCliente(cxcCliente.getCxcClientePK().getCodCliente().toString());
+            comVisitaCliente.setCodCliente(vCliente.getCodCliente().toString());
 
             ComVisitaClientePK comVisitaClientePK = new ComVisitaClientePK();
             comVisitaClientePK.setCodEmpresa(obtenerEmpresa());
@@ -93,7 +94,7 @@ public class VisitasBean {
 
             comVisitaCliente.setComVisitaClientePK(comVisitaClientePK);
 
-            comVisitaCliente.setDescCliente(cxcCliente.getClaseCliete().getDescripcion());
+            comVisitaCliente.setDescCliente(vCliente.getRazonSocial());
             comVisitaCliente.setEstado("G");
             comVisitaCliente.setFechaEstado(Calendar.getInstance().getTime());
             comVisitaCliente.setFechaVisita(Calendar.getInstance().getTime());
@@ -170,6 +171,15 @@ public class VisitasBean {
         gnrLogHistorico.setLatitud(Double.valueOf(mapa.getLat()));
         gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
         comVisitaCliente.setGnrLogHistorico(gnrLogHistorico);
+    }
+
+    private VCliente obtenerVCliente() throws ClienteException {
+        if (cliente.getCliente() == null) {
+            throw new ClienteException("Por favor seleccione el cliente.");
+        }
+
+        return cliente.getCliente();
+
     }
 
 }
