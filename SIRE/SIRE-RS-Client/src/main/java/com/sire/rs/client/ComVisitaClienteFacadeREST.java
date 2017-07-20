@@ -8,6 +8,7 @@ package com.sire.rs.client;
 import javax.ws.rs.ClientErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
+import javax.ws.rs.core.Response;
 
 /**
  * Jersey REST client generated for REST resource:ComVisitaClienteFacadeREST
@@ -71,6 +72,14 @@ public class ComVisitaClienteFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public Response save_XML(Object requestEntity) throws ClientErrorException {
+        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), Response.class);
+    }
+
+    public Response save_JSON(Object requestEntity) throws ClientErrorException {
+        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), Response.class);
+    }
+
     public void create_XML(Object requestEntity) throws ClientErrorException {
         webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML));
     }
@@ -96,5 +105,5 @@ public class ComVisitaClienteFacadeREST {
     public void close() {
         client.close();
     }
-    
+
 }

@@ -21,6 +21,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -70,6 +71,16 @@ public class ComVisitaClienteFacadeREST extends AbstractFacade<ComVisitaCliente>
     }
 
     @PUT
+    @Path("save")
+    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response save(ComVisitaCliente entity) {
+        getEntityManager().persist(entity.getGnrLogHistorico());
+        super.create(entity);
+
+        return Response.ok().build();
+    }
+
+    @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") PathSegment id, ComVisitaCliente entity) {
@@ -116,5 +127,5 @@ public class ComVisitaClienteFacadeREST extends AbstractFacade<ComVisitaCliente>
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

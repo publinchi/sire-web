@@ -55,16 +55,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CxcCliente.findByLocalidad", query = "SELECT c FROM CxcCliente c WHERE c.localidad = :localidad"),
     @NamedQuery(name = "CxcCliente.findByCalificacion", query = "SELECT c FROM CxcCliente c WHERE c.calificacion = :calificacion")})
 public class CxcCliente implements Serializable {
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
-    private List<CxcAbonoC> cxcAbonoCList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
-    private List<CxcCheque> cxcChequeList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
-    private List<CxcDocCobrar> cxcDocCobrarList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
-    private List<CxcPagoContado> cxcPagoContadoList;
+    
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected CxcClientePK cxcClientePK;
@@ -124,7 +115,17 @@ public class CxcCliente implements Serializable {
     private CxcZona cxcZona;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
     private List<InvMovimientoCab> invMovimientoCabList;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<ComVisitaCliente> comVisitaClienteList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcAbonoC> cxcAbonoCList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcCheque> cxcChequeList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcDocCobrar> cxcDocCobrarList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cxcCliente")
+    private List<CxcPagoContado> cxcPagoContadoList;
+    
     public CxcCliente() {
     }
 
@@ -328,31 +329,6 @@ public class CxcCliente implements Serializable {
         this.invMovimientoCabList = invMovimientoCabList;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (cxcClientePK != null ? cxcClientePK.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof CxcCliente)) {
-            return false;
-        }
-        CxcCliente other = (CxcCliente) object;
-        if ((this.cxcClientePK == null && other.cxcClientePK != null) || (this.cxcClientePK != null && !this.cxcClientePK.equals(other.cxcClientePK))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.sire.entities.CxcCliente[ cxcClientePK=" + cxcClientePK + " ]";
-    }
-
     @XmlTransient
     public List<CxcCheque> getCxcChequeList() {
         return cxcChequeList;
@@ -387,6 +363,40 @@ public class CxcCliente implements Serializable {
 
     public void setCxcAbonoCList(List<CxcAbonoC> cxcAbonoCList) {
         this.cxcAbonoCList = cxcAbonoCList;
+    }
+
+    @XmlTransient
+    public List<ComVisitaCliente> getComVisitaClienteList() {
+        return comVisitaClienteList;
+    }
+
+    public void setComVisitaClienteList(List<ComVisitaCliente> comVisitaClienteList) {
+        this.comVisitaClienteList = comVisitaClienteList;
+    }
+    
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (cxcClientePK != null ? cxcClientePK.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof CxcCliente)) {
+            return false;
+        }
+        CxcCliente other = (CxcCliente) object;
+        if ((this.cxcClientePK == null && other.cxcClientePK != null) || (this.cxcClientePK != null && !this.cxcClientePK.equals(other.cxcClientePK))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.sire.entities.CxcCliente[ cxcClientePK=" + cxcClientePK + " ]";
     }
     
 }

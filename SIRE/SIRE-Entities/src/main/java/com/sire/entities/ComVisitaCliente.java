@@ -12,12 +12,14 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -43,7 +45,6 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "ComVisitaCliente.findByEstado", query = "SELECT c FROM ComVisitaCliente c WHERE c.estado = :estado")
     , @NamedQuery(name = "ComVisitaCliente.findByFechaEstado", query = "SELECT c FROM ComVisitaCliente c WHERE c.fechaEstado = :fechaEstado")})
 public class ComVisitaCliente implements Serializable {
-
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected ComVisitaClientePK comVisitaClientePK;
@@ -76,7 +77,22 @@ public class ComVisitaCliente implements Serializable {
     @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private GnrEmpresa gnrEmpresa;
-
+    @JoinColumns({
+        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
+        , @JoinColumn(name = "COD_CLIENTE", referencedColumnName = "COD_CLIENTE")})
+    @ManyToOne(optional = false)
+    private CxcCliente cxcCliente;
+    @JoinColumns({
+        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA", insertable = false, updatable = false)
+        , @JoinColumn(name = "COD_VENDEDOR", referencedColumnName = "COD_VENDEDOR", insertable = false, updatable = false)})
+    @ManyToOne(optional = false)
+    private FacVendedor facVendedor;
+    @JoinColumn(name = "NOMBRE_USUARIO", referencedColumnName = "NOMBRE_USUARIO")
+    @ManyToOne
+    private GnrUsuarios nombreUsuario;
+    @Transient
+    private GnrLogHistorico gnrLogHistorico;
+    
     public ComVisitaCliente() {
     }
 
@@ -176,6 +192,38 @@ public class ComVisitaCliente implements Serializable {
         this.gnrEmpresa = gnrEmpresa;
     }
 
+    public CxcCliente getCxcCliente() {
+        return cxcCliente;
+    }
+
+    public void setCxcCliente(CxcCliente cxcCliente) {
+        this.cxcCliente = cxcCliente;
+    }
+
+    public FacVendedor getFacVendedor() {
+        return facVendedor;
+    }
+
+    public void setFacVendedor(FacVendedor facVendedor) {
+        this.facVendedor = facVendedor;
+    }
+
+    public GnrUsuarios getNombreUsuario() {
+        return nombreUsuario;
+    }
+
+    public void setNombreUsuario(GnrUsuarios nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+
+    public GnrLogHistorico getGnrLogHistorico() {
+        return gnrLogHistorico;
+    }
+
+    public void setGnrLogHistorico(GnrLogHistorico gnrLogHistorico) {
+        this.gnrLogHistorico = gnrLogHistorico;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 0;

@@ -42,37 +42,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrUsuarios.findByEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.estado = :estado"),
     @NamedQuery(name = "GnrUsuarios.findByFechaEstado", query = "SELECT g FROM GnrUsuarios g WHERE g.fechaEstado = :fechaEstado")})
 public class GnrUsuarios implements Serializable {
-
-    @Basic(optional = false)
-    @Column(name = "USUARIO_ID")
-    private int usuarioId;
-    @OneToMany(mappedBy = "nombreUsuario")
-    private List<CajRubro> cajRubroList;
-
-    @OneToMany(mappedBy = "nombreUsuario")
-    private List<PryProyecto> pryProyectoList;
-
-    @OneToMany(mappedBy = "nombreUsuario")
-    private List<CajFacturaEnviada> cajFacturaEnviadaList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
-    private List<GnrUsuaMod> gnrUsuaModList;
-
-    @OneToMany(mappedBy = "nombreUsuario")
-    private List<CxcAbonoC> cxcAbonoCList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
-    private List<FacParametros> facParametrosList;
-    @OneToMany(mappedBy = "nombreUsuario")
-    private List<FacTmpFactC> facTmpFactCList;
-    @JoinTable(name = "GNR_USUA_CONT", joinColumns = {
-        @JoinColumn(name = "NOMBRE_USUARIO", referencedColumnName = "NOMBRE_USUARIO")}, inverseJoinColumns = {
-        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA"),
-        @JoinColumn(name = "NUM_CONTADOR", referencedColumnName = "NUM_CONTADOR"),
-        @JoinColumn(name = "COD_MODULO", referencedColumnName = "COD_MODULO"),
-        @JoinColumn(name = "COD_DOCUMENTO", referencedColumnName = "COD_DOCUMENTO")})
-    @ManyToMany
-    private List<GnrContadorDoc> gnrContadorDocList;
+    
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -97,7 +67,33 @@ public class GnrUsuarios implements Serializable {
     private List<FacCatalogoPrecioD> facCatalogoPrecioDList;
     @OneToMany(mappedBy = "anteriorUsuarioPrecio")
     private List<FacCatalogoPrecioD> facCatalogoPrecioDList1;
-
+    @Column(name = "USUARIO_ID")
+    private Integer usuarioId;
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<ComVisitaCliente> comVisitaClienteList;
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<CajRubro> cajRubroList;
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<PryProyecto> pryProyectoList;
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<CajFacturaEnviada> cajFacturaEnviadaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
+    private List<GnrUsuaMod> gnrUsuaModList;
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<CxcAbonoC> cxcAbonoCList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrUsuarios")
+    private List<FacParametros> facParametrosList;
+    @OneToMany(mappedBy = "nombreUsuario")
+    private List<FacTmpFactC> facTmpFactCList;
+    @JoinTable(name = "GNR_USUA_CONT", joinColumns = {
+        @JoinColumn(name = "NOMBRE_USUARIO", referencedColumnName = "NOMBRE_USUARIO")}, inverseJoinColumns = {
+        @JoinColumn(name = "COD_EMPRESA", referencedColumnName = "COD_EMPRESA"),
+        @JoinColumn(name = "NUM_CONTADOR", referencedColumnName = "NUM_CONTADOR"),
+        @JoinColumn(name = "COD_MODULO", referencedColumnName = "COD_MODULO"),
+        @JoinColumn(name = "COD_DOCUMENTO", referencedColumnName = "COD_DOCUMENTO")})
+    @ManyToMany
+    private List<GnrContadorDoc> gnrContadorDocList;
+    
     public GnrUsuarios() {
     }
 
@@ -179,31 +175,6 @@ public class GnrUsuarios implements Serializable {
         this.facCatalogoPrecioDList1 = facCatalogoPrecioDList1;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (nombreUsuario != null ? nombreUsuario.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof GnrUsuarios)) {
-            return false;
-        }
-        GnrUsuarios other = (GnrUsuarios) object;
-        if ((this.nombreUsuario == null && other.nombreUsuario != null) || (this.nombreUsuario != null && !this.nombreUsuario.equals(other.nombreUsuario))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.sire.entities.GnrUsuarios[ nombreUsuario=" + nombreUsuario + " ]";
-    }
-
     @XmlTransient
     public List<GnrContadorDoc> getGnrContadorDocList() {
         return gnrContadorDocList;
@@ -283,5 +254,43 @@ public class GnrUsuarios implements Serializable {
     public void setCajRubroList(List<CajRubro> cajRubroList) {
         this.cajRubroList = cajRubroList;
     }
+
+    public void setUsuarioId(Integer usuarioId) {
+        this.usuarioId = usuarioId;
+    }
+
+    @XmlTransient
+    public List<ComVisitaCliente> getComVisitaClienteList() {
+        return comVisitaClienteList;
+    }
+
+    public void setComVisitaClienteList(List<ComVisitaCliente> comVisitaClienteList) {
+        this.comVisitaClienteList = comVisitaClienteList;
+    }
     
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (nombreUsuario != null ? nombreUsuario.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof GnrUsuarios)) {
+            return false;
+        }
+        GnrUsuarios other = (GnrUsuarios) object;
+        if ((this.nombreUsuario == null && other.nombreUsuario != null) || (this.nombreUsuario != null && !this.nombreUsuario.equals(other.nombreUsuario))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.sire.entities.GnrUsuarios[ nombreUsuario=" + nombreUsuario + " ]";
+    }
+
 }

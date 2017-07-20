@@ -11,12 +11,16 @@ import com.sire.entities.ComVisitaCliente;
 import com.sire.entities.ComVisitaClientePK;
 import com.sire.entities.CxcCliente;
 import com.sire.entities.GnrEmpresa;
+import com.sire.entities.GnrLogHistorico;
+import com.sire.entities.GnrLogHistoricoPK;
 import com.sire.exception.ClienteException;
 import com.sire.exception.EmptyException;
 import com.sire.exception.GPSException;
+import com.sire.exception.VendedorException;
 import com.sire.rs.client.ComVisitaClienteFacadeREST;
 import com.sire.rs.client.GnrContadorDocFacadeREST;
 import java.math.BigDecimal;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -77,40 +81,42 @@ public class VisitasBean {
 
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class,
-                    "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
+                    "01", "03", "VIS", userManager.getCurrent().getNombreUsuario());
 
             ComVisitaCliente comVisitaCliente = new ComVisitaCliente();
             comVisitaCliente.setCodCliente(obtenerCliente().getCxcClientePK().getCodCliente().toString());
 
             ComVisitaClientePK comVisitaClientePK = new ComVisitaClientePK();
             comVisitaClientePK.setCodEmpresa(obtenerEmpresa());
-//            comVisitaClientePK.setCodDocumento();  //validar
-//            comVisitaClientePK.setNumVisita(); //validar
+            comVisitaClientePK.setCodDocumento("VIS");
+            comVisitaClientePK.setNumVisita(numDocumentoResp.intValue());
 
             comVisitaCliente.setComVisitaClientePK(comVisitaClientePK);
 
-//            comVisitaCliente.setDescCliente(""); //validar
-//            comVisitaCliente.setEstado(""); //validar
-//            comVisitaCliente.setFechaEstado(); //validar
-//            comVisitaCliente.setFechaVisita(); //validar
-            comVisitaCliente.setGnrEmpresa(obtenerGnrEmpresa()); //validar
+            comVisitaCliente.setDescCliente(obtenerCliente().getClaseCliete().getDescripcion());
+            comVisitaCliente.setEstado("G");
+            comVisitaCliente.setFechaEstado(Calendar.getInstance().getTime());
+            comVisitaCliente.setFechaVisita(Calendar.getInstance().getTime());
+            comVisitaCliente.setGnrEmpresa(obtenerGnrEmpresa());
             comVisitaCliente.setLatitud(new BigDecimal(mapa.getLat()));
             comVisitaCliente.setLongitud(new BigDecimal(mapa.getLng()));
             comVisitaCliente.setObservacion(observacion);
             comVisitaCliente.setUbicacionGeografica(mapa.getDireccion());
 
+            agregarLog(comVisitaCliente);
+
             LOGGER.info("Enviando Documento ...");
-            comVisitaClienteFacadeREST.create_JSON(comVisitaCliente);
+            comVisitaClienteFacadeREST.save_JSON(comVisitaCliente);
             comVisitaClienteFacadeREST.close();
             LOGGER.info("Documento Enviado.");
 
             limpiar();
 
-            addMessage("Visita enviada exitosamente.", "Num. Visita: " + "???", FacesMessage.SEVERITY_INFO);
+            addMessage("Visita enviada exitosamente.", "Num. Visita: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
-        } catch (NullPointerException | GPSException | EmptyException | ClienteException ex) {
+        } catch (NullPointerException | GPSException | EmptyException | ClienteException | VendedorException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "visita?faces-redirect=true";
@@ -145,6 +151,24 @@ public class VisitasBean {
 
     private GnrEmpresa obtenerGnrEmpresa() {
         return userManager.getGnrEmpresa();
+    }
+
+    private void agregarLog(ComVisitaCliente comVisitaCliente) throws VendedorException {
+        GnrLogHistorico gnrLogHistorico = new GnrLogHistorico();
+        gnrLogHistorico.setDispositivo("Tablet");
+        gnrLogHistorico.setEstado("G");
+        gnrLogHistorico.setFechaDocumento(Calendar.getInstance().getTime());
+        gnrLogHistorico.setFechaEstado(Calendar.getInstance().getTime());
+        GnrLogHistoricoPK gnrLogHistoricoPK = new GnrLogHistoricoPK();
+        gnrLogHistoricoPK.setCodDocumento(comVisitaCliente.getComVisitaClientePK().getCodDocumento());
+        gnrLogHistoricoPK.setCodEmpresa(obtenerEmpresa());
+        gnrLogHistoricoPK.setNumDocumento(comVisitaCliente.getComVisitaClientePK().getNumVisita());
+        gnrLogHistorico.setGnrLogHistoricoPK(gnrLogHistoricoPK);
+        gnrLogHistorico.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
+        gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
+        gnrLogHistorico.setLatitud(Double.valueOf(mapa.getLat()));
+        gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
+        comVisitaCliente.setGnrLogHistorico(gnrLogHistorico);
     }
 
 }

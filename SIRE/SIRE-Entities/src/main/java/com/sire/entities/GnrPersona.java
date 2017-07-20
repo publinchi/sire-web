@@ -55,6 +55,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrPersona.findByCiudadEntrega", query = "SELECT g FROM GnrPersona g WHERE g.ciudadEntrega = :ciudadEntrega"),
     @NamedQuery(name = "GnrPersona.findByCiudadContacto", query = "SELECT g FROM GnrPersona g WHERE g.ciudadContacto = :ciudadContacto")})
 public class GnrPersona implements Serializable {
+    
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected GnrPersonaPK gnrPersonaPK;
@@ -107,7 +108,9 @@ public class GnrPersona implements Serializable {
     private String ciudadContacto;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrPersona")
     private List<InvProveedor> invProveedorList;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrPersona")
+    private List<FacVendedor> facVendedorList;
+    
     public GnrPersona() {
     }
 
@@ -311,6 +314,15 @@ public class GnrPersona implements Serializable {
     public void setInvProveedorList(List<InvProveedor> invProveedorList) {
         this.invProveedorList = invProveedorList;
     }
+    
+    @XmlTransient
+    public List<FacVendedor> getFacVendedorList() {
+        return facVendedorList;
+    }
+
+    public void setFacVendedorList(List<FacVendedor> facVendedorList) {
+        this.facVendedorList = facVendedorList;
+    }
 
     @Override
     public int hashCode() {
@@ -336,5 +348,5 @@ public class GnrPersona implements Serializable {
     public String toString() {
         return "com.sire.entities.GnrPersona[ gnrPersonaPK=" + gnrPersonaPK + " ]";
     }
-    
+
 }

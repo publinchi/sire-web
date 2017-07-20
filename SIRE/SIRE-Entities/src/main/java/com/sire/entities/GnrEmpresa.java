@@ -51,31 +51,7 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GnrEmpresa.findByPatronal", query = "SELECT g FROM GnrEmpresa g WHERE g.patronal = :patronal"),
     @NamedQuery(name = "GnrEmpresa.findByResponsable", query = "SELECT g FROM GnrEmpresa g WHERE g.responsable = :responsable")})
 public class GnrEmpresa implements Serializable {
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<ComVisitaCliente> comVisitaClienteList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<PrySupervisor> prySupervisorList;
-
-    @Column(name = "ESTADO")
-    private String estado;
-    @Column(name = "FECHA_ESTADO")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date fechaEstado;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<CajRubro> cajRubroList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<GnrUsuaMod> gnrUsuaModList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<FacTarCredito> facTarCreditoList;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<InvIva> invIvaList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
-    private List<FacTmpFactC> facTmpFactCList;
+    
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -139,7 +115,28 @@ public class GnrEmpresa implements Serializable {
     private List<InvMovimientoCab> invMovimientoCabList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
     private List<InvTransacciones> invTransaccionesList1;
-
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<FacVendedor> facVendedorList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<ComVisitaCliente> comVisitaClienteList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<PrySupervisor> prySupervisorList;
+    @Column(name = "ESTADO")
+    private String estado;
+    @Column(name = "FECHA_ESTADO")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaEstado;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<CajRubro> cajRubroList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<GnrUsuaMod> gnrUsuaModList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<FacTarCredito> facTarCreditoList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<InvIva> invIvaList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "gnrEmpresa")
+    private List<FacTmpFactC> facTmpFactCList;
+    
     public GnrEmpresa() {
     }
 
@@ -373,31 +370,6 @@ public class GnrEmpresa implements Serializable {
         this.invTransaccionesList1 = invTransaccionesList1;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (codEmpresa != null ? codEmpresa.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof GnrEmpresa)) {
-            return false;
-        }
-        GnrEmpresa other = (GnrEmpresa) object;
-        if ((this.codEmpresa == null && other.codEmpresa != null) || (this.codEmpresa != null && !this.codEmpresa.equals(other.codEmpresa))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.sire.entities.GnrEmpresa[ codEmpresa=" + codEmpresa + " ]";
-    }
-
     @XmlTransient
     public List<FacTmpFactC> getFacTmpFactCList() {
         return facTmpFactCList;
@@ -476,5 +448,39 @@ public class GnrEmpresa implements Serializable {
     public void setComVisitaClienteList(List<ComVisitaCliente> comVisitaClienteList) {
         this.comVisitaClienteList = comVisitaClienteList;
     }
+
+    @XmlTransient
+    public List<FacVendedor> getFacVendedorList() {
+        return facVendedorList;
+    }
+
+    public void setFacVendedorList(List<FacVendedor> facVendedorList) {
+        this.facVendedorList = facVendedorList;
+    }
     
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (codEmpresa != null ? codEmpresa.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof GnrEmpresa)) {
+            return false;
+        }
+        GnrEmpresa other = (GnrEmpresa) object;
+        if ((this.codEmpresa == null && other.codEmpresa != null) || (this.codEmpresa != null && !this.codEmpresa.equals(other.codEmpresa))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.sire.entities.GnrEmpresa[ codEmpresa=" + codEmpresa + " ]";
+    }
+
 }
