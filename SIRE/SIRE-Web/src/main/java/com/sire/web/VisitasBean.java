@@ -106,10 +106,7 @@ public class VisitasBean {
             comVisitaCliente.setFechaEstado(Calendar.getInstance().getTime());
             comVisitaCliente.setFechaVisita(Calendar.getInstance().getTime());
             comVisitaCliente.setGnrEmpresa(obtenerGnrEmpresa());
-            comVisitaCliente.setLatitud(new BigDecimal(mapa.getLat()));
-            comVisitaCliente.setLongitud(new BigDecimal(mapa.getLng()));
             comVisitaCliente.setObservacion(observacion);
-            comVisitaCliente.setUbicacionGeografica(mapa.getDireccion());
             comVisitaCliente.setNombreUsuario(obtenerUsuario());
 
             agregarLog(comVisitaCliente);
