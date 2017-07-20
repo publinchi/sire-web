@@ -17,6 +17,7 @@ import com.sire.entities.VCliente;
 import com.sire.exception.ClienteException;
 import com.sire.exception.EmptyException;
 import com.sire.exception.GPSException;
+import com.sire.exception.RestException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.ComVisitaClienteFacadeREST;
 import com.sire.rs.client.GnrContadorDocFacadeREST;
@@ -30,6 +31,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.ws.rs.core.Response;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -107,7 +109,16 @@ public class VisitasBean {
             agregarLog(comVisitaCliente);
 
             LOGGER.info("Enviando Documento ...");
-            comVisitaClienteFacadeREST.save_JSON(comVisitaCliente);
+            Response response = comVisitaClienteFacadeREST.save_JSON(comVisitaCliente);
+
+            LOGGER.log(Level.INFO, "Response: {0}", response.toString());
+            LOGGER.log(Level.INFO, "Status: {0}", response.getStatus());
+            LOGGER.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
+
+            if (response.getStatus() != 200) {
+                throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
+            }
+
             comVisitaClienteFacadeREST.close();
             LOGGER.info("Documento Enviado.");
 
@@ -117,7 +128,7 @@ public class VisitasBean {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
-        } catch (NullPointerException | GPSException | EmptyException | ClienteException | VendedorException ex) {
+        } catch (NullPointerException | GPSException | EmptyException | ClienteException | VendedorException | RestException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
             System.err.println(ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);

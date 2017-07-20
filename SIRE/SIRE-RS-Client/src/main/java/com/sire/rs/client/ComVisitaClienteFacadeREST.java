@@ -73,11 +73,11 @@ public class ComVisitaClienteFacadeREST {
     }
 
     public Response save_XML(Object requestEntity) throws ClientErrorException {
-        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_XML).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), Response.class);
+        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_XML).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_XML), Response.class);
     }
 
     public Response save_JSON(Object requestEntity) throws ClientErrorException {
-        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), Response.class);
+        return webTarget.path("save").request(javax.ws.rs.core.MediaType.APPLICATION_JSON).put(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), Response.class);
     }
 
     public void create_XML(Object requestEntity) throws ClientErrorException {
