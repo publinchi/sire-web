@@ -18,7 +18,7 @@
                          onclick="getLocation('visitasBean');" value="Enviar"
                          styleClass="ui-btn-inline"/>
 
-        <p:remoteCommand name="processLocation" 
+        <p:remoteCommand name="visitasBean" 
                          actionListener="#{mapa.processLocation()}"
                          process="@this observacion"
                          action="#{visitasBean.enviar()}"/>
