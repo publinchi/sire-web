@@ -79,12 +79,14 @@ public class VisitasBean {
                 throw new EmptyException("Por favor ingrese observación.");
             }
 
+            CxcCliente cxcCliente = obtenerCliente();
+
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class,
                     "01", "04", "VIS", userManager.getCurrent().getNombreUsuario());
 
             ComVisitaCliente comVisitaCliente = new ComVisitaCliente();
-            comVisitaCliente.setCodCliente(obtenerCliente().getCxcClientePK().getCodCliente().toString());
+            comVisitaCliente.setCodCliente(cxcCliente.getCxcClientePK().getCodCliente().toString());
 
             ComVisitaClientePK comVisitaClientePK = new ComVisitaClientePK();
             comVisitaClientePK.setCodEmpresa(obtenerEmpresa());
@@ -93,7 +95,7 @@ public class VisitasBean {
 
             comVisitaCliente.setComVisitaClientePK(comVisitaClientePK);
 
-            comVisitaCliente.setDescCliente(obtenerCliente().getClaseCliete().getDescripcion());
+            comVisitaCliente.setDescCliente(cxcCliente.getClaseCliete().getDescripcion());
             comVisitaCliente.setEstado("G");
             comVisitaCliente.setFechaEstado(Calendar.getInstance().getTime());
             comVisitaCliente.setFechaVisita(Calendar.getInstance().getTime());
