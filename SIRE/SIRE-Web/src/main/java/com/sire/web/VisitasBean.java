@@ -11,6 +11,7 @@ import com.sire.entities.ComVisitaCliente;
 import com.sire.entities.ComVisitaClientePK;
 import com.sire.entities.CxcCliente;
 import com.sire.entities.FacParametros;
+import com.sire.entities.FacVendedor;
 import com.sire.entities.GnrEmpresa;
 import com.sire.entities.GnrLogHistorico;
 import com.sire.entities.GnrLogHistoricoPK;
@@ -108,6 +109,7 @@ public class VisitasBean {
             comVisitaCliente.setGnrEmpresa(obtenerGnrEmpresa());
             comVisitaCliente.setObservacion(observacion);
             comVisitaCliente.setNombreUsuario(obtenerUsuario());
+            comVisitaCliente.setFacVendedor(new FacVendedor("01", obtenerVendedor()));
 
             agregarLog(comVisitaCliente);
 
@@ -119,7 +121,7 @@ public class VisitasBean {
             LOGGER.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
 
             if (response.getStatus() != 200) {
-                throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
+                throw new RestException("No se pudo realizar la visita, por favor contacte al administrador.");
             }
 
             comVisitaClienteFacadeREST.close();
@@ -209,4 +211,20 @@ public class VisitasBean {
         return facParametros;
     }
 
+    private Integer obtenerVendedor() throws VendedorException {
+        FacParametros facParametros = obtenerFacParametros();
+
+        if (facParametros == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        Integer defCodVendedor = facParametros.getDefCodVendedor();
+
+        if (defCodVendedor == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
+        }
+
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        return defCodVendedor;
+    }
 }
