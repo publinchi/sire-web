@@ -51,7 +51,7 @@ public class VisitasBean {
 
     private static final Logger LOGGER = Logger.getLogger(VisitasBean.class.getName());
 
-    private final ComVisitaClienteFacadeREST comVisitaClienteFacadeREST;
+    private ComVisitaClienteFacadeREST comVisitaClienteFacadeREST;
     private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final GsonBuilder builder;
     private final Gson gson;
@@ -70,7 +70,6 @@ public class VisitasBean {
 
     public VisitasBean() {
         observacion = new String();
-        comVisitaClienteFacadeREST = new ComVisitaClienteFacadeREST();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
         builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
@@ -114,8 +113,8 @@ public class VisitasBean {
             agregarLog(comVisitaCliente);
 
             LOGGER.info("Enviando Documento ...");
+            comVisitaClienteFacadeREST = new ComVisitaClienteFacadeREST();
             Response response = comVisitaClienteFacadeREST.save_JSON(comVisitaCliente);
-
             LOGGER.log(Level.INFO, "Response: {0}", response.toString());
             LOGGER.log(Level.INFO, "Status: {0}", response.getStatus());
             LOGGER.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
@@ -124,7 +123,6 @@ public class VisitasBean {
                 throw new RestException("No se pudo realizar la visita, por favor contacte al administrador.");
             }
 
-            comVisitaClienteFacadeREST.close();
             LOGGER.info("Documento Enviado.");
 
             limpiar();
@@ -138,6 +136,8 @@ public class VisitasBean {
             System.err.println(ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "visita?faces-redirect=true";
+        } finally {
+            comVisitaClienteFacadeREST.close();
         }
     }
 
@@ -153,14 +153,6 @@ public class VisitasBean {
 
         clientes.limpiar();
         cliente.limpiar();
-    }
-
-    private CxcCliente obtenerCliente() throws ClienteException {
-        if (cliente.getCliente() == null) {
-            throw new ClienteException("Por favor seleccione el cliente.");
-        }
-
-        return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
 
     private String obtenerEmpresa() {

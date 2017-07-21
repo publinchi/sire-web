@@ -92,7 +92,7 @@ public class ArticulosBean {
     private final InvArticuloFacadeREST invArticuloFacadeREST;
     private final VClienteFacadeREST vClienteFacadeREST;
     private final FacDescVolFacadeREST facDescVolFacadeREST;
-    private final InvMovimientoCabFacadeREST invMovimientoCabFacadeREST;
+    private InvMovimientoCabFacadeREST invMovimientoCabFacadeREST;
     private final InvIvaFacadeREST invIvaFacadeREST;
     private final InvUnidadAlternativaFacadeREST invUnidadAlternativaFacadeREST;
     private final FacParametrosFacadeREST facParametrosFacadeREST;
@@ -149,7 +149,6 @@ public class ArticulosBean {
         invArticuloFacadeREST = new InvArticuloFacadeREST();
         vClienteFacadeREST = new VClienteFacadeREST();
         facDescVolFacadeREST = new FacDescVolFacadeREST();
-        invMovimientoCabFacadeREST = new InvMovimientoCabFacadeREST();
         invIvaFacadeREST = new InvIvaFacadeREST();
         invUnidadAlternativaFacadeREST = new InvUnidadAlternativaFacadeREST();
         facParametrosFacadeREST = new FacParametrosFacadeREST();
@@ -568,8 +567,8 @@ public class ArticulosBean {
             agregarLog(pedido);
 
             LOGGER.info("Enviando Documento ...");
+            invMovimientoCabFacadeREST = new InvMovimientoCabFacadeREST();
             invMovimientoCabFacadeREST.create_JSON(pedido);
-            invMovimientoCabFacadeREST.close();
             LOGGER.info("Documento Enviado.");
 
             limpiar();
@@ -582,6 +581,8 @@ public class ArticulosBean {
             LOGGER.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "pedido?faces-redirect=true";
+        } finally {
+            invMovimientoCabFacadeREST.close();
         }
     }
 

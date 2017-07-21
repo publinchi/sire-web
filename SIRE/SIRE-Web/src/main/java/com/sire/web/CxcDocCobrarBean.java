@@ -135,6 +135,7 @@ public class CxcDocCobrarBean {
 
     @Resource(name = "mail/gmail")
     private Session mailSession;
+    private CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST;
 
     public CxcDocCobrarBean() {
         facParametrosFacadeREST = new FacParametrosFacadeREST();
@@ -331,7 +332,6 @@ public class CxcDocCobrarBean {
             cxcPagoContado.setRetencionIva(retencionIVA);
             cxcPagoContado.setTarjeta(BigInteger.ZERO);
 
-            CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
             Pago pago = new Pago();
             pago.setCxcAbonoC(cxcAbonoC);
             for (CxcCheque cheque : cxcCheques) {
@@ -343,6 +343,7 @@ public class CxcDocCobrarBean {
             pago.setCxcPagoContado(cxcPagoContado);
             agregarLog(pago);
             LOGGER.info("Enviando Pago ...");
+            cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
             Response response = cxcDocCobrarFacadeREST.save_JSON(pago);
 
             LOGGER.log(Level.INFO, "Response: {0}", response.toString());
@@ -376,6 +377,8 @@ public class CxcDocCobrarBean {
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
+        } finally {
+            cxcDocCobrarFacadeREST.close();
         }
     }
 
