@@ -409,7 +409,6 @@ public class ArticulosBean {
         // TODO terminar el mapeo
         RequestContext
                 .getCurrentInstance().update("pedido:accordionPanel:formTablaArticulos");
-//        oncomplete="PF('dlg3').hide();"
     }
 
     public void loadPrecioTotalByCantidad() {
@@ -444,6 +443,10 @@ public class ArticulosBean {
             invArticuloSeleccionado.setTotalPlusIVA(Round.round(totalPlusIVA, 2));
 
             agregarBloqueado = false;
+
+            if (maxPorcDescuento < invArticuloSeleccionado.getDescuento().doubleValue()) {
+                agregarBloqueado = true;
+            }
 
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:bloqueC:totalRegistro");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalIva");
