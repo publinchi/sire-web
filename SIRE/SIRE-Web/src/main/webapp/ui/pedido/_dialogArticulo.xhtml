@@ -87,10 +87,10 @@
                              value="Agregar" 
                              actionListener="#{articulosBean.agregarArticulo()}" 
                              disabled="#{articulosBean.agregarBloqueado}"
-                             oncomplete="PF('dlg3').hide();"
                              validateClient="true"
                              process="@form"
                              update=":messages"/>
+            <!--oncomplete="PF('dlg3').hide();"-->
         </h:form>
     </p:dialog>
 </html>
