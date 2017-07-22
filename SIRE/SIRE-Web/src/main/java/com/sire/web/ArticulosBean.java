@@ -110,7 +110,7 @@ public class ArticulosBean {
     private String formaPago;
 
     //
-    private Double existencia, articulosBean;
+    private Double existencia, maxPorcDescuento;
     private boolean agregarBloqueado = true;
 
     // Atributos de articulo a ser agregado a la lista
