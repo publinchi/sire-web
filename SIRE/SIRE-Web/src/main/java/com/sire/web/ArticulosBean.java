@@ -415,6 +415,7 @@ public class ArticulosBean {
                     .getCurrentInstance().execute("PF('dlg3').hide();");
         } else {
             agregarBloqueado = true;
+            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:botonAgregar");
         }
     }
 
