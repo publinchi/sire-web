@@ -409,8 +409,11 @@ public class ArticulosBean {
         // TODO terminar el mapeo
         RequestContext
                 .getCurrentInstance().update("pedido:accordionPanel:formTablaArticulos");
-//        RequestContext
-//                .getCurrentInstance().execute("PF('dlg3').hide();");
+
+        if (FacesContext.getCurrentInstance().getMessageList().isEmpty()) {
+            RequestContext
+                    .getCurrentInstance().execute("PF('dlg3').hide();");
+        }
     }
 
     public void loadPrecioTotalByCantidad() {
