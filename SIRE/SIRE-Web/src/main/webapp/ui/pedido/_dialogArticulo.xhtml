@@ -88,7 +88,8 @@
                              actionListener="#{articulosBean.agregarArticulo()}" 
                              disabled="#{articulosBean.agregarBloqueado}"
                              oncomplete="PF('dlg3').hide();"
-                             validateClient="true"/>
+                             validateClient="true"
+                             process="@form"/>
         </h:form>
     </p:dialog>
 </html>
