@@ -111,7 +111,7 @@ public class ArticulosBean {
 
     //
     private Double existencia, maxPorcDescuento;
-    private boolean agregarBloqueado = true;
+    private boolean agregarBloqueado = true, maxPorcDescuentoDisabled;
 
     // Atributos de articulo a ser agregado a la lista
     private String codInventario;
@@ -701,7 +701,12 @@ public class ArticulosBean {
 
         if (facDescVol
                 != null) {
-            facDescVol.getMaxPorcDescuento().doubleValue();
+            if (facDescVol.getMaxPorcDescuento() != null) {
+                maxPorcDescuento = facDescVol.getMaxPorcDescuento().doubleValue();
+                maxPorcDescuentoDisabled = false;
+            } else {
+                maxPorcDescuentoDisabled = true;
+            }
             invArticuloSeleccionado.setDescuento(facDescVol.getPorcDescuento());
         }
 
