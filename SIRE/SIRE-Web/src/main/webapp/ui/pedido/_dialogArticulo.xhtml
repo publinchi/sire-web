@@ -60,6 +60,7 @@
                             <f:validateDoubleRange disabled="#{articulosBean.maxPorcDescuentoDisabled}" 
                                                    minimum="0" 
                                                    maximum="#{articulosBean.maxPorcDescuento}" />
+                            <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
                         </p:inputText>
                     </div>
                     <!--</pm:field>-->
