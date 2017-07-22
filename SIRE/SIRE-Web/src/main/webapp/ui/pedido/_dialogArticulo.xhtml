@@ -55,7 +55,7 @@
                     <div class="remove-clear">
                         <p:inputText id="descuento1" 
                                      value="#{articulosBean.invArticuloSeleccionado.descuento}" 
-                                     converterMessage="Porcentaje de descuento exedido."
+                                     converterMessage="Porcentaje de descuento excedido."
                                      readonly="#{articulosBean.maxPorcDescuentoDisabled}">
                             <f:validateDoubleRange disabled="#{articulosBean.maxPorcDescuentoDisabled}" 
                                                    minimum="0" 
@@ -94,7 +94,9 @@
                              value="Agregar" 
                              actionListener="#{articulosBean.agregarArticulo()}" 
                              disabled="#{articulosBean.agregarBloqueado}"
-                             oncomplete="PF('dlg3').hide();"/>
+                             validateClient="true"/>
+
+            <!--oncomplete="PF('dlg3').hide();"-->
         </h:form>
     </p:dialog>
 </html>
