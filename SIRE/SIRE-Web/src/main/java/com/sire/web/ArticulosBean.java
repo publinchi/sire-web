@@ -413,6 +413,8 @@ public class ArticulosBean {
         if (FacesContext.getCurrentInstance().getMessageList().isEmpty()) {
             RequestContext
                     .getCurrentInstance().execute("PF('dlg3').hide();");
+        } else {
+            agregarBloqueado = true;
         }
     }
 
@@ -589,7 +591,7 @@ public class ArticulosBean {
             addMessage("Pedido enviado exitosamente.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
-            return "index?faces-redirect=true";
+            return "pedido?faces-redirect=true";
         } catch (NullPointerException | PayWayException | GPSException | EmptyException | LimitException | ClienteException | VendedorException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
