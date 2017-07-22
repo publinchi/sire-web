@@ -50,8 +50,6 @@
                     <!--</pm:field>-->
                 </p:tab>
                 <p:tab title="Descuento">
-                    <!--<pm:field>-->
-                    <!--<p:outputLabel for="descuento1" value="% de descuento1:" />-->
                     <div class="remove-clear">
                         <p:inputText id="descuento1" 
                                      value="#{articulosBean.invArticuloSeleccionado.descuento}" 
@@ -63,30 +61,23 @@
                             <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
                         </p:inputText>
                     </div>
-                    <!--</pm:field>-->
                 </p:tab>
             </p:tabView>
 
             <p:tabView id="bloqueC">
                 <p:tab title="Total Registro">
-                    <!--<pm:field>-->
-                    <!--<p:outputLabel for="totalRegistro" value="Total Registro:" />-->
                     <div class="remove-clear">
                         <p:inputText id="totalRegistro"
                                      value="#{articulosBean.invMovimientoDtllSeleccionado.costoTotal}"
                                      readonly="true"/>
                     </div>
-                    <!--</pm:field>-->
                 </p:tab>
                 <p:tab title="IVA">
-                    <!--                    <pm:field>-->
-                    <!--<p:outputLabel for="iva" value="IVA:" />-->
                     <div class="remove-clear">
                         <p:inputText id="iva" 
                                      value="#{articulosBean.invArticuloSeleccionado.iva}"
                                      readonly="true"/>
                     </div>
-                    <!--</pm:field>-->
                 </p:tab>
             </p:tabView>
 
@@ -95,9 +86,8 @@
                              value="Agregar" 
                              actionListener="#{articulosBean.agregarArticulo()}" 
                              disabled="#{articulosBean.agregarBloqueado}"
+                             oncomplete="PF('dlg3').hide();"
                              validateClient="true"/>
-
-            <!--oncomplete="PF('dlg3').hide();"-->
         </h:form>
     </p:dialog>
 </html>
