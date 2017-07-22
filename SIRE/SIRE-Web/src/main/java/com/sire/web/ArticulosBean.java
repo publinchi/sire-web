@@ -409,7 +409,7 @@ public class ArticulosBean {
         // TODO terminar el mapeo
         RequestContext
                 .getCurrentInstance().update("pedido:accordionPanel:formTablaArticulos");
-
+//        oncomplete="PF('dlg3').hide();"
     }
 
     public void loadPrecioTotalByCantidad() {

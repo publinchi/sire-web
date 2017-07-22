@@ -54,7 +54,8 @@
                         <p:inputText id="descuento1" 
                                      value="#{articulosBean.invArticuloSeleccionado.descuento}" 
                                      validatorMessage="Porcentaje de descuento excedido."
-                                     readonly="#{articulosBean.maxPorcDescuentoDisabled}">
+                                     readonly="#{articulosBean.maxPorcDescuentoDisabled}"
+                                     required="true">
                             <f:validateDoubleRange disabled="#{articulosBean.maxPorcDescuentoDisabled}" 
                                                    minimum="0" 
                                                    maximum="#{articulosBean.maxPorcDescuento}" />
@@ -87,7 +88,8 @@
                              actionListener="#{articulosBean.agregarArticulo()}" 
                              disabled="#{articulosBean.agregarBloqueado}"
                              oncomplete="PF('dlg3').hide();"
-                             validateClient="true"/>
+                             validateClient="true"
+                             process="@form"/>
         </h:form>
     </p:dialog>
 </html>
