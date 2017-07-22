@@ -324,7 +324,8 @@ public class ArticulosBean {
         LOGGER.log(Level.INFO, "codUnidad: {0}", codUnidad);
         LOGGER.log(Level.INFO, "cantidad: {0}", cantidad);
         LOGGER.log(Level.INFO, "precioUnitario: {0}", movimientoSeleccionado.getCostoUnitario());
-        LOGGER.log(Level.INFO, "descuento: {0}", invArticuloSeleccionado.getDescArticulo());
+        LOGGER.log(Level.INFO, "descArticulo: {0}", invArticuloSeleccionado.getDescArticulo());
+        LOGGER.log(Level.INFO, "descuento: {0}", invArticuloSeleccionado.getDescuento());
         LOGGER.log(Level.INFO, "total: {0}", movimientoSeleccionado.getCostoTotal());
         LOGGER.log(Level.INFO, "iva: {0}", invArticuloSeleccionado.getCodIva());
         LOGGER.log(Level.INFO, "totalIVA: {0}", totalIVA);
@@ -429,7 +430,7 @@ public class ArticulosBean {
                 descuento = (movimientoSeleccionado.getCostoUnitario() * cantidad.doubleValue() * invArticuloSeleccionado.getDescuento().doubleValue()) / 100;
             }
 
-            LOGGER.log(Level.INFO, "descuento: {0}", descuento);
+            LOGGER.log(Level.INFO, "$ a ser descontado: {0}", descuento);
 
             precioTotal = (movimientoSeleccionado.getCostoUnitario() * cantidad.doubleValue()) - descuento;
 
