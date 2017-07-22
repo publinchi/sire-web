@@ -409,6 +409,8 @@ public class ArticulosBean {
         // TODO terminar el mapeo
         RequestContext
                 .getCurrentInstance().update("pedido:accordionPanel:formTablaArticulos");
+        RequestContext
+                .getCurrentInstance().execute("PF('dlg3').hide();");
     }
 
     public void loadPrecioTotalByCantidad() {
@@ -578,8 +580,6 @@ public class ArticulosBean {
 
             limpiar();
 
-            RequestContext requestContext = RequestContext.getCurrentInstance();
-            requestContext.execute("PF('dlg3').hide();");
             addMessage("Pedido enviado exitosamente.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
