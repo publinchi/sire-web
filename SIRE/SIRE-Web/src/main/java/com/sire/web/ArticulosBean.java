@@ -471,6 +471,7 @@ public class ArticulosBean {
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:cantidadLabel");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:botonAgregar");
         }
+        LOGGER.log(Level.INFO, "agregarBloqueado: {0}", agregarBloqueado);
     }
 
     public void loadPrecioUnitarioByUnidadMedida() {
