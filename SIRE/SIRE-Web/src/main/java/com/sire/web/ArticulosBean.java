@@ -422,6 +422,9 @@ public class ArticulosBean {
         LOGGER.log(Level.INFO, "existencia: {0}", existence);
 
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
+        if (cantidad == null) {
+            cantidad = BigDecimal.ZERO;
+        }
         LOGGER.log(Level.INFO, "cantidad: {0}", cantidad.doubleValue());
         if (existence >= cantidad.doubleValue() || "S".equals(obtenerFacParametros().getExistNeg())) {
 
