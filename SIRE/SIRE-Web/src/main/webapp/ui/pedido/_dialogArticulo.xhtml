@@ -55,7 +55,8 @@
                     <div class="remove-clear">
                         <p:inputText id="descuento1" 
                                      value="#{articulosBean.invArticuloSeleccionado.descuento}" 
-                                     converterMessage="Porcentaje de descuento exedido.">
+                                     converterMessage="Porcentaje de descuento exedido."
+                                     readonly="#{articulosBean.maxPorcDescuentoDisabled}">
                             <f:validateDoubleRange disabled="#{articulosBean.maxPorcDescuentoDisabled}" 
                                                    minimum="0" 
                                                    maximum="#{articulosBean.maxPorcDescuento}" />
