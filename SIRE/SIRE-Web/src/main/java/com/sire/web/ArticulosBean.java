@@ -110,7 +110,7 @@ public class ArticulosBean {
     private String formaPago;
 
     //
-    private Double existencia;
+    private Double existencia, articulosBean;
     private boolean agregarBloqueado = true;
 
     // Atributos de articulo a ser agregado a la lista
@@ -701,6 +701,7 @@ public class ArticulosBean {
 
         if (facDescVol
                 != null) {
+            facDescVol.getMaxPorcDescuento().doubleValue();
             invArticuloSeleccionado.setDescuento(facDescVol.getPorcDescuento());
         }
 

@@ -54,8 +54,10 @@
                     <!--<p:outputLabel for="descuento1" value="% de descuento1:" />-->
                     <div class="remove-clear">
                         <p:inputText id="descuento1" 
-                                     value="#{articulosBean.invArticuloSeleccionado.descuento}"
-                                     readonly="true"/>
+                                     value="#{articulosBean.invArticuloSeleccionado.descuento}" 
+                                     converterMessage="Porcentaje de descuento exedido.">
+                            <f:validateDoubleRange minimum="0" maximum="#{articulosBean.maxPorcDescuento}" />
+                        </p:inputText>
                     </div>
                     <!--</pm:field>-->
                 </p:tab>

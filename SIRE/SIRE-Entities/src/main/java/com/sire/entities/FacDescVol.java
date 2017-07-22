@@ -17,6 +17,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -48,6 +49,14 @@ public class FacDescVol implements Serializable {
     @Column(name = "FECHA_MODIFICACION")
     @Temporal(TemporalType.TIMESTAMP)
     private Date fechaModificacion;
+    @Column(name = "MAX_PORC_DESCUENTO")
+    private BigDecimal maxPorcDescuento;
+    @Size(max = 1)
+    @Column(name = "ESTADO")
+    private String estado;
+    @Column(name = "FECHA_ESTADO")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date fechaEstado;
 
     public FacDescVol() {
     }
@@ -88,6 +97,30 @@ public class FacDescVol implements Serializable {
     public void setFechaModificacion(Date fechaModificacion) {
         this.fechaModificacion = fechaModificacion;
     }
+    
+    public BigDecimal getMaxPorcDescuento() {
+        return maxPorcDescuento;
+    }
+
+    public void setMaxPorcDescuento(BigDecimal maxPorcDescuento) {
+        this.maxPorcDescuento = maxPorcDescuento;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
+    }
+
+    public Date getFechaEstado() {
+        return fechaEstado;
+    }
+
+    public void setFechaEstado(Date fechaEstado) {
+        this.fechaEstado = fechaEstado;
+    }
 
     @Override
     public int hashCode() {
@@ -113,5 +146,5 @@ public class FacDescVol implements Serializable {
     public String toString() {
         return "com.sire.entities.FacDescVol[ facDescVolPK=" + facDescVolPK + " ]";
     }
-    
+
 }
