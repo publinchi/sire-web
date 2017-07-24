@@ -454,6 +454,9 @@ public class ArticulosBean {
             invArticuloSeleccionado.setTotalPlusIVA(Round.round(totalPlusIVA, 2));
 
             agregarBloqueado = false;
+            
+            if (invArticuloSeleccionado.getDescuento() == null)
+                invArticuloSeleccionado.setDescuento(0.0);
 
             if (maxPorcDescuento < invArticuloSeleccionado.getDescuento().doubleValue()) {
                 agregarBloqueado = true;
