@@ -712,7 +712,6 @@ public class ArticulosBean {
                 maxPorcDescuento = facDescVol.getMaxPorcDescuento().doubleValue();
                 maxPorcDescuentoDisabled = false;
             } else {
-                maxPorcDescuento = 0.0;
                 maxPorcDescuentoDisabled = true;
             }
             invArticuloSeleccionado.setDescuento(facDescVol.getPorcDescuento());
