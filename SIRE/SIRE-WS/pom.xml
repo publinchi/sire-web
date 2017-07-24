@@ -7,9 +7,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.sire</groupId>
     <artifactId>SIRE-WS</artifactId>
-    <version>1.0.0</version>
     <packaging>war</packaging>
 
     <name>SIRE-WS</name>
@@ -26,10 +24,9 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sire.commons</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Commons</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

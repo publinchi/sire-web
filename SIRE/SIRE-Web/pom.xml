@@ -7,9 +7,7 @@
         <version>1.0.0</version>
     </parent>
 
-    <groupId>com.sire</groupId>
     <artifactId>SIRE-Web</artifactId>
-    <version>1.0.0</version>
     <packaging>war</packaging>
 
     <name>SIRE-Web</name>
@@ -27,20 +25,13 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.sire</groupId>
-            <artifactId>SIRE-RS-Client</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SIRE-Entities</artifactId>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>SIRE-Entities</artifactId>
+            <artifactId>SIRE-RS-Client</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

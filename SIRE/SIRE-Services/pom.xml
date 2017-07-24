@@ -2,14 +2,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-    <artifactId>SIRE</artifactId>
-    <groupId>com.sire</groupId>
-    <version>1.0.0</version>
-  </parent>
+        <artifactId>SIRE</artifactId>
+        <groupId>com.sire</groupId>
+        <version>1.0.0</version>
+    </parent>
 
-    <groupId>com.sire</groupId>
     <artifactId>SIRE-Services</artifactId>
-    <version>1.0.0</version>
     <packaging>ejb</packaging>
 
     <name>SIRE-Services</name>
@@ -38,15 +36,9 @@
             <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.sire</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Services-API</artifactId>
-            <version>1.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>com.sire.commons</groupId>
-            <artifactId>SIRE-Commons</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
