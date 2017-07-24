@@ -456,7 +456,7 @@ public class ArticulosBean {
             agregarBloqueado = false;
             
             if (invArticuloSeleccionado.getDescuento() == null)
-                invArticuloSeleccionado.setDescuento(0.0);
+                invArticuloSeleccionado.setDescuento(new BigDecimal(0.0));
 
             if (maxPorcDescuento < invArticuloSeleccionado.getDescuento().doubleValue()) {
                 agregarBloqueado = true;
