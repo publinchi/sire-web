@@ -458,10 +458,7 @@ public class ArticulosBean {
             if (invArticuloSeleccionado.getDescuento() == null)
                 invArticuloSeleccionado.setDescuento(new BigDecimal(0.0));
             
-            if (maxPorcDescuento == null)
-                maxPorcDescuento = 0.0;
-
-            if (maxPorcDescuento < invArticuloSeleccionado.getDescuento().doubleValue()) {
+            if (maxPorcDescuento != null && maxPorcDescuento < invArticuloSeleccionado.getDescuento().doubleValue()) {
                 agregarBloqueado = true;
             }
 
