@@ -54,8 +54,7 @@
                         <p:inputText id="descuento1" 
                                      value="#{articulosBean.invArticuloSeleccionado.descuento}" 
                                      validatorMessage="Porcentaje de descuento excedido."
-                                     readonly="#{articulosBean.maxPorcDescuentoDisabled}"
-                                     required="true">
+                                     readonly="#{articulosBean.maxPorcDescuentoDisabled}">
                             <f:validateDoubleRange disabled="#{articulosBean.maxPorcDescuentoDisabled}" 
                                                    minimum="0" 
                                                    maximum="#{articulosBean.maxPorcDescuento}" />
