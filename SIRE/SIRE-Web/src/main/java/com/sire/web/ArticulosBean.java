@@ -111,7 +111,7 @@ public class ArticulosBean {
 
     //
     private Double existencia, maxPorcDescuento;
-    private boolean agregarBloqueado = true, maxPorcDescuentoDisabled;
+    private boolean agregarBloqueado = true, maxPorcDescuentoDisabled = true;
 
     // Atributos de articulo a ser agregado a la lista
     private String codInventario;
