@@ -318,17 +318,7 @@ public class ArticulosBean {
         String codUnidad = movimientoSeleccionado.getCodUnidad();
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
 
-        LOGGER.info("Articulo a ser agregado: ");
-        LOGGER.log(Level.INFO, "codBodega: {0}", codBodega);
-        LOGGER.log(Level.INFO, "codInventario: {0}", codInventario);
-        LOGGER.log(Level.INFO, "codUnidad: {0}", codUnidad);
-        LOGGER.log(Level.INFO, "cantidad: {0}", cantidad);
-        LOGGER.log(Level.INFO, "precioUnitario: {0}", movimientoSeleccionado.getCostoUnitario());
-        LOGGER.log(Level.INFO, "descArticulo: {0}", invArticuloSeleccionado.getDescArticulo());
-        LOGGER.log(Level.INFO, "descuento: {0}", invArticuloSeleccionado.getDescuento());
-        LOGGER.log(Level.INFO, "total: {0}", movimientoSeleccionado.getCostoTotal());
-        LOGGER.log(Level.INFO, "iva: {0}", invArticuloSeleccionado.getCodIva());
-        LOGGER.log(Level.INFO, "totalIVA: {0}", totalIVA);
+        LOGGER.info("Articulo a ser agregado - codBodega: " + codBodega + " - codInventario: " + codInventario + " - codUnidad: " + codUnidad + " - cantidad: " + cantidad + " - precioUnitario: " + movimientoSeleccionado.getCostoUnitario() + " - descArticulo: " + invArticuloSeleccionado.getDescArticulo() + " - descuento: " + invArticuloSeleccionado.getDescuento() + " - total: " + movimientoSeleccionado.getCostoTotal() + " - iva: " + invArticuloSeleccionado.getCodIva() + " - totalIVA: " + totalIVA);
 
         // codBodega
         movimientoSeleccionado.getInvBodegaArt().getInvBodegaArtPK().setCodBodega(codBodega);
@@ -364,25 +354,21 @@ public class ArticulosBean {
         Double auxCantidad = 0.0;
         switch (operador) {
             case "+":
-                LOGGER.info("1:::");
                 auxCantidad = cantidad.doubleValue() + factor.doubleValue();
                 break;
             case "-":
-                LOGGER.info("2:::");
                 auxCantidad = cantidad.doubleValue() - factor.doubleValue();
                 break;
             case "*":
-                LOGGER.info("3:::");
                 auxCantidad = cantidad.doubleValue() / factor.doubleValue();
                 break;
             case "/":
-                LOGGER.info("4::");
                 auxCantidad = cantidad.doubleValue() * factor.doubleValue();
                 break;
             default:
                 break;
         }
-        LOGGER.log(Level.INFO, "5::: {0}", auxCantidad);
+        LOGGER.log(Level.INFO, "auxCantidad: {0}", auxCantidad);
         movimientoSeleccionado.setAuxCantidad(auxCantidad);
         movimientoSeleccionado.setDescuento(invArticuloSeleccionado.getDescuento());
         movimientoSeleccionado.setFactor(facCatalogoPrecioD.getFactor());
@@ -698,6 +684,14 @@ public class ArticulosBean {
         id.append(";");
         id.append("codGrupo3=");
         id.append(facDescVolPK.getCodGrupo3());
+
+        LOGGER.info("codEmpresa: " + facDescVolPK.getCodEmpresa()
+                + ", codGrupo: " + facDescVolPK.getCodGrupo()
+                + ", codTipo: " + facDescVolPK.getCodTipo()
+                + ", codGrupo1: " + facDescVolPK.getCodGrupo1()
+                + ", codGrupo2: " + facDescVolPK.getCodGrupo2()
+                + ", codGrupo3: " + facDescVolPK.getCodGrupo3()
+        );
 
         FacDescVol facDescVol = facDescVolFacadeREST.find_JSON(FacDescVol.class, id.toString());
 
