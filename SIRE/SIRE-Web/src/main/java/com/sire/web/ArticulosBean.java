@@ -187,7 +187,7 @@ public class ArticulosBean {
 
         invArticuloSeleccionado = ((InvArticulo) event.getObject());
         LOGGER.info("Nombre artículo: " + invArticuloSeleccionado.getNombreArticulo()
-                + " - Cod Unidad: " + invArticuloSeleccionado.getCodUnidad().getCodUnidad()
+                + ", Cod Unidad: " + invArticuloSeleccionado.getCodUnidad().getCodUnidad()
         );
         setCodArticulo(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo());
 
@@ -255,7 +255,8 @@ public class ArticulosBean {
 
             invMovimientoDtll.setPrecioVenta(facCatalogoPrecioD.getPrecioVenta1());
 
-            LOGGER.info("Cod Articulo: " + codArticle + " - Precio Venta: " + invMovimientoDtll.getPrecioVenta());
+            LOGGER.info("Cod Articulo: " + codArticle
+                    + ", Precio Venta: " + invMovimientoDtll.getPrecioVenta());
 
             if (invArticuloSeleccionado.getDescuento() == null) {
                 if (obtenerCliente() != null) {
@@ -318,7 +319,15 @@ public class ArticulosBean {
         String codUnidad = movimientoSeleccionado.getCodUnidad();
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
 
-        LOGGER.info("Articulo a ser agregado - codBodega: " + codBodega + " - codInventario: " + codInventario + " - codUnidad: " + codUnidad + " - cantidad: " + cantidad + " - precioUnitario: " + movimientoSeleccionado.getCostoUnitario() + " - descArticulo: " + invArticuloSeleccionado.getDescArticulo() + " - descuento: " + invArticuloSeleccionado.getDescuento() + " - total: " + movimientoSeleccionado.getCostoTotal() + " - iva: " + invArticuloSeleccionado.getCodIva() + " - totalIVA: " + totalIVA);
+        LOGGER.info("Articulo a ser agregado, codBodega: " + codBodega
+                + ", codInventario: " + codInventario
+                + ", codUnidad: " + codUnidad + ", cantidad: " + cantidad
+                + ", precioUnitario: " + movimientoSeleccionado.getCostoUnitario()
+                + ", descArticulo: " + invArticuloSeleccionado.getDescArticulo()
+                + ", descuento: " + invArticuloSeleccionado.getDescuento()
+                + ", total: " + movimientoSeleccionado.getCostoTotal()
+                + ", iva: " + invArticuloSeleccionado.getCodIva()
+                + ", totalIVA: " + totalIVA);
 
         // codBodega
         movimientoSeleccionado.getInvBodegaArt().getInvBodegaArtPK().setCodBodega(codBodega);
@@ -431,7 +440,9 @@ public class ArticulosBean {
             movimientoSeleccionado.setCostoTotal(precioTotal);
 
             Double totalPlusIVA = precioTotal * (1 + invArticuloSeleccionado.getIva().doubleValue() / 100);
-            LOGGER.info("$ descuento: " + descuento + " - precioTotal: " + precioTotal + " - totalPlusIVA: " + totalPlusIVA);
+            LOGGER.info("$ descuento: " + descuento
+                    + ", precioTotal: " + precioTotal
+                    + ", totalPlusIVA: " + totalPlusIVA);
             invArticuloSeleccionado.setTotalPlusIVA(Round.round(totalPlusIVA, 2));
 
             agregarBloqueado = false;
@@ -468,7 +479,10 @@ public class ArticulosBean {
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:botonAgregar");
         }
 
-        LOGGER.info("Precio venta: " + invArticuloSeleccionado.getPrecio() + " - Existencia: " + existence + " - Cantidad: " + cantidad.doubleValue() + " - agregarBloqueado: " + agregarBloqueado);
+        LOGGER.info("Precio venta: " + invArticuloSeleccionado.getPrecio()
+                + ", Existencia: " + existence 
+                + ", Cantidad: " + cantidad.doubleValue()
+                + ", agregarBloqueado: " + agregarBloqueado);
     }
 
     public void loadPrecioUnitarioByUnidadMedida() {
@@ -505,7 +519,7 @@ public class ArticulosBean {
             operador = invUnidadAlternativa.getOperador();
         }
 
-        LOGGER.info("auxPrecio: " + auxPrecio + " - factor: " + factor + " - operador: " + operador);
+        LOGGER.info("auxPrecio: " + auxPrecio + ", factor: " + factor + ", operador: " + operador);
 
         Double precio;
         switch (operador) {
@@ -705,7 +719,9 @@ public class ArticulosBean {
             }
             invArticuloSeleccionado.setDescuento(facDescVol.getPorcDescuento());
 
-            LOGGER.info("% descuento: " + invArticuloSeleccionado.getDescuento() + ", maxPorcDescuento: " + maxPorcDescuento + ", maxPorcDescuentoDisabled: " + maxPorcDescuentoDisabled);
+            LOGGER.info("% descuento: " + invArticuloSeleccionado.getDescuento()
+                    + ", maxPorcDescuento: " + maxPorcDescuento
+                    + ", maxPorcDescuentoDisabled: " + maxPorcDescuentoDisabled);
         }
 
         return invArticuloSeleccionado.getDescuento();
@@ -744,7 +760,7 @@ public class ArticulosBean {
             BigDecimal cantidad = BigDecimal.ZERO;
             if (invMovimientoDtll1.getCantidad() != null) {
                 cantidad = invMovimientoDtll1.getCantidad();
-                LOGGER.info(cantidad.toString());
+                LOGGER.info("CANTIDAD: " + cantidad.toString());
             }
 
             Double descuento = 0.0;
