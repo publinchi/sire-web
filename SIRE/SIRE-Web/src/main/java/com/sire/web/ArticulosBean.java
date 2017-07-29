@@ -574,6 +574,10 @@ public class ArticulosBean {
                 throw new LimitException("No se puede facturar, cliente pasó el limite de facturación que es de : " + limiteFactura);
             }
 
+            if (!contenidoValido()) {
+                throw new EmptyException("No se puede enviar pedido, faltan datos.");
+            }
+
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class,
                     "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
@@ -878,10 +882,6 @@ public class ArticulosBean {
             facTmpFactD.setSerie(null); //TODO
             facTmpFactD.setTotalReg(invMovimientoDtll.getCostoTotal()); //TODO
 
-            if (facTmpFactD.getCantidad() == null || facTmpFactD.getTotalReg() == null) {
-                throw new EmptyException("No se puede enviar pedido, faltan datos.");
-            }
-
             facTmpFactDs.add(facTmpFactD);
         }
     }
@@ -1114,5 +1114,14 @@ public class ArticulosBean {
         gnrLogHistorico.setLatitud(Double.valueOf(mapa.getLat()));
         gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
         pedido.setGnrLogHistorico(gnrLogHistorico);
+    }
+
+    private boolean contenidoValido() {
+        for (InvMovimientoDtll invMovimientoDtll : invMovimientoDtlls) {
+            if (invMovimientoDtll.getCantidad() == null || invMovimientoDtll.getCostoTotal() == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }
