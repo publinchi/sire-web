@@ -605,7 +605,9 @@ public class ArticulosBean {
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "pedido?faces-redirect=true";
         } finally {
-            invMovimientoCabFacadeREST.close();
+            if (invMovimientoCabFacadeREST != null) {
+                invMovimientoCabFacadeREST.close();
+            }
         }
     }
 
