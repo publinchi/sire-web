@@ -847,7 +847,7 @@ public class ArticulosBean {
         facTmpFactC.setObservacion(observacion);
     }
 
-    private void prepararFacTmpFactDs(BigDecimal numDocumentoResp) {
+    private void prepararFacTmpFactDs(BigDecimal numDocumentoResp) throws EmptyException {
 
         for (InvMovimientoDtll invMovimientoDtll : invMovimientoDtlls) {
             FacTmpFactDPK facTmpFactDPK = new FacTmpFactDPK();
@@ -877,6 +877,10 @@ public class ArticulosBean {
             facTmpFactD.setPromocion(null); //TODO
             facTmpFactD.setSerie(null); //TODO
             facTmpFactD.setTotalReg(invMovimientoDtll.getCostoTotal()); //TODO
+
+            if (facTmpFactD.getCantidad() == null || facTmpFactD.getTotalReg() == null) {
+                throw new EmptyException("No se puede enviar pedido, faltan datos.");
+            }
 
             facTmpFactDs.add(facTmpFactD);
         }
