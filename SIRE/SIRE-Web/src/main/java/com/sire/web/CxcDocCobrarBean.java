@@ -385,11 +385,12 @@ public class CxcDocCobrarBean {
     public void calcularCheques() {
         LOGGER.info("calcularCheques()");
         if (valorCheque > 0.0) {
-            LOGGER.info("totalCapital: " + totalCapital + ", retencion: " + retencion
+            LOGGER.info("cxcDocCobrarSeleccionado.getCapital(): " + cxcDocCobrarSeleccionado.getCapital()
+                    + ", retencion: " + retencion
                     + ", retencionIVA: " + retencionIVA + ", efectivo: " + efectivo
                     + ", deposito: " + deposito + ", otros: " + otros
                     + ", totalCheques:" + totalCheques + ", valorCheque: " + valorCheque);
-            Double dif = totalCapital - retencion - retencionIVA - efectivo - deposito - otros - totalCheques - valorCheque;
+            Double dif = cxcDocCobrarSeleccionado.getCapital() - retencion - retencionIVA - efectivo - deposito - otros - totalCheques - valorCheque;
             dif = Round.round(dif, 2);
             LOGGER.log(Level.INFO, "dif: {0}", dif);
             if (dif.equals(0.0) && validarCheque()) {
