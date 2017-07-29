@@ -137,7 +137,9 @@ public class VisitasBean {
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
             return "visita?faces-redirect=true";
         } finally {
-            comVisitaClienteFacadeREST.close();
+            if (comVisitaClienteFacadeREST != null) {
+                comVisitaClienteFacadeREST.close();
+            }
         }
     }
 

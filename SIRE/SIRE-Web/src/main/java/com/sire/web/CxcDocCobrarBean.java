@@ -378,7 +378,9 @@ public class CxcDocCobrarBean {
             context.getExternalContext().getFlash().setKeepMessages(true);
             return "index?faces-redirect=true";
         } finally {
-            cxcDocCobrarFacadeREST.close();
+            if (cxcDocCobrarFacadeREST != null) {
+                cxcDocCobrarFacadeREST.close();
+            }
         }
     }
 
