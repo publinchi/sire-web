@@ -14,20 +14,20 @@
             <p:ajax event="change" listener="#{articulosBean.cambioModo}"
                     update="@form"/>
         </p:selectOneRadio>
-        <p:panel id="buscarArticulos" header="Buscar Artículos:" 
-                 toggleable="true" collapsed="true">
-            <h:panelGrid columns="2">
-                <p:inputText id="buscar" 
-                             placeholder="Buscar Articulo" 
-                             type="search" 
-                             value="${articulosBean.input}">
-                    <f:ajax event="blur" render="@this" immediate="true"/>
-                </p:inputText>
-                <p:commandButton id="botonBuscarArticulo" 
-                                 icon="ui-icon-search" 
-                                 actionListener="${articulosBean.findArticulos}" 
-                                 update="@form"/>
-            </h:panelGrid>
+        <h:panelGrid columns="2">
+            <p:inputText id="buscar" 
+                         placeholder="Buscar Articulo" 
+                         type="search" 
+                         value="${articulosBean.input}">
+                <f:ajax event="blur" render="@this" immediate="true"/>
+            </p:inputText>
+            <p:commandButton id="botonBuscarArticulo" 
+                             icon="ui-icon-search" 
+                             actionListener="${articulosBean.findArticulos}" 
+                             update="buscarArticulos"/>
+        </h:panelGrid>
+        <p:panel id="buscarArticulos" header="Artículos Encontrados:" 
+                 toggleable="true" collapsed="${articulosBean.articulosEncontradosCollapsed}">
             <h:outputLabel value="No hay existencia!!!" rendered="${articulosBean.articulos.size() eq 0}"/>
             <p:dataTable id="dataListArticulo" var="articulo" 
                          value="#{articulosBean.lazyModel}" 

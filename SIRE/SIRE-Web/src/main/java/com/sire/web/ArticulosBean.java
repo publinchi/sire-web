@@ -137,6 +137,8 @@ public class ArticulosBean {
     //Mensaje
     private String cantidadExcedida, colorCantidadExcedida = "black", observacion;
 
+    private boolean articulosEncontradosCollapsed = true;
+
     public ArticulosBean() {
         codInventario = "01";
         facTmpFactC = new FacTmpFactC();
@@ -174,8 +176,14 @@ public class ArticulosBean {
                 }.getType());
             }
             LOGGER.log(Level.INFO, "# articulos: {0}", articulos.size());
+            if (!articulos.isEmpty()) {
+                articulosEncontradosCollapsed = false;
+            } else {
+                articulosEncontradosCollapsed = true;
+            }
             lazyModel = new LazyInvArticuloDataModel(articulos);
         } catch (ClientErrorException cee) {
+            LOGGER.log(Level.SEVERE, cee.getMessage());
             articulos = null;
         } catch (UnsupportedEncodingException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
@@ -223,6 +231,7 @@ public class ArticulosBean {
             invMovimientoDtlls.add(invMovimientoDtll);
             input = null;
             articulos.clear();
+            articulosEncontradosCollapsed = true;
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticles:buscar");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticles:dataListArticulo");
         } else {
@@ -480,7 +489,7 @@ public class ArticulosBean {
         }
 
         LOGGER.info("Precio venta: " + invArticuloSeleccionado.getPrecio()
-                + ", Existencia: " + existence 
+                + ", Existencia: " + existence
                 + ", Cantidad: " + cantidad.doubleValue()
                 + ", agregarBloqueado: " + agregarBloqueado);
     }
