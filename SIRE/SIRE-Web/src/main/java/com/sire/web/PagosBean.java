@@ -79,12 +79,15 @@ public class PagosBean {
                 throw new ClienteException("Por favor, seleccione el cliente.");
             } else {
                 pagos = gson.fromJson(cxcPagoContadoFacadeREST.findByFechas_JSON(String.class, fechaInicio,
-                        fechaFin, obtenerEmpresa(), cliente.getCliente().getCodVendedor()), new TypeToken<java.util.List<Pago>>() {
-                }.getType()
+                        fechaFin, obtenerEmpresa(), obtenerVendedor()), new TypeToken<java.util.List<Pago>>() {
+                        }.getType()
                 );
                 LOGGER.log(Level.INFO, "pagos: {0}", pagos.size());
             }
         } catch (ClienteException ex) {
+            LOGGER.log(Level.WARNING, ex.getMessage());
+            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
+        } catch (VendedorException ex) {
             LOGGER.log(Level.WARNING, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);
         }
