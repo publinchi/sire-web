@@ -456,11 +456,12 @@ public class CxcDocCobrarBean {
     }
 
     private void loadCxcDocCobrarList() {
-        client = cliente.getCliente();
-        BigInteger codCliente = cliente.getCliente().getCodCliente();
         CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
-        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findByCodCliente(String.class,
-                codCliente.toString());
+        client = cliente.getCliente();
+//        BigInteger codCliente = cliente.getCliente().getCodCliente();
+//        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findByCodCliente(String.class,
+//                codCliente.toString());
+        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findAll_JSON(String.class);
         cxcDocCobrarList = gson.fromJson(cxcDocCobrarListString, new TypeToken<List<CxcDocCobrar>>() {
         }.getType());
         calcularTotales();
