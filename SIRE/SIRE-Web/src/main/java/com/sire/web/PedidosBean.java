@@ -17,6 +17,8 @@ import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.FacTmpFactCFacadeREST;
 import com.sire.rs.client.FacTmpFactDFacadeREST;
 import com.sire.rs.client.InvArticuloFacadeREST;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -96,10 +98,10 @@ public class PedidosBean {
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv());
         try {
             detallesPedido = gson.fromJson(facTmpFactDFacadeREST.findByFacTmpFactC_JSON(String.class, obtenerEmpresa(),
-                    NumberFormat.getNumberInstance(java.util.Locale.US).parse(String.valueOf(pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv())).intValue(),
+                    URLEncoder.encode(String.valueOf(pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv()), "UTF-8"),
                     pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEi()), new TypeToken<java.util.List<FacTmpFactD>>() {
             }.getType());
-        } catch (ParseException ex) {
+        } catch (UnsupportedEncodingException ex) {
             Logger.getLogger(PedidosBean.class.getName()).log(Level.SEVERE, null, ex);
         }
 
