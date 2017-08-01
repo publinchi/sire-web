@@ -17,6 +17,8 @@ import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.FacTmpFactCFacadeREST;
 import com.sire.rs.client.FacTmpFactDFacadeREST;
 import com.sire.rs.client.InvArticuloFacadeREST;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -92,10 +94,14 @@ public class PedidosBean {
         pedidoSeleccionado = ((Pedido) event.getObject());
         LOGGER.log(Level.INFO, "# EgresoInv Pedido seleccionado: {0}",
                 pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv());
-        detallesPedido = gson.fromJson(facTmpFactDFacadeREST.findByFacTmpFactC_JSON(String.class, obtenerEmpresa(),
-                pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv(),
-                pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEi()), new TypeToken<java.util.List<FacTmpFactD>>() {
-        }.getType());
+        try {
+            detallesPedido = gson.fromJson(facTmpFactDFacadeREST.findByFacTmpFactC_JSON(String.class, obtenerEmpresa(),
+                    NumberFormat.getNumberInstance(java.util.Locale.US).parse(String.valueOf(pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEgresoInv())).intValue(),
+                    pedidoSeleccionado.getFacTmpFactC().getFacTmpFactCPK().getEi()), new TypeToken<java.util.List<FacTmpFactD>>() {
+            }.getType());
+        } catch (ParseException ex) {
+            Logger.getLogger(PedidosBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         for (FacTmpFactD facTmpFactD : detallesPedido) {
             InvArticulo invArticulo = invArticuloFacadeREST.find_JSON(

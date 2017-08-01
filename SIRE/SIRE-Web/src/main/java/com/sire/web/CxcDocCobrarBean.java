@@ -198,6 +198,9 @@ public class CxcDocCobrarBean {
     public void calcularFormaPago(String formaPago) {
         LOGGER.info("calcularFormaPago()");
         Double sumFormaPagos = getRetencion() + getRetencionIVA() + getEfectivo() + getDeposito() + getOtros() + getTotalCheques();
+        if (sumFormaPagos == null || cxcDocCobrarSeleccionado == null) {
+            return;
+        }
         if (sumFormaPagos > cxcDocCobrarSeleccionado.getCapital()) {
             switch (formaPago) {
                 case "retencion":

@@ -175,13 +175,13 @@ public class ArticulosBean {
                 articulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
                 }.getType());
             }
-            LOGGER.log(Level.INFO, "# articulos: {0}", articulos.size());
-            if (!articulos.isEmpty()) {
+            if (articulos != null && !articulos.isEmpty()) {
+                LOGGER.log(Level.INFO, "# articulos: {0}", articulos.size());
+                lazyModel = new LazyInvArticuloDataModel(articulos);
                 articulosEncontradosCollapsed = false;
             } else {
                 articulosEncontradosCollapsed = true;
             }
-            lazyModel = new LazyInvArticuloDataModel(articulos);
         } catch (ClientErrorException cee) {
             LOGGER.log(Level.SEVERE, cee.getMessage());
             articulos = null;
@@ -775,7 +775,6 @@ public class ArticulosBean {
             BigDecimal cantidad = BigDecimal.ZERO;
             if (invMovimientoDtll1.getCantidad() != null) {
                 cantidad = invMovimientoDtll1.getCantidad();
-                LOGGER.info("CANTIDAD: " + cantidad.toString());
             }
 
             Double descuento = 0.0;
@@ -784,8 +783,6 @@ public class ArticulosBean {
             } else {
                 invMovimientoDtll1.setDescuento(new BigDecimal(0));
             }
-
-            LOGGER.info("DESCUENTO: " + descuento.toString());
 
             if (invMovimientoDtll1.getCantidad() == null) {
                 invMovimientoDtll1.setCantidad(new BigDecimal(0));
@@ -796,21 +793,26 @@ public class ArticulosBean {
             }
 
             Double _subTotal = Round.round((invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue())) - descuento, 2);
-            LOGGER.log(Level.INFO, "_subTotal: {0}", _subTotal);
 
             if (invMovimientoDtll1.getPorcentajeIva() == null) {
                 invMovimientoDtll1.setPorcentajeIva(new BigDecimal(0));
             }
 
             Double _iva = (_subTotal) * (invMovimientoDtll1.getPorcentajeIva().doubleValue() / 100);
-            LOGGER.log(Level.INFO, "_iva: {0}", _iva);
 
             subTotal += Round.round(_subTotal, 2);
-            LOGGER.log(Level.INFO, "subTotal: {0}", subTotal);
+
             iva += Round.round(_iva, 2);
-            LOGGER.log(Level.INFO, "iva: {0}", iva);
+
             total += Round.round((_subTotal + _iva), 2);
-            LOGGER.log(Level.INFO, "total: {0}", total);
+
+            LOGGER.info("CANTIDAD: " + cantidad.toString()
+                    + ", DESCUENTO: " + descuento.toString()
+                    + ", _subTotal: " + _subTotal
+                    + ", _iva: " + _iva
+                    + ", subTotal: " + subTotal
+                    + ", iva: " + iva
+                    + ", total: " + total);
         }
         total = Round.round(total, 2);
         subTotal = Round.round(subTotal, 2);
