@@ -464,12 +464,18 @@ public class CxcDocCobrarBean {
         CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
         client = cliente.getCliente();
         BigInteger codCliente = cliente.getCliente().getCodCliente();
-        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findByCodCliente(String.class,
-                codCliente.toString());
-//        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findAll_JSON(String.class);
-        cxcDocCobrarList = gson.fromJson(cxcDocCobrarListString, new TypeToken<List<CxcDocCobrar>>() {
-        }.getType());
-        calcularTotales();
+        String cxcDocCobrarListString;
+        try {
+            cxcDocCobrarListString = cxcDocCobrarFacadeREST.findByCodClienteCodVendedor(String.class,
+                    codCliente.toString(), obtenerVendedor().toString());
+            //        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findAll_JSON(String.class);
+            cxcDocCobrarList = gson.fromJson(cxcDocCobrarListString, new TypeToken<List<CxcDocCobrar>>() {
+            }.getType());
+            calcularTotales();
+        } catch (VendedorException | ClienteException ex) {
+            Logger.getLogger(CxcDocCobrarBean.class.getName()).log(Level.SEVERE, null, ex);
+            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
+        }
     }
 
     private void calcularTotales() {

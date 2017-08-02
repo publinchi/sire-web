@@ -142,6 +142,18 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
     }
 
     @GET
+    @Path("/findByCodClienteCodVendedor/{codCliente}/{codVendedor}")
+    @Produces({"application/json"})
+    public List<CxcDocCobrar> findByCodClienteCodVendedor(@PathParam("codCliente") String codCliente,
+            @PathParam("codVendedor") String codVendedor) {
+        TypedQuery<CxcDocCobrar> query = em.createNamedQuery("CxcDocCobrar.findByCodClienteCodVendedor", CxcDocCobrar.class);
+        query.setParameter("codCliente", new BigInteger(codCliente));
+        query.setParameter("codVendedor", new BigInteger(codVendedor));
+        List<CxcDocCobrar> retorno = query.getResultList();
+        return retorno;
+    }
+
+    @GET
     @Path("/sumSaldoDocumentoByCodClienteCodEmpresaFechaFac/{codCliente}/{codEmpresa}/{fechaFac}")
     @Produces({"application/json"})
     public String sumSaldoDocumentoByCodClienteCodEmpresaFechaFac(@PathParam("codCliente") String codCliente, @PathParam("codEmpresa") String codEmpresa, @PathParam("fechaFac") String fechaFac) {
