@@ -276,19 +276,18 @@ public class CxcDocCobrarBean {
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
                 if (cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento().equals(cxcDocCobrarSeleccionado.getCxcDocCobrarPK().getNumDocumento())) {
-                    LOGGER.log(Level.INFO, "cxcDocCobrar: {0}", cxcDocCobrar);
-
                     if (cxcDocCobrar.getSaldoOri() == null) {
                         cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
                     }
 
-                    LOGGER.log(Level.INFO, "cxcDocCobrarSeleccionado.getSaldoDocumento(): {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
-
                     cxcDocCobrar.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoDocumento());
                     cxcDocCobrar.setCapital(cxcDocCobrarSeleccionado.getCapital());
 
-                    LOGGER.log(Level.INFO, "cxcDocCobrar.getSaldoOri(): {0}", cxcDocCobrar.getSaldoOri());
-                    LOGGER.log(Level.INFO, "cxcDocCobrar.getSaldoDocumento(): {0}", cxcDocCobrar.getSaldoDocumento());
+                    LOGGER.info("Pago: " + numDocumentoResp
+                            + ", cxcDocCobrar: " + cxcDocCobrar
+                            + ", cxcDocCobrarSeleccionado.getSaldoDocumento(): " + cxcDocCobrarSeleccionado.getSaldoDocumento()
+                            + ", cxcDocCobrar.getSaldoOri(): " + cxcDocCobrar.getSaldoOri()
+                            + ", cxcDocCobrar.getSaldoDocumento(): " + cxcDocCobrar.getSaldoDocumento());
                     if (cxcDocCobrar.getSaldoOri() != null && !Objects.equals(cxcDocCobrar.getSaldoOri(), cxcDocCobrar.getSaldoDocumento())) {
                         CxcAbonoD cxcAbonoD = new CxcAbonoD();
                         CxcAbonoDPK cxcAbonoDPK = new CxcAbonoDPK();
@@ -311,7 +310,7 @@ public class CxcDocCobrarBean {
                 }
             }
 
-            LOGGER.log(Level.INFO, "cxcAbonoDList.size: {0}", cxcAbonoDList.size());
+            LOGGER.info("Pago: " + numDocumentoResp + ", cxcAbonoDList.size: " + cxcAbonoDList.size());
             cxcAbonoC.setCxcAbonoDList(cxcAbonoDList);
 
             CxcPagoContado cxcPagoContado = new CxcPagoContado();
@@ -347,19 +346,17 @@ public class CxcDocCobrarBean {
             pago.setCxcDocCobrarList(cxcDocCobrarList);
             pago.setCxcPagoContado(cxcPagoContado);
             agregarLog(pago);
-            LOGGER.info("Enviando Pago ...");
+            LOGGER.info("Enviando Pago " + numDocumentoResp + " ...");
             cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
             Response response = cxcDocCobrarFacadeREST.save_JSON(pago);
 
-            LOGGER.log(Level.INFO, "Response: {0}", response.toString());
-            LOGGER.log(Level.INFO, "Status: {0}", response.getStatus());
-            LOGGER.log(Level.INFO, "Status info: {0}", response.getStatusInfo().getReasonPhrase());
+            LOGGER.info("Pago: " + numDocumentoResp + ", Response: " + response.toString() + ", Status: " + response.getStatus() + ", Status info: " + response.getStatusInfo().getReasonPhrase());
 
             if (response.getStatus() != 200) {
                 throw new RestException("No se pudo realizar el pago, por favor contacte al administrador.");
             }
 
-            LOGGER.info("Pago Enviado.");
+            LOGGER.info("Pago " + numDocumentoResp + " Enviado.");
 
             LOGGER.info("Enviando Mail ...");
             enviarMail(pago);
