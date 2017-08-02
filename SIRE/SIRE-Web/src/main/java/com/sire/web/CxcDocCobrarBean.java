@@ -475,7 +475,7 @@ public class CxcDocCobrarBean {
                 cxcDocCobrarList = new ArrayList<>();
             }
             calcularTotales();
-        } catch (VendedorException | ClienteException ex) {
+        } catch (VendedorException ex) {
             Logger.getLogger(CxcDocCobrarBean.class.getName()).log(Level.SEVERE, null, ex);
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
         }
@@ -516,45 +516,28 @@ public class CxcDocCobrarBean {
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
 
-    private BigInteger obtenerVendedor() throws VendedorException, ClienteException {
+    private BigInteger obtenerVendedor() throws VendedorException {
         FacParametros facParametros = obtenerFacParametros();
 
         if (facParametros == null) {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        Integer codVendedor = facParametros.getDefCodVendedor();
-        BigInteger defCodVendedor;
-        if (codVendedor != null) {
-            defCodVendedor = new BigInteger(codVendedor.toString());
-            return defCodVendedor;
-        } else {
-            defCodVendedor = BigInteger.valueOf(cliente.getCliente().getCodVendedor());
-            return defCodVendedor;
+        Integer defCodVendedor = facParametros.getDefCodVendedor();
+
+        if (defCodVendedor == null) {
+            throw new VendedorException("Vendedor no asociado a facturación.");
         }
+
+        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
+        return BigInteger.valueOf(defCodVendedor);
     }
 
     private FacParametros obtenerFacParametros() {
-        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class
-        );
-        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
-        }.getType());
-
-        String nombreUsuario = userManager.getCurrent().getNombreUsuario();
-        String codEmpresa = obtenerEmpresa();
-
-        for (FacParametros facParametros : listaFacParametros) {
-            String facNombreUsuario = facParametros.getFacParametrosPK().getNombreUsuario();
-            String facCodEmpresa = facParametros.getFacParametrosPK().getCodEmpresa();
-
-            if (facNombreUsuario.toLowerCase().
-                    equals(nombreUsuario.toLowerCase())
-                    && facCodEmpresa.
-                            equals(codEmpresa)) {
-                return facParametros;
-            }
-        }
-        return null;
+        FacParametros facParametros = facParametrosFacadeREST.find_JSON(
+                FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
+                + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
+        return facParametros;
     }
 
     private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
