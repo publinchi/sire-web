@@ -159,6 +159,9 @@ public class CxcDocCobrarBean {
         if (cliente.getCliente() != null) {
             loadCxcDocCobrarList();
         }
+        if (cxcDocCobrarList == null) {
+            cxcDocCobrarList = new ArrayList<>();
+        }
         return cxcDocCobrarList;
     }
 
