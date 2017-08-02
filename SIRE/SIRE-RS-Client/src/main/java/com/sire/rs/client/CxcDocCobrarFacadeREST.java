@@ -108,7 +108,7 @@ public class CxcDocCobrarFacadeREST {
 
     public <T> T findByCodClienteCodVendedor(Class<T> responseType, String codCliente, String codVendedor) throws ClientErrorException {
         WebTarget resource = webTarget;
-        resource = resource.path(java.text.MessageFormat.format("findByCodCliente/{0}/{1}", new Object[]{codCliente, codVendedor}));
+        resource = resource.path(java.text.MessageFormat.format("findByCodClienteCodVendedor/{0}/{1}", new Object[]{codCliente, codVendedor}));
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 

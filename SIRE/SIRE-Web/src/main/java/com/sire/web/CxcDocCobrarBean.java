@@ -159,9 +159,6 @@ public class CxcDocCobrarBean {
         if (cliente.getCliente() != null) {
             loadCxcDocCobrarList();
         }
-        if (cxcDocCobrarList == null) {
-            cxcDocCobrarList = new ArrayList<>();
-        }
         return cxcDocCobrarList;
     }
 
@@ -474,9 +471,6 @@ public class CxcDocCobrarBean {
             //        String cxcDocCobrarListString = cxcDocCobrarFacadeREST.findAll_JSON(String.class);
             cxcDocCobrarList = gson.fromJson(cxcDocCobrarListString, new TypeToken<List<CxcDocCobrar>>() {
             }.getType());
-            if (cxcDocCobrarList == null) {
-                cxcDocCobrarList = new ArrayList<>();
-            }
             calcularTotales();
         } catch (VendedorException ex) {
             Logger.getLogger(CxcDocCobrarBean.class.getName()).log(Level.SEVERE, null, ex);
