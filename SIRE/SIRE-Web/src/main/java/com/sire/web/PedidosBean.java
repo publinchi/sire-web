@@ -19,8 +19,6 @@ import com.sire.rs.client.FacTmpFactDFacadeREST;
 import com.sire.rs.client.InvArticuloFacadeREST;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -138,22 +136,9 @@ public class PedidosBean {
     }
 
     private FacParametros obtenerFacParametros() {
-        String facParametrosString = facParametrosFacadeREST.findAll_JSON(String.class);
-        List<FacParametros> listaFacParametros = gson.fromJson(facParametrosString, new TypeToken<java.util.List<FacParametros>>() {
-        }.getType());
-
-        LOGGER.log(Level.INFO, "Current user: {0}", userManager.getCurrent().getNombreUsuario().toLowerCase());
-
-        for (FacParametros facParametros : listaFacParametros) {
-            if (facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase().
-                    equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
-                    && facParametros.getFacParametrosPK().getCodEmpresa().
-                            equals(obtenerEmpresa())) {
-                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
-                return facParametros;
-            }
-        }
-        return null;
+        FacParametros facParametros = facParametrosFacadeREST.find_JSON(
+                FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
+                + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
+        return facParametros;
     }
 }
