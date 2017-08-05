@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -44,7 +45,7 @@ public class PedidosBean {
     private static final Logger LOGGER = Logger.getLogger(PedidosBean.class.getName());
     @Getter
     @Setter
-    private Date fechaInicio, fechaFin;
+    private Date fechaInicio = Calendar.getInstance().getTime(), fechaFin = Calendar.getInstance().getTime();
     private final FacTmpFactCFacadeREST facTmpFactCFacadeREST;
     private final FacTmpFactDFacadeREST facTmpFactDFacadeREST;
     private final FacParametrosFacadeREST facParametrosFacadeREST;

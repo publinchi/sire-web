@@ -16,6 +16,7 @@ import com.sire.exception.ClienteException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.CxcPagoContadoFacadeREST;
 import com.sire.rs.client.FacParametrosFacadeREST;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,7 +41,7 @@ public class PagosBean {
     private static final Logger LOGGER = Logger.getLogger(PagosBean.class.getName());
     @Getter
     @Setter
-    private Date fechaInicio, fechaFin;
+    private Date fechaInicio = Calendar.getInstance().getTime(), fechaFin = Calendar.getInstance().getTime();
     private final GsonBuilder builder;
     private final Gson gson;
     private final FacParametrosFacadeREST facParametrosFacadeREST;
