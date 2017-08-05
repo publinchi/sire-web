@@ -27,6 +27,7 @@ import lombok.Setter;
 @ManagedBean(name = "inventariosBean")
 public class InventariosBean {
 
+    private static final Logger LOGGER = Logger.getLogger(InventariosBean.class.getName());
     private List<InvInventario> invInventarios;
     private List<InvUnidadAlternativa> invUnidadAlternativas;
     @ManagedProperty(value = "#{articulosBean}")
@@ -37,20 +38,20 @@ public class InventariosBean {
 
     public List<InvInventario> getInvInventarios() {
         InvMovimientoDtll invMovimientoDtll = articulosBean.getInvMovimientoDtllSeleccionado();
-        Logger.getLogger(InventariosBean.class.getName()).info("Invocando getInvInventarios");
+
         if (invMovimientoDtll != null) {
             String codBod = invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodBodega();
-            Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "# CodBod: {0}", codBod);
             if (codBod != null) {
                 int codBodega = Integer.valueOf(codBod);
-                Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "codBodega: {0}", String.valueOf(codBodega));
+
                 InvInventarioFacadeREST invInventarioFacadeREST = new InvInventarioFacadeREST();
                 String result = invInventarioFacadeREST.findByCodBodega(String.class, String.valueOf(codBodega));
                 GsonBuilder builder = new GsonBuilder();
                 Gson gson = builder.setDateFormat("yyyy-MM-dd").create();
                 invInventarios = gson.fromJson(result, new TypeToken<List<InvInventario>>() {
                 }.getType());
-                Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "# Inventarios: {0}", invInventarios.size());
+
+                LOGGER.info("codBodega: " + String.valueOf(codBodega) + ", # Inventarios: " + invInventarios.size());
             }
         }
         return invInventarios;
@@ -70,17 +71,17 @@ public class InventariosBean {
 
     public List<InvUnidadAlternativa> getInvUnidadAlternativas() {
         InvMovimientoDtll invMovimientoDtll = articulosBean.getInvMovimientoDtllSeleccionado();
-        Logger.getLogger(InventariosBean.class.getName()).info("Invocando getInvInventarios");
+
         if (invMovimientoDtll != null) {
             int codArticulo = invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo();
-            Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, InventariosBean.class.getName() + " - codArticulo: {0}", codArticulo);
             InvUnidadAlternativaFacadeREST invUnidadAlternativaFacadeREST = new InvUnidadAlternativaFacadeREST();
             String result = invUnidadAlternativaFacadeREST.findByCodArticulo(String.class, String.valueOf(codArticulo));
             GsonBuilder builder = new GsonBuilder();
             Gson gson = builder.setDateFormat("yyyy-MM-dd").create();
             invUnidadAlternativas = gson.fromJson(result, new TypeToken<List<InvUnidadAlternativa>>() {
             }.getType());
-            Logger.getLogger(InventariosBean.class.getName()).log(Level.INFO, "# InvUnidadAlternativas: {0}", invUnidadAlternativas.size());
+
+            LOGGER.info("codArticulo: " + codArticulo + ", # InvUnidadAlternativas: " + invUnidadAlternativas.size());
         }
         return invUnidadAlternativas;
     }

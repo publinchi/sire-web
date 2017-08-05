@@ -76,6 +76,7 @@ public class CxcDocCobrarBean {
     private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final Gson gson;
 
+    @Getter
     @Setter
     private List<CxcDocCobrar> cxcDocCobrarList;
 

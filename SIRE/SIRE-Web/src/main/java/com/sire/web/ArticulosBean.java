@@ -736,7 +736,8 @@ public class ArticulosBean {
 
             LOGGER.info("% descuento: " + invArticuloSeleccionado.getDescuento()
                     + ", maxPorcDescuento: " + maxPorcDescuento
-                    + ", maxPorcDescuentoDisabled: " + maxPorcDescuentoDisabled);
+                    + ", maxPorcDescuentoDisabled: " + maxPorcDescuentoDisabled
+                    + ", codIva: " + invArticuloSeleccionado.getCodIva());
         }
 
         return invArticuloSeleccionado.getDescuento();

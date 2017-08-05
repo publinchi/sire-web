@@ -6,11 +6,11 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://java.sun.com/jsf/html">
     <h:form id="consultarPedidos">
-        <h2>Fecha Inicio</h2>
+        <p:outputLabel for="fechaInicio" value="Fecha Inicio:" style="font-weight:bold"/>
         <p:calendar id="fechaInicio" value="${pedidosBean.fechaInicio}" 
                     pattern="dd/MM/yyyy" mask="true" required="true"
                     requiredMessage="Seleccione fecha inicio."  />
-        <h2>Fecha Fin</h2>
+        <p:outputLabel for="fechaFin" value="Fecha Fin:" style="font-weight:bold"/>
         <p:calendar id="fechaFin" value="${pedidosBean.fechaFin}" 
                     pattern="dd/MM/yyyy" mask="true" required="true"
                     requiredMessage="Seleccione fecha fin."/>
