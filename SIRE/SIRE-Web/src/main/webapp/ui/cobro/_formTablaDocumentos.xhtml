@@ -25,7 +25,7 @@
                      paginatorAlwaysVisible="false"
                      tableStyleClass="ui-table-columntoggle"
                      tableStyle="width:auto;height:auto"
-                     rendered="#{cxcDocCobrarBean.cxcDocCobrarList.size() gt 0}"
+                     rendered="#{cxcDocCobrarBean.cxcDocCobrarList ne null and cxcDocCobrarBean.cxcDocCobrarList.size() gt 0}"
                      style="font-size:12px;">
             <p:ajax event="tap" listener="#{cxcDocCobrarBean.seleccionarCxcDocCobrar}" 
                     update="cobro:accordionPanel:dialogDocCobrar" 

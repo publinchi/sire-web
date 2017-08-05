@@ -155,12 +155,12 @@ public class CxcDocCobrarBean {
 
     }
 
-    public List<CxcDocCobrar> getCxcDocCobrarList() {
-        if (cliente.getCliente() != null) {
-            loadCxcDocCobrarList();
-        }
-        return cxcDocCobrarList;
-    }
+//    public List<CxcDocCobrar> getCxcDocCobrarList() {
+//        if (cliente.getCliente() != null) {
+//            loadCxcDocCobrarList();
+//        }
+//        return cxcDocCobrarList;
+//    }
 
     public void seleccionarCxcDocCobrar(SelectEvent event) {
         CxcDocCobrar cxcDocCobrar = (CxcDocCobrar) event.getObject();
