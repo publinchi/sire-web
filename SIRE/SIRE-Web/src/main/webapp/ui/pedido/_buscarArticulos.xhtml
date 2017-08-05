@@ -44,7 +44,8 @@
                          style="font-size:9.5px;"
                          lazy="true">
                 <p:ajax event="rowSelect" listener="#{articulosBean.tapArticulo}" 
-                        update="@form,pedido:accordionPanel:formTablaArticulos" />
+                        update="@form,pedido:accordionPanel:formTablaArticulos" 
+                        oncomplete="PF('dlg3').show();"/>
                 <p:column headerText="Cod." priority="1">
                     <h:outputText value="#{articulo.invArticuloPK.codArticulo}" />
                 </p:column>
