@@ -12,18 +12,6 @@
             <!--</pm:field>-->
 
             <p:tabView id="bloqueA">
-                <p:tab title="Unidad Medida">
-                    <!--<pm:field>-->
-                    <!--<p:outputLabel for="unidadMedida" value="Unidad Medida:" />-->
-                    <p:selectOneMenu id="unidadMedida" value="#{articulosBean.invMovimientoDtllSeleccionado.codUnidad}" >
-                        <f:selectItems value="#{inventariosBean.invUnidadAlternativas}" 
-                                       var="unidadAlternativa" 
-                                       itemLabel="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}" 
-                                       itemValue="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}"/>
-                        <p:ajax listener="#{articulosBean.loadPrecioUnitarioByUnidadMedida()}"/>
-                    </p:selectOneMenu>
-                    <!--</pm:field>-->
-                </p:tab>
                 <p:tab title="Cantidad">
                     <!--<pm:field>-->
                     <!--                        <p:outputLabel id="cantidadLabel" for="cantidad" 
@@ -34,6 +22,18 @@
                                  required="true">
                         <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
                     </p:inputText>
+                    <!--</pm:field>-->
+                </p:tab>
+                <p:tab title="Unidad Medida">
+                    <!--<pm:field>-->
+                    <!--<p:outputLabel for="unidadMedida" value="Unidad Medida:" />-->
+                    <p:selectOneMenu id="unidadMedida" value="#{articulosBean.invMovimientoDtllSeleccionado.codUnidad}" >
+                        <f:selectItems value="#{inventariosBean.invUnidadAlternativas}" 
+                                       var="unidadAlternativa" 
+                                       itemLabel="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}" 
+                                       itemValue="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}"/>
+                        <p:ajax listener="#{articulosBean.loadPrecioUnitarioByUnidadMedida()}"/>
+                    </p:selectOneMenu>
                     <!--</pm:field>-->
                 </p:tab>
             </p:tabView>
