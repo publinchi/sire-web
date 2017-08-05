@@ -50,7 +50,7 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CxcPagoContado.findByFechaDocumento", query = "SELECT c FROM CxcPagoContado c WHERE c.fechaDocumento = :fechaDocumento"),
     @NamedQuery(name = "CxcPagoContado.findByCodVendedor", query = "SELECT c FROM CxcPagoContado c WHERE c.codVendedor = :codVendedor"),
     @NamedQuery(name = "CxcPagoContado.findByFechas", query = "SELECT c FROM CxcPagoContado c WHERE (c.fechaDocumento BETWEEN :fechaInicio AND :fechaFin) "
-            + "AND c.cxcPagoContadoPK.codEmpresa = :codEmpresa AND c.codVendedor = :codVendedor ORDER BY c.fechaDocumento DESC")})
+            + "AND c.cxcPagoContadoPK.codEmpresa = :codEmpresa AND c.codVendedor = :codVendedor AND c.cxcPagoContadoPK.codDocumento = 'CIN' ORDER BY c.fechaDocumento DESC")})
 public class CxcPagoContado implements Serializable {
 
     private static final long serialVersionUID = 1L;
