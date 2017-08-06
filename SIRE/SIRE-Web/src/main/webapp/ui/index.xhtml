@@ -18,6 +18,25 @@
         <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/mobile/css/demo.css.xhtml"/>
         <link type="text/css" rel="stylesheet" href="https://www.primefaces.org/showcase/javax.faces.resource/main/css/sh.css.xhtml"/>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoXgacFtGDCtWfYPQeJO4Kz7NUEQWkNAA" type="text/javascript" />
+
+        <script>
+            // Bind an event to window.orientationchange that, when the device is turned,
+            // gets the orientation and displays it to on screen.
+            $(window).on("orientationchange", function (event) {
+                if (event.orientation === 'landscape') {
+                    if (document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo") != undefined)
+                        document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo").style = "";
+                    if (document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos") != undefined)
+                        document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos").style = "";
+                } else if (event.orientation === 'portrait') {
+                    if (document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo") != undefined)
+                        document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo").style = "font-size:9.5px;";
+                    if (document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos") != undefined)
+                        document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos").style = "font-size:9px;";
+                }
+            });
+        </script>
+
         <script>
             var b;
 
@@ -82,24 +101,6 @@
                 var scans = document.getElementById("asistencia:scans");
                 scans.innerHTML = text;
             }
-        </script>
-
-        <script>
-            // Bind an event to window.orientationchange that, when the device is turned,
-            // gets the orientation and displays it to on screen.
-            $(window).on("orientationchange", function (event) {
-                if (event.orientation === 'landscape') {
-                    if (document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo") != undefined)
-                        document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo").style = "";
-                    if (document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos") != undefined)
-                        document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos").style = "";
-                } else if (event.orientation === 'portrait') {
-                    if (document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo") != undefined)
-                        document.getElementById("pedido:accordionPanel:formArticles:dataListArticulo").style = "font-size:9.5px;";
-                    if (document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos") != undefined)
-                        document.getElementById("pedido:accordionPanel:formTablaArticulos:tablaArticulos").style = "font-size:9px;";
-                }
-            });
         </script>
     </h:head>
 
