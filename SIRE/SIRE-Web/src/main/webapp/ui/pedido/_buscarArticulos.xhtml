@@ -24,7 +24,8 @@
             <p:commandButton id="botonBuscarArticulo" 
                              icon="ui-icon-search" 
                              actionListener="${articulosBean.findArticulos}" 
-                             update="buscarArticulos"/>
+                             update="buscarArticulos"
+                             oncomplete="$( window ).orientationchange();"/>
         </h:panelGrid>
         <p:panel id="buscarArticulos" header="Artículos Encontrados:" 
                  toggleable="true" collapsed="${articulosBean.articulosEncontradosCollapsed}">
@@ -44,7 +45,8 @@
                          style="font-size:9.5px;"
                          lazy="true">
                 <p:ajax event="rowSelect" listener="#{articulosBean.tapArticulo}" 
-                        update="@form,pedido:accordionPanel:formTablaArticulos"/>
+                        update="@form,pedido:accordionPanel:formTablaArticulos"
+                        oncomplete="$( window ).orientationchange();"/>
                 <p:column headerText="Cod." priority="1">
                     <h:outputText value="#{articulo.invArticuloPK.codArticulo}" />
                 </p:column>

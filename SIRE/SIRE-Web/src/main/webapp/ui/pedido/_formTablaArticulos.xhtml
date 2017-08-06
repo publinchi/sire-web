@@ -19,7 +19,9 @@
                         update="@form:tablaArticulos,pedido:accordionPanel:dialogArticulo" 
                         oncomplete="PF('dlg3').show();"/>
                 <p:ajax event="swipeleft" listener="#{articulosBean.swipeleft}" 
-                        update="@form" onstart="return confirm('¿Desea eliminar el registro?')" />
+                        update="@form" 
+                        onstart="return confirm('¿Desea eliminar el registro?')" 
+                        oncomplete="$( window ).orientationchange();"/>
                 <p:column headerText="Art." priority="1">
                     <h:outputText value="#{invMovimientoDtll.invArticulo.nombreArticulo}" />
                 </p:column>
