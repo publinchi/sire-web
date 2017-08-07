@@ -17,11 +17,11 @@
                     <!--                        <p:outputLabel id="cantidadLabel" for="cantidad" 
                                             value="Cantidad: #{articulosBean.cantidadExcedida}" 
                                             style="color: #{articulosBean.colorCantidadExcedida}"/>-->
-                    <p:inputText id="cantidad" 
-                                 value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}"
-                                 required="true">
+                    <p:inputNumber id="cantidad" 
+                                   value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}"
+                                   required="true">
                         <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
-                    </p:inputText>
+                    </p:inputNumber>
                     <!--</pm:field>-->
                 </p:tab>
                 <p:tab title="Unidad Medida">
@@ -43,23 +43,25 @@
                     <!--<pm:field>-->
                     <!--<p:outputLabel for="precioUnitario" value="Precio Unitario:" />-->
                     <div class="remove-clear">
-                        <p:inputText id="precioUnitario"
-                                     value="#{articulosBean.invMovimientoDtllSeleccionado.costoUnitario}"
-                                     readonly="true"/>
+                        <p:inputNumber id="precioUnitario"
+                                       value="#{articulosBean.invMovimientoDtllSeleccionado.costoUnitario}"
+                                       readonly="true"
+                                       symbol="$ "/>
                     </div>
                     <!--</pm:field>-->
                 </p:tab>
                 <p:tab title="Descuento">
                     <div class="remove-clear">
-                        <p:inputText id="descuento1" 
-                                     value="#{articulosBean.invArticuloSeleccionado.descuento}" 
-                                     validatorMessage="Porcentaje de descuento excedido."
-                                     readonly="#{articulosBean.maxPorcDescuentoDisabled}">
+                        <p:inputNumber id="descuento1" 
+                                       value="#{articulosBean.invArticuloSeleccionado.descuento}" 
+                                       validatorMessage="Porcentaje de descuento excedido."
+                                       readonly="#{articulosBean.maxPorcDescuentoDisabled}"
+                                       symbol="% ">
                             <f:validateDoubleRange disabled="#{articulosBean.maxPorcDescuentoDisabled}" 
                                                    minimum="0" 
                                                    maximum="#{articulosBean.maxPorcDescuento}" />
                             <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
-                        </p:inputText>
+                        </p:inputNumber>
                     </div>
                 </p:tab>
             </p:tabView>
@@ -67,16 +69,18 @@
             <p:tabView id="bloqueC">
                 <p:tab title="Total Registro">
                     <div class="remove-clear">
-                        <p:inputText id="totalRegistro"
-                                     value="#{articulosBean.invMovimientoDtllSeleccionado.costoTotal}"
-                                     readonly="true"/>
+                        <p:inputNumber id="totalRegistro"
+                                       value="#{articulosBean.invMovimientoDtllSeleccionado.costoTotal}"
+                                       readonly="true"
+                                       symbol="$ "/>
                     </div>
                 </p:tab>
                 <p:tab title="IVA">
                     <div class="remove-clear">
-                        <p:inputText id="iva" 
-                                     value="#{articulosBean.invArticuloSeleccionado.iva}"
-                                     readonly="true"/>
+                        <p:inputNumber id="iva" 
+                                       value="#{articulosBean.invArticuloSeleccionado.iva}"
+                                       readonly="true"
+                                       symbol="% "/>
                     </div>
                 </p:tab>
             </p:tabView>
