@@ -52,9 +52,8 @@ public class BodegaUtil {
         for (InvBodegaArt invBodegaArt : lista) {
 
             if (invBodegaArt.getExistencia().intValue() > 0) {
-                logger.log(Level.INFO, "Codigo Bodega: {0}", invBodegaArt.getInvBodegaArtPK().getCodBodega());
-                logger.log(Level.INFO, "Existencia: {0}", invBodegaArt.getExistencia());
-                logger.info("----------");
+                logger.info("Codigo Bodega: " + invBodegaArt.getInvBodegaArtPK().getCodBodega()
+                        + ", Existencia: " + invBodegaArt.getExistencia());
                 map.put(invBodegaArt.getExistencia().intValue(), invBodegaArt.getInvBodegaArtPK().getCodBodega());
             }
         }

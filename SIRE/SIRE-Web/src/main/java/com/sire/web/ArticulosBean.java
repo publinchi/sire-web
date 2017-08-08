@@ -427,10 +427,11 @@ public class ArticulosBean {
                 agregarBloqueado = true;
             }
 
-            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:bloqueC:totalRegistro");
-            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalIva");
             cantidadExcedida = "";
             colorCantidadExcedida = "black";
+
+            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:bloqueC:totalRegistro");
+            RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalIva");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:cantidadLabel");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:botonAgregar");
 
@@ -514,13 +515,16 @@ public class ArticulosBean {
         }
 
         invMovimientoDtll.setCostoUnitario(Round.round(precio, 4));
-
-        LOGGER.info("auxPrecio: " + auxPrecio + ", factor: " + factor
-                + ", operador: " + operador + ", costoUnitario: " + invMovimientoDtll.getCostoUnitario());
+        invMovimientoDtll.setFactor(factor.toBigInteger());
+        invMovimientoDtllSeleccionado.setCostoUnitario(invMovimientoDtll.getCostoUnitario());
+        invMovimientoDtllSeleccionado.setFactor(invMovimientoDtll.getFactor());
 
         if (invMovimientoDtll.getCantidad() != null) {
             loadPrecioTotalByCantidad();
         }
+
+        LOGGER.info("auxPrecio: " + auxPrecio + ", factor: " + factor
+                + ", operador: " + operador + ", costoUnitario: " + invMovimientoDtll.getCostoUnitario());
 
         RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:precioUnitario");
         RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:existencia");
