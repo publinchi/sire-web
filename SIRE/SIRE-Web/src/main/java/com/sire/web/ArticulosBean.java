@@ -523,10 +523,10 @@ public class ArticulosBean {
             loadPrecioTotalByCantidad();
         }
 
-        LOGGER.info("auxPrecio: " + auxPrecio + ", factor: " + factor
+        LOGGER.info("precio: " + precio + ", auxPrecio: " + auxPrecio + ", factor: " + factor
                 + ", operador: " + operador + ", costoUnitario: " + invMovimientoDtll.getCostoUnitario());
 
-        RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:precioUnitario");
+        RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:bloqueB:precioUnitario");
         RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:existencia");
     }
 
