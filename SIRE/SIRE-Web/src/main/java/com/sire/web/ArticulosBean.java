@@ -353,7 +353,7 @@ public class ArticulosBean {
         movimientoSeleccionado.setAuxCantidad(auxCantidad);
         movimientoSeleccionado.setDescuento(invArticuloSeleccionado.getDescuento());
         movimientoSeleccionado.setFactor(movimientoSeleccionado.getFactor());
-        movimientoSeleccionado.setOperador(movimientoSeleccionado.getOperador());
+        movimientoSeleccionado.setOperador(operador);
 
         BigDecimal porcDesc1 = movimientoSeleccionado.getPorcDesc1();
         if (porcDesc1 != null) {
