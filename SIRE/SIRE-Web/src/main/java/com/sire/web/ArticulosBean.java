@@ -229,6 +229,7 @@ public class ArticulosBean {
 
         if (invArticuloSeleccionado.getExistencia().doubleValue() > 0 || "S".equals(obtenerFacParametros().getExistNeg())) {
             invMovimientoDtlls.add(invMovimientoDtll);
+            agregarValores(invMovimientoDtll);
             input = null;
             articulos.clear();
             articulosEncontradosCollapsed = true;
@@ -240,45 +241,7 @@ public class ArticulosBean {
     }
 
     public void tapArticuloFinal(SelectEvent event) {
-        try {
-            setInvMovimientoDtllSeleccionado(((InvMovimientoDtll) event.getObject()));
-            InvMovimientoDtll invMovimientoDtll = obtenerMovimientoSeleccionado();
-
-            String codArticle = String.valueOf(invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo());
-
-            String codEmpresa = obtenerEmpresa();
-
-            StringBuilder id = new StringBuilder();
-
-            id.append("find;codEmpresa=");
-            id.append(codEmpresa);
-            id.append(";codCatalogo=01;codArticulo=");
-            id.append(codArticle);
-
-            FacCatalogoPrecioDFacadeREST facCatalogoPrecioDFacadeREST = new FacCatalogoPrecioDFacadeREST();
-            String response = facCatalogoPrecioDFacadeREST.find_JSON(String.class,
-                    id.toString());
-
-            facCatalogoPrecioD = gson.fromJson(response, new TypeToken<FacCatalogoPrecioD>() {
-            }.getType());
-
-            invMovimientoDtll.setPrecioVenta(facCatalogoPrecioD.getPrecioVenta1());
-
-            LOGGER.info("Cod Articulo: " + codArticle
-                    + ", Precio Venta: " + invMovimientoDtll.getPrecioVenta());
-
-            if (invArticuloSeleccionado.getDescuento() == null) {
-                if (obtenerCliente() != null) {
-                    invArticuloSeleccionado.setDescuento(buscarDescuento());
-                }
-            }
-
-            invArticuloSeleccionado.setIva(findIva());
-
-            loadPrecioUnitarioByUnidadMedida();
-        } catch (ClienteException ex) {
-            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
-        }
+        agregarValores((InvMovimientoDtll) event.getObject());
     }
 
     public void swipeleft(SwipeEvent event) {
@@ -528,8 +491,6 @@ public class ArticulosBean {
             operador = invUnidadAlternativa.getOperador();
         }
 
-        LOGGER.info("auxPrecio: " + auxPrecio + ", factor: " + factor + ", operador: " + operador);
-
         Double precio;
         switch (operador) {
             case "+":
@@ -554,7 +515,8 @@ public class ArticulosBean {
 
         invMovimientoDtll.setCostoUnitario(Round.round(precio, 4));
 
-        LOGGER.log(Level.INFO, "$$$$$$$$$$ precio venta: {0}", invMovimientoDtll.getCostoUnitario());
+        LOGGER.info("auxPrecio: " + auxPrecio + ", factor: " + factor
+                + ", operador: " + operador + ", costoUnitario: " + invMovimientoDtll.getCostoUnitario());
 
         if (invMovimientoDtll.getCantidad() != null) {
             loadPrecioTotalByCantidad();
@@ -1126,5 +1088,47 @@ public class ArticulosBean {
             }
         }
         return true;
+    }
+
+    private void agregarValores(InvMovimientoDtll invMovimientoDtll) {
+        setInvMovimientoDtllSeleccionado(invMovimientoDtll);
+        obtenerMovimientoSeleccionado();
+        try {
+
+            String codArticle = String.valueOf(invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo());
+
+            String codEmpresa = obtenerEmpresa();
+
+            StringBuilder id = new StringBuilder();
+
+            id.append("find;codEmpresa=");
+            id.append(codEmpresa);
+            id.append(";codCatalogo=01;codArticulo=");
+            id.append(codArticle);
+
+            FacCatalogoPrecioDFacadeREST facCatalogoPrecioDFacadeREST = new FacCatalogoPrecioDFacadeREST();
+            String response = facCatalogoPrecioDFacadeREST.find_JSON(String.class,
+                    id.toString());
+
+            facCatalogoPrecioD = gson.fromJson(response, new TypeToken<FacCatalogoPrecioD>() {
+            }.getType());
+
+            invMovimientoDtll.setPrecioVenta(facCatalogoPrecioD.getPrecioVenta1());
+
+            LOGGER.info("Cod Articulo: " + codArticle
+                    + ", Precio Venta: " + invMovimientoDtll.getPrecioVenta());
+
+            if (invArticuloSeleccionado.getDescuento() == null) {
+                if (obtenerCliente() != null) {
+                    invArticuloSeleccionado.setDescuento(buscarDescuento());
+                }
+            }
+
+            invArticuloSeleccionado.setIva(findIva());
+
+            loadPrecioUnitarioByUnidadMedida();
+        } catch (ClienteException ex) {
+            addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
+        }
     }
 }

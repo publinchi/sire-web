@@ -157,8 +157,8 @@ public class CustomersBean {
                     equals(userManager.getCurrent().getNombreUsuario().toLowerCase())
                     && facParametros.getFacParametrosPK().getCodEmpresa().
                             equals(obtenerEmpresa())) {
-                LOGGER.log(Level.INFO, "Usuario *: {0}", facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase());
-                LOGGER.log(Level.INFO, "facParametros: {0}", facParametros);
+                LOGGER.info("Usuario *: " + facParametros.getFacParametrosPK().getNombreUsuario().toLowerCase()
+                        + ", facParametros: " + facParametros);
                 return facParametros;
             }
         }
