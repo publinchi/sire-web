@@ -322,39 +322,11 @@ public class ArticulosBean {
         // iva
         // total iva
         // auxCantidad
-
-        InvUnidadAlternativa invUnidadAlternativa = obtenerInvUnidadAlternativa();
-        BigDecimal factor = BigDecimal.ZERO;
-        String operador = "";
-
-        if (invUnidadAlternativa != null) {
-            factor = invUnidadAlternativa.getFactor();
-            operador = invUnidadAlternativa.getOperador();
-        }
-
-        Double auxCantidad = 0.0;
-        switch (operador) {
-            case "+":
-                auxCantidad = cantidad.doubleValue() + factor.doubleValue();
-                break;
-            case "-":
-                auxCantidad = cantidad.doubleValue() - factor.doubleValue();
-                break;
-            case "*":
-                auxCantidad = cantidad.doubleValue() / factor.doubleValue();
-                break;
-            case "/":
-                auxCantidad = cantidad.doubleValue() * factor.doubleValue();
-                break;
-            default:
-                break;
-        }
-        LOGGER.log(Level.INFO, "auxCantidad: {0}", auxCantidad);
-        movimientoSeleccionado.setAuxCantidad(auxCantidad);
+        movimientoSeleccionado.setAuxCantidad(movimientoSeleccionado.getAuxCantidad());
         movimientoSeleccionado.setDescuento(invArticuloSeleccionado.getDescuento());
-        movimientoSeleccionado.setFactor(facCatalogoPrecioD.getFactor());
+        movimientoSeleccionado.setFactor(movimientoSeleccionado.getFactor());
+        movimientoSeleccionado.setOperador(movimientoSeleccionado.getOperador());
 
-        movimientoSeleccionado.setOperador(operador);
         BigDecimal porcDesc1 = movimientoSeleccionado.getPorcDesc1();
         if (porcDesc1 != null) {
             movimientoSeleccionado.setPorcDesc1(porcDesc1);
