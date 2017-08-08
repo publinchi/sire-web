@@ -150,6 +150,7 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
 
         List<InvArticulo> list = new ArrayList<>();
         for (Object[] objects : retorno) {
+            ((InvArticulo) objects[0]).setAuxPrecio(((FacCatalogoPrecioD) objects[1]).getAuxPrecio());
             ((InvArticulo) objects[0]).setPrecio(((FacCatalogoPrecioD) objects[1]).getPrecioVenta1());
             ((InvArticulo) objects[0]).setUnidad(((FacCatalogoPrecioD) objects[1]).getCodUnidad());
             ((InvArticulo) objects[0]).setExistencia((BigDecimal) objects[2]);

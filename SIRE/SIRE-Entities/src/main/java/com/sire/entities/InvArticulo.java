@@ -154,7 +154,7 @@ public class InvArticulo implements Serializable {
     @Getter
     @Setter
     @Transient
-    private Double precio;
+    private Double precio, totalPlusIVA;
 
     @Getter
     @Setter
@@ -164,22 +164,7 @@ public class InvArticulo implements Serializable {
     @Getter
     @Setter
     @Transient
-    private BigDecimal existencia;
-
-    @Getter
-    @Setter
-    @Transient
-    private BigDecimal descuento;
-
-    @Getter
-    @Setter
-    @Transient
-    private BigDecimal iva;
-
-    @Getter
-    @Setter
-    @Transient
-    private Double totalPlusIVA;
+    private BigDecimal existencia, descuento, iva, auxPrecio;
     // Fin Transientes
 
     public InvArticulo() {

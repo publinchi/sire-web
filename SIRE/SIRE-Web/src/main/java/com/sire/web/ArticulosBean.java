@@ -294,7 +294,7 @@ public class ArticulosBean {
         LOGGER.info("Articulo a ser agregado, codBodega: " + codBodega
                 + ", codInventario: " + codInventario
                 + ", codUnidad: " + codUnidad + ", cantidad: " + cantidad
-                + ", precioUnitario: " + movimientoSeleccionado.getCostoUnitario()
+                + ", costoUnitario: " + movimientoSeleccionado.getCostoUnitario()
                 + ", descArticulo: " + invArticuloSeleccionado.getDescArticulo()
                 + ", descuento: " + invArticuloSeleccionado.getDescuento()
                 + ", total: " + movimientoSeleccionado.getCostoTotal()
