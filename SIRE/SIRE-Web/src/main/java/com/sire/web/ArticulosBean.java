@@ -350,7 +350,7 @@ public class ArticulosBean {
                 break;
         }
         LOGGER.log(Level.INFO, "auxCantidad: {0}", auxCantidad);
-        movimientoSeleccionado.setAuxCantidad(movimientoSeleccionado.getAuxCantidad());
+        movimientoSeleccionado.setAuxCantidad(auxCantidad);
         movimientoSeleccionado.setDescuento(invArticuloSeleccionado.getDescuento());
         movimientoSeleccionado.setFactor(movimientoSeleccionado.getFactor());
         movimientoSeleccionado.setOperador(movimientoSeleccionado.getOperador());
