@@ -906,7 +906,7 @@ public class ArticulosBean {
 
         invMovimientoCab.setCodVendedor(obtenerVendedor());
         invMovimientoCab.setNombreUsuario(obtenerUsuario());
-        invMovimientoCab.setRazonSocial(clientes.getCliente().getCliente().getRazonSocial());
+        invMovimientoCab.setRazonSocial(cliente.getCliente().getRazonSocial());
 
         LOGGER.log(Level.INFO, "enviar ::::::::::::::: {0} articulos", invMovimientoCab.getInvMovimientoDtllList().size());
     }
