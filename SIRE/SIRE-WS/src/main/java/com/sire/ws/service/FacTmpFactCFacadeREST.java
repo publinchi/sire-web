@@ -143,6 +143,7 @@ public class FacTmpFactCFacadeREST extends AbstractFacade<FacTmpFactC> {
                 newFacTmpFactC.setCodCliente(facTmpFactC.getCodCliente());
                 newFacTmpFactC.setFechaFactura(facTmpFactC.getFechaFactura());
                 newFacTmpFactC.setTotalFactura(facTmpFactC.getTotalFactura());
+                newFacTmpFactC.setRazonSocial(facTmpFactC.getRazonSocial());
                 pedido.setFacTmpFactC(newFacTmpFactC);
                 pedidos.add(pedido);
             }
