@@ -5,8 +5,11 @@
  */
 package com.sire.entities;
 
+import com.sire.utils.Round;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,6 +23,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -101,7 +105,9 @@ public class CxcPagoContado implements Serializable {
         @JoinColumn(name = "COD_CLIENTE", referencedColumnName = "COD_CLIENTE")})
     @ManyToOne(optional = false)
     private CxcCliente cxcCliente;
-
+    @Transient
+    private String fechaDocumentoString;
+    
     public CxcPagoContado() {
     }
 
@@ -142,7 +148,7 @@ public class CxcPagoContado implements Serializable {
     }
 
     public Double getPagoTotal() {
-        return pagoTotal;
+        return Round.round(pagoTotal, 2);
     }
 
     public void setPagoTotal(Double pagoTotal) {
@@ -259,6 +265,16 @@ public class CxcPagoContado implements Serializable {
 
     public void setCxcCliente(CxcCliente cxcCliente) {
         this.cxcCliente = cxcCliente;
+    }
+
+    public String getFechaDocumentoString() {
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        fechaDocumentoString = formatter.format(fechaDocumento);
+        return fechaDocumentoString;
+    }
+
+    public void setFechaDocumentoString(String fechaDocumentoString) {
+        this.fechaDocumentoString = fechaDocumentoString;
     }
 
     @Override

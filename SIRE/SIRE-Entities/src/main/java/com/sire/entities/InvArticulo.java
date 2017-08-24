@@ -5,6 +5,7 @@
  */
 package com.sire.entities;
 
+import com.sire.utils.Round;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -164,7 +165,11 @@ public class InvArticulo implements Serializable {
     @Getter
     @Setter
     @Transient
-    private BigDecimal existencia, descuento, iva, auxPrecio;
+    private BigDecimal existencia, descuento, iva;
+    
+    @Setter
+    @Transient
+    private BigDecimal auxPrecio;
     // Fin Transientes
 
     public InvArticulo() {
@@ -421,6 +426,10 @@ public class InvArticulo implements Serializable {
 
     public void setCodUnidad(InvUnidadMedida codUnidad) {
         this.codUnidad = codUnidad;
+    }
+
+    public BigDecimal getAuxPrecio() {
+        return BigDecimal.valueOf(Round.round(auxPrecio.doubleValue(), 2));
     }
 
     @Override

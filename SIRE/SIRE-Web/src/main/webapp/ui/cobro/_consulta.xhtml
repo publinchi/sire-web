@@ -36,13 +36,13 @@
             <p:column headerText="# Pago" priority="1">
                 <h:outputText value="#{pago.cxcPagoContado.cxcPagoContadoPK.numPago}" />
             </p:column>
-            <p:column headerText="Fec.Doc." priority="1">
-                <h:outputText value="#{pago.cxcPagoContado.fechaDocumento}" />
-            </p:column>
-            <p:column headerText="Cod.Cli." priority="1">
+            <p:column headerText="Cliente" priority="1">
                 <h:outputText value="#{pago.cxcPagoContado.cxcCliente.cxcClientePK.codCliente}" />
             </p:column>
-            <p:column headerText="Pag.Tot." priority="1">
+            <p:column headerText="Fecha" priority="1">
+                <h:outputText value="#{pago.cxcPagoContado.fechaDocumentoString}" />
+            </p:column>
+            <p:column headerText="Total" priority="1">
                 <h:outputText value="&#36;#{pago.cxcPagoContado.pagoTotal}" />
             </p:column>
         </p:dataTable>

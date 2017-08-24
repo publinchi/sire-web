@@ -5,9 +5,12 @@
  */
 package com.sire.entities;
 
+import com.sire.utils.Round;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -23,6 +26,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -131,6 +135,8 @@ public class FacTmpFactC implements Serializable {
     private GnrUsuarios nombreUsuario;
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "facTmpFactC")
     private List<FacTmpFactD> facTmpFactDList;
+    @Transient
+    private String fechaFacturaString;
 
     public FacTmpFactC() {
     }
@@ -332,7 +338,7 @@ public class FacTmpFactC implements Serializable {
     }
 
     public BigDecimal getTotalFactura() {
-        return totalFactura;
+        return BigDecimal.valueOf(Round.round(totalFactura.doubleValue(), 2));
     }
 
     public void setTotalFactura(BigDecimal totalFactura) {
@@ -372,6 +378,18 @@ public class FacTmpFactC implements Serializable {
         this.facTmpFactDList = facTmpFactDList;
     }
 
+    public String getFechaFacturaString() {
+        DateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        fechaFacturaString = formatter.format(fechaFactura);
+        return fechaFacturaString;
+    }
+
+    public void setFechaFacturaString(String fechaFacturaString) {
+        this.fechaFacturaString = fechaFacturaString;
+    }
+
+    
+    
     @Override
     public int hashCode() {
         int hash = 0;
