@@ -429,7 +429,9 @@ public class InvArticulo implements Serializable {
     }
 
     public BigDecimal getAuxPrecio() {
-        return BigDecimal.valueOf(Round.round(auxPrecio.doubleValue(), 2));
+        if(auxPrecio != null)
+            return BigDecimal.valueOf(Round.round(auxPrecio.doubleValue(), 2));
+        else return auxPrecio;
     }
 
     @Override
