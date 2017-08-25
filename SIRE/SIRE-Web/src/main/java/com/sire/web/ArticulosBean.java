@@ -86,9 +86,9 @@ import org.primefaces.model.LazyDataModel;
 @Getter
 @Setter
 public class ArticulosBean {
-
+    
     private static final Logger LOGGER = Logger.getLogger(ArticulosBean.class.getName());
-
+    
     private final InvArticuloFacadeREST invArticuloFacadeREST;
     private final VClienteFacadeREST vClienteFacadeREST;
     private final FacDescVolFacadeREST facDescVolFacadeREST;
@@ -97,7 +97,7 @@ public class ArticulosBean {
     private final InvUnidadAlternativaFacadeREST invUnidadAlternativaFacadeREST;
     private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST;
-
+    
     private final GsonBuilder builder;
     private final Gson gson;
     private String input, modo = "c";
@@ -118,9 +118,9 @@ public class ArticulosBean {
     private int codArticulo;
     private InvArticulo invArticuloSeleccionado;
     private Double totalIVA;
-
+    
     private FacCatalogoPrecioD facCatalogoPrecioD;
-
+    
     @ManagedProperty(value = "#{user}")
     private UserManager userManager;
     @ManagedProperty("#{cliente}")
@@ -136,9 +136,9 @@ public class ArticulosBean {
 
     //Mensaje
     private String cantidadExcedida, colorCantidadExcedida = "black", observacion;
-
+    
     private boolean articulosEncontradosCollapsed = true;
-
+    
     public ArticulosBean() {
         codInventario = "01";
         facTmpFactC = new FacTmpFactC();
@@ -162,7 +162,7 @@ public class ArticulosBean {
     // Medotos del negocio
     public void findArticulos() {
         LOGGER.log(Level.INFO, "Invocando findArticulos: {0}", input);
-
+        
         String articulosString;
         String codEmpresa = obtenerEmpresa();
         try {
@@ -189,26 +189,26 @@ public class ArticulosBean {
             LOGGER.log(Level.SEVERE, ex.getMessage());
         }
     }
-
+    
     public void tapArticulo(SelectEvent event) {
         LOGGER.log(Level.INFO, "\u00b7\u00b7 tapArticulo \u00b7\u00b7 {0}", event.getObject());
-
+        
         invArticuloSeleccionado = ((InvArticulo) event.getObject());
         LOGGER.info("Nombre artículo: " + invArticuloSeleccionado.getNombreArticulo()
                 + ", Cod Unidad: " + invArticuloSeleccionado.getCodUnidad().getCodUnidad()
         );
         setCodArticulo(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo());
-
+        
         InvMovimientoDtll invMovimientoDtll = new InvMovimientoDtll();
 
         // TODO cargar esta bodega
         InvBodegaArt invBodegaArt = new InvBodegaArt();
         InvBodegaArtPK invBodegaArtPK = new InvBodegaArtPK();
-
+        
         invBodegaArtPK.setCodEmpresa(obtenerEmpresa());
-
+        
         invBodegaArtPK.setCodArticulo(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo());
-
+        
         invBodegaArt.setInvBodegaArtPK(invBodegaArtPK);
         invBodegaArt.setExistencia(BigDecimal.ZERO);
         invBodegaArt.setExistPendEnt(BigDecimal.ZERO);
@@ -220,13 +220,13 @@ public class ArticulosBean {
         invMovimientoDtll.setPosicion(count);
         invMovimientoDtllPK.setNumLinea(Short.valueOf(String.valueOf(count)));
         invMovimientoDtllPK.setNumDocumento(0);
-
+        
         invMovimientoDtll.setInvMovimientoDtllPK(invMovimientoDtllPK);
-
+        
         invMovimientoDtll.setInvBodegaArt(invBodegaArt);
         invMovimientoDtll.setInvArticulo(invArticuloSeleccionado);
         invMovimientoDtll.setCodUnidad(invArticuloSeleccionado.getCodUnidad().getCodUnidad());
-
+        
         if (invArticuloSeleccionado.getExistencia().doubleValue() > 0 || "S".equals(obtenerFacParametros().getExistNeg())) {
             invMovimientoDtlls.add(invMovimientoDtll);
             agregarValores(invMovimientoDtll);
@@ -239,58 +239,58 @@ public class ArticulosBean {
             addMessage("Advertencia", "Producto no disponible", FacesMessage.SEVERITY_INFO);
         }
     }
-
+    
     public void tapArticuloFinal(SelectEvent event) {
         agregarValores((InvMovimientoDtll) event.getObject());
     }
-
+    
     public void swipeleft(SwipeEvent event) {
         setInvMovimientoDtllSeleccionado(((InvMovimientoDtll) event.getData()));
         InvMovimientoDtll invMovimientoDtll = obtenerMovimientoSeleccionado();
-
+        
         LOGGER.log(Level.INFO, "Posicion: {0}", invMovimientoDtll.getPosicion());
-
+        
         InvMovimientoDtll forDelete;
         for (InvMovimientoDtll invMovimientoDtll1 : invMovimientoDtlls) {
             if (invMovimientoDtll1.getPosicion() == invMovimientoDtll.getPosicion()) {
                 forDelete = invMovimientoDtll1;
                 invMovimientoDtlls.remove(forDelete);
                 LOGGER.log(Level.INFO, "Articulo removido: {0}", forDelete.getPosicion());
-
+                
                 break;
             }
         }
-
+        
         if (invMovimientoDtll.getCantidad() != null) {
             calcularResumen();
         }
     }
-
+    
     public void cambioModo() {
         limpiarBusquedaArticulos();
     }
-
+    
     public void limpiarBusquedaArticulos() {
         if (articulos != null) {
             articulos.clear();
         }
         input = null;
     }
-
+    
     public void loadInventariosByBodega() {
         RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:inv");
     }
-
+    
     public void calcularTotalRegistro() {
         RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalRegistro");
     }
-
+    
     public void agregarArticulo() {
         InvMovimientoDtll movimientoSeleccionado = obtenerMovimientoSeleccionado();
         String codBodega = movimientoSeleccionado.getInvBodegaArt().getInvBodegaArtPK().getCodBodega();
         String codUnidad = movimientoSeleccionado.getCodUnidad();
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
-
+        
         LOGGER.info("Articulo a ser agregado, codBodega: " + codBodega
                 + ", codInventario: " + codInventario
                 + ", codUnidad: " + codUnidad + ", cantidad: " + cantidad
@@ -326,12 +326,12 @@ public class ArticulosBean {
         InvUnidadAlternativa invUnidadAlternativa = obtenerInvUnidadAlternativa();
         BigDecimal factor = BigDecimal.ZERO;
         String operador = "";
-
+        
         if (invUnidadAlternativa != null) {
             factor = invUnidadAlternativa.getFactor();
             operador = invUnidadAlternativa.getOperador();
         }
-
+        
         Double auxCantidad = 0.0;
         switch (operador) {
             case "+":
@@ -354,7 +354,7 @@ public class ArticulosBean {
         movimientoSeleccionado.setDescuento(invArticuloSeleccionado.getDescuento());
         movimientoSeleccionado.setFactor(movimientoSeleccionado.getFactor());
         movimientoSeleccionado.setOperador(operador);
-
+        
         BigDecimal porcDesc1 = movimientoSeleccionado.getPorcDesc1();
         if (porcDesc1 != null) {
             movimientoSeleccionado.setPorcDesc1(porcDesc1);
@@ -363,20 +363,20 @@ public class ArticulosBean {
         }
         movimientoSeleccionado.setPorcDesc2(BigDecimal.ZERO);
         movimientoSeleccionado.setPorcDesc3(BigDecimal.ZERO);
-
+        
         movimientoSeleccionado.setPorcentajeIva(invArticuloSeleccionado.getIva());
-
+        
         movimientoSeleccionado.setValorCompra(BigInteger.ZERO);
-
+        
         InvInventario invInventario = new InvInventario(obtenerEmpresa(), codBodega, codInventario);
         movimientoSeleccionado.getInvBodegaArt().setInvInventario(invInventario);
-
+        
         calcularResumen();
 
         // TODO terminar el mapeo
         RequestContext
                 .getCurrentInstance().update("pedido:accordionPanel:formTablaArticulos");
-
+        
         if (FacesContext.getCurrentInstance().getMessageList().isEmpty()) {
             RequestContext
                     .getCurrentInstance().execute("PF('dlg3').hide();");
@@ -385,79 +385,83 @@ public class ArticulosBean {
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:botonAgregar");
         }
     }
-
+    
     public void loadPrecioTotalByCantidad() {
-
+        
         InvMovimientoDtll movimientoSeleccionado = obtenerMovimientoSeleccionado();
-
+        
         Double existence = this.existencia;
-
+        
         BigDecimal cantidad = movimientoSeleccionado.getCantidad();
         if (cantidad == null) {
             cantidad = BigDecimal.ZERO;
         }
-
+        
+        LOGGER.info("existence: " + existence);
+        LOGGER.info("cantidad: " + cantidad);
+        LOGGER.info("obtenerFacParametros(): " + obtenerFacParametros());
+        
         if (existence >= cantidad.doubleValue() || "S".equals(obtenerFacParametros().getExistNeg())) {
-
+            
             Double precioTotal;
             Double descuento = 0.0;
             if (invArticuloSeleccionado.getDescuento() != null) {
                 descuento = (movimientoSeleccionado.getCostoUnitario() * cantidad.doubleValue() * invArticuloSeleccionado.getDescuento().doubleValue()) / 100;
             }
-
+            
             precioTotal = (movimientoSeleccionado.getCostoUnitario() * cantidad.doubleValue()) - descuento;
-
+            
             precioTotal = Round.round(precioTotal, 2);
-
+            
             movimientoSeleccionado.setCostoTotal(precioTotal);
-
+            
             Double totalPlusIVA = precioTotal * (1 + invArticuloSeleccionado.getIva().doubleValue() / 100);
             LOGGER.info("$ descuento: " + descuento
                     + ", precioTotal: " + precioTotal
                     + ", totalPlusIVA: " + totalPlusIVA);
             invArticuloSeleccionado.setTotalPlusIVA(Round.round(totalPlusIVA, 2));
-
+            
             agregarBloqueado = false;
-
+            
             if (invArticuloSeleccionado.getDescuento() == null) {
                 invArticuloSeleccionado.setDescuento(new BigDecimal(0.0));
             }
-
+            
             if (maxPorcDescuento != null && maxPorcDescuento < invArticuloSeleccionado.getDescuento().doubleValue()) {
                 agregarBloqueado = true;
             }
-
+            
             cantidadExcedida = "";
             colorCantidadExcedida = "black";
-
+            
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:bloqueC:totalRegistro");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalIva");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:cantidadLabel");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:botonAgregar");
-
+            
         } else {
             cantidadExcedida = "Excedida";
             colorCantidadExcedida = "red";
-
+            
             movimientoSeleccionado.setCantidad(null);
             movimientoSeleccionado.getInvBodegaArt().getInvBodegaArtPK().setCodBodega(null);
             movimientoSeleccionado.setCostoTotal(null);
             invArticuloSeleccionado.setTotalPlusIVA(null);
-
+            
             agregarBloqueado = true;
-
+            
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalRegistro");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:totalIva");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:cantidadLabel");
             RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:botonAgregar");
         }
-
+        
         LOGGER.info("Precio venta: " + invArticuloSeleccionado.getPrecio()
                 + ", Existencia: " + existence
                 + ", Cantidad: " + cantidad.doubleValue()
                 + ", agregarBloqueado: " + agregarBloqueado);
     }
-
+    
     public void loadPrecioUnitarioByUnidadMedida() {
         InvMovimientoDtll invMovimientoDtll = obtenerMovimientoSeleccionado();
         String codUnidad;
@@ -468,9 +472,9 @@ public class ArticulosBean {
         }
         String codEmpresa = obtenerEmpresa();
         int codArticle = invMovimientoDtll.getInvArticulo().getInvArticuloPK().getCodArticulo();
-
+        
         StringBuilder id = new StringBuilder();
-
+        
         id.append("find;codEmpresa=");
         id.append(codEmpresa);
         id.append(";");
@@ -485,13 +489,13 @@ public class ArticulosBean {
         BigDecimal auxPrecio = BigDecimal.ZERO;
         BigDecimal factor = BigDecimal.ZERO;
         String operador = "";
-
+        
         if (invUnidadAlternativa != null) {
             auxPrecio = facCatalogoPrecioD.getAuxPrecio();
             factor = invUnidadAlternativa.getFactor();
             operador = invUnidadAlternativa.getOperador();
         }
-
+        
         Double precio;
         switch (operador) {
             case "+":
@@ -513,59 +517,59 @@ public class ArticulosBean {
             default:
                 precio = auxPrecio.doubleValue();
         }
-
+        
         invMovimientoDtll.setCostoUnitario(Round.round(precio, 4));
         invMovimientoDtll.setFactor(factor.toBigInteger());
         invMovimientoDtllSeleccionado.setCostoUnitario(invMovimientoDtll.getCostoUnitario());
         invMovimientoDtllSeleccionado.setFactor(invMovimientoDtll.getFactor());
-
+        
         if (invMovimientoDtll.getCantidad() != null) {
             loadPrecioTotalByCantidad();
         }
-
+        
         LOGGER.info("precio: " + precio + ", auxPrecio: " + auxPrecio + ", factor: " + factor
                 + ", operador: " + operador + ", costoUnitario: " + invMovimientoDtll.getCostoUnitario());
-
+        
         RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:bloqueB:precioUnitario");
         RequestContext.getCurrentInstance().update("pedido:accordionPanel:formArticulo:existencia");
     }
-
+    
     public String enviar() {
         try {
             if (invMovimientoCab.getFormaPago() == null) {
                 throw new PayWayException("Por favor seleccione forma de pago.");
             }
-
+            
             if (facturacionLimitada()) {
                 throw new LimitException("No se puede facturar, cliente pasó el limite de facturación que es de : " + limiteFactura);
             }
-
+            
             if (!contenidoValido()) {
                 throw new EmptyException("No se puede enviar pedido, faltan datos.");
             }
-
+            
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             BigDecimal numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class,
                     "01", "03", "SAI", userManager.getCurrent().getNombreUsuario());
             prepararInvMovimientoCab(numDocumentoResp);
             prepararInvMovimientoDtlls(numDocumentoResp);
-
+            
             prepararFacTmpFactC();
             prepararFacTmpFactDs(numDocumentoResp);
-
+            
             Pedido pedido = new Pedido();
-
+            
             pedido.setFacTmpFactC(facTmpFactC);
             pedido.setInvMovimientoCab(invMovimientoCab);
             agregarLog(pedido);
-
+            
             LOGGER.info("Enviando Documento ...");
             invMovimientoCabFacadeREST = new InvMovimientoCabFacadeREST();
             invMovimientoCabFacadeREST.create_JSON(pedido);
             LOGGER.info("Documento Enviado.");
-
+            
             limpiar();
-
+            
             addMessage("Pedido enviado exitosamente.", "Num. Pedido: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
@@ -580,88 +584,88 @@ public class ArticulosBean {
             }
         }
     }
-
+    
     public void loadTipoPago() {
         invMovimientoCab.setFormaPago(formaPago);
     }
-
+    
     private void addMessage(String summary, String detail, Severity severity) {
         FacesMessage message = new FacesMessage(severity, summary, detail);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-
+    
     private void limpiar() {
         codArticulo = 0;
         invArticuloSeleccionado = null;
         totalIVA = null;
         input = null;
         mapa.setDireccion("");
-
+        
         iva = null;
         subTotal = null;
         total = null;
-
+        
         invMovimientoCab = null;
         invMovimientoCab = new InvMovimientoCab();
         invMovimientoDtlls.clear();
         invMovimientoCab.setInvMovimientoDtllList(invMovimientoDtlls);
-
+        
         facTmpFactC = null;
         facTmpFactC = new FacTmpFactC();
         facTmpFactDs.clear();
         facTmpFactC.setFacTmpFactDList(facTmpFactDs);
-
+        
         articulos.clear();
         invMovimientoDtllSeleccionado = null;
-
+        
         formaPago = null;
-
+        
         observacion = new String();
-
+        
         clientes.limpiar();
         cliente.limpiar();
     }
-
+    
     private CxcCliente obtenerCliente() throws ClienteException {
         if (cliente.getCliente() == null) {
             throw new ClienteException("Por favor seleccione el cliente.");
         }
-
+        
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
-
+    
     private VCliente obtenerVCliente() throws ClienteException {
         if (cliente.getCliente() == null) {
             throw new ClienteException("Por favor seleccione el cliente.");
         }
-
+        
         return cliente.getCliente();
-
+        
     }
-
+    
     private BigDecimal buscarDescuento() throws ClienteException {
         String articulosString = invArticuloFacadeREST.findByArticuloEmpresa(String.class,
                 String.valueOf(invArticuloSeleccionado.getInvArticuloPK().getCodArticulo()), obtenerEmpresa());
         List<InvArticulo> listaArticulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
         }.getType());
-
+        
         String clientesString = vClienteFacadeREST.findByClienteEmpresa(String.class,
                 String.valueOf(obtenerVCliente().getCodCliente()), obtenerEmpresa());
-
+        
         List<VCliente> listaClientes = gson.fromJson(clientesString, new TypeToken<java.util.List<VCliente>>() {
         }.getType());
-
+        
         FacDescVolPK facDescVolPK = new FacDescVolPK();
-
+        
         facDescVolPK.setCodEmpresa(obtenerEmpresa());
         facDescVolPK.setCodGrupo(listaClientes.get(0).getCodGrupo());
         facDescVolPK.setCodTipo(listaClientes.get(0).getCodTipo());
         facDescVolPK.setCodGrupo1(listaArticulos.get(0).getInvGrupo3().getInvGrupo3PK().getCodGrupo1());
         facDescVolPK.setCodGrupo2(listaArticulos.get(0).getInvGrupo3().getInvGrupo3PK().getCodGrupo2());
         facDescVolPK.setCodGrupo3(listaArticulos.get(0).getInvGrupo3().getInvGrupo3PK().getCodGrupo3());
-
+        
         StringBuilder id = new StringBuilder();
-
+        
         id.append("find;codEmpresa=");
         id.append(facDescVolPK.getCodEmpresa());
         id.append(";");
@@ -679,7 +683,7 @@ public class ArticulosBean {
         id.append(";");
         id.append("codGrupo3=");
         id.append(facDescVolPK.getCodGrupo3());
-
+        
         LOGGER.info("codEmpresa: " + facDescVolPK.getCodEmpresa()
                 + ", codGrupo: " + facDescVolPK.getCodGrupo()
                 + ", codTipo: " + facDescVolPK.getCodTipo()
@@ -687,9 +691,9 @@ public class ArticulosBean {
                 + ", codGrupo2: " + facDescVolPK.getCodGrupo2()
                 + ", codGrupo3: " + facDescVolPK.getCodGrupo3()
         );
-
+        
         FacDescVol facDescVol = facDescVolFacadeREST.find_JSON(FacDescVol.class, id.toString());
-
+        
         if (facDescVol
                 != null) {
             if (facDescVol.getMaxPorcDescuento() != null) {
@@ -699,39 +703,39 @@ public class ArticulosBean {
                 maxPorcDescuentoDisabled = true;
             }
             invArticuloSeleccionado.setDescuento(facDescVol.getPorcDescuento());
-
+            
             LOGGER.info("% descuento: " + invArticuloSeleccionado.getDescuento()
                     + ", maxPorcDescuento: " + maxPorcDescuento
                     + ", maxPorcDescuentoDisabled: " + maxPorcDescuentoDisabled
                     + ", codIva: " + invArticuloSeleccionado.getCodIva());
         }
-
+        
         return invArticuloSeleccionado.getDescuento();
     }
-
+    
     private BigDecimal findIva() {
         StringBuilder id = new StringBuilder();
-
+        
         id.append("find;codEmpresa=");
         id.append(obtenerEmpresa());
         id.append(";");
         id.append("codIva=");
         id.append(invArticuloSeleccionado.getCodIva());
-
+        
         InvIva invIva = invIvaFacadeREST.find_JSON(InvIva.class,
                 id.toString());
-
+        
         return invIva.getValor();
     }
-
+    
     private List<InvMovimientoDtll> obtenerMovimientos() {
         return invMovimientoDtlls;
     }
-
+    
     private InvMovimientoDtll obtenerMovimientoSeleccionado() {
         return invMovimientoDtlls.get(invMovimientoDtlls.indexOf(getInvMovimientoDtllSeleccionado()));
     }
-
+    
     private void calcularResumen() {
         subTotal = 0.0;
         iva = 0.0;
@@ -743,36 +747,36 @@ public class ArticulosBean {
             if (invMovimientoDtll1.getCantidad() != null) {
                 cantidad = invMovimientoDtll1.getCantidad();
             }
-
+            
             Double descuento = 0.0;
             if (invMovimientoDtll1.getDescuento() != null) {
                 descuento = (invMovimientoDtll1.getCostoUnitario() * cantidad.doubleValue() * invMovimientoDtll1.getDescuento().doubleValue()) / 100;
             } else {
                 invMovimientoDtll1.setDescuento(new BigDecimal(0));
             }
-
+            
             if (invMovimientoDtll1.getCantidad() == null) {
                 invMovimientoDtll1.setCantidad(new BigDecimal(0));
             }
-
+            
             if (invMovimientoDtll1.getCostoUnitario() == null) {
                 invMovimientoDtll1.setCostoUnitario(0.0);
             }
-
+            
             Double _subTotal = Round.round((invMovimientoDtll1.getCostoUnitario() * (invMovimientoDtll1.getCantidad().intValue())) - descuento, 2);
-
+            
             if (invMovimientoDtll1.getPorcentajeIva() == null) {
                 invMovimientoDtll1.setPorcentajeIva(new BigDecimal(0));
             }
-
+            
             Double _iva = (_subTotal) * (invMovimientoDtll1.getPorcentajeIva().doubleValue() / 100);
-
+            
             subTotal += Round.round(_subTotal, 2);
-
+            
             iva += Round.round(_iva, 2);
-
+            
             total += Round.round((_subTotal + _iva), 2);
-
+            
             LOGGER.info("CANTIDAD: " + cantidad.toString()
                     + ", DESCUENTO: " + descuento.toString()
                     + ", _subTotal: " + _subTotal
@@ -784,11 +788,11 @@ public class ArticulosBean {
         total = Round.round(total, 2);
         subTotal = Round.round(subTotal, 2);
     }
-
+    
     private String obtenerEmpresa() {
         return userManager.getGnrEmpresa().getCodEmpresa();
     }
-
+    
     private void prepararFacTmpFactC() {
         Calendar c = Calendar.getInstance();
         facTmpFactC.setCodCliente(invMovimientoCab.getCxcCliente().getCxcClientePK().getCodCliente().longValue());
@@ -816,19 +820,19 @@ public class ArticulosBean {
         facTmpFactC.setValorDivisa(BigInteger.ONE);
         FacTmpFactCPK facTmpFactCPK = new FacTmpFactCPK(invMovimientoCab.getInvMovimientoCabPK().getCodEmpresa(), Integer.parseInt(String.valueOf(invMovimientoCab.getInvMovimientoCabPK().getNumDocumento())), "SAI");
         facTmpFactC.setFacTmpFactCPK(facTmpFactCPK);
-
+        
         facTmpFactC.setObservacion(observacion);
     }
-
+    
     private void prepararFacTmpFactDs(BigDecimal numDocumentoResp) throws EmptyException {
-
+        
         for (InvMovimientoDtll invMovimientoDtll : invMovimientoDtlls) {
             FacTmpFactDPK facTmpFactDPK = new FacTmpFactDPK();
             facTmpFactDPK.setAuxiliar(invMovimientoDtll.getInvMovimientoDtllPK().getNumLinea());
             facTmpFactDPK.setCodEmpresa(obtenerEmpresa());
             facTmpFactDPK.setEgresoInv(numDocumentoResp.intValue());
             facTmpFactDPK.setEi("SAI");
-
+            
             FacTmpFactD facTmpFactD = new FacTmpFactD();
             facTmpFactD.setAuxCantidad(invMovimientoDtll.getAuxCantidad());
             facTmpFactD.setCantidad(invMovimientoDtll.getCantidad().doubleValue());
@@ -854,19 +858,19 @@ public class ArticulosBean {
             facTmpFactDs.add(facTmpFactD);
         }
     }
-
+    
     private void prepararInvMovimientoCab(BigDecimal numDocumentoResp) throws PayWayException, GPSException, ClienteException, VendedorException {
         CxcCliente cxcCliente = obtenerCliente();
         invMovimientoCab.setCxcCliente(cxcCliente);
-
+        
         if (invMovimientoCab.getFormaPago() == null) {
             throw new PayWayException("Por favor seleccione la forma de pago.");
         }
-
+        
         if (mapa.getDireccion() == null) {
             throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
         }
-
+        
         InvMovimientoCabPK invMovimientoCabPK = new InvMovimientoCabPK();
         invMovimientoCabPK.setCodEmpresa(obtenerEmpresa());
         invMovimientoCabPK.setCodDocumento("SAI");
@@ -884,7 +888,7 @@ public class ArticulosBean {
         invMovimientoCab.setFechaEmision(Calendar.getInstance().getTime());
         invMovimientoCab.setFechaEstado(Calendar.getInstance().getTime());
         invMovimientoCab.setFletes(BigInteger.ZERO);
-
+        
         GnrDivisa gnrDivisa = new GnrDivisa("01", obtenerEmpresa());
         invMovimientoCab.setGnrDivisa(gnrDivisa);
         InvTransacciones invTransacciones = new InvTransacciones(obtenerEmpresa(), "20");
@@ -903,85 +907,85 @@ public class ArticulosBean {
         invMovimientoCab.setTConIva(totalConIva);
         invMovimientoCab.setTSinIva(totalSinIva);
         invMovimientoCab.setTotalDocumento(total);
-
+        
         invMovimientoCab.setCodVendedor(obtenerVendedor());
         invMovimientoCab.setNombreUsuario(obtenerUsuario());
         invMovimientoCab.setRazonSocial(cliente.getCliente().getRazonSocial());
-
+        
         LOGGER.log(Level.INFO, "enviar ::::::::::::::: {0} articulos", invMovimientoCab.getInvMovimientoDtllList().size());
     }
-
+    
     private void prepararInvMovimientoDtlls(BigDecimal numDocumentoResp) throws EmptyException {
         if (invMovimientoDtlls.isEmpty()) {
             throw new EmptyException("Por favor seleccione al menos un artículo.");
         }
-
+        
         Double subtotal = 0.0;
         for (InvMovimientoDtll invMovimientoDtll : invMovimientoDtlls) {
             InvBodegaArt invBodegaArt = invMovimientoDtll.getInvBodegaArt();
-
+            
             String codBodega = new BodegaUtil().obtenerCodBodega(invMovimientoDtll.getInvArticulo().getInvArticuloPK().getCodArticulo());
-
+            
             LOGGER.log(Level.INFO, "codBodega recuperado: {0}", codBodega);
-
+            
             invBodegaArt.getInvBodegaArtPK().setCodBodega(codBodega);
-
+            
             subtotal = subtotal + invMovimientoDtll.getCostoTotal();
-
+            
             InvMovimientoDtllPK invMovimientoDtllPK = new InvMovimientoDtllPK(obtenerEmpresa(), "SAI", numDocumentoResp.longValue(), Short.valueOf(String.valueOf(invMovimientoDtlls.indexOf(invMovimientoDtll) + 1)));
             invMovimientoDtll.setInvMovimientoDtllPK(invMovimientoDtllPK);
-
+            
             if (invMovimientoDtll.getDescuento() == null) {
                 invMovimientoDtll.setDescuento(BigDecimal.ZERO);
             }
-
+            
             if (invMovimientoDtll.getInvMovimientoDtllPK() != null) {
                 LOGGER.log(Level.INFO, "InvMovimientoDtllPK: {0}", invMovimientoDtll.getInvMovimientoDtllPK().toString());
             } else {
                 LOGGER.info("InvMovimientoDtllPK: null");
             }
         }
-
+        
         invMovimientoCab.setSubtotal(subtotal);
-
+        
     }
-
+    
     private FacParametros obtenerFacParametros() {
         FacParametros facParametros = facParametrosFacadeREST.find_JSON(
                 FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
                 + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
         return facParametros;
     }
-
+    
     private Integer obtenerVendedor() throws VendedorException {
         FacParametros facParametros = obtenerFacParametros();
-
+        
         if (facParametros == null) {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
-
+        
         Integer defCodVendedor = facParametros.getDefCodVendedor();
-
+        
         if (defCodVendedor == null) {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
-
+        
         LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
-
+    
     private GnrUsuarios obtenerUsuario() {
         GnrUsuarios gnrUsuarios = obtenerFacParametros().getGnrUsuarios();
         LOGGER.log(Level.INFO, "gnrUsuarios: {0}", gnrUsuarios);
         return gnrUsuarios;
     }
-
+    
     private String obtenerOperador() {
         InvUnidadAlternativa invUnidadAlternativa = obtenerInvUnidadAlternativa();
         BigDecimal auxPrecio = BigDecimal.ZERO;
         BigDecimal factor = BigDecimal.ZERO;
         String operador = "";
-
+        
         if (invUnidadAlternativa != null) {
             auxPrecio = facCatalogoPrecioD.getAuxPrecio();
             factor = invUnidadAlternativa.getFactor();
@@ -989,7 +993,7 @@ public class ArticulosBean {
         }
         return operador;
     }
-
+    
     private InvUnidadAlternativa obtenerInvUnidadAlternativa() {
         InvMovimientoDtll invMovimientoDtll = obtenerMovimientoSeleccionado();
         String codUnidad;
@@ -1000,9 +1004,9 @@ public class ArticulosBean {
         }
         String codEmpresa = obtenerEmpresa();
         int codArticle = invMovimientoDtll.getInvArticulo().getInvArticuloPK().getCodArticulo();
-
+        
         StringBuilder id = new StringBuilder();
-
+        
         id.append("find;codEmpresa=");
         id.append(codEmpresa);
         id.append(";");
@@ -1011,14 +1015,14 @@ public class ArticulosBean {
         id.append(";");
         id.append("codArticulo=");
         id.append(codArticle);
-
+        
         InvUnidadAlternativa invUnidadAlternativa = invUnidadAlternativaFacadeREST.find_JSON(InvUnidadAlternativa.class,
                 id.toString());
         invMovimientoDtll.setInvUnidadAlternativa(invUnidadAlternativa);
-
+        
         return invUnidadAlternativa;
     }
-
+    
     private boolean facturacionLimitada() {
         if (invMovimientoCab.getFormaPago().equals("1")) {
             Double sumSaldoDocumento = obtenerSumSaldoDocumento();
@@ -1027,22 +1031,22 @@ public class ArticulosBean {
             LOGGER.log(Level.INFO, "sumCapital: {0}", sumCapital);
             limiteFactura = obtenerLimiteFactura();
             LOGGER.log(Level.INFO, "limiteFactura: {0}", limiteFactura);
-
+            
             Double saldoActual = sumSaldoDocumento + sumCapital;
-
+            
             return ((saldoActual + total) > limiteFactura);
         } else {
             return false;
         }
-
+        
     }
-
+    
     private Double obtenerLimiteFactura() {
         Double limiteFact = cliente.getCliente().getLimiteFactura();
         LOGGER.log(Level.INFO, "limiteFactura: {0}", limiteFact);
         return limiteFact;
     }
-
+    
     private Double obtenerSumSaldoDocumento() {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("MMyyyy");
@@ -1054,7 +1058,7 @@ public class ArticulosBean {
             return new Double(sum);
         }
     }
-
+    
     private Double obtenerSumCapital() {
         Calendar c = Calendar.getInstance();
         SimpleDateFormat format = new SimpleDateFormat("MMyyyy");
@@ -1066,7 +1070,7 @@ public class ArticulosBean {
             return new Double(sum);
         }
     }
-
+    
     private void agregarLog(Pedido pedido) throws VendedorException {
         GnrLogHistorico gnrLogHistorico = new GnrLogHistorico();
         gnrLogHistorico.setDispositivo("Tablet");
@@ -1084,7 +1088,7 @@ public class ArticulosBean {
         gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
         pedido.setGnrLogHistorico(gnrLogHistorico);
     }
-
+    
     private boolean contenidoValido() {
         for (InvMovimientoDtll invMovimientoDtll : invMovimientoDtlls) {
             if (invMovimientoDtll.getCantidad() == null || invMovimientoDtll.getCostoTotal() == null) {
@@ -1093,43 +1097,43 @@ public class ArticulosBean {
         }
         return true;
     }
-
+    
     private void agregarValores(InvMovimientoDtll invMovimientoDtll) {
         setInvMovimientoDtllSeleccionado(invMovimientoDtll);
         obtenerMovimientoSeleccionado();
         try {
-
+            
             String codArticle = String.valueOf(invMovimientoDtll.getInvBodegaArt().getInvBodegaArtPK().getCodArticulo());
-
+            
             String codEmpresa = obtenerEmpresa();
-
+            
             StringBuilder id = new StringBuilder();
-
+            
             id.append("find;codEmpresa=");
             id.append(codEmpresa);
             id.append(";codCatalogo=01;codArticulo=");
             id.append(codArticle);
-
+            
             FacCatalogoPrecioDFacadeREST facCatalogoPrecioDFacadeREST = new FacCatalogoPrecioDFacadeREST();
             String response = facCatalogoPrecioDFacadeREST.find_JSON(String.class,
                     id.toString());
-
+            
             facCatalogoPrecioD = gson.fromJson(response, new TypeToken<FacCatalogoPrecioD>() {
             }.getType());
-
+            
             invMovimientoDtll.setPrecioVenta(facCatalogoPrecioD.getPrecioVenta1());
-
+            
             LOGGER.info("Cod Articulo: " + codArticle
                     + ", Precio Venta: " + invMovimientoDtll.getPrecioVenta());
-
+            
             if (invArticuloSeleccionado.getDescuento() == null) {
                 if (obtenerCliente() != null) {
                     invArticuloSeleccionado.setDescuento(buscarDescuento());
                 }
             }
-
+            
             invArticuloSeleccionado.setIva(findIva());
-
+            
             loadPrecioUnitarioByUnidadMedida();
         } catch (ClienteException ex) {
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
