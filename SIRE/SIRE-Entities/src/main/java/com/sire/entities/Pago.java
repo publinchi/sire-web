@@ -24,5 +24,6 @@ public class Pago {
     private List<CxcCheque> cxcChequeList;
     private GnrLogHistorico gnrLogHistorico;
     private String clientMail;
+    private String razonSocial;
 
 }

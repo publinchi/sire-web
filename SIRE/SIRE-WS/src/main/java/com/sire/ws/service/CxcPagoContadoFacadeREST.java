@@ -122,7 +122,7 @@ public class CxcPagoContadoFacadeREST extends AbstractFacade<CxcPagoContado> {
             @PathParam("codVendedor") Integer codVendedor) {
         List<Pago> pagos = null;
         try {
-            TypedQuery<CxcPagoContado> query = em.createNamedQuery("CxcPagoContado.findByFechas", CxcPagoContado.class);
+            TypedQuery<Object[]> query = em.createNamedQuery("CxcPagoContado.findByFechas", Object[].class);
             query.setParameter("fechaInicio", new SimpleDateFormat("dd-MM-yyyy").parse(fechaInicio));
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             Calendar c = Calendar.getInstance();
@@ -131,9 +131,10 @@ public class CxcPagoContadoFacadeREST extends AbstractFacade<CxcPagoContado> {
             query.setParameter("fechaFin", c.getTime());
             query.setParameter("codEmpresa", codEmpresa);
             query.setParameter("codVendedor", codVendedor);
-            List<CxcPagoContado> retorno = query.getResultList();
+            List<Object[]> retorno = query.getResultList();
             pagos = new ArrayList<>();
-            for (CxcPagoContado cxcPagoContado : retorno) {
+            for (Object[] object : retorno) {
+                CxcPagoContado cxcPagoContado = (CxcPagoContado) object[0];
                 Pago pago = new Pago();
                 CxcPagoContado newCxcPagoContado = new CxcPagoContado();
                 CxcPagoContadoPK cxcPagoContadoPK = new CxcPagoContadoPK();
@@ -147,6 +148,7 @@ public class CxcPagoContadoFacadeREST extends AbstractFacade<CxcPagoContado> {
                 newCxcPagoContado.setCxcCliente(cxcPagoContado.getCxcCliente());
                 newCxcPagoContado.setPagoTotal(cxcPagoContado.getPagoTotal());
                 pago.setCxcPagoContado(newCxcPagoContado);
+                pago.setRazonSocial((String) object[1]);
                 pagos.add(pago);
             }
         } catch (ParseException ex) {
