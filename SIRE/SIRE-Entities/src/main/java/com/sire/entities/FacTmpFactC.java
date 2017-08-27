@@ -338,7 +338,9 @@ public class FacTmpFactC implements Serializable {
     }
 
     public BigDecimal getTotalFactura() {
-        return BigDecimal.valueOf(Round.round(totalFactura.doubleValue(), 2));
+        if(totalFactura != null)
+            return BigDecimal.valueOf(Round.round(totalFactura.doubleValue(), 2));
+        else return totalFactura;
     }
 
     public void setTotalFactura(BigDecimal totalFactura) {
