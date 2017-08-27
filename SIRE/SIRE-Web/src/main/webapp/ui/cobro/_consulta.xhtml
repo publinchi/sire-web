@@ -33,7 +33,7 @@
                      style="font-size:9.5px;">
             <p:ajax event="rowSelect" listener="#{pagosBean.tapPago}" 
                     update="@form" />
-            <p:column headerText="# Pago" priority="1">
+            <p:column headerText="# Pago (${pagosBean.pagos.size()})" priority="1">
                 <h:outputText value="#{pago.cxcPagoContado.cxcPagoContadoPK.numPago}" />
             </p:column>
             <p:column headerText="Cliente" priority="1">
