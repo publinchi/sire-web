@@ -42,7 +42,7 @@
             <p:column headerText="Fecha" priority="1">
                 <h:outputText value="#{pedido.facTmpFactC.fechaFacturaString}" />
             </p:column>
-            <p:column headerText="Total" priority="1">
+            <p:column headerText="Total (&#36;#{pedidosBean.pagoTotal})" priority="1">
                 <h:outputText value="&#36;#{pedido.facTmpFactC.totalFactura}" />
             </p:column>
         </p:dataTable>

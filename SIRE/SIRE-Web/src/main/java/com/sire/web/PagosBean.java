@@ -16,6 +16,7 @@ import com.sire.exception.ClienteException;
 import com.sire.exception.VendedorException;
 import com.sire.rs.client.CxcPagoContadoFacadeREST;
 import com.sire.rs.client.FacParametrosFacadeREST;
+import com.sire.utils.Round;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -64,6 +65,8 @@ public class PagosBean {
     private List<InvArticulo> invArticulos;
     private Pago pagoSeleccionado;
     private final CxcPagoContadoFacadeREST cxcPagoContadoFacadeREST;
+    @Getter
+    private Double pagoTotal;
 
     public PagosBean() {
         builder = new GsonBuilder();
@@ -81,6 +84,11 @@ public class PagosBean {
                     }.getType()
             );
             LOGGER.log(Level.INFO, "pagos: {0}", pagos.size());
+            pagoTotal = 0.0;
+            for (Pago pago : pagos) {
+                pagoTotal += pago.getCxcPagoContado().getPagoTotal();
+            }
+            pagoTotal = Round.round(pagoTotal, 2);
         } catch (VendedorException ex) {
             LOGGER.log(Level.WARNING, ex.getMessage());
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_WARN);

@@ -17,6 +17,7 @@ import com.sire.rs.client.FacParametrosFacadeREST;
 import com.sire.rs.client.FacTmpFactCFacadeREST;
 import com.sire.rs.client.FacTmpFactDFacadeREST;
 import com.sire.rs.client.InvArticuloFacadeREST;
+import com.sire.utils.Round;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -64,6 +65,8 @@ public class PedidosBean {
     private List<InvArticulo> invArticulos;
     private Pedido pedidoSeleccionado;
     private final InvArticuloFacadeREST invArticuloFacadeREST;
+    @Getter
+    private Double pagoTotal;
 
     public PedidosBean() {
         invArticuloFacadeREST = new InvArticuloFacadeREST();
@@ -84,6 +87,13 @@ public class PedidosBean {
                     }.getType()
             );
             LOGGER.log(Level.INFO, "pedidos: {0}", pedidos.size());
+            pagoTotal = 0.0;
+            for (Pedido pedido : pedidos) {
+                if (pedido.getFacTmpFactC().getTotalFactura() != null) {
+                    pagoTotal += pedido.getFacTmpFactC().getTotalFactura().doubleValue();
+                }
+            }
+            pagoTotal = Round.round(pagoTotal, 2);
         } catch (VendedorException ex) {
             LOGGER.log(Level.SEVERE, ex.getMessage());
         }
