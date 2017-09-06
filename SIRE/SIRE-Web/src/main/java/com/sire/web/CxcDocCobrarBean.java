@@ -70,20 +70,20 @@ import org.primefaces.mobile.event.SwipeEvent;
 @SessionScoped
 
 public class CxcDocCobrarBean {
-
+    
     private static final Logger LOGGER = Logger.getLogger(CxcDocCobrarBean.class.getName());
-
+    
     private final FacParametrosFacadeREST facParametrosFacadeREST;
     private final Gson gson;
-
+    
     @Setter
     private List<CxcDocCobrar> cxcDocCobrarList;
-
+    
     @Getter
     @Setter
     @ManagedProperty("#{cliente}")
     private CustomerBean cliente;
-
+    
     @Getter
     @Setter
     @ManagedProperty(value = "#{user}")
@@ -92,60 +92,60 @@ public class CxcDocCobrarBean {
     @Setter
     @ManagedProperty("#{mapa}")
     private MapaBean mapa;
-
+    
     @Getter
     @Setter
     private Double totalSaldo, totalCapital, diferencia, valorCheque = 0.0;
-
+    
     @Setter
     private Double retencion = 0.0, retencionIVA = 0.0, efectivo = 0.0, deposito = 0.0,
             otros = 0.0, totalCheques = 0.0;
-
+    
     @Getter
     @Setter
     private VCliente client;
-
+    
     @Getter
     @Setter
     private CxcDocCobrar cxcDocCobrarSeleccionado;
-
+    
     @Getter
     @Setter
     private boolean botonEnviarBloqueado = true, botonAgegarChequeBloqueado = true;
-
+    
     @Getter
     @Setter
-    private String numeroCuenta, codBanco, numCuenta;
-
+    private String numeroCuenta, codBanco, numCuenta, ctaCorriente;
+    
     @Getter
     @Setter
     private Date fechaCheque;
-
+    
     @Getter
     @Setter
     private BigInteger numCheque;
-
+    
     @Getter
     @Setter
     private List<BanCtaCte> banCtaCtes;
-
+    
     @Getter
     @Setter
     private List<CxcCheque> cxcCheques;
-
+    
     @Resource(name = "mail/gmail")
     private Session mailSession;
     private CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST;
-
+    
     public CxcDocCobrarBean() {
         facParametrosFacadeREST = new FacParametrosFacadeREST();
         GsonBuilder builder = new GsonBuilder();
         gson = builder.setDateFormat("yyyy-MM-dd'T'HH:mm:ss").create();
-
+        
         cxcCheques = new ArrayList<>();
         loadBanCtaCtes();
     }
-
+    
     public void findDocCobrar() {
 //        VCliente c = cliente.getCliente();
 //
@@ -154,47 +154,47 @@ public class CxcDocCobrarBean {
 //        }
 
     }
-
+    
     public List<CxcDocCobrar> getCxcDocCobrarList() {
         if (cliente.getCliente() != null) {
             loadCxcDocCobrarList();
         }
         return cxcDocCobrarList;
     }
-
+    
     public void seleccionarCxcDocCobrar(SelectEvent event) {
         CxcDocCobrar cxcDocCobrar = (CxcDocCobrar) event.getObject();
         LOGGER.log(Level.INFO, "CxcDocCobrar 1 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
         cxcDocCobrarSeleccionado = cxcDocCobrarList.get(cxcDocCobrarList.indexOf(cxcDocCobrar));
         LOGGER.log(Level.INFO, "CxcDocCobrar 2 {0}", cxcDocCobrar.getCxcDocCobrarPK().getNumDocumento());
     }
-
+    
     public void calcularSaldo() {
         Double nuevoSaldo;
-
+        
         LOGGER.log(Level.INFO, "capital: {0}", cxcDocCobrarSeleccionado.getCapital());
-
+        
         if (cxcDocCobrarSeleccionado.getSaldoOri() == null) {
             cxcDocCobrarSeleccionado.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoDocumento());
         } else {
             cxcDocCobrarSeleccionado.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoOri());
         }
-
+        
         LOGGER.log(Level.INFO, "antiguoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
-
+        
         if (cxcDocCobrarSeleccionado.getCapital() != null && cxcDocCobrarSeleccionado.getSaldoDocumento() >= cxcDocCobrarSeleccionado.getCapital()) {
             LOGGER.info("## nuevoSaldo ##");
             nuevoSaldo = cxcDocCobrarSeleccionado.getSaldoDocumento() - cxcDocCobrarSeleccionado.getCapital();
             cxcDocCobrarSeleccionado.setSaldoDocumento(nuevoSaldo);
         }
-
+        
         LOGGER.log(Level.INFO, "nuevoSaldo: {0}", cxcDocCobrarSeleccionado.getSaldoDocumento());
-
+        
         diferencia = cxcDocCobrarSeleccionado.getCapital();
         calcularTotales();
 //        calcularFormaPago();
     }
-
+    
     public void calcularFormaPago(String formaPago) {
         LOGGER.info("calcularFormaPago()");
         Double sumFormaPagos = getRetencion() + getRetencionIVA() + getEfectivo() + getDeposito() + getOtros() + getTotalCheques();
@@ -241,7 +241,7 @@ public class CxcDocCobrarBean {
             botonEnviarBloqueado = true;
         }
     }
-
+    
     public String enviar() {
         LOGGER.info("enviar()");
         BigDecimal numDocumentoResp = null;
@@ -249,10 +249,10 @@ public class CxcDocCobrarBean {
             if (mapa.getDireccion() == null) {
                 throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
             }
-
+            
             GnrContadorDocFacadeREST gnrContadorDocFacadeREST = new GnrContadorDocFacadeREST();
             numDocumentoResp = gnrContadorDocFacadeREST.numDocumento(BigDecimal.class, "01", "06", "CIN", userManager.getCurrent().getNombreUsuario());
-
+            
             CxcAbonoC cxcAbonoC = new CxcAbonoC();
             CxcAbonoCPK cxcAbonoCPK = new CxcAbonoCPK();
             cxcAbonoCPK.setCodDocumento("CIN");
@@ -271,7 +271,7 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setNombreUsuario(userManager.getCurrent());
             cxcAbonoC.setTotalCapital(cxcDocCobrarSeleccionado.getCapital());
             cxcAbonoC.setTotalMora(BigInteger.ZERO);
-
+            
             List<CxcAbonoD> cxcAbonoDList = new ArrayList<>();
             int i = 1;
             for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
@@ -279,10 +279,10 @@ public class CxcDocCobrarBean {
                     if (cxcDocCobrar.getSaldoOri() == null) {
                         cxcDocCobrar.setSaldoOri(cxcDocCobrarSeleccionado.getSaldoOri());
                     }
-
+                    
                     cxcDocCobrar.setSaldoDocumento(cxcDocCobrarSeleccionado.getSaldoDocumento());
                     cxcDocCobrar.setCapital(cxcDocCobrarSeleccionado.getCapital());
-
+                    
                     LOGGER.info("Pago: " + numDocumentoResp
                             + ", cxcDocCobrar: " + cxcDocCobrar
                             + ", cxcDocCobrarSeleccionado.getSaldoDocumento(): " + cxcDocCobrarSeleccionado.getSaldoDocumento()
@@ -303,16 +303,16 @@ public class CxcDocCobrarBean {
                         cxcAbonoD.setNumeroCuota(cxcDocCobrar.getCxcDocCobrarPK().getNumeroCuota().intValue());
                         cxcAbonoD.setPorcComision(BigDecimal.ZERO);
                         cxcAbonoD.setValorMora(BigInteger.ZERO);
-
+                        
                         cxcAbonoDList.add(cxcAbonoD);
                         i++;
                     }
                 }
             }
-
+            
             LOGGER.info("Pago: " + numDocumentoResp + ", cxcAbonoDList.size: " + cxcAbonoDList.size());
             cxcAbonoC.setCxcAbonoDList(cxcAbonoDList);
-
+            
             CxcPagoContado cxcPagoContado = new CxcPagoContado();
             CxcPagoContadoPK cxcPagoContadoPK = new CxcPagoContadoPK();
             cxcPagoContadoPK.setCodDocumento("CIN");
@@ -323,7 +323,7 @@ public class CxcDocCobrarBean {
             cxcPagoContado.setCodTarjeta(null);
             cxcPagoContado.setCodVendedor(obtenerVendedor());
             cxcPagoContado.setCredito(BigInteger.ZERO);
-            cxcPagoContado.setCtaCorriente(numeroCuenta);
+            cxcPagoContado.setCtaCorriente(ctaCorriente);
             cxcPagoContado.setCxcCliente(obtenerCliente());
             cxcPagoContado.setDeposito(deposito);
             cxcPagoContado.setDetalle("Pago Web");
@@ -335,7 +335,7 @@ public class CxcDocCobrarBean {
             cxcPagoContado.setRetencion(retencion);
             cxcPagoContado.setRetencionIva(retencionIVA);
             cxcPagoContado.setTarjeta(BigInteger.ZERO);
-
+            
             Pago pago = new Pago();
             pago.setCxcAbonoC(cxcAbonoC);
             for (CxcCheque cheque : cxcCheques) {
@@ -357,13 +357,13 @@ public class CxcDocCobrarBean {
             }
 
             LOGGER.info("Pago " + numDocumentoResp + " Enviado.");
-
+            
             LOGGER.info("Enviando Mail ...");
             enviarMail(pago);
             LOGGER.info("Mail Enviado.");
-
+            
             limpiar();
-
+            
             addMessage("Cobro relizado exitosamente.", "Num. Cobro: " + numDocumentoResp, FacesMessage.SEVERITY_INFO);
             FacesContext context = FacesContext.getCurrentInstance();
             context.getExternalContext().getFlash().setKeepMessages(true);
@@ -385,7 +385,7 @@ public class CxcDocCobrarBean {
             }
         }
     }
-
+    
     public void calcularCheques() {
         LOGGER.info("calcularCheques()");
         if (valorCheque > 0.0) {
@@ -413,14 +413,14 @@ public class CxcDocCobrarBean {
         LOGGER.log(Level.INFO, "botonAgegarChequeBloqueado: {0}", botonAgegarChequeBloqueado);
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:chequesForm:agregarChequeButton");
     }
-
+    
     public void agregarCheque() {
         LOGGER.log(Level.INFO, "codBanco: {0}", codBanco);
         LOGGER.log(Level.INFO, "fechaCheque: {0}", fechaCheque);
         LOGGER.log(Level.INFO, "numCheque: {0}", numCheque);
         LOGGER.log(Level.INFO, "numCuenta: {0}", numCuenta);
         LOGGER.log(Level.INFO, "valorCheque: {0}", valorCheque);
-
+        
         CxcCheque cheque = new CxcCheque();
         cheque.setCodBanco(codBanco);
         cheque.setCodDeposito(null);
@@ -438,7 +438,7 @@ public class CxcDocCobrarBean {
         }
         cheque.setDetalle(null);
         cheque.setEstado("G");
-
+        
         cheque.setFechaCheque(fechaCheque);
         cheque.setFechaEstado(Calendar.getInstance().getTime());
         cheque.setFechaRecepcion(Calendar.getInstance().getTime());
@@ -447,16 +447,16 @@ public class CxcDocCobrarBean {
         cheque.setNumDeposito(0L);
         cheque.setReferencia(null);
         cheque.setValorCheque(valorCheque);
-
+        
         cxcCheques.add(cheque);
         totalCheques += valorCheque;
-
+        
         calcularFormaPago("cheque");
         limpiarFormaCheque();
         botonAgegarChequeBloqueado = true;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:enviarButton");
     }
-
+    
     private void loadCxcDocCobrarList() {
         CxcDocCobrarFacadeREST cxcDocCobrarFacadeREST = new CxcDocCobrarFacadeREST();
         client = cliente.getCliente();
@@ -474,22 +474,22 @@ public class CxcDocCobrarBean {
             addMessage("Advertencia", ex.getMessage(), FacesMessage.SEVERITY_INFO);
         }
     }
-
+    
     private void calcularTotales() {
         totalSaldo = 0.0;
         totalCapital = 0.0;
         for (CxcDocCobrar cxcDocCobrar : cxcDocCobrarList) {
             totalSaldo += cxcDocCobrar.getSaldoDocumento();
-
+            
             if (cxcDocCobrar.getCapital() != null) {
                 totalCapital += cxcDocCobrar.getCapital();
             }
         }
-
+        
         totalSaldo = Round.round(totalSaldo, 2);
         totalCapital = Round.round(totalCapital, 2);
     }
-
+    
     private void loadBanCtaCtes() {
         BanCtaCteFacadeREST banCtaCteFacadeREST = new BanCtaCteFacadeREST();
         String banCtaCtesString = banCtaCteFacadeREST.findAll_JSON(String.class
@@ -498,63 +498,63 @@ public class CxcDocCobrarBean {
         }.getType());
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:bloqueC:cuentaBancaria");
     }
-
+    
     private String obtenerEmpresa() {
         return userManager.getGnrEmpresa().getCodEmpresa();
     }
-
+    
     private CxcCliente obtenerCliente() throws ClienteException {
         if (cliente.getCliente() == null) {
             throw new ClienteException("Por favor seleccione el cliente.");
         }
-
+        
         return new CxcCliente(obtenerEmpresa(), cliente.getCliente().getCodCliente());
     }
-
+    
     private BigInteger obtenerVendedor() throws VendedorException {
         FacParametros facParametros = obtenerFacParametros();
-
+        
         if (facParametros == null) {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
-
+        
         Integer defCodVendedor = facParametros.getDefCodVendedor();
-
+        
         if (defCodVendedor == null) {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
-
+        
         return BigInteger.valueOf(defCodVendedor);
     }
-
+    
     private FacParametros obtenerFacParametros() {
         FacParametros facParametros = facParametrosFacadeREST.find_JSON(
                 FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
                 + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
         return facParametros;
     }
-
+    
     private void addMessage(String summary, String detail, FacesMessage.Severity severity) {
         FacesMessage message = new FacesMessage(severity, summary, detail);
         FacesContext.getCurrentInstance().addMessage(null, message);
     }
-
+    
     public boolean validarCheque() {
 //        cxcChequeFacadeREST.findByCodClienteCodEmpresaMes(String.class, obtenerCliente(), obtenerEmpresa(), codBanco)
         botonEnviarBloqueado = true;
         RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:pagoTotal");
         return true;
     }
-
+    
     public void swipeleft(SwipeEvent event) {
 //        setInvMovimientoDtllSeleccionado(((InvMovimientoDtll) event.getData()));
         CxcCheque cxcCheque = (CxcCheque) event.getData();
-
+        
         totalCheques = totalCheques - cxcCheque.getValorCheque();
         calcularFormaPago("cheque");
         cxcCheques.remove(cxcCheque);
     }
-
+    
     private void limpiar() {
         mapa.limpiar();
         cxcCheques.clear();
@@ -575,7 +575,7 @@ public class CxcDocCobrarBean {
         cliente.limpiar();
         limpiarFormaCheque();
     }
-
+    
     public void limpiarFormaPago() {
         mapa.limpiar();
         cxcCheques.clear();
@@ -595,7 +595,7 @@ public class CxcDocCobrarBean {
         diferencia = null;
         limpiarFormaCheque();
     }
-
+    
     private void agregarLog(Pago pago) throws VendedorException {
         GnrLogHistorico gnrLogHistorico = new GnrLogHistorico();
         gnrLogHistorico.setDispositivo("Tablet");
@@ -613,7 +613,7 @@ public class CxcDocCobrarBean {
         gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
         pago.setGnrLogHistorico(gnrLogHistorico);
     }
-
+    
     private void limpiarFormaCheque() {
         codBanco = null;
         fechaCheque = null;
@@ -621,10 +621,10 @@ public class CxcDocCobrarBean {
         numCuenta = null;
         valorCheque = 0.0;
     }
-
+    
     private void enviarMail(Pago pago) throws MessagingException, MailException {
         Message message = new MimeMessage(mailSession);
-
+        
         if (cliente.getCliente().getMail() != null && !cliente.getCliente().getMail().isEmpty()) {
             String toUser = cliente.getCliente().getMail();
             String sub = "Cobro.";
@@ -654,7 +654,7 @@ public class CxcDocCobrarBean {
                 msg.append("Valor: ");
                 msg.append(cxcCheque.getValorCheque());
             }
-
+            
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(toUser));
             message.setText(msg.toString());
             message.setSubject(sub);
@@ -663,46 +663,50 @@ public class CxcDocCobrarBean {
             throw new MailException("Cliente no tiene e-mail");
         }
     }
-
+    
     public Double getRetencion() {
         if (retencion == null) {
             retencion = 0.0;
         }
         return retencion;
     }
-
+    
     public Double getRetencionIVA() {
         if (retencionIVA == null) {
             retencionIVA = 0.0;
         }
         return retencionIVA;
     }
-
+    
     public Double getEfectivo() {
         if (efectivo == null) {
             efectivo = 0.0;
         }
         return efectivo;
     }
-
+    
     public Double getDeposito() {
         if (deposito == null) {
             deposito = 0.0;
         }
         return deposito;
     }
-
+    
     public Double getOtros() {
         if (otros == null) {
             otros = 0.0;
         }
         return otros;
     }
-
+    
     public Double getTotalCheques() {
         if (totalCheques == null) {
             totalCheques = 0.0;
         }
         return totalCheques;
+    }
+    
+    public void loadCuentaBancaria() {
+        ctaCorriente = numeroCuenta;
     }
 }
