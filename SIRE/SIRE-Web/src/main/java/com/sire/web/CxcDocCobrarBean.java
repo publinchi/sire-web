@@ -496,6 +496,7 @@ public class CxcDocCobrarBean {
         );
         banCtaCtes = gson.fromJson(banCtaCtesString, new TypeToken<List<BanCtaCte>>() {
         }.getType());
+        RequestContext.getCurrentInstance().update("cobro:accordionPanel:formaPagoForm:bloqueC:cuentaBancaria");
     }
 
     private String obtenerEmpresa() {
@@ -523,7 +524,6 @@ public class CxcDocCobrarBean {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return BigInteger.valueOf(defCodVendedor);
     }
 
