@@ -557,7 +557,6 @@ public class CxcDocCobrarBean {
 
     private void limpiar() {
         mapa.limpiar();
-        banCtaCtes.clear();
         cxcCheques.clear();
         cxcDocCobrarList = null;
         numeroCuenta = null;
@@ -579,7 +578,6 @@ public class CxcDocCobrarBean {
 
     public void limpiarFormaPago() {
         mapa.limpiar();
-        banCtaCtes.clear();
         cxcCheques.clear();
         cxcDocCobrarList = null;
         numeroCuenta = null;
