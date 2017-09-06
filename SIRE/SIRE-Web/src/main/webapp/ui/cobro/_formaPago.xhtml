@@ -133,6 +133,7 @@
                                        var="banCtaCte" 
                                        itemLabel="#{banCtaCte.banCtaCtePK.ctaCorriente} | #{banCtaCte.descBanco}" 
                                        itemValue="#{banCtaCte.banCtaCtePK.ctaCorriente}"/>
+                        <p:ajax listener="#{cxcDocCobrarBean.loadCuentaBancaria()}"/>
                     </p:selectOneMenu>
                     <!--</pm:field>-->
                     <p:inputText id="deposito" value="#{cxcDocCobrarBean.deposito}">
