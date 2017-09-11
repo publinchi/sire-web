@@ -264,7 +264,7 @@ public class CxcDocCobrarBean {
             cxcAbonoC.setCodVendedor(obtenerVendedor());
             cxcAbonoC.setCxcCliente(obtenerCliente());
             cxcAbonoC.setCxcInforme(null);
-            cxcAbonoC.setDetalle("Pago Web");
+            cxcAbonoC.setDetalle(userManager.getCurrent().getNombreUsuario());
             cxcAbonoC.setEstado("G");
             cxcAbonoC.setFechaAbono(Calendar.getInstance().getTime());
             cxcAbonoC.setFechaEstado(Calendar.getInstance().getTime());
