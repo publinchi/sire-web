@@ -141,7 +141,6 @@ public class CustomersBean {
             throw new VendedorException("Vendedor no asociado a facturación.");
         }
 
-        LOGGER.log(Level.INFO, "codVendedor: {0}", defCodVendedor);
         return defCodVendedor;
     }
 
