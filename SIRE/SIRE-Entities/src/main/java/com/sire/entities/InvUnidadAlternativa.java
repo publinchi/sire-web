@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "InvUnidadAlternativa.findAll", query = "SELECT i FROM InvUnidadAlternativa i"),
     @NamedQuery(name = "InvUnidadAlternativa.findByCodEmpresa", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.invUnidadAlternativaPK.codEmpresa = :codEmpresa"),
-    @NamedQuery(name = "InvUnidadAlternativa.findByCodArticulo", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.invUnidadAlternativaPK.codArticulo = :codArticulo"),
+    @NamedQuery(name = "InvUnidadAlternativa.findByCodArticulo", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.invUnidadAlternativaPK.codArticulo = :codArticulo AND i.estado = :estado"),
     @NamedQuery(name = "InvUnidadAlternativa.findByFactor", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.factor = :factor"),
     @NamedQuery(name = "InvUnidadAlternativa.findByCodUnidad", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.invUnidadAlternativaPK.codUnidad = :codUnidad"),
     @NamedQuery(name = "InvUnidadAlternativa.findByOperador", query = "SELECT i FROM InvUnidadAlternativa i WHERE i.operador = :operador"),

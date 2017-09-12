@@ -112,6 +112,7 @@ public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlte
     public List<InvUnidadAlternativa> findByCodArticulo(@PathParam("codArticulo") String codArticulo) {
         TypedQuery<InvUnidadAlternativa> query = em.createNamedQuery("InvUnidadAlternativa.findByCodArticulo", InvUnidadAlternativa.class);
         query.setParameter("codArticulo", Integer.parseInt(codArticulo));
+        query.setParameter("estado", "A");
         List<InvUnidadAlternativa> retorno = query.getResultList();
         return retorno;
     }
