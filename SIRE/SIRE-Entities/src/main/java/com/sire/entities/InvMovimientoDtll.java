@@ -132,6 +132,10 @@ public class InvMovimientoDtll implements Serializable {
     @Getter
     @Setter
     private InvUnidadAlternativa invUnidadAlternativa;
+    @Transient
+    @Getter
+    @Setter
+    private String mensaje;
 
     public InvMovimientoDtll() {
     }
