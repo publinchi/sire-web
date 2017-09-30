@@ -117,6 +117,14 @@ public class InvArticuloFacadeREST {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
     }
 
+    public <T> T findPromocion(Class<T> responseType, String wcod_empresa, String wcod_promocion,
+            String wcod_articulo, Integer wcantidad_o, Integer waux_cantidad_o) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        resource = resource.path(java.text.MessageFormat.format("{0}/{1}/{2}/{3}/{4}/{5}", new Object[]{wcod_empresa,
+            wcod_promocion, wcod_articulo, wcantidad_o, waux_cantidad_o}));
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(responseType);
+    }
+
     public void close() {
         client.close();
     }
