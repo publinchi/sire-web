@@ -20,7 +20,7 @@
                     <p:inputNumber id="cantidad" 
                                    value="#{articulosBean.invMovimientoDtllSeleccionado.cantidad}"
                                    required="true" minValue="1" >
-                        <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
+                        <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad(articulosBean.invMovimientoDtllSeleccionado)}"/>
                     </p:inputNumber>
                     <!--</pm:field>-->
                 </p:tab>
@@ -32,7 +32,7 @@
                                        var="unidadAlternativa" 
                                        itemLabel="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}" 
                                        itemValue="#{unidadAlternativa.invUnidadAlternativaPK.codUnidad}"/>
-                        <p:ajax listener="#{articulosBean.loadPrecioUnitarioByUnidadMedida()}"/>
+                        <p:ajax listener="#{articulosBean.loadPrecioUnitarioByUnidadMedida(articulosBean.invMovimientoDtllSeleccionado)}"/>
                     </p:selectOneMenu>
                     <!--</pm:field>-->
                 </p:tab>
@@ -60,7 +60,7 @@
                             <f:validateDoubleRange disabled="#{articulosBean.maxPorcDescuentoDisabled}" 
                                                    minimum="0" 
                                                    maximum="#{articulosBean.maxPorcDescuento}" />
-                            <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad()}"/>
+                            <p:ajax listener="#{articulosBean.loadPrecioTotalByCantidad(articulosBean.invMovimientoDtllSeleccionado)}"/>
                         </p:inputNumber>
                     </div>
                 </p:tab>
@@ -78,7 +78,7 @@
                 <p:tab title="IVA">
                     <div class="remove-clear">
                         <p:inputNumber id="iva" 
-                                       value="#{articulosBean.invArticuloSeleccionado.iva}"
+                                       value="#{articulosBean.invMovimientoDtllSeleccionado.porcentajeIva}"
                                        readonly="true"
                                        symbol="% "/>
                     </div>
@@ -88,7 +88,7 @@
             <h:outputText id="totalIva" value="Total + IVA: &#36; #{articulosBean.invArticuloSeleccionado.totalPlusIVA}" />
             <p:commandButton id="botonAgregar"
                              value="Agregar" 
-                             actionListener="#{articulosBean.agregarArticulo()}" 
+                             actionListener="#{articulosBean.agregarArticulo(articulosBean.invMovimientoDtllSeleccionado)}" 
                              disabled="#{articulosBean.agregarBloqueado}"
                              validateClient="true" 
                              oncomplete="$( window ).orientationchange();"/>
