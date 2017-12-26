@@ -16,5 +16,13 @@
     <module>SIRE-Web</module>
     <module>SIRE-RS-Client</module>
     <module>SIRE-Commons</module>
+    <module>SIRE-Batch</module>
+    <module>SIRE-Soap</module>
+    <module>SIRE-SRI-Batch-Recepcion</module>
+    <module>SIRE-SRI-Entities</module>
+    <module>SIRE-SRI-Signature</module>
+    <module>SIRE-SRI-WSClient</module>
+    <module>SIRE-SRI-Batch-Autorizacion</module>
+    <module>SIRE-SRI-Reports</module>
   </modules>
 </project>
