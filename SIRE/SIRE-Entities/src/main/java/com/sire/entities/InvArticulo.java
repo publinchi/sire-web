@@ -19,6 +19,9 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.NamedStoredProcedureQuery;
+import javax.persistence.ParameterMode;
+import javax.persistence.StoredProcedureParameter;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -31,6 +34,34 @@ import lombok.Setter;
  *
  * @author Administrator
  */
+@NamedStoredProcedureQuery(
+        name = "SP_PROMOCION",
+        procedureName = "SP_PROMOCION",
+        parameters = {
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wcod_empresa"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wcod_promocion"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = String.class, name = "wcod_articulo"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Number.class, name = "wcantidad_o"),
+            @StoredProcedureParameter(mode = ParameterMode.IN, type = Number.class, name = "waux_cantidad_o"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wcod_articulo_prom"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "wcod_unidad_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wcantidad_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "waux_cantidad_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wporcentaje_iva_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "woperador_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wfactor_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wporcentaje_prom"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "wcod_bodega_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "wcod_inventario_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wcosto_total_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wcosto_unitario_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = Number.class, name = "wdescuento_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "westado_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "wfecha_estado_p"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "wdesc_articulo_prom"),
+            @StoredProcedureParameter(mode = ParameterMode.OUT, type = String.class, name = "mensaje")
+        }
+)
 @Entity
 @Table(name = "INV_ARTICULO")
 @XmlRootElement

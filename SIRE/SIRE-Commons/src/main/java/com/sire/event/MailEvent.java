@@ -5,6 +5,7 @@
  */
 package com.sire.event;
 
+import javax.mail.internet.MimeMultipart;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,5 @@ public class MailEvent {
     private String to;
     private String message;
     private String subject;
+    private MimeMultipart mimeMultipart;
 }

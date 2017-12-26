@@ -1,0 +1,161 @@
+package com.sire.sri.batch.autorizacion;
+
+import autorizacion.ws.sri.gob.ec.Autorizacion;
+import autorizacion.ws.sri.gob.ec.Mensaje;
+import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
+import com.sire.soap.util.SoapUtil;
+import ec.gob.sri.comprobantes.modelo.LoteXml;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Map;
+import javax.batch.api.chunk.ItemProcessor;
+import javax.inject.Named;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.MimeHeaders;
+import javax.xml.soap.Node;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPBodyElement;
+import javax.xml.soap.SOAPEnvelope;
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.SOAPPart;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import org.w3c.dom.NodeList;
+
+@Named
+public class F1_C1_Processor1 implements ItemProcessor {
+
+    @Override
+    public Object processItem(Object item) throws Exception {
+        System.out.println("F1_C1_Processor1");
+        String claveAcceso = ((LoteXml) item).getClaveAcceso();
+        System.out.println("object in -> " + claveAcceso);
+
+        Map mapCall = (Map) SoapUtil.call(
+                createSOAPMessage(claveAcceso),
+                new URL("https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline"),
+                null,
+                null);
+        SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
+        System.out.println("Soap Autorizacion Response:");
+        System.out.println(SoapUtil.toString(soapMessage));
+        RespuestaComprobante respuestaComprobante = toRespuestaComprobante(soapMessage);
+        Map<String, Object> map = new HashMap();
+        map.put("respuestaComprobante", respuestaComprobante);
+        map.put("lote", item);
+        return map;
+    }
+
+    private SOAPMessage createSOAPMessage(String claveAcceso) {
+        try {
+            MessageFactory factory = MessageFactory.newInstance();
+            SOAPMessage soapMsg = factory.createMessage();
+            SOAPPart part = soapMsg.getSOAPPart();
+
+            SOAPEnvelope envelope = part.getEnvelope();
+            envelope.addNamespaceDeclaration("ec", "http://ec.gob.sri.ws.autorizacion");
+            SOAPBody body = envelope.getBody();
+            MimeHeaders headers = soapMsg.getMimeHeaders();
+            headers.addHeader("SOAPAction", "");
+            SOAPBodyElement element = body.addBodyElement(
+                    envelope.createName("ec:autorizacionComprobanteLote"));
+            element.addChildElement("claveAccesoLote").addTextNode(claveAcceso);
+
+            soapMsg.saveChanges();
+//            System.out.println("Request SOAP Message:");
+//            System.out.println("soapMsg -> " + SoapUtil.toString(soapMsg));
+            return soapMsg;
+        } catch (SOAPException ex) {
+            System.err.println(ex);
+        }
+        return null;
+    }
+
+    private RespuestaComprobante toRespuestaComprobante(SOAPMessage soapMessage) throws SOAPException, XPathExpressionException, ParseException, DatatypeConfigurationException {
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        Node claveAccesoLoteConsultadaNode = (Node) xpath.evaluate("//claveAccesoLoteConsultada", soapMessage.getSOAPBody(), XPathConstants.NODE);
+        Node numeroComprobantesLoteNode = (Node) xpath.evaluate("//numeroComprobantesLote", soapMessage.getSOAPBody(), XPathConstants.NODE);
+
+        RespuestaComprobante respuestaComprobante = new RespuestaComprobante();
+        RespuestaComprobante.Autorizaciones autorizaciones = new RespuestaComprobante.Autorizaciones();
+        NodeList autorizacionesNodeList = (NodeList) xpath.evaluate("//autorizaciones/autorizacion", soapMessage.getSOAPBody(), XPathConstants.NODESET);
+        for (int i = 0; i < autorizacionesNodeList.getLength(); i++) {
+            Autorizacion autorizacion = new Autorizacion();
+            autorizaciones.getAutorizacion().add(autorizacion);
+            Node autorizacionNode = (Node) autorizacionesNodeList.item(i);
+            NodeList hijosAutorizacion = autorizacionNode.getChildNodes();
+
+            for (int j = 0; j < hijosAutorizacion.getLength(); j++) {
+                switch (hijosAutorizacion.item(j).getNodeName()) {
+                    case "comprobante":
+                        autorizacion.setComprobante(hijosAutorizacion.item(j).getTextContent());
+                        break;
+                    case "fechaAutorizacion":
+                        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+                        Date date = format.parse(hijosAutorizacion.item(j).getTextContent());
+                        GregorianCalendar cal = new GregorianCalendar();
+                        cal.setTime(date);
+                        XMLGregorianCalendar fechaAutorizacion = DatatypeFactory.newInstance().newXMLGregorianCalendar(cal);
+                        autorizacion.setFechaAutorizacion(fechaAutorizacion);
+                        break;
+                    case "estado":
+                        autorizacion.setEstado(hijosAutorizacion.item(j).getTextContent());
+                        break;
+                    case "numeroAutorizacion":
+                        autorizacion.setNumeroAutorizacion(hijosAutorizacion.item(j).getTextContent());
+                        break;
+                    case "ambiente":
+                        autorizacion.setAmbiente(hijosAutorizacion.item(j).getTextContent());
+                        break;
+                    case "mensajes":
+                        NodeList mensajesNodeList = (NodeList) hijosAutorizacion.item(j);
+                        Autorizacion.Mensajes mensajes = new Autorizacion.Mensajes();
+                        autorizacion.setMensajes(mensajes);
+                        for (int k = 0; k < mensajesNodeList.getLength(); k++) {
+                            Node mensajeNode = (Node) mensajesNodeList.item(k);
+                            NodeList hijos = mensajeNode.getChildNodes();
+                            Mensaje mensaje = new Mensaje();
+                            for (int l = 0; l < hijos.getLength(); l++) {
+                                switch (hijos.item(l).getNodeName()) {
+                                    case "identificador":
+                                        mensaje.setIdentificador(hijos.item(l).getTextContent());
+                                        break;
+                                    case "mensaje":
+                                        mensaje.setMensaje(hijos.item(l).getTextContent());
+                                        break;
+                                    case "tipo":
+                                        mensaje.setTipo(hijos.item(l).getTextContent());
+                                        break;
+                                    case "informacionAdicional":
+                                        mensaje.setInformacionAdicional(hijos.item(l).getTextContent());
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            }
+                            mensajes.getMensaje().add(mensaje);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        respuestaComprobante.setAutorizaciones(autorizaciones);
+        respuestaComprobante.setClaveAccesoConsultada(claveAccesoLoteConsultadaNode.getValue());
+        respuestaComprobante.setNumeroComprobantes(numeroComprobantesLoteNode.getValue());
+        return respuestaComprobante;
+    }
+}

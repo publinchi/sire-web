@@ -11,8 +11,7 @@ import javax.ejb.Asynchronous;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
-import javax.enterprise.event.Observes;
-import javax.enterprise.event.TransactionPhase;
+import javax.ejb.Startup;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -25,6 +24,7 @@ import javax.mail.internet.MimeMessage;
  * @author publio
  */
 @Singleton
+@Startup
 public class MailService {
 
     @Resource(name = "mail/gmail")
@@ -32,17 +32,23 @@ public class MailService {
 
     @Asynchronous
     @Lock(LockType.READ)
-    public void sendMail(@Observes(during = TransactionPhase.AFTER_SUCCESS) MailEvent event) {
+    public void sendMail(MailEvent event) {
         try {
             Message message = new MimeMessage(mailSession);
 
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(event.getTo()));
             message.setSubject(event.getSubject());
-            message.setContent(event.getMessage(), "text/plain");
+            if (event.getMimeMultipart() == null) {
+                message.setContent(event.getMessage(), "text/plain");
+            } else {
+                message.setContent(event.getMimeMultipart());
+            }
 
             Transport.send(message);
+            System.out.println("E-Mail sent to " + event.getTo());
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
     }
+
 }
