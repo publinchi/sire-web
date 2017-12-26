@@ -1,0 +1,129 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.sire.sri.entities;
+
+import javax.xml.bind.annotation.XmlType;
+
+/**
+ *
+ * @author pestupinan
+ */
+@XmlType(propOrder = {"fechaEmision", "dirEstablecimiento", "obligadoContabilidad",
+    "tipoIdentificacionComprador", "razonSocialComprador", "identificacionComprador",
+    "totalSinImpuestos", "totalDescuento", "totalConImpuestos", "propina", "importeTotal",
+    "moneda"})
+public class InfoFactura {
+
+    private String fechaEmision;
+    private String dirEstablecimiento;
+    private String obligadoContabilidad;
+    private String tipoIdentificacionComprador;
+    private String razonSocialComprador;
+    private String identificacionComprador;
+    private String totalSinImpuestos;
+    private String totalDescuento;
+    private TotalConImpuestos totalConImpuestos;
+    private String propina;
+    private String importeTotal;
+    private String moneda;
+
+    public String getFechaEmision() {
+        return fechaEmision;
+    }
+
+    public void setFechaEmision(String fechaEmision) {
+        this.fechaEmision = fechaEmision;
+    }
+
+    public String getDirEstablecimiento() {
+        return dirEstablecimiento;
+    }
+
+    public void setDirEstablecimiento(String dirEstablecimiento) {
+        this.dirEstablecimiento = dirEstablecimiento;
+    }
+
+    public String getObligadoContabilidad() {
+        return obligadoContabilidad;
+    }
+
+    public void setObligadoContabilidad(String obligadoContabilidad) {
+        this.obligadoContabilidad = obligadoContabilidad;
+    }
+
+    public String getTipoIdentificacionComprador() {
+        return tipoIdentificacionComprador;
+    }
+
+    public void setTipoIdentificacionComprador(String tipoIdentificacionComprador) {
+        this.tipoIdentificacionComprador = tipoIdentificacionComprador;
+    }
+
+    public String getRazonSocialComprador() {
+        return razonSocialComprador;
+    }
+
+    public void setRazonSocialComprador(String razonSocialComprador) {
+        this.razonSocialComprador = razonSocialComprador;
+    }
+
+    public String getIdentificacionComprador() {
+        return identificacionComprador;
+    }
+
+    public void setIdentificacionComprador(String identificacionComprador) {
+        this.identificacionComprador = identificacionComprador;
+    }
+
+    public String getTotalSinImpuestos() {
+        return totalSinImpuestos;
+    }
+
+    public void setTotalSinImpuestos(String totalSinImpuestos) {
+        this.totalSinImpuestos = totalSinImpuestos;
+    }
+
+    public String getTotalDescuento() {
+        return totalDescuento;
+    }
+
+    public void setTotalDescuento(String totalDescuento) {
+        this.totalDescuento = totalDescuento;
+    }
+
+    public TotalConImpuestos getTotalConImpuestos() {
+        return totalConImpuestos;
+    }
+
+    public void setTotalConImpuestos(TotalConImpuestos totalConImpuestos) {
+        this.totalConImpuestos = totalConImpuestos;
+    }
+
+    public String getPropina() {
+        return propina;
+    }
+
+    public void setPropina(String propina) {
+        this.propina = propina;
+    }
+
+    public String getImporteTotal() {
+        return importeTotal;
+    }
+
+    public void setImporteTotal(String importeTotal) {
+        this.importeTotal = importeTotal;
+    }
+
+    public String getMoneda() {
+        return moneda;
+    }
+
+    public void setMoneda(String moneda) {
+        this.moneda = moneda;
+    }
+
+}

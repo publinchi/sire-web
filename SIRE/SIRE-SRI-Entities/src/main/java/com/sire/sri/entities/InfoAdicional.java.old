@@ -1,0 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.sire.sri.entities;
+
+import java.util.List;
+
+/**
+ *
+ * @author pestupinan
+ */
+public class InfoAdicional {
+
+    private List<CampoAdicional> campoAdicional;
+
+    public List<CampoAdicional> getCampoAdicional() {
+        return campoAdicional;
+    }
+
+    public void setCampoAdicional(List<CampoAdicional> campoAdicional) {
+        this.campoAdicional = campoAdicional;
+    }
+
+}
