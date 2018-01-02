@@ -17,6 +17,7 @@ import org.dom4j.CDATA;
 import org.dom4j.DocumentHelper;
 import java.io.Serializable;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.CallableStatement;
@@ -29,10 +30,11 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.batch.api.chunk.AbstractItemWriter;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
-import javax.ejb.EJB;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.naming.InitialContext;
@@ -77,6 +79,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private JobContext jobCtx;
     private String pathSignature;
     private String passSignature;
+    private String urlRecepcion;
     private String claveAccesoLote;
     private Connection connection;
 
@@ -85,116 +88,135 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         pathSignature = runtimeParams.getProperty("pathSignature");
         passSignature = runtimeParams.getProperty("passSignature");
+        urlRecepcion = runtimeParams.getProperty("urlRecepcion");
         getClaveAccesoLote("01");
     }
 
     @Override
-    public void writeItems(List<Object> items) throws Exception {
-        System.out.print("F1_C1_Writer1");
-        System.out.print("list in -> " + items.size());
+    public void writeItems(List<Object> items) {
+        try {
+            System.out.print("F1_C1_Writer1");
+            System.out.print("list in -> " + items.size());
 
-        Lote lote = new Lote();
-        lote.setClaveAcceso(claveAccesoLote);
-        for (Object item : items) {
-            Factura factura = (Factura) ((Map) item).get("factura");
-            GenericXMLSignature genericXMLSignature = XAdESBESSignature.firmar(xml2document(object2xml(factura)), pathSignature, passSignature);
-            String signedXml = genericXMLSignature.toSignedXml();
+            Lote lote = new Lote();
+            lote.setClaveAcceso(claveAccesoLote);
+            for (Object item : items) {
+                Factura factura = (Factura) ((Map) item).get("factura");
+                GenericXMLSignature genericXMLSignature = XAdESBESSignature.firmar(xml2document(object2xml(factura)), pathSignature, passSignature);
+                String signedXml = genericXMLSignature.toSignedXml();
 //            ComprobanteXml comprobanteXml = new ComprobanteXml();
 //            comprobanteXml.setFileXML(signedXml);
 //            comprobanteXml.setTipo("comprobante");
 //            comprobanteXml.setVersion("1.0.0");
-            lote.getComprobantes().getComprobante().add(appendCdata(signedXml));
-        }
-        lote.setRuc(lote.getClaveAcceso().substring(10, 23));
-        lote.setVersion("1.0.0");
+                lote.getComprobantes().getComprobante().add(appendCdata(signedXml));
+            }
+            lote.setRuc(lote.getClaveAcceso().substring(10, 23));
+            lote.setVersion("1.0.0");
 
-        String loteXml = object2xmlUnicode(lote);
+            String loteXml = object2xmlUnicode(lote);
 
-        System.out.println("loteXml: " + loteXml);
+            System.out.println("loteXml: " + loteXml);
 
-        Map mapCall = (Map) SoapUtil.call(
-                createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
-                new URL("https://cel.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline"),
-                null,
-                null);
-        SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
-        System.out.println("Soap Recepcion Response:");
-        System.out.println(SoapUtil.toString(soapMessage));
-        ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
+            Map mapCall = (Map) SoapUtil.call(
+                    createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
+                    new URL(urlRecepcion),
+                    null,
+                    null);
+            SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
+            System.out.println("Soap Recepcion Response:");
+            System.out.println(SoapUtil.toString(soapMessage));
+            ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
 
-        String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
+            String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
 
-        System.out.println("estadoLote -> " + estadoLote);
-        for (Object item : items) {
-            Factura factura = (Factura) ((Map) item).get("factura");
-            String secuencial = factura.getInfoTributaria().getEstab() + "-" + factura.getInfoTributaria().getPtoEmi() + "-" + factura.getInfoTributaria().getSecuencial();
-            boolean existsError = false;
-            String cabeceraSQL;
-            System.out.println("# Comprobantes devueltos por SRI: " + validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante().size());
-            for (recepcion.ws.sri.gob.ec.Comprobante c : validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante()) {
-                System.out.println("Clave acceso factura: " + factura.getInfoTributaria().getClaveAcceso());
-                System.out.println("Clave acceso comprobante: " + c.getClaveAcceso());
-                if (factura.getInfoTributaria().getClaveAcceso().equals(c.getClaveAcceso())) {
-                    existsError = true;
+            System.out.println("estadoLote -> " + estadoLote);
+            for (Object item : items) {
+                Factura factura = (Factura) ((Map) item).get("factura");
+                String secuencial = factura.getInfoTributaria().getEstab() + "-" + factura.getInfoTributaria().getPtoEmi() + "-" + factura.getInfoTributaria().getSecuencial();
+                boolean existsError = false;
+                String cabeceraSQL;
+                System.out.println("# Comprobantes devueltos por SRI: " + validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante().size());
+                for (recepcion.ws.sri.gob.ec.Comprobante c : validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante()) {
+                    System.out.println("Clave acceso factura: " + factura.getInfoTributaria().getClaveAcceso());
+                    System.out.println("Clave acceso comprobante: " + c.getClaveAcceso());
+                    if (factura.getInfoTributaria().getClaveAcceso().equals(c.getClaveAcceso())) {
+                        try {
+                            existsError = true;
 
-                    c.getMensajes().getMensaje().stream().map((mensaje) -> {
-                        System.out.println("Identificador -> " + mensaje.getIdentificador());
-                        return mensaje;
-                    }).map((mensaje) -> {
-                        System.out.println("Tipo -> " + mensaje.getTipo());
-                        return mensaje;
-                    }).map((mensaje) -> {
-                        System.out.println("Mensaje -> " + mensaje.getMensaje());
-                        return mensaje;
-                    }).forEachOrdered((mensaje) -> {
-                        System.out.println("InformacionAdicional -> " + mensaje.getInformacionAdicional());
-                    });
-                    System.out.println("-------------------------------------------------------------");
+                            c.getMensajes().getMensaje().stream().map((mensaje) -> {
+                                System.out.println("Identificador -> " + mensaje.getIdentificador());
+                                return mensaje;
+                            }).map((mensaje) -> {
+                                System.out.println("Tipo -> " + mensaje.getTipo());
+                                return mensaje;
+                            }).map((mensaje) -> {
+                                System.out.println("Mensaje -> " + mensaje.getMensaje());
+                                return mensaje;
+                            }).forEachOrdered((mensaje) -> {
+                                System.out.println("InformacionAdicional -> " + mensaje.getInformacionAdicional());
+                            });
+                            System.out.println("-------------------------------------------------------------");
 
-                    String estado = "DEVUELTA";
-                    String claveAcceso = c.getClaveAcceso();
-                    String identificador = c.getMensajes().getMensaje().get(0).getIdentificador();
-                    String informacionAdicional = c.getMensajes().getMensaje().get(0).getInformacionAdicional();
-                    String mensaje = c.getMensajes().getMensaje().get(0).getMensaje();
-                    String tipo = c.getMensajes().getMensaje().get(0).getTipo();
+                            String estado = "DEVUELTA";
+                            String claveAcceso = c.getClaveAcceso();
+                            String identificador = c.getMensajes().getMensaje().get(0).getIdentificador();
+                            String informacionAdicional = c.getMensajes().getMensaje().get(0).getInformacionAdicional();
+                            String mensaje = c.getMensajes().getMensaje().get(0).getMensaje();
+                            String tipo = c.getMensajes().getMensaje().get(0).getTipo();
 
-                    System.out.print("Secuencial: " + secuencial
-                            + ", Estado: " + estado
-                            + ", ClaveAcceso: " + claveAcceso
-                            + ", Identificador: " + identificador
-                            + ", InformacionAdicional: " + informacionAdicional
-                            + ", Mensaje: " + mensaje
-                            + ", Tipo: " + tipo
-                    );
+                            System.out.print("Secuencial: " + secuencial
+                                    + ", Estado: " + estado
+                                    + ", ClaveAcceso: " + claveAcceso
+                                    + ", Identificador: " + identificador
+                                    + ", InformacionAdicional: " + informacionAdicional
+                                    + ", Mensaje: " + mensaje
+                                    + ", Tipo: " + tipo
+                            );
 
-                    String motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
+                            String motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
 
-                    cabeceraSQL = "UPDATE FAC_FACTURA_C SET "
-                            + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
-                            + motivo
-                            + " WHERE SECUENCIAL = '" + secuencial + "'";
-                    System.out.println("update -> " + cabeceraSQL);
-                    PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL);
-                    preparedStatement.executeQuery();
+                            cabeceraSQL = "UPDATE FAC_FACTURA_C SET "
+                                    + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
+                                    + motivo
+                                    + " WHERE SECUENCIAL = '" + secuencial + "'";
+                            System.out.println("update -> " + cabeceraSQL);
+                            try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                                preparedStatement.executeQuery();
+                                preparedStatement.close();
+                            }
+                        } catch (SQLException | NamingException ex) {
+                            Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+                if (existsError == false) {
+                    try {
+                        cabeceraSQL = "UPDATE FAC_FACTURA_C SET "
+                                + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
+                                + " WHERE SECUENCIAL = '" + secuencial + "'";
+                        System.out.println("update -> " + cabeceraSQL);
+                        try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                            preparedStatement.executeQuery();
+                            preparedStatement.close();
+                        }
+                    } catch (SQLException | NamingException ex) {
+                        Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
             }
-            if (existsError == false) {
-                cabeceraSQL = "UPDATE FAC_FACTURA_C SET "
-                        + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
-                        + " WHERE SECUENCIAL = '" + secuencial + "'";
-                System.out.println("update -> " + cabeceraSQL);
-                PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL);
+            String secuencial = claveAccesoLote.substring(30, 39);
+
+            String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+
+            String insertSQL = "INSERT INTO CEL_LOTE_AUTORIZADO "
+                    + "VALUES ('01'," + secuencial + ",'01','" + claveAccesoLote + "','" + estadoLote + "','" + fechaEstado + "')";
+            try (PreparedStatement preparedStatement = getConnection().prepareStatement(insertSQL)) {
                 preparedStatement.executeQuery();
+                preparedStatement.close();
             }
+        } catch (SQLException | NamingException | SOAPException | XPathExpressionException | MalformedURLException | JAXBException ex) {
+            Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
         }
-        String secuencial = claveAccesoLote.substring(30, 39);
-
-        String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
-
-        String insertSQL = "INSERT INTO CEL_LOTE_AUTORIZADO "
-                + "VALUES ('01'," + secuencial + ",'01','" + claveAccesoLote + "','" + estadoLote + "','" + fechaEstado + "')";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(insertSQL);
-        preparedStatement.executeQuery();
     }
 
     private String object2xml(Object item) throws JAXBException {
