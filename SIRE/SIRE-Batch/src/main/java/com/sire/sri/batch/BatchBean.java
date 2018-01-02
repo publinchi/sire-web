@@ -5,6 +5,9 @@
  */
 package com.sire.sri.batch;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -29,11 +32,13 @@ public class BatchBean {
 
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionJob()
-            throws InterruptedException, NamingException {
+            throws InterruptedException, NamingException, IOException {
         System.out.println("-> sriRecepcionJob");
+        String home = System.getProperty("user.home");
         Properties runtimeParameters = new Properties();
-        runtimeParameters.setProperty("pathSignature", "/opt/payara41/SIRE/keystore.p12");
-        runtimeParameters.setProperty("passSignature", "Charlie2011");
+        runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
+//        runtimeParameters.setProperty("pathSignature", "/opt/payara41/SIRE/keystore.p12");
+//        runtimeParameters.setProperty("passSignature", "Charlie2011");
 
         JobOperator jobOperator = BatchRuntime.getJobOperator();
         Long executionId = Long.valueOf(jobOperator.start("SriRecepcionJob", runtimeParameters));
@@ -54,11 +59,14 @@ public class BatchBean {
 
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionJob()
-            throws InterruptedException, NamingException {
+            throws InterruptedException, NamingException, FileNotFoundException, IOException {
         System.out.println("-> sriAutorizacionJob");
+        String home = System.getProperty("user.home");
+        Properties runtimeParameters = new Properties();
+        runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
 
         JobOperator jobOperator = BatchRuntime.getJobOperator();
-        Long executionId = Long.valueOf(jobOperator.start("SriAutorizacionJob", null));
+        Long executionId = Long.valueOf(jobOperator.start("SriAutorizacionJob", runtimeParameters));
         JobExecution jobExecution = jobOperator.getJobExecution(executionId.longValue());
 
         jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
