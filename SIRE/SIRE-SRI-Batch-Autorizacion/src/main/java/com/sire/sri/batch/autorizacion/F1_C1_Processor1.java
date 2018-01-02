@@ -13,7 +13,11 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import javax.batch.api.chunk.ItemProcessor;
+import javax.batch.runtime.BatchRuntime;
+import javax.batch.runtime.context.JobContext;
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -36,15 +40,20 @@ import org.w3c.dom.NodeList;
 @Named
 public class F1_C1_Processor1 implements ItemProcessor {
 
+    @Inject
+    private JobContext jobCtx;
+
     @Override
     public Object processItem(Object item) throws Exception {
+        Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
+        String urlAutorizacion = runtimeParams.getProperty("urlAutorizacion");
         System.out.println("F1_C1_Processor1");
         String claveAcceso = ((LoteXml) item).getClaveAcceso();
         System.out.println("object in -> " + claveAcceso);
 
         Map mapCall = (Map) SoapUtil.call(
                 createSOAPMessage(claveAcceso),
-                new URL("https://cel.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline"),
+                new URL(urlAutorizacion),
                 null,
                 null);
         SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
