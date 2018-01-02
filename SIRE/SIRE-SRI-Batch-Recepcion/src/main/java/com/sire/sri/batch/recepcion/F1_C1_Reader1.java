@@ -62,10 +62,10 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
                 + "TOTAL_SIN_IMPUESTOS, TOTAL_DESCUENTOS, PROPINA, IMPORTE_TOTAL, "
                 + "CLAVE_ACCESO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, BASE_IMPONIBLE, "
-                + "VALOR, MONEDA FROM SIREPOLLO.V_FACTURA_ELECTRONICA_C WHERE "
+                + "VALOR, MONEDA FROM V_FACTURA_ELECTRONICA_C WHERE "
                 + "ESTADO_SRI='GRABADA' AND ROWNUM <= 40 ORDER BY FECHA_FACTURA";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL);
-        ResultSet rs = preparedStatement.executeQuery();
+        PreparedStatement preparedStatemenT = getConnection().prepareStatement(cabeceraSQL);
+        ResultSet rs = preparedStatemenT.executeQuery();
         while (rs.next()) {
             Factura factura = new Factura();
 
@@ -141,9 +141,9 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                     + "COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, PRECIO_UNITARIO, "
                     + "DESCUENTO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, TARIFA, "
                     + "BASE_IMPONIBLE, VALOR, PRECIO_TOTAL_SIN_IMPUESTOS "
-                    + "FROM SIREPOLLO.V_FACTURA_ELECTRONICA_D WHERE "
+                    + "FROM V_FACTURA_ELECTRONICA_D WHERE "
                     + "NUM_DOCUMENTO_INTERNO = " + rs.getString("NUM_FACTURA_INTERNO");
-            preparedStatement = getConnection().prepareStatement(detalleSQL);
+            PreparedStatement preparedStatement = getConnection().prepareStatement(detalleSQL);
             ResultSet rsd = preparedStatement.executeQuery();
             while (rsd.next()) {
                 Detalle detalle = new Detalle();
@@ -168,13 +168,16 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 //                detallesList.add(detalle);
                 detalles.getDetalle().add(detalle);
             }
-
+            rsd.close();
+            preparedStatement.close();
 //            detalles.setDetalle(detallesList);
             factura.setDetalles(detalles);
 
 //            System.out.println("factura: " + factura);
             facturas.add(factura);
         }
+        rs.close();
+        preparedStatemenT.close();
         iterator = facturas.iterator();
     }
 
