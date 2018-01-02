@@ -16,7 +16,7 @@ public class EmisorSQL {
     private String url;
 
     public EmisorSQL() {
-        this.url = ("jdbc:hsqldb:file:" + Constantes.obtenerUrlBD() + "/" + "emisor");
+        this.url = ("jdbc:hsqldb:file:" + Constantes.obtenerUrlBD() + "/" + "emisor;readonly=true");
     }
 
     private void crear(Emisor em)

@@ -25,7 +25,7 @@ public class ImpuestoValorSQL {
 
     private String getStringURL() {
         if (Constantes.obtenerUrlBD() != null) {
-            this.url = ("jdbc:hsqldb:file:" + Constantes.obtenerUrlBD() + "/" + "producto");
+            this.url = ("jdbc:hsqldb:file:" + Constantes.obtenerUrlBD() + "/" + "producto;readonly=true");
         }
         return null;
     }
