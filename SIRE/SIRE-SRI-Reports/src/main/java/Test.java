@@ -4,6 +4,7 @@ import ec.gob.sri.comprobantes.modelo.factura.Factura;
 import ec.gob.sri.comprobantes.modelo.factura.Impuesto;
 import ec.gob.sri.comprobantes.modelo.reportes.FacturaReporte;
 import ec.gob.sri.comprobantes.util.reportes.ReporteUtil;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
@@ -18,7 +19,7 @@ import java.sql.SQLException;
  */
 public class Test {
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
         ReporteUtil reporteUtil = new ReporteUtil();
         String urlReporte = "/opt/payara41/SIRE/reportes/factura.jasper";
 
