@@ -45,6 +45,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JFrame;
@@ -71,7 +72,7 @@ public class ReporteUtil {
     }
 
     public byte[] generarReporte(String urlReporte, FacturaReporte fact, String numAut, String fechaAut)
-            throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
@@ -104,7 +105,7 @@ public class ReporteUtil {
     }
 
     public void generarReporte(String urlReporte, NotaDebitoReporte rep, String numAut, String fechaAut)
-            throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
         try {
             JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getDetallesAdiciones());
@@ -126,7 +127,7 @@ public class ReporteUtil {
     }
 
     public void generarReporte(String urlReporte, NotaCreditoReporte rep, String numAut, String fechaAut)
-            throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
         try {
             JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getDetallesAdiciones());
@@ -148,7 +149,7 @@ public class ReporteUtil {
     }
 
     public void generarReporte(String urlReporte, GuiaRemisionReporte rep, String numAut, String fechaAut, GuiaRemision guiaRemision)
-            throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
         try {
             JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getGuiaRemisionList());
@@ -170,7 +171,7 @@ public class ReporteUtil {
     }
 
     public void generarReporte(String urlReporte, ComprobanteRetencionReporte rep, String numAut, String fechaAut)
-            throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
         try {
             JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getDetallesAdiciones());
@@ -197,7 +198,7 @@ public class ReporteUtil {
     }
 
     private Map<String, Object> obtenerParametrosInfoTriobutaria(InfoTributaria infoTributaria, String numAut, String fechaAut)
-            throws SQLException, ClassNotFoundException {
+            throws SQLException, ClassNotFoundException, FileNotFoundException, IOException {
         Map<String, Object> param = new HashMap();
         param.put("RUC", infoTributaria.getRuc());
         param.put("CLAVE_ACC", infoTributaria.getClaveAcceso());
@@ -217,9 +218,13 @@ public class ReporteUtil {
                 Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex1);
             }
         }
-        param.put("SUBREPORT_DIR", "/opt/payara41/SIRE/reportes/");
-        param.put("SUBREPORT_PAGOS", "/opt/payara41/SIRE/reportes/");
-        param.put("SUBREPORT_TOTALES", "/opt/payara41/SIRE/reportes/");
+        String home = System.getProperty("user.home");
+        Properties runtimeParameters = new Properties();
+        runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
+        String pathReports = runtimeParameters.getProperty("pathReports");
+        param.put("SUBREPORT_DIR", pathReports);
+        param.put("SUBREPORT_PAGOS", pathReports);
+        param.put("SUBREPORT_TOTALES", pathReports);
         param.put("TIPO_EMISION", obtenerTipoEmision(infoTributaria));
         param.put("NUM_AUT", numAut);
         param.put("FECHA_AUT", fechaAut);
