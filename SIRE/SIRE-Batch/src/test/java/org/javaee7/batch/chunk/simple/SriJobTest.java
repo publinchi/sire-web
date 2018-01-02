@@ -50,11 +50,13 @@ public class SriJobTest {
      *
      * The +myJob.xml+ file is needed for running the batch definition.
      */
-    @Deployment
+    @Deployment(name = "SIRE-Batch")
     public static WebArchive createDeployment() {
-        WebArchive war = ShrinkWrap.create(WebArchive.class)
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "SIRE-Batch.war")
                 .addClass(BatchTestHelper.class)
                 .addPackage("com.sire.sri.batch.recepcion")
+                .addPackage("com.sire.service")
+                .addPackage("com.sire.event")
                 .addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"))
                 .addAsResource(new File("/home/pestupinan/NetBeansProjects/SIRE/sire-web/SIRE/SIRE-SRI-Batch-Recepcion/src/main/resources/META-INF/batch-jobs/SriRecepcionJob.xml"))
                 .addAsResource(new File("/home/pestupinan/NetBeansProjects/SIRE/sire-web/SIRE/SIRE-SRI-Batch-Autorizacion/src/main/resources/META-INF/batch-jobs/SriAutorizacionJob.xml"))
