@@ -57,8 +57,8 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         String loteSQL = "SELECT COD_EMPRESA, SECUENCIAL, COD_DOCUMENTO, "
                 + "CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO "
                 + "FROM CEL_LOTE_AUTORIZADO WHERE ESTADO_SRI = 'RECIBIDA'";
-        PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL);
-        ResultSet loteRs = preparedStatement.executeQuery();
+        PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL);
+        ResultSet loteRs = preparedStatemenT.executeQuery();
         while (loteRs.next()) {
             List facturas = new ArrayList();
             LoteXml lote = new LoteXml();
@@ -72,32 +72,27 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                     + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
                     + "TOTAL_SIN_IMPUESTOS, TOTAL_DESCUENTOS, PROPINA, IMPORTE_TOTAL, "
                     + "CLAVE_ACCESO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, BASE_IMPONIBLE, "
-                    + "VALOR, MONEDA FROM SIREPOLLO.V_FACTURA_ELECTRONICA_C WHERE "
+                    + "VALOR, MONEDA FROM V_FACTURA_ELECTRONICA_C WHERE "
                     + "CLAVE_ACCESO_LOTE = '" + lote.getClaveAcceso() + "' AND "
                     + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') "
                     + "AND ROWNUM <= 40 ORDER BY FECHA_FACTURA";
-            preparedStatement = getConnection().prepareStatement(facturaSQL);
-            ResultSet rs = preparedStatement.executeQuery();
+            PreparedStatement facturaPreparedStatement = getConnection().prepareStatement(facturaSQL);
+            ResultSet rs = facturaPreparedStatement.executeQuery();
             while (rs.next()) {
                 String numFacturaInterno = rs.getString("NUM_FACTURA_INTERNO");
 
                 Factura factura = new Factura();
 
                 InfoAdicional infoAdicional = new InfoAdicional();
-//                List<CampoAdicional> camposAdicionales = new ArrayList<>();
                 CampoAdicional direccion = new CampoAdicional();
                 direccion.setValue(rs.getString("DIRECCION_COMPRADOR"));
                 direccion.setNombre("Direccion");
-//                camposAdicionales.add(direccion);
                 CampoAdicional telefono = new CampoAdicional();
                 telefono.setValue(rs.getString("TELEFONO_COMPRADOR"));
                 telefono.setNombre("Telefono");
-//                camposAdicionales.add(telefono);
                 CampoAdicional email = new CampoAdicional();
                 email.setValue(rs.getString("EMAIL_COMPRADOR"));
                 email.setNombre("Email");
-//                camposAdicionales.add(email);
-//                infoAdicional.setCampoAdicional(camposAdicionales);
                 infoAdicional.getCampoAdicional().add(direccion);
                 infoAdicional.getCampoAdicional().add(telefono);
                 infoAdicional.getCampoAdicional().add(email);
@@ -110,25 +105,41 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 infoFactura.setFechaEmision(newDate);
                 infoFactura.setIdentificacionComprador(rs.getString("IDENTIFICACION_COMPRADOR"));
-                infoFactura.setImporteTotal(BigDecimal.valueOf(Double.valueOf(rs.getString("IMPORTE_TOTAL"))));
+                infoFactura.setImporteTotal(rs.getBigDecimal("IMPORTE_TOTAL"));
                 infoFactura.setMoneda(rs.getString("MONEDA"));
                 infoFactura.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
-                infoFactura.setPropina(BigDecimal.valueOf(Double.valueOf(rs.getString("PROPINA"))));
+                infoFactura.setPropina(rs.getBigDecimal("PROPINA"));
                 infoFactura.setRazonSocialComprador(rs.getString("RAZON_SOCIAL_COMPRADOR"));
                 infoFactura.setTipoIdentificacionComprador(rs.getString("TIPO_IDENTIFICACION_COMPRADOR"));
                 TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
-//                List<TotalImpuesto> totalImpuestos = new ArrayList<>();
                 TotalImpuesto totalImpuesto = new TotalImpuesto();
-                totalImpuesto.setBaseImponible(BigDecimal.valueOf(Double.valueOf(rs.getString("BASE_IMPONIBLE"))));
+                totalImpuesto.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE"));
                 totalImpuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
                 totalImpuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
-                totalImpuesto.setValor(BigDecimal.valueOf(Double.valueOf(rs.getString("VALOR"))));
-//                totalImpuestos.add(totalImpuesto);
+                totalImpuesto.setValor(rs.getBigDecimal("VALOR"));
                 totalConImpuestos.getTotalImpuesto().add(totalImpuesto);
-//                totalConImpuestos.setTotalImpuesto(totalImpuestos);
                 infoFactura.setTotalConImpuestos(totalConImpuestos);
-                infoFactura.setTotalDescuento(BigDecimal.valueOf(Double.valueOf(rs.getString("TOTAL_DESCUENTOS"))));
-                infoFactura.setTotalSinImpuestos(BigDecimal.valueOf(Double.valueOf(rs.getString("TOTAL_SIN_IMPUESTOS"))));
+                infoFactura.setTotalDescuento(rs.getBigDecimal("TOTAL_DESCUENTOS"));
+                infoFactura.setTotalSinImpuestos(rs.getBigDecimal("TOTAL_SIN_IMPUESTOS"));
+
+                String pagosSQL = "SELECT CODIGO, FORMA_PAGO, PLAZO, TIEMPO, "
+                        + "VALOR_FORMA_PAGO FROM V_FACTURA_ELECTRONICA_PAGO WHERE "
+                        + "NUM_FACTURA = " + rs.getString("NUM_FACTURA_INTERNO");
+                PreparedStatement pagosPreparedStatement = getConnection().prepareStatement(pagosSQL);
+                ResultSet prs = pagosPreparedStatement.executeQuery();
+                InfoFactura.Pago pagos = new InfoFactura.Pago();
+                while (prs.next()) {
+                    InfoFactura.Pago.DetallePago detallePago = new InfoFactura.Pago.DetallePago();
+                    detallePago.setFormaPago(prs.getString("CODIGO"));
+                    detallePago.setPlazo(prs.getString("PLAZO"));
+                    detallePago.setTotal(prs.getBigDecimal("VALOR_FORMA_PAGO"));
+                    detallePago.setUnidadTiempo(prs.getString("TIEMPO"));
+                    pagos.getPagos().add(detallePago);
+                }
+                infoFactura.setPagos(pagos);
+                prs.close();
+                pagosPreparedStatement.close();
+
                 factura.setInfoFactura(infoFactura);
 
                 InfoTributaria infoTributaria = new InfoTributaria();
@@ -149,16 +160,15 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 factura.setVersion("1.1.0");
 
                 Detalles detalles = new Detalles();
-//                List<Detalle> detallesList = new ArrayList<>();
 
                 String detalleSQL = "SELECT COD_EMPRESA, COD_DOCUMENTO, NUM_DOCUMENTO_INTERNO, "
                         + "COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, PRECIO_UNITARIO, "
                         + "DESCUENTO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, TARIFA, "
                         + "BASE_IMPONIBLE, VALOR, PRECIO_TOTAL_SIN_IMPUESTOS "
-                        + "FROM SIREPOLLO.V_FACTURA_ELECTRONICA_D WHERE "
+                        + "FROM V_FACTURA_ELECTRONICA_D WHERE "
                         + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
-                preparedStatement = getConnection().prepareStatement(detalleSQL);
-                ResultSet rsd = preparedStatement.executeQuery();
+                PreparedStatement datallePreparedStatement = getConnection().prepareStatement(detalleSQL);
+                ResultSet rsd = datallePreparedStatement.executeQuery();
                 while (rsd.next()) {
                     Detalle detalle = new Detalle();
                     detalle.setCantidad(BigDecimal.valueOf(Double.valueOf(rsd.getString("CANTIDAD"))));
@@ -166,34 +176,34 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                     detalle.setDescripcion(rsd.getString("NOMBRE_ARTICULO"));
                     detalle.setDescuento(BigDecimal.valueOf(Double.valueOf(rsd.getString("DESCUENTO"))));
                     Impuestos impuestos = new Impuestos();
-//                    List<Impuesto> impuestosList = new ArrayList<>();
                     Impuesto impuesto = new Impuesto();
                     impuesto.setBaseImponible(BigDecimal.valueOf(Double.valueOf(rsd.getString("BASE_IMPONIBLE"))));
                     impuesto.setCodigo(rsd.getString("CODIGO_IMPUESTO"));
                     impuesto.setCodigoPorcentaje(rsd.getString("CODIGO_PORCENTAJE"));
                     impuesto.setTarifa(BigDecimal.valueOf(Double.valueOf(rsd.getString("TARIFA"))));
                     impuesto.setValor(BigDecimal.valueOf(Double.valueOf(rsd.getString("VALOR"))));
-//                    impuestosList.add(impuesto);
                     impuestos.getImpuesto().add(impuesto);
-//                    impuestos.setImpuesto(impuestosList);
                     detalle.setImpuestos(impuestos);
                     detalle.setPrecioTotalSinImpuesto(BigDecimal.valueOf(Double.valueOf(rsd.getString("PRECIO_TOTAL_SIN_IMPUESTOS"))));
                     detalle.setPrecioUnitario(BigDecimal.valueOf(Double.valueOf(rsd.getString("PRECIO_UNITARIO"))));
-//                    detallesList.add(detalle);
                     detalles.getDetalle().add(detalle);
                 }
-
-//                detalles.setDetalle(detallesList);
                 factura.setDetalles(detalles);
 
 //                System.out.println("factura: " + factura);
                 facturas.add(factura);
+                rsd.close();
+                datallePreparedStatement.close();
             }
             lote.setFacturas(facturas);
 //            System.out.println("lote: " + lote.getClaveAcceso() + " #facturas: " + facturas.size());
             lotes.add(lote);
+            rs.close();
+            facturaPreparedStatement.close();
         }
         iterator = lotes.iterator();
+        loteRs.close();
+        preparedStatemenT.close();
     }
 
     private Connection getConnection() throws SQLException, NamingException {
