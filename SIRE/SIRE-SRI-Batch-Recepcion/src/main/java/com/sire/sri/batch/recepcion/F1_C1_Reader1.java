@@ -54,7 +54,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     public void open(Serializable checkpoint) throws Exception {
         facturas = new ArrayList();
 
-        String cabeceraSQL = "SELECT COD_EMPRESA, RUC_EMPRESA, RAZON_SOCIAL_EMPRESA, "
+        String facturaSQL = "SELECT COD_EMPRESA, RUC_EMPRESA, RAZON_SOCIAL_EMPRESA, "
                 + "NOMBRE_COMERCIAL, COD_DOCUMENTO, NUM_FACTURA_INTERNO, ESTABLECIMIENTO, "
                 + "PUNTO_EMISION, SECUENCIAL, DIRECCION_MATRIZ, DIRECCION_ESTABLECIMIENTO, "
                 + "CONTRIBUYENTE_ESPECIAL, LLEVA_CONTABILIDAD, RAZON_SOCIAL_COMPRADOR, "
@@ -62,34 +62,34 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
                 + "TOTAL_SIN_IMPUESTOS, TOTAL_DESCUENTOS, PROPINA, IMPORTE_TOTAL, "
                 + "CLAVE_ACCESO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, BASE_IMPONIBLE, "
-                + "VALOR, MONEDA FROM V_FACTURA_ELECTRONICA_C WHERE "
-                + "ESTADO_SRI='GRABADA' AND ROWNUM <= 40 ORDER BY FECHA_FACTURA";
-        PreparedStatement preparedStatemenT = getConnection().prepareStatement(cabeceraSQL);
+                + "VALOR, MONEDA, OBSERVACION FROM V_FACTURA_ELECTRONICA_C WHERE "
+                + "ESTADO_SRI='GRABADA' AND ROWNUM <= 20 ORDER BY FECHA_FACTURA";
+        PreparedStatement preparedStatemenT = getConnection().prepareStatement(facturaSQL);
         ResultSet rs = preparedStatemenT.executeQuery();
         while (rs.next()) {
             Factura factura = new Factura();
 
             InfoAdicional infoAdicional = new InfoAdicional();
-//            List<CampoAdicional> camposAdicionales = new ArrayList<>();
             CampoAdicional direccion = new CampoAdicional();
             direccion.setValue(rs.getString("DIRECCION_COMPRADOR"));
             direccion.setNombre("Direccion");
-//            camposAdicionales.add(direccion);
             CampoAdicional telefono = new CampoAdicional();
             telefono.setValue(rs.getString("TELEFONO_COMPRADOR"));
             telefono.setNombre("Telefono");
-//            camposAdicionales.add(telefono);
             CampoAdicional email = new CampoAdicional();
             email.setValue(rs.getString("EMAIL_COMPRADOR"));
             email.setNombre("Email");
-//            camposAdicionales.add(email);
-//            infoAdicional.setCampoAdicional(camposAdicionales);
+            CampoAdicional observacion = new CampoAdicional();
+            observacion.setValue(rs.getString("OBSERVACION"));
+            observacion.setNombre("Observacion");
             infoAdicional.getCampoAdicional().add(direccion);
             infoAdicional.getCampoAdicional().add(telefono);
             infoAdicional.getCampoAdicional().add(email);
+            infoAdicional.getCampoAdicional().add(observacion);
             factura.setInfoAdicional(infoAdicional);
 
             InfoFactura infoFactura = new InfoFactura();
+            infoFactura.setDireccionComprador(rs.getString("DIRECCION_COMPRADOR"));
             infoFactura.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
             String oldDate = rs.getString("FECHA_FACTURA");
             LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
@@ -103,18 +103,34 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             infoFactura.setRazonSocialComprador(rs.getString("RAZON_SOCIAL_COMPRADOR"));
             infoFactura.setTipoIdentificacionComprador(rs.getString("TIPO_IDENTIFICACION_COMPRADOR"));
             TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
-//            List<TotalImpuesto> totalImpuestos = new ArrayList<>();
             TotalImpuesto totalImpuesto = new TotalImpuesto();
             totalImpuesto.setBaseImponible(BigDecimal.valueOf(Double.valueOf(rs.getString("BASE_IMPONIBLE"))));
             totalImpuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
             totalImpuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
             totalImpuesto.setValor(BigDecimal.valueOf(Double.valueOf(rs.getString("VALOR"))));
-//            totalImpuestos.add(totalImpuesto);
             totalConImpuestos.getTotalImpuesto().add(totalImpuesto);
-//            totalConImpuestos.setTotalImpuesto(totalImpuestos);
             infoFactura.setTotalConImpuestos(totalConImpuestos);
             infoFactura.setTotalDescuento(BigDecimal.valueOf(Double.valueOf(rs.getString("TOTAL_DESCUENTOS"))));
             infoFactura.setTotalSinImpuestos(BigDecimal.valueOf(Double.valueOf(rs.getString("TOTAL_SIN_IMPUESTOS"))));
+
+            String pagosSQL = "SELECT CODIGO, FORMA_PAGO, PLAZO, TIEMPO, "
+                    + "VALOR_FORMA_PAGO FROM V_FACTURA_ELECTRONICA_PAGO WHERE "
+                    + "NUM_FACTURA = " + rs.getString("NUM_FACTURA_INTERNO");
+            PreparedStatement pagosPreparedStatement = getConnection().prepareStatement(pagosSQL);
+            ResultSet prs = pagosPreparedStatement.executeQuery();
+            InfoFactura.Pago pagos = new InfoFactura.Pago();
+            while (prs.next()) {
+                InfoFactura.Pago.DetallePago detallePago = new InfoFactura.Pago.DetallePago();
+                detallePago.setFormaPago(prs.getString("CODIGO"));
+                detallePago.setPlazo(prs.getString("PLAZO"));
+                detallePago.setTotal(prs.getBigDecimal("VALOR_FORMA_PAGO"));
+                detallePago.setUnidadTiempo(prs.getString("TIEMPO"));
+                pagos.getPagos().add(detallePago);
+            }
+            infoFactura.setPagos(pagos);
+            prs.close();
+            pagosPreparedStatement.close();
+
             factura.setInfoFactura(infoFactura);
 
             InfoTributaria infoTributaria = new InfoTributaria();
@@ -135,7 +151,6 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             factura.setVersion("1.1.0");
 
             Detalles detalles = new Detalles();
-//            List<Detalle> detallesList = new ArrayList<>();
 
             String detalleSQL = "SELECT COD_EMPRESA, COD_DOCUMENTO, NUM_DOCUMENTO_INTERNO, "
                     + "COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, PRECIO_UNITARIO, "
@@ -152,33 +167,28 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 detalle.setDescripcion(rsd.getString("NOMBRE_ARTICULO"));
                 detalle.setDescuento(BigDecimal.valueOf(Double.valueOf(rsd.getString("DESCUENTO"))));
                 Impuestos impuestos = new Impuestos();
-//                List<Impuesto> impuestosList = new ArrayList<>();
                 Impuesto impuesto = new Impuesto();
                 impuesto.setBaseImponible(BigDecimal.valueOf(Double.valueOf(rsd.getString("BASE_IMPONIBLE"))));
                 impuesto.setCodigo(rsd.getString("CODIGO_IMPUESTO"));
                 impuesto.setCodigoPorcentaje(rsd.getString("CODIGO_PORCENTAJE"));
                 impuesto.setTarifa(BigDecimal.valueOf(Double.valueOf(rsd.getString("TARIFA"))));
                 impuesto.setValor(BigDecimal.valueOf(Double.valueOf(rsd.getString("VALOR"))));
-//                impuestosList.add(impuesto);
                 impuestos.getImpuesto().add(impuesto);
-//                impuestos.setImpuesto(impuestosList);
                 detalle.setImpuestos(impuestos);
                 detalle.setPrecioTotalSinImpuesto(BigDecimal.valueOf(Double.valueOf(rsd.getString("PRECIO_TOTAL_SIN_IMPUESTOS"))));
                 detalle.setPrecioUnitario(BigDecimal.valueOf(Double.valueOf(rsd.getString("PRECIO_UNITARIO"))));
-//                detallesList.add(detalle);
                 detalles.getDetalle().add(detalle);
             }
             rsd.close();
             preparedStatement.close();
-//            detalles.setDetalle(detallesList);
             factura.setDetalles(detalles);
 
 //            System.out.println("factura: " + factura);
             facturas.add(factura);
         }
+        iterator = facturas.iterator();
         rs.close();
         preparedStatemenT.close();
-        iterator = facturas.iterator();
     }
 
     private Connection getConnection() throws SQLException, NamingException {
