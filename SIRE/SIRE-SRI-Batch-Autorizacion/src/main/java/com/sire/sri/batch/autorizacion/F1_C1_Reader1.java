@@ -72,10 +72,10 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                     + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
                     + "TOTAL_SIN_IMPUESTOS, TOTAL_DESCUENTOS, PROPINA, IMPORTE_TOTAL, "
                     + "CLAVE_ACCESO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, BASE_IMPONIBLE, "
-                    + "VALOR, MONEDA FROM V_FACTURA_ELECTRONICA_C WHERE "
+                    + "VALOR, MONEDA, OBSERVACION FROM V_FACTURA_ELECTRONICA_C WHERE "
                     + "CLAVE_ACCESO_LOTE = '" + lote.getClaveAcceso() + "' AND "
                     + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') "
-                    + "AND ROWNUM <= 40 ORDER BY FECHA_FACTURA";
+                    + "AND ROWNUM <= 20 ORDER BY FECHA_FACTURA";
             PreparedStatement facturaPreparedStatement = getConnection().prepareStatement(facturaSQL);
             ResultSet rs = facturaPreparedStatement.executeQuery();
             while (rs.next()) {
@@ -93,12 +93,17 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 CampoAdicional email = new CampoAdicional();
                 email.setValue(rs.getString("EMAIL_COMPRADOR"));
                 email.setNombre("Email");
+                CampoAdicional observacion = new CampoAdicional();
+                observacion.setValue(rs.getString("OBSERVACION"));
+                observacion.setNombre("Observacion");
                 infoAdicional.getCampoAdicional().add(direccion);
                 infoAdicional.getCampoAdicional().add(telefono);
                 infoAdicional.getCampoAdicional().add(email);
+                infoAdicional.getCampoAdicional().add(observacion);
                 factura.setInfoAdicional(infoAdicional);
 
                 InfoFactura infoFactura = new InfoFactura();
+                infoFactura.setDireccionComprador(rs.getString("DIRECCION_COMPRADOR"));
                 infoFactura.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
                 String oldDate = rs.getString("FECHA_FACTURA");
                 LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
