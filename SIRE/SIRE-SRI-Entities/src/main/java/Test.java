@@ -1,26 +1,16 @@
+//
+//import ec.gob.sri.comprobantes.modelo.InfoTributaria;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.Detalles;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.Detalles.Detalle;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.Detalles.Detalle.Impuestos;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoAdicional;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoAdicional.CampoAdicional;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura.TotalConImpuestos;
+//import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura.TotalConImpuestos.TotalImpuesto;
+//import ec.gob.sri.comprobantes.modelo.factura.Impuesto;
 
-//import com.sire.sri.entities.Detalles;
-//import com.sire.sri.entities.CampoAdicional;
-//import com.sire.sri.entities.Detalle;
-//import com.sire.sri.entities.Factura;
-//import com.sire.sri.entities.Impuesto;
-//import com.sire.sri.entities.Impuestos;
-//import com.sire.sri.entities.InfoAdicional;
-//import com.sire.sri.entities.InfoFactura;
-//import com.sire.sri.entities.InfoTributaria;
-//import com.sire.sri.entities.TotalConImpuestos;
-//import com.sire.sri.entities.TotalImpuesto;
-import ec.gob.sri.comprobantes.modelo.InfoTributaria;
-import ec.gob.sri.comprobantes.modelo.factura.Factura;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.Detalles;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.Detalles.Detalle;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.Detalles.Detalle.Impuestos;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoAdicional;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoAdicional.CampoAdicional;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura.TotalConImpuestos;
-import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura.TotalConImpuestos.TotalImpuesto;
-import ec.gob.sri.comprobantes.modelo.factura.Impuesto;
 import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.util.logging.Level;
@@ -39,7 +29,7 @@ import javax.xml.bind.Marshaller;
  * @author pestupinan
  */
 public class Test {
-    
+    /*
     public static void main(String args[]) {
         try {
             Factura factura = new Factura();
@@ -58,7 +48,7 @@ public class Test {
             detalle.setPrecioUnitario(BigDecimal.valueOf(16.49));
             detalle.setPrecioTotalSinImpuesto(BigDecimal.valueOf(238.89));
             detalles.getDetalle().add(detalle);
-            
+
             Impuestos impuestos = new Impuestos();
 //            List<Impuesto> imps = new ArrayList<>();
             Impuesto impuesto = new Impuesto();
@@ -136,18 +126,19 @@ public class Test {
             infoTributaria.setRuc("1091724371001");
             infoTributaria.setSecuencial("000032382");
             infoTributaria.setTipoEmision("1");
-            
+
             factura.setInfoTributaria(infoTributaria);
-            
+
             JAXBContext jaxbContext = JAXBContext.newInstance(Factura.class);
             Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
             StringWriter sw = new StringWriter();
             jaxbMarshaller.marshal(factura, sw);
             String xmlString = sw.toString();
-            
+
             System.out.println(xmlString);
         } catch (JAXBException ex) {
             Logger.getLogger(Test.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+     */
 }
