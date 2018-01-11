@@ -1,13 +1,14 @@
 package com.sire.sri.batch.recepcion;
 
-import com.sire.service.DatasourceService;
+import com.sire.service.IDatasourceService;
 import com.sire.sri.batch.recepcion.util.JaxbCharacterEscapeHandler;
 import com.sire.signature.GenericXMLSignature;
 import com.sire.signature.XAdESBESSignature;
 import com.sire.soap.util.SoapUtil;
-import com.sire.sri.entities.Lote;
+import ec.gob.sri.comprobantes.modelo.Lote;
 import com.sun.xml.bind.marshaller.DataWriter;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
+import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -89,25 +90,23 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
         pathSignature = runtimeParams.getProperty("pathSignature");
         passSignature = runtimeParams.getProperty("passSignature");
         urlRecepcion = runtimeParams.getProperty("urlRecepcion");
-        getClaveAccesoLote("01");
     }
 
     @Override
     public void writeItems(List<Object> items) {
         try {
-            System.out.print("F1_C1_Writer1");
-            System.out.print("list in -> " + items.size());
-
             Lote lote = new Lote();
-            lote.setClaveAcceso(claveAccesoLote);
             for (Object item : items) {
-                Factura factura = (Factura) ((Map) item).get("factura");
-                GenericXMLSignature genericXMLSignature = XAdESBESSignature.firmar(xml2document(object2xml(factura)), pathSignature, passSignature);
+                if (claveAccesoLote == null) {
+                    if (((Map) item).get("comprobante") instanceof Factura) {
+                        getClaveAccesoLote("01");
+                    } else if (((Map) item).get("comprobante") instanceof ComprobanteRetencion) {
+                        getClaveAccesoLote("07");
+                    }
+                    lote.setClaveAcceso(claveAccesoLote);
+                }
+                GenericXMLSignature genericXMLSignature = XAdESBESSignature.firmar(xml2document(object2xml(((Map) item).get("comprobante"))), pathSignature, passSignature);
                 String signedXml = genericXMLSignature.toSignedXml();
-//            ComprobanteXml comprobanteXml = new ComprobanteXml();
-//            comprobanteXml.setFileXML(signedXml);
-//            comprobanteXml.setTipo("comprobante");
-//            comprobanteXml.setVersion("1.0.0");
                 lote.getComprobantes().getComprobante().add(appendCdata(signedXml));
             }
             lote.setRuc(lote.getClaveAcceso().substring(10, 23));
@@ -129,80 +128,8 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
             String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
 
-            System.out.println("estadoLote -> " + estadoLote);
             for (Object item : items) {
-                Factura factura = (Factura) ((Map) item).get("factura");
-                String secuencial = factura.getInfoTributaria().getEstab() + "-" + factura.getInfoTributaria().getPtoEmi() + "-" + factura.getInfoTributaria().getSecuencial();
-                boolean existsError = false;
-                String cabeceraSQL;
-                System.out.println("# Comprobantes devueltos por SRI: " + validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante().size());
-                for (recepcion.ws.sri.gob.ec.Comprobante c : validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante()) {
-                    System.out.println("Clave acceso factura: " + factura.getInfoTributaria().getClaveAcceso());
-                    System.out.println("Clave acceso comprobante: " + c.getClaveAcceso());
-                    if (factura.getInfoTributaria().getClaveAcceso().equals(c.getClaveAcceso())) {
-                        try {
-                            existsError = true;
-
-                            c.getMensajes().getMensaje().stream().map((mensaje) -> {
-                                System.out.println("Identificador -> " + mensaje.getIdentificador());
-                                return mensaje;
-                            }).map((mensaje) -> {
-                                System.out.println("Tipo -> " + mensaje.getTipo());
-                                return mensaje;
-                            }).map((mensaje) -> {
-                                System.out.println("Mensaje -> " + mensaje.getMensaje());
-                                return mensaje;
-                            }).forEachOrdered((mensaje) -> {
-                                System.out.println("InformacionAdicional -> " + mensaje.getInformacionAdicional());
-                            });
-                            System.out.println("-------------------------------------------------------------");
-
-                            String estado = "DEVUELTA";
-                            String claveAcceso = c.getClaveAcceso();
-                            String identificador = c.getMensajes().getMensaje().get(0).getIdentificador();
-                            String informacionAdicional = c.getMensajes().getMensaje().get(0).getInformacionAdicional();
-                            String mensaje = c.getMensajes().getMensaje().get(0).getMensaje();
-                            String tipo = c.getMensajes().getMensaje().get(0).getTipo();
-
-                            System.out.print("Secuencial: " + secuencial
-                                    + ", Estado: " + estado
-                                    + ", ClaveAcceso: " + claveAcceso
-                                    + ", Identificador: " + identificador
-                                    + ", InformacionAdicional: " + informacionAdicional
-                                    + ", Mensaje: " + mensaje
-                                    + ", Tipo: " + tipo
-                            );
-
-                            String motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
-
-                            cabeceraSQL = "UPDATE FAC_FACTURA_C SET "
-                                    + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
-                                    + motivo
-                                    + " WHERE SECUENCIAL = '" + secuencial + "'";
-                            System.out.println("update -> " + cabeceraSQL);
-                            try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
-                                preparedStatement.executeQuery();
-                                preparedStatement.close();
-                            }
-                        } catch (SQLException | NamingException ex) {
-                            Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    }
-                }
-                if (existsError == false) {
-                    try {
-                        cabeceraSQL = "UPDATE FAC_FACTURA_C SET "
-                                + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
-                                + " WHERE SECUENCIAL = '" + secuencial + "'";
-                        System.out.println("update -> " + cabeceraSQL);
-                        try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
-                            preparedStatement.executeQuery();
-                            preparedStatement.close();
-                        }
-                    } catch (SQLException | NamingException ex) {
-                        Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+                processResponse(item, validarComprobanteResponse);
             }
             String secuencial = claveAccesoLote.substring(30, 39);
 
@@ -253,7 +180,6 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
         jaxbMarshaller.marshal(item, dataWriter);
 
-//        System.out.println("xml unicode -> " + stringWriter.toString());
         return stringWriter.toString();
     }
 
@@ -270,7 +196,6 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             headers.addHeader("SOAPAction", "");
             SOAPBodyElement element = body.addBodyElement(
                     envelope.createName("ec:validarComprobante"));
-//            System.out.println("xmlBase64: " + xmlBase64);
             element.addChildElement("xml").addTextNode(xmlBase64);
 
             soapMsg.saveChanges();
@@ -380,7 +305,6 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
             claveAccesoLote = callableStatement.getString(2);
 
-//            System.out.println("claveAccesoLote : " + claveAccesoLote);
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } finally {
@@ -397,9 +321,96 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private Connection getConnection() throws SQLException, NamingException {
         if (connection == null || (connection != null && connection.isClosed())) {
             InitialContext ic = new InitialContext();
-            DatasourceService datasourceService = (DatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.DatasourceService");
+            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.DatasourceService");
             connection = datasourceService.getConnection();
         }
         return connection;
+    }
+
+    private void processResponse(Object item, ValidarComprobanteResponse validarComprobanteResponse) {
+        String claveAcceso = null;
+        String secuencial = null;
+        String cabeceraSQL = null;
+        String nombreTablaComprobante = null;
+        String nombreSecuencial = null;
+        if (((Map) item).get("comprobante") instanceof Factura) {
+            Factura factura = (Factura) ((Map) item).get("comprobante");
+            secuencial = factura.getInfoTributaria().getEstab() + "-" + factura.getInfoTributaria().getPtoEmi() + "-" + factura.getInfoTributaria().getSecuencial();
+            claveAcceso = factura.getInfoTributaria().getClaveAcceso();
+            nombreTablaComprobante = "FAC_FACTURA_C";
+            nombreSecuencial = "SECUENCIAL";
+        } else if (((Map) item).get("comprobante") instanceof ComprobanteRetencion) {
+            ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) ((Map) item).get("comprobante");
+            secuencial = comprobanteRetencion.getInfoTributaria().getEstab() + "-" + comprobanteRetencion.getInfoTributaria().getPtoEmi() + "-" + comprobanteRetencion.getInfoTributaria().getSecuencial();
+            claveAcceso = comprobanteRetencion.getInfoTributaria().getClaveAcceso();
+            nombreTablaComprobante = "BAN_RETENCION_C";
+            nombreSecuencial = "NUM_SECUENCIAL";
+        }
+        boolean existsError = false;
+        for (recepcion.ws.sri.gob.ec.Comprobante c : validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante()) {
+            if (claveAcceso.equals(c.getClaveAcceso())) {
+                try {
+                    existsError = true;
+
+                    c.getMensajes().getMensaje().stream().map((mensaje) -> {
+                        System.out.println("Identificador -> " + mensaje.getIdentificador());
+                        return mensaje;
+                    }).map((mensaje) -> {
+                        System.out.println("Tipo -> " + mensaje.getTipo());
+                        return mensaje;
+                    }).map((mensaje) -> {
+                        System.out.println("Mensaje -> " + mensaje.getMensaje());
+                        return mensaje;
+                    }).forEachOrdered((mensaje) -> {
+                        System.out.println("InformacionAdicional -> " + mensaje.getInformacionAdicional());
+                    });
+                    System.out.println("-------------------------------------------------------------");
+
+                    String estado = "DEVUELTA";
+                    String claveAccesoRecibida = c.getClaveAcceso();
+                    String identificador = c.getMensajes().getMensaje().get(0).getIdentificador();
+                    String informacionAdicional = c.getMensajes().getMensaje().get(0).getInformacionAdicional();
+                    String mensaje = c.getMensajes().getMensaje().get(0).getMensaje();
+                    String tipo = c.getMensajes().getMensaje().get(0).getTipo();
+
+                    System.out.print("Secuencial: " + secuencial
+                            + ", Estado: " + estado
+                            + ", ClaveAcceso: " + claveAccesoRecibida
+                            + ", Identificador: " + identificador
+                            + ", InformacionAdicional: " + informacionAdicional
+                            + ", Mensaje: " + mensaje
+                            + ", Tipo: " + tipo
+                    );
+
+                    String motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
+
+                    cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
+                            + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
+                            + motivo
+                            + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
+                    System.out.println("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
+                    try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                        preparedStatement.executeQuery();
+                        preparedStatement.close();
+                    }
+                } catch (SQLException | NamingException ex) {
+                    Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        if (existsError == false) {
+            try {
+                cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
+                        + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
+                        + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
+                System.out.println("update -> " + cabeceraSQL);
+                try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                    preparedStatement.executeQuery();
+                    preparedStatement.close();
+                }
+            } catch (SQLException | NamingException ex) {
+                Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
