@@ -53,8 +53,20 @@
         </dependency>
         <dependency>
             <groupId>com.sire</groupId>
-            <artifactId>SIRE-Services</artifactId>
+            <artifactId>SIRE-Services-API</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sire.commons</groupId>
+                    <artifactId>SIRE-Commons</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.sire</groupId>
+            <artifactId>SIRE-Commons</artifactId>
+            <version>1.0.0</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

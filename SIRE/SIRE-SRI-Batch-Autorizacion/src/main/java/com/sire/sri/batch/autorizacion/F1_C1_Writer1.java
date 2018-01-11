@@ -9,8 +9,8 @@ import autorizacion.ws.sri.gob.ec.Autorizacion;
 import autorizacion.ws.sri.gob.ec.Mensaje;
 import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
 import com.sire.event.MailEvent;
-import com.sire.service.DatasourceService;
-import com.sire.service.MailService;
+import com.sire.service.IDatasourceService;
+import com.sire.service.IMailService;
 import com.sire.sri.batch.autorizacion.util.JaxbCharacterEscapeHandler;
 import com.sun.xml.bind.marshaller.DataWriter;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
@@ -26,6 +26,8 @@ import java.util.Map;
 import javax.batch.api.chunk.AbstractItemWriter;
 import javax.inject.Named;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
+import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
+import ec.gob.sri.comprobantes.modelo.reportes.ComprobanteRetencionReporte;
 import ec.gob.sri.comprobantes.modelo.reportes.FacturaReporte;
 import ec.gob.sri.comprobantes.util.reportes.ReporteUtil;
 import java.io.IOException;
@@ -54,7 +56,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     @Inject
     private JobContext jobCtx;
     private Connection connection;
-    private MailService mailService;
+    private IMailService mailService;
     private String urlReporte;
 
     @Override
@@ -65,30 +67,37 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
     @Override
     public void writeItems(List<Object> items) {
-        System.out.print("F1_C1_Writer1");
-        System.out.print("list in -> " + items.size());
-
         Map duplaFinal = new HashMap<>();
 
         items.forEach((item) -> {
             try {
                 RespuestaComprobante respuestaComprobante = (RespuestaComprobante) ((Map) item).get("respuestaComprobante");
                 LoteXml lote = (LoteXml) ((Map) item).get("lote");
-                System.out.println("claveAccesoLote -> " + lote.getClaveAcceso());
-                for (Factura factura : lote.getFacturas()) {
-                    System.out.println("# Detalles de Factura - Paso 1: " + factura.getDetalles().getDetalle().size());
-                    System.out.println("claveAccesoFactura -> " + factura.getInfoTributaria().getClaveAcceso());
+                for (Object comprobante : lote.getComprobantes()) {
+                    String secuencial = null;
+                    String claveAcceso = null;
+                    String nombreTablaComprobante = null;
+                    String nombreSecuencial = null;
+                    if (comprobante instanceof Factura) {
+                        Factura factura = (Factura) comprobante;
+                        secuencial = factura.getInfoTributaria().getEstab() + "-" + factura.getInfoTributaria().getPtoEmi() + "-" + factura.getInfoTributaria().getSecuencial();
+                        claveAcceso = factura.getInfoTributaria().getClaveAcceso();
+                        nombreTablaComprobante = "FAC_FACTURA_C";
+                        nombreSecuencial = "SECUENCIAL";
+                    } else if (comprobante instanceof ComprobanteRetencion) {
+                        ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) comprobante;
+                        secuencial = comprobanteRetencion.getInfoTributaria().getEstab() + "-" + comprobanteRetencion.getInfoTributaria().getPtoEmi() + "-" + comprobanteRetencion.getInfoTributaria().getSecuencial();
+                        claveAcceso = comprobanteRetencion.getInfoTributaria().getClaveAcceso();
+                        nombreTablaComprobante = "BAN_RETENCION_C";
+                        nombreSecuencial = "NUM_SECUENCIAL";
+                    }
                     for (Autorizacion autorizacion : respuestaComprobante.getAutorizaciones().getAutorizacion()) {
-                        System.out.println("numeroAutorizacion -> " + autorizacion.getNumeroAutorizacion());
-                        System.out.println("----------------------------------------------------------------");
-                        if (factura.getInfoTributaria().getClaveAcceso().equals(autorizacion.getNumeroAutorizacion())) {
-                            String secuencial = factura.getInfoTributaria().getEstab() + "-" + factura.getInfoTributaria().getPtoEmi() + "-" + factura.getInfoTributaria().getSecuencial();
+                        if (claveAcceso.equals(autorizacion.getNumeroAutorizacion())) {
+                            System.out.println("----------------------------------------------------------------");
                             String estado = autorizacion.getEstado();
                             String fechaAutorizacion = autorizacion.getFechaAutorizacion().toGregorianCalendar().getTime().toString();
                             String year = fechaAutorizacion.substring(24);
-//                        System.out.println("year -> " + year);
                             String date = fechaAutorizacion.substring(0, 19);
-//                        System.out.println("date -> " + date);
                             fechaAutorizacion = date + " " + year;
 
                             DateFormat oldFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy", Locale.ENGLISH);
@@ -129,16 +138,17 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                             } else if (estado.equals("AUTORIZADO")) {
                                 fechaAutorizacion = ", FECHA_AUTORIZACION = '" + fechaAutorizacion + "'";
                                 motivo = ", MOTIVO_SRI = ''";
-                                duplaFinal.put(factura, autorizacion);
+                                duplaFinal.put(comprobante, autorizacion);
                             } else {
                                 fechaAutorizacion = "";
                             }
 
-                            String cabeceraSQL = "UPDATE FAC_FACTURA_C SET "
+                            String cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
                                     + "ESTADO_SRI = '" + estado + "'"
                                     + motivo
                                     + fechaAutorizacion
-                                    + " WHERE SECUENCIAL = '" + secuencial + "'";
+                                    + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
+                            System.out.println("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
                             try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
                                 preparedStatement.executeQuery();
                                 preparedStatement.close();
@@ -146,10 +156,11 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                         }
                     }
                 }
-                String cabeceraSQL = "UPDATE CEL_LOTE_AUTORIZADO SET "
+                String loteSQL = "UPDATE CEL_LOTE_AUTORIZADO SET "
                         + "ESTADO_SRI = 'PROCESADA'"
                         + " WHERE CLAVE_ACCESO = '" + lote.getClaveAcceso() + "'";
-                try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                System.out.println("update CEL_LOTE_AUTORIZADO -> " + loteSQL);
+                try (PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL)) {
                     preparedStatement.executeQuery();
                     preparedStatement.close();
                 }
@@ -158,45 +169,70 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             }
         });
 
-        System.out.println("# Facturas Finales: " + duplaFinal.keySet().size());
-
         duplaFinal.keySet().forEach((key) -> {
             try {
-                Factura factura = (Factura) key;
+                String claveAcceso = null;
+                String secuencial = null;
                 String recipient = null;
-                for (Factura.InfoAdicional.CampoAdicional campoAdicional : factura.getInfoAdicional().getCampoAdicional()) {
-                    if (campoAdicional.getNombre().equals("Email")) {
-                        recipient = campoAdicional.getValue();
-                    }
-                }
                 ReporteUtil reporteUtil = new ReporteUtil();
-                FacturaReporte fact = new FacturaReporte(factura);
+                byte[] pdfBytes = null;
+                String razonSocialComprador = null;
+                String nombreComercial = null;
+                String ruc = null;
                 Autorizacion autorizacion = ((Autorizacion) duplaFinal.get(key));
                 String numAut = autorizacion.getNumeroAutorizacion();
                 String fechaAut = autorizacion.getFechaAutorizacion().toString();
-                byte[] pdfBytes = reporteUtil.generarReporte(urlReporte, fact, numAut, fechaAut);
+                if (key instanceof Factura) {
+                    Factura factura = (Factura) key;
+                    for (Factura.InfoAdicional.CampoAdicional campoAdicional : factura.getInfoAdicional().getCampoAdicional()) {
+                        if (campoAdicional.getNombre().equals("Email")) {
+                            recipient = campoAdicional.getValue();
+                        }
+                    }
+                    claveAcceso = factura.getInfoTributaria().getClaveAcceso();
+                    secuencial = factura.getInfoTributaria().getSecuencial();
+                    FacturaReporte fact = new FacturaReporte(factura);
+                    pdfBytes = reporteUtil.generarReporte(urlReporte, fact, numAut, fechaAut);
+                    razonSocialComprador = factura.getInfoFactura().getRazonSocialComprador();
+                    nombreComercial = factura.getInfoTributaria().getNombreComercial();
+                    ruc = factura.getInfoTributaria().getRuc();
+                } else if (key instanceof ComprobanteRetencion) {
+                    ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) key;
+                    for (ComprobanteRetencion.InfoAdicional.CampoAdicional campoAdicional : comprobanteRetencion.getInfoAdicional().getCampoAdicional()) {
+                        if (campoAdicional.getNombre().equals("Email")) {
+                            recipient = campoAdicional.getValue();
+                        }
+                    }
+                    claveAcceso = comprobanteRetencion.getInfoTributaria().getClaveAcceso();
+                    secuencial = comprobanteRetencion.getInfoTributaria().getSecuencial();
+                    ComprobanteRetencionReporte comprobanteRetencionReporte = new ComprobanteRetencionReporte(comprobanteRetencion);
+                    pdfBytes = reporteUtil.generarReporte(urlReporte, comprobanteRetencionReporte, numAut, fechaAut);
+                    razonSocialComprador = comprobanteRetencion.getInfoCompRetencion().getRazonSocialSujetoRetenido();
+                    nombreComercial = comprobanteRetencion.getInfoTributaria().getNombreComercial();
+                    ruc = comprobanteRetencion.getInfoTributaria().getRuc();
+                }
 
                 //construct the mime multi part
                 MimeMultipart mimeMultipart = new MimeMultipart();
-                addBodyPart(pdfBytes, "application/pdf", factura.getInfoTributaria().getClaveAcceso() + ".pdf", mimeMultipart);
+                addBodyPart(pdfBytes, "application/pdf", claveAcceso + ".pdf", mimeMultipart);
 
                 String autorizacionXml = object2xmlUnicode(autorizacion);
-                addBodyPart(autorizacionXml.getBytes(), "application/xml", factura.getInfoTributaria().getClaveAcceso() + ".xml", mimeMultipart);
+                addBodyPart(autorizacionXml.getBytes(), "application/xml", claveAcceso + ".xml", mimeMultipart);
 
                 BodyPart messageBodyPart = new MimeBodyPart();
-                messageBodyPart.setContent("Estimado Cliente " + factura.getInfoFactura().getRazonSocialComprador() + ",<br>"
+                messageBodyPart.setContent("Estimado Cliente " + razonSocialComprador + ",<br>"
                         + "<br>"
-                        + "Nos complace adjuntar su e-FACTURA con el siguiente detalle:<br>"
+                        + "Nos complace adjuntar su e-Comprobante con el siguiente detalle:<br>"
                         + "<br>"
-                        + "e - FACTURA No: <b>" + numAut.substring(24, 39) + "</b><br>"
+                        + "e - Comprobante No: <b>" + numAut.substring(24, 39) + "</b><br>"
                         + "<br>"
                         + "Fecha Emisión: <b>" + fechaAut + "</b><br>"
                         + "<br>"
-                        + "El documento pdf y xml de su factura se encuentra adjunto a este correo.<br>"
+                        + "El documento pdf y xml de su comprobante se encuentra adjunto a este correo.<br>"
                         + "<br>"
                         + "Atentamente:<br>"
-                        + factura.getInfoTributaria().getNombreComercial() + "<br>"
-                        + "RUC: " + factura.getInfoTributaria().getRuc(), "text/html; charset=utf-8");
+                        + nombreComercial + "<br>"
+                        + "RUC: " + ruc, "text/html; charset=utf-8");
                 mimeMultipart.addBodyPart(messageBodyPart);
 
                 MailEvent event = new MailEvent();
@@ -204,7 +240,10 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 event.setSubject("Comprobante EMITIDO");
                 event.setMimeMultipart(mimeMultipart);
 
-                getMailService().sendMail(event); //firing event!
+                if (recipient != null && !recipient.isEmpty()) {
+                    System.out.println("Secuencial de Comprobante a ser enviado por mail: " + secuencial);
+                    getMailService().sendMail(event); //firing event!
+                }
             } catch (NamingException | MessagingException | JAXBException | SQLException | ClassNotFoundException | IOException ex) {
                 Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -221,7 +260,6 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
         jaxbMarshaller.marshal(item, dataWriter);
 
-//        System.out.println("xml unicode -> " + stringWriter.toString());
         return stringWriter.toString();
     }
 
@@ -236,16 +274,16 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private Connection getConnection() throws SQLException, NamingException {
         if (connection == null || (connection != null && connection.isClosed())) {
             InitialContext ic = new InitialContext();
-            DatasourceService datasourceService = (DatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.DatasourceService");
+            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.DatasourceService");
             connection = datasourceService.getConnection();
         }
         return connection;
     }
 
-    private MailService getMailService() throws NamingException {
+    private IMailService getMailService() throws NamingException {
         if (mailService == null) {
             InitialContext ic = new InitialContext();
-            mailService = (MailService) ic.lookup("java:global/SIRE-Batch/MailService!com.sire.service.MailService");
+            mailService = (IMailService) ic.lookup("java:global/SIRE-Batch/MailService!com.sire.service.MailService");
         }
         return mailService;
     }

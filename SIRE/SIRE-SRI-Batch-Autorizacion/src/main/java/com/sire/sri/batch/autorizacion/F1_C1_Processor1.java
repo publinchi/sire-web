@@ -47,9 +47,7 @@ public class F1_C1_Processor1 implements ItemProcessor {
     public Object processItem(Object item) throws Exception {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         String urlAutorizacion = runtimeParams.getProperty("urlAutorizacion");
-        System.out.println("F1_C1_Processor1");
         String claveAcceso = ((LoteXml) item).getClaveAcceso();
-        System.out.println("object in -> " + claveAcceso);
 
         Map mapCall = (Map) SoapUtil.call(
                 createSOAPMessage(claveAcceso),
@@ -82,8 +80,6 @@ public class F1_C1_Processor1 implements ItemProcessor {
             element.addChildElement("claveAccesoLote").addTextNode(claveAcceso);
 
             soapMsg.saveChanges();
-//            System.out.println("Request SOAP Message:");
-//            System.out.println("soapMsg -> " + SoapUtil.toString(soapMsg));
             return soapMsg;
         } catch (SOAPException ex) {
             System.err.println(ex);
