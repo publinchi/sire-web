@@ -6,7 +6,8 @@
 package com.sire.service;
 
 import com.sire.event.MailEvent;
-import javax.annotation.Resource;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Asynchronous;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -18,6 +19,9 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 /**
  *
@@ -25,15 +29,21 @@ import javax.mail.internet.MimeMessage;
  */
 @Singleton
 @Startup
-public class MailService {
+public class MailService implements IMailService {
 
-    @Resource(name = "mail/gmail")
-    private Session mailSession;
-
+//    @Resource(name = "mail/gmail")
+//    private Session mailSession;
     @Asynchronous
     @Lock(LockType.READ)
+    @Override
     public void sendMail(MailEvent event) {
         try {
+            String mail = System.getProperty("sire.mail");
+            if (mail == null) {
+                mail = "mail/gmail";
+            }
+            Context initContext = new InitialContext();
+            Session mailSession = (Session) initContext.lookup(mail);
             Message message = new MimeMessage(mailSession);
 
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(event.getTo()));
@@ -48,6 +58,8 @@ public class MailService {
             System.out.println("E-Mail sent to " + event.getTo());
         } catch (MessagingException e) {
             throw new RuntimeException(e);
+        } catch (NamingException ex) {
+            Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

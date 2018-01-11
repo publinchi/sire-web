@@ -12,6 +12,7 @@ import javax.ejb.Startup;
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import com.sire.service.IDatasourceService;
 
 /**
  *
@@ -19,14 +20,19 @@ import javax.naming.NamingException;
  */
 @Singleton
 @Startup
-public class DatasourceService {
+public class DatasourceService implements IDatasourceService {
 
     private Connection connection;
 
+    @Override
     public Connection getConnection() throws SQLException, NamingException {
         if (connection == null || (connection != null && connection.isClosed())) {
             Context initContext = new InitialContext();
-            javax.sql.DataSource ds = (javax.sql.DataSource) initContext.lookup("jdbc/sire");
+            String datasource = System.getProperty("sire.datasource");
+            if (datasource == null) {
+                datasource = "jdbc/sire";
+            }
+            javax.sql.DataSource ds = (javax.sql.DataSource) initContext.lookup(datasource);
             connection = ds.getConnection();
         }
         return connection;

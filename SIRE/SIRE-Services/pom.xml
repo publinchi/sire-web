@@ -39,6 +39,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Services-API</artifactId>
             <version>${project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sire.commons</groupId>
+                    <artifactId>SIRE-Commons</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>fish.payara.api</groupId>
