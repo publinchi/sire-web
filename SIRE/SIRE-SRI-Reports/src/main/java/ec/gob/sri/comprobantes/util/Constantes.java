@@ -3,7 +3,6 @@ package ec.gob.sri.comprobantes.util;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
@@ -65,13 +64,16 @@ public class Constantes {
 
     public static String obtenerUrlBD() {
         Properties props = new Properties();
-        String home = System.getProperty("user.home");
-        System.out.println(" user.home " + home);
+        String home = System.getProperty("sire.home");
+        if (home == null) {
+            home = System.getProperty("user.home");
+        }
+//        System.out.println(" user.home " + home);
         String urlBD = null;
         try {
             props.load(new FileInputStream(home + "/comprobantes.properties"));
             urlBD = props.getProperty("database");
-            System.out.println(" obtenerUrlBD()  urlDB " + urlBD);
+//            System.out.println(" obtenerUrlBD()  urlDB " + urlBD);
         } catch (FileNotFoundException ex) {
             return null;
         } catch (IOException ex) {

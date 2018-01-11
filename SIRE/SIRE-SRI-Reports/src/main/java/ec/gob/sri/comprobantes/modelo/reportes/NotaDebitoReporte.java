@@ -106,7 +106,7 @@ public class NotaDebitoReporte {
     }
 
     public List<FormasPago> getFormasPago() {
-        System.out.println("--->" + getNotaDebito());
+//        System.out.println("--->" + getNotaDebito());
         if (getNotaDebito().getInfoNotaDebito().getPagos() != null) {
             this.formasPago = new ArrayList();
             if ((getNotaDebito().getInfoNotaDebito().getPagos().getPagos() != null) && (!getNotaDebito().getInfoNotaDebito().getPagos().getPagos().isEmpty())) {

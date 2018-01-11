@@ -11,8 +11,8 @@ public class LoteXml {
     private String version;
     private String claveAcceso;
     private String ruc;
-    private List<ComprobanteXml> comprobantes;
-    private List<Factura> facturas; // TODO: Deprecar
+//    private List<ComprobanteXml> comprobantes;
+    private List comprobantes; // TODO: Deprecar
 
     public LoteXml() {
         this.comprobantes = new ArrayList();
@@ -26,14 +26,12 @@ public class LoteXml {
         this.claveAcceso = claveAcceso;
     }
 
-    public List<ComprobanteXml> getComprobantes() {
-        return this.comprobantes;
-    }
-
-    public void setComprobantes(List<ComprobanteXml> comprobantes) {
-        this.comprobantes = comprobantes;
-    }
-
+//    public List<ComprobanteXml> getComprobantes() {
+//        return this.comprobantes;
+//    }
+//    public void setComprobantes(List<ComprobanteXml> comprobantes) {
+//        this.comprobantes = comprobantes;
+//    }
     public String getRuc() {
         return this.ruc;
     }
@@ -50,12 +48,12 @@ public class LoteXml {
         this.version = version;
     }
 
-    public List<Factura> getFacturas() {
-        return facturas;
+    public List getComprobantes() {
+        return comprobantes;
     }
 
-    public void setFacturas(List<Factura> facturas) {
-        this.facturas = facturas;
+    public void setComprobantes(List comprobantes) {
+        this.comprobantes = comprobantes;
     }
 
 }
