@@ -76,7 +76,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     private Connection getConnection() throws SQLException, NamingException {
         if (connection == null || (connection != null && connection.isClosed())) {
             InitialContext ic = new InitialContext();
-            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.DatasourceService");
+            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.IDatasourceService");
             connection = datasourceService.getConnection();
         }
         return connection;
@@ -161,7 +161,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         infoFactura.setTipoIdentificacionComprador(rs.getString("TIPO_IDENTIFICACION_COMPRADOR"));
         TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
         TotalImpuesto totalImpuesto = new TotalImpuesto();
-        totalImpuesto.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE"));
+        totalImpuesto.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE").setScale(2));
         totalImpuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
         totalImpuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
         totalImpuesto.setValor(rs.getBigDecimal("VALOR"));
@@ -225,7 +225,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             detalle.setDescuento(rsd.getBigDecimal("DESCUENTO"));
             Impuestos impuestos = new Impuestos();
             Impuesto impuesto = new Impuesto();
-            impuesto.setBaseImponible(rsd.getBigDecimal("BASE_IMPONIBLE"));
+            impuesto.setBaseImponible(rsd.getBigDecimal("BASE_IMPONIBLE").setScale(2));
             impuesto.setCodigo(rsd.getString("CODIGO_IMPUESTO"));
             impuesto.setCodigoPorcentaje(rsd.getString("CODIGO_PORCENTAJE"));
             impuesto.setTarifa(rsd.getBigDecimal("TARIFA"));
@@ -266,7 +266,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             impuesto.setFechaEmisionDocSustento(rsd.getString("FECHAEMISIONDOCSUSTENTO"));
             impuesto.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
             impuesto.setPorcentajeRetener(rsd.getBigDecimal("PORCENTAJERETENR"));
-            impuesto.setValorRetenido(rsd.getBigDecimal("VALORRETENIDO"));
+            impuesto.setValorRetenido(rsd.getBigDecimal("VALORRETENIDO").setScale(2));
             impuestos.getImpuesto().add(impuesto);
         }
         comprobanteRetencion.setImpuestos(impuestos);
