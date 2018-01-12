@@ -321,7 +321,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private Connection getConnection() throws SQLException, NamingException {
         if (connection == null || (connection != null && connection.isClosed())) {
             InitialContext ic = new InitialContext();
-            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.DatasourceService");
+            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.IDatasourceService");
             connection = datasourceService.getConnection();
         }
         return connection;

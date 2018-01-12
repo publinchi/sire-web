@@ -34,13 +34,13 @@ import javax.naming.NamingException;
 
 @Named
 public class F1_C1_Reader1 extends AbstractItemReader {
-
+    
     @Inject
     private JobContext jobCtx;
     private List comprobantes;
     private Iterator iterator;
     private Connection connection;
-
+    
     @Override
     public Object readItem() throws Exception {
         if (iterator.hasNext()) {
@@ -48,28 +48,28 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         }
         return null;
     }
-
+    
     @Override
     public void open(Serializable checkpoint) throws Exception {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         String comprobanteSQL = runtimeParams.getProperty("comprobanteSQL");
         String tipoComprobante = runtimeParams.getProperty("tipoComprobante");
         comprobantes = new ArrayList();
-
+        
         System.out.println("tipoComprobante -> " + tipoComprobante);
-
+        
         buildComprobantes(comprobanteSQL, tipoComprobante);
     }
-
+    
     private Connection getConnection() throws SQLException, NamingException {
         if (connection == null || (connection != null && connection.isClosed())) {
             InitialContext ic = new InitialContext();
-            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.DatasourceService");
+            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.IDatasourceService");
             connection = datasourceService.getConnection();
         }
         return connection;
     }
-
+    
     private void buildComprobantes(String comprobanteSQL, String tipoComprobante) throws SQLException, NamingException {
         System.out.println("-> buildComprobantes");
         PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL);
@@ -85,13 +85,13 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         rs.close();
         comprobantePreparedStatement.close();
     }
-
+    
     private void _buildFacturas(ResultSet rs, List comprobantes) throws SQLException, NamingException {
         System.out.println("-> _buildFacturas");
         String numFacturaInterno = rs.getString("NUM_FACTURA_INTERNO");
-
+        
         Factura factura = new Factura();
-
+        
         InfoAdicional infoAdicional = new InfoAdicional();
         CampoAdicional direccion = new CampoAdicional();
         direccion.setValue(rs.getString("DIRECCION_COMPRADOR"));
@@ -118,7 +118,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             infoAdicional.getCampoAdicional().add(observacion);
         }
         factura.setInfoAdicional(infoAdicional);
-
+        
         InfoFactura infoFactura = new InfoFactura();
         infoFactura.setDireccionComprador(rs.getString("DIRECCION_COMPRADOR"));
         infoFactura.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
@@ -143,7 +143,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         infoFactura.setTotalConImpuestos(totalConImpuestos);
         infoFactura.setTotalDescuento(rs.getBigDecimal("TOTAL_DESCUENTOS"));
         infoFactura.setTotalSinImpuestos(rs.getBigDecimal("TOTAL_SIN_IMPUESTOS"));
-
+        
         String pagosSQL = "SELECT CODIGO, FORMA_PAGO, PLAZO, TIEMPO, "
                 + "VALOR_FORMA_PAGO FROM V_FACTURA_ELECTRONICA_PAGO WHERE "
                 + "NUM_FACTURA = " + numFacturaInterno;
@@ -161,9 +161,9 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         infoFactura.setPagos(pagos);
         prs.close();
         pagosPreparedStatement.close();
-
+        
         factura.setInfoFactura(infoFactura);
-
+        
         InfoTributaria infoTributaria = new InfoTributaria();
         infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
         infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
@@ -177,12 +177,12 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
         infoTributaria.setTipoEmision("1");
         factura.setInfoTributaria(infoTributaria);
-
+        
         factura.setId("comprobante");
         factura.setVersion("1.1.0");
-
+        
         Detalles detalles = new Detalles();
-
+        
         String detalleSQL = "SELECT COD_EMPRESA, COD_DOCUMENTO, NUM_DOCUMENTO_INTERNO, "
                 + "COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, PRECIO_UNITARIO, "
                 + "DESCUENTO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, TARIFA, "
@@ -211,20 +211,20 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             detalles.getDetalle().add(detalle);
         }
         factura.setDetalles(detalles);
-
+        
         comprobantes.add(factura);
         rsd.close();
         detallePreparedStatement.close();
     }
-
+    
     private void _buildRetenciones(ResultSet rs, List comprobantes) throws SQLException, NamingException {
         System.out.println("-> _buildFacturas");
         String numRetencionInterno = rs.getString("NUM_RETENCION_INTERNO");
-
+        
         ComprobanteRetencion comprobanteRetencion = new ComprobanteRetencion();
         comprobanteRetencion.setId("comprobante");
         ComprobanteRetencion.Impuestos impuestos = new ComprobanteRetencion.Impuestos();
-
+        
         String detalleSQL = "SELECT CODIGO, CODIGORETENCION, BASEIMPONIBLE, "
                 + "PORCENTAJERETENR, VALORRETENIDO, CODDOCSUSTENTO, NUMDOCSUSTENTO, "
                 + "FECHAEMISIONDOCSUSTENTO FROM V_RETENCION_ELECTRONICA_D WHERE "
@@ -233,7 +233,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         ResultSet rsd = detallePreparedStatement.executeQuery();
         while (rsd.next()) {
             ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
-            impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE"));
+            impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE").setScale(2));
             impuesto.setCodDocSustento(rsd.getString("CODDOCSUSTENTO"));
             impuesto.setCodigo(rsd.getString("CODIGO"));
             impuesto.setCodigoRetencion(rsd.getString("CODIGORETENCION"));
@@ -243,11 +243,11 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             impuesto.setFechaEmisionDocSustento(newDate);
             impuesto.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
             impuesto.setPorcentajeRetener(rsd.getBigDecimal("PORCENTAJERETENR"));
-            impuesto.setValorRetenido(rsd.getBigDecimal("VALORRETENIDO"));
+            impuesto.setValorRetenido(rsd.getBigDecimal("VALORRETENIDO").setScale(2));
             impuestos.getImpuesto().add(impuesto);
         }
         comprobanteRetencion.setImpuestos(impuestos);
-
+        
         ComprobanteRetencion.InfoAdicional infoAdicional = new ComprobanteRetencion.InfoAdicional();
         ComprobanteRetencion.InfoAdicional.CampoAdicional direccion = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
         direccion.setNombre("Direccion");
@@ -268,7 +268,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             infoAdicional.getCampoAdicional().add(email);
         }
         comprobanteRetencion.setInfoAdicional(infoAdicional);
-
+        
         ComprobanteRetencion.InfoCompRetencion infoCompRetencion = new ComprobanteRetencion.InfoCompRetencion();
         infoCompRetencion.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
         infoCompRetencion.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
@@ -282,7 +282,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         infoCompRetencion.setRazonSocialSujetoRetenido(rs.getString("RAZON_SOCIAL_SUJETO_RETENIDO"));
         infoCompRetencion.setTipoIdentificacionSujetoRetenido(rs.getString("TIPO_IDENT_SUJETO_RETENIDO"));
         comprobanteRetencion.setInfoCompRetencion(infoCompRetencion);
-
+        
         InfoTributaria infoTributaria = new InfoTributaria();
         infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
         infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
@@ -297,7 +297,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         infoTributaria.setTipoEmision("1");
         comprobanteRetencion.setInfoTributaria(infoTributaria);
         comprobanteRetencion.setVersion("1.0.0");
-
+        
         comprobantes.add(comprobanteRetencion);
         rsd.close();
         detallePreparedStatement.close();
