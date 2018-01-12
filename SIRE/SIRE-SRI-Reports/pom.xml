@@ -40,12 +40,6 @@
             <version>1.7</version>
             <type>jar</type>
         </dependency>
-        <dependency>
-            <groupId>com.sire.sri</groupId>
-            <artifactId>ComprobantesDesktop</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
