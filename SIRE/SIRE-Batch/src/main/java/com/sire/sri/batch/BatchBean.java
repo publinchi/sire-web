@@ -70,7 +70,7 @@ public class BatchBean {
         }
     }
 
-    @Schedule(hour = "*", minute = "*/3", info = "Every 10 minutes timer", timezone = "UTC", persistent = false)
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionRetencionJob()
             throws InterruptedException, NamingException, IOException {
         System.out.println("-> sriRecepcionRetencionJob");
@@ -138,7 +138,7 @@ public class BatchBean {
         }
     }
 
-    @Schedule(hour = "*", minute = "*/3", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionRetencionJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
         System.out.println("-> sriAutorizacionRetencionJob");
