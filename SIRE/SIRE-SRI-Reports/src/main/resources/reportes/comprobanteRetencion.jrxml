@@ -443,10 +443,10 @@
 	<summary>
 		<band height="182" splitType="Stretch">
 			<rectangle>
-				<reportElement mode="Transparent" x="2" y="3" width="351" height="141" uuid="e2898020-e3b7-4ea0-b012-f73e74af9c6f"/>
+				<reportElement mode="Transparent" x="0" y="3" width="351" height="95" uuid="e2898020-e3b7-4ea0-b012-f73e74af9c6f"/>
 			</rectangle>
 			<subreport>
-				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="8" y="20" width="332" height="112" uuid="4561192b-88f6-457d-a2d4-dea9f746ccb0">
+				<reportElement stretchType="RelativeToBandHeight" mode="Transparent" x="8" y="20" width="332" height="68" uuid="4561192b-88f6-457d-a2d4-dea9f746ccb0">
 					<printWhenExpression><![CDATA[$F{infoAdicional}!=null]]></printWhenExpression>
 				</reportElement>
 				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{infoAdicional})]]></dataSourceExpression>
