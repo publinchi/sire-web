@@ -263,7 +263,10 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             impuesto.setCodDocSustento(rsd.getString("CODDOCSUSTENTO"));
             impuesto.setCodigo(rsd.getString("CODIGO"));
             impuesto.setCodigoRetencion(rsd.getString("CODIGORETENCION"));
-            impuesto.setFechaEmisionDocSustento(rsd.getString("FECHAEMISIONDOCSUSTENTO"));
+            String oldDate = rsd.getString("FECHAEMISIONDOCSUSTENTO");
+            LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+            String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            impuesto.setFechaEmisionDocSustento(newDate);
             impuesto.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
             impuesto.setPorcentajeRetener(rsd.getBigDecimal("PORCENTAJERETENR"));
             impuesto.setValorRetenido(rsd.getBigDecimal("VALORRETENIDO").setScale(2));
@@ -295,7 +298,10 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         ComprobanteRetencion.InfoCompRetencion infoCompRetencion = new ComprobanteRetencion.InfoCompRetencion();
         infoCompRetencion.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
         infoCompRetencion.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
-        infoCompRetencion.setFechaEmision(rs.getString("FECHA_RETENCION"));
+        String oldDate = rs.getString("FECHA_RETENCION");
+        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoCompRetencion.setFechaEmision(newDate);
         infoCompRetencion.setIdentificacionSujetoRetenido(rs.getString("IDENTIFICACION_SUJETO_RETENIDO"));
         infoCompRetencion.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
         infoCompRetencion.setPeriodoFiscal(rs.getString("PERIODO_FISCAL"));
