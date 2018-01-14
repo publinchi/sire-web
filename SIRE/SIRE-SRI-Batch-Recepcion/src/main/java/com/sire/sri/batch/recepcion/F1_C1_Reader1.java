@@ -104,10 +104,10 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                         _buildFacturas(rs, comprobantes);
                         break;
                     case "04":
-                        _buildNotasCreditos(rs, comprobantes);
+                        _buildNotasCredito(rs, comprobantes);
                         break;
                     case "05":
-                        _buildNotasDebitos(rs, comprobantes);
+                        _buildNotasDebito(rs, comprobantes);
                         break;
                     case "06":
                         _buildGuiasRemision(rs, comprobantes);
@@ -258,8 +258,8 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         }
     }
 
-    private void _buildNotasCreditos(ResultSet rs, List comprobantes) throws SQLException {
-        System.out.println("-> _buildNotasCreditos");
+    private void _buildNotasCredito(ResultSet rs, List comprobantes) throws SQLException {
+        System.out.println("-> _buildNotasCredito");
         String numFacturaInterno = rs.getString("NUM_FACTURA_INTERNO");
 
         NotaCredito notaCredito = new NotaCredito();
@@ -286,7 +286,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         notaCredito.setVersion("1.0.0");
     }
 
-    private void _buildNotasDebitos(ResultSet rs, List comprobantes) {
+    private void _buildNotasDebito(ResultSet rs, List comprobantes) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
