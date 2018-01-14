@@ -26,9 +26,15 @@ import java.util.Map;
 import javax.batch.api.chunk.AbstractItemWriter;
 import javax.inject.Named;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
+import ec.gob.sri.comprobantes.modelo.guia.GuiaRemision;
+import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
+import ec.gob.sri.comprobantes.modelo.notadebito.NotaDebito;
 import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import ec.gob.sri.comprobantes.modelo.reportes.ComprobanteRetencionReporte;
 import ec.gob.sri.comprobantes.modelo.reportes.FacturaReporte;
+import ec.gob.sri.comprobantes.modelo.reportes.GuiaRemisionReporte;
+import ec.gob.sri.comprobantes.modelo.reportes.NotaCreditoReporte;
+import ec.gob.sri.comprobantes.modelo.reportes.NotaDebitoReporte;
 import ec.gob.sri.comprobantes.util.reportes.ReporteUtil;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -84,6 +90,24 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                         claveAcceso = factura.getInfoTributaria().getClaveAcceso();
                         nombreTablaComprobante = "FAC_FACTURA_C";
                         nombreSecuencial = "SECUENCIAL";
+                    } else if (comprobante instanceof NotaDebito) {
+                        NotaDebito notaDebito = (NotaDebito) comprobante;
+                        secuencial = notaDebito.getInfoTributaria().getEstab() + "-" + notaDebito.getInfoTributaria().getPtoEmi() + "-" + notaDebito.getInfoTributaria().getSecuencial();
+                        claveAcceso = notaDebito.getInfoTributaria().getClaveAcceso();
+                        nombreTablaComprobante = "";
+                        nombreSecuencial = "";
+                    } else if (comprobante instanceof NotaCredito) {
+                        NotaCredito notaCredito = (NotaCredito) comprobante;
+                        secuencial = notaCredito.getInfoTributaria().getEstab() + "-" + notaCredito.getInfoTributaria().getPtoEmi() + "-" + notaCredito.getInfoTributaria().getSecuencial();
+                        claveAcceso = notaCredito.getInfoTributaria().getClaveAcceso();
+                        nombreTablaComprobante = "";
+                        nombreSecuencial = "";
+                    } else if (comprobante instanceof GuiaRemision) {
+                        GuiaRemision guiaRemision = (GuiaRemision) comprobante;
+                        secuencial = guiaRemision.getInfoTributaria().getEstab() + "-" + guiaRemision.getInfoTributaria().getPtoEmi() + "-" + guiaRemision.getInfoTributaria().getSecuencial();
+                        claveAcceso = guiaRemision.getInfoTributaria().getClaveAcceso();
+                        nombreTablaComprobante = "";
+                        nombreSecuencial = "";
                     } else if (comprobante instanceof ComprobanteRetencion) {
                         ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) comprobante;
                         secuencial = comprobanteRetencion.getInfoTributaria().getEstab() + "-" + comprobanteRetencion.getInfoTributaria().getPtoEmi() + "-" + comprobanteRetencion.getInfoTributaria().getSecuencial();
@@ -196,6 +220,48 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     razonSocialComprador = factura.getInfoFactura().getRazonSocialComprador();
                     nombreComercial = factura.getInfoTributaria().getNombreComercial();
                     ruc = factura.getInfoTributaria().getRuc();
+                } else if (key instanceof NotaCredito) {
+                    NotaCredito notaCredito = (NotaCredito) key;
+                    for (NotaCredito.InfoAdicional.CampoAdicional campoAdicional : notaCredito.getInfoAdicional().getCampoAdicional()) {
+                        if (campoAdicional.getNombre().equals("Email")) {
+                            recipient = campoAdicional.getValue();
+                        }
+                    }
+                    claveAcceso = notaCredito.getInfoTributaria().getClaveAcceso();
+                    secuencial = notaCredito.getInfoTributaria().getSecuencial();
+                    NotaCreditoReporte notaCreditoReporte = new NotaCreditoReporte(notaCredito);
+                    pdfBytes = reporteUtil.generarReporte(urlReporte, notaCreditoReporte, numAut, fechaAut);
+                    razonSocialComprador = notaCredito.getInfoNotaCredito().getRazonSocialComprador();
+                    nombreComercial = notaCredito.getInfoTributaria().getNombreComercial();
+                    ruc = notaCredito.getInfoTributaria().getRuc();
+                } else if (key instanceof NotaDebito) {
+                    NotaDebito notaDebito = (NotaDebito) key;
+                    for (NotaDebito.InfoAdicional.CampoAdicional campoAdicional : notaDebito.getInfoAdicional().getCampoAdicional()) {
+                        if (campoAdicional.getNombre().equals("Email")) {
+                            recipient = campoAdicional.getValue();
+                        }
+                    }
+                    claveAcceso = notaDebito.getInfoTributaria().getClaveAcceso();
+                    secuencial = notaDebito.getInfoTributaria().getSecuencial();
+                    NotaDebitoReporte notaDebitoReporte = new NotaDebitoReporte(notaDebito);
+                    pdfBytes = reporteUtil.generarReporte(urlReporte, notaDebitoReporte, numAut, fechaAut);
+                    razonSocialComprador = notaDebito.getInfoNotaDebito().getRazonSocialComprador();
+                    nombreComercial = notaDebito.getInfoTributaria().getNombreComercial();
+                    ruc = notaDebito.getInfoTributaria().getRuc();
+                } else if (key instanceof GuiaRemision) {
+                    GuiaRemision guiaRemision = (GuiaRemision) key;
+                    for (GuiaRemision.InfoAdicional.CampoAdicional campoAdicional : guiaRemision.getInfoAdicional().getCampoAdicional()) {
+                        if (campoAdicional.getNombre().equals("Email")) {
+                            recipient = campoAdicional.getValue();
+                        }
+                    }
+                    claveAcceso = guiaRemision.getInfoTributaria().getClaveAcceso();
+                    secuencial = guiaRemision.getInfoTributaria().getSecuencial();
+                    GuiaRemisionReporte guiaRemisionReporte = new GuiaRemisionReporte(guiaRemision);
+                    pdfBytes = reporteUtil.generarReporte(urlReporte, guiaRemisionReporte, numAut, fechaAut, guiaRemision);
+                    razonSocialComprador = guiaRemision.getInfoGuiaRemision().getRazonSocialTransportista();
+                    nombreComercial = guiaRemision.getInfoTributaria().getNombreComercial();
+                    ruc = guiaRemision.getInfoTributaria().getRuc();
                 } else if (key instanceof ComprobanteRetencion) {
                     ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) key;
                     for (ComprobanteRetencion.InfoAdicional.CampoAdicional campoAdicional : comprobanteRetencion.getInfoAdicional().getCampoAdicional()) {

@@ -62,15 +62,16 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 + "CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO "
                 + "FROM CEL_LOTE_AUTORIZADO WHERE ESTADO_SRI = 'RECIBIDA' "
                 + "AND SUBSTR(CLAVE_ACCESO,9,2) = '" + tipoComprobante + "'";
-        PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL);
-        ResultSet loteRs = preparedStatemenT.executeQuery();
-        while (loteRs.next()) {
-            String claveAccesoLote = loteRs.getString("CLAVE_ACCESO");
-            buildComprobantes(claveAccesoLote, tipoComprobante);
+        try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL);
+                ResultSet loteRs = preparedStatemenT.executeQuery()) {
+            while (loteRs.next()) {
+                String claveAccesoLote = loteRs.getString("CLAVE_ACCESO");
+                buildComprobantes(claveAccesoLote, tipoComprobante);
+            }
+            iterator = lotes.iterator();
+            loteRs.close();
+            preparedStatemenT.close();
         }
-        iterator = lotes.iterator();
-        loteRs.close();
-        preparedStatemenT.close();
     }
 
     private Connection getConnection() throws SQLException, NamingException {
@@ -90,26 +91,55 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 
         System.out.println("tipoComprobante -> " + tipoComprobante);
 
-        if (tipoComprobante.equals("01")) {
-            comprobanteSQL = AutorizacionConstant.FACTURA_SQL.replace("claveAccesoLote", claveAccesoLote);
-        } else if (tipoComprobante.equals("07")) {
-            comprobanteSQL = AutorizacionConstant.RETENCION_SQL.replace("claveAccesoLote", claveAccesoLote);
+        switch (tipoComprobante) {
+            case "01":
+                comprobanteSQL = AutorizacionConstant.FACTURA_SQL.replace("claveAccesoLote", claveAccesoLote);
+                break;
+            case "04":
+                comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL.replace("claveAccesoLote", claveAccesoLote);
+                break;
+            case "05":
+                comprobanteSQL = AutorizacionConstant.NOTA_DEBITO.replace("claveAccesoLote", claveAccesoLote);
+                break;
+            case "06":
+                comprobanteSQL = AutorizacionConstant.GUIA_REMISION_SQL.replace("claveAccesoLote", claveAccesoLote);
+                break;
+            case "07":
+                comprobanteSQL = AutorizacionConstant.RETENCION_SQL.replace("claveAccesoLote", claveAccesoLote);
+                break;
+            default:
+                break;
         }
 
         System.out.println("comprobanteSQL -> " + comprobanteSQL);
-        PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL);
-        ResultSet rs = comprobantePreparedStatement.executeQuery();
-        while (rs.next()) {
-            if (tipoComprobante.equals("01")) {
-                _buildFacturas(rs, comprobantes);
-            } else if (tipoComprobante.equals("07")) {
-                _buildRetenciones(rs, comprobantes);
+        try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL);
+                ResultSet rs = comprobantePreparedStatement.executeQuery()) {
+            while (rs.next()) {
+                switch (tipoComprobante) {
+                    case "01":
+                        _buildFacturas(rs, comprobantes);
+                        break;
+                    case "04":
+                        _buildNotasDebitos(rs, comprobantes);
+                        break;
+                    case "05":
+                        _buildNotasCreditos(rs, comprobantes);
+                        break;
+                    case "06":
+                        _buildGuiasRemisiones(rs, comprobantes);
+                        break;
+                    case "07":
+                        _buildRetenciones(rs, comprobantes);
+                        break;
+                    default:
+                        break;
+                }
             }
+            lote.setComprobantes(comprobantes);
+            lotes.add(lote);
+            rs.close();
+            comprobantePreparedStatement.close();
         }
-        lote.setComprobantes(comprobantes);
-        lotes.add(lote);
-        rs.close();
-        comprobantePreparedStatement.close();
     }
 
     private void _buildFacturas(ResultSet rs, List comprobantes) throws SQLException, NamingException {
@@ -173,20 +203,21 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         String pagosSQL = "SELECT CODIGO, FORMA_PAGO, PLAZO, TIEMPO, "
                 + "VALOR_FORMA_PAGO FROM V_FACTURA_ELECTRONICA_PAGO WHERE "
                 + "NUM_FACTURA = " + numFacturaInterno;
-        PreparedStatement pagosPreparedStatement = getConnection().prepareStatement(pagosSQL);
-        ResultSet prs = pagosPreparedStatement.executeQuery();
-        InfoFactura.Pago pagos = new InfoFactura.Pago();
-        while (prs.next()) {
-            InfoFactura.Pago.DetallePago detallePago = new InfoFactura.Pago.DetallePago();
-            detallePago.setFormaPago(prs.getString("CODIGO"));
-            detallePago.setPlazo(prs.getString("PLAZO"));
-            detallePago.setTotal(prs.getBigDecimal("VALOR_FORMA_PAGO"));
-            detallePago.setUnidadTiempo(prs.getString("TIEMPO"));
-            pagos.getPagos().add(detallePago);
+        try (PreparedStatement pagosPreparedStatement = getConnection().prepareStatement(pagosSQL);
+                ResultSet prs = pagosPreparedStatement.executeQuery()) {
+            InfoFactura.Pago pagos = new InfoFactura.Pago();
+            while (prs.next()) {
+                InfoFactura.Pago.DetallePago detallePago = new InfoFactura.Pago.DetallePago();
+                detallePago.setFormaPago(prs.getString("CODIGO"));
+                detallePago.setPlazo(prs.getString("PLAZO"));
+                detallePago.setTotal(prs.getBigDecimal("VALOR_FORMA_PAGO"));
+                detallePago.setUnidadTiempo(prs.getString("TIEMPO"));
+                pagos.getPagos().add(detallePago);
+            }
+            infoFactura.setPagos(pagos);
+            prs.close();
+            pagosPreparedStatement.close();
         }
-        infoFactura.setPagos(pagos);
-        prs.close();
-        pagosPreparedStatement.close();
 
         factura.setInfoFactura(infoFactura);
 
@@ -215,32 +246,33 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 + "BASE_IMPONIBLE, VALOR, PRECIO_TOTAL_SIN_IMPUESTOS "
                 + "FROM V_FACTURA_ELECTRONICA_D WHERE "
                 + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
-        PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
-        ResultSet rsd = detallePreparedStatement.executeQuery();
-        while (rsd.next()) {
-            Detalle detalle = new Detalle();
-            detalle.setCantidad(rsd.getBigDecimal("CANTIDAD"));
-            detalle.setCodigoPrincipal(rsd.getString("COD_ARTICULO"));
-            detalle.setDescripcion(rsd.getString("NOMBRE_ARTICULO"));
-            detalle.setDescuento(rsd.getBigDecimal("DESCUENTO"));
-            Impuestos impuestos = new Impuestos();
-            Impuesto impuesto = new Impuesto();
-            impuesto.setBaseImponible(rsd.getBigDecimal("BASE_IMPONIBLE").setScale(2));
-            impuesto.setCodigo(rsd.getString("CODIGO_IMPUESTO"));
-            impuesto.setCodigoPorcentaje(rsd.getString("CODIGO_PORCENTAJE"));
-            impuesto.setTarifa(rsd.getBigDecimal("TARIFA"));
-            impuesto.setValor(rsd.getBigDecimal("VALOR"));
-            impuestos.getImpuesto().add(impuesto);
-            detalle.setImpuestos(impuestos);
-            detalle.setPrecioTotalSinImpuesto(rsd.getBigDecimal("PRECIO_TOTAL_SIN_IMPUESTOS"));
-            detalle.setPrecioUnitario(rsd.getBigDecimal("PRECIO_UNITARIO"));
-            detalles.getDetalle().add(detalle);
-        }
-        factura.setDetalles(detalles);
+        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
+                ResultSet rsd = detallePreparedStatement.executeQuery()) {
+            while (rsd.next()) {
+                Detalle detalle = new Detalle();
+                detalle.setCantidad(rsd.getBigDecimal("CANTIDAD"));
+                detalle.setCodigoPrincipal(rsd.getString("COD_ARTICULO"));
+                detalle.setDescripcion(rsd.getString("NOMBRE_ARTICULO"));
+                detalle.setDescuento(rsd.getBigDecimal("DESCUENTO"));
+                Impuestos impuestos = new Impuestos();
+                Impuesto impuesto = new Impuesto();
+                impuesto.setBaseImponible(rsd.getBigDecimal("BASE_IMPONIBLE").setScale(2));
+                impuesto.setCodigo(rsd.getString("CODIGO_IMPUESTO"));
+                impuesto.setCodigoPorcentaje(rsd.getString("CODIGO_PORCENTAJE"));
+                impuesto.setTarifa(rsd.getBigDecimal("TARIFA"));
+                impuesto.setValor(rsd.getBigDecimal("VALOR"));
+                impuestos.getImpuesto().add(impuesto);
+                detalle.setImpuestos(impuestos);
+                detalle.setPrecioTotalSinImpuesto(rsd.getBigDecimal("PRECIO_TOTAL_SIN_IMPUESTOS"));
+                detalle.setPrecioUnitario(rsd.getBigDecimal("PRECIO_UNITARIO"));
+                detalles.getDetalle().add(detalle);
+            }
+            factura.setDetalles(detalles);
 
-        comprobantes.add(factura);
-        rsd.close();
-        detallePreparedStatement.close();
+            comprobantes.add(factura);
+            rsd.close();
+            detallePreparedStatement.close();
+        }
     }
 
     private void _buildRetenciones(ResultSet rs, List comprobantes) throws SQLException, NamingException {
@@ -255,77 +287,90 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 + "PORCENTAJERETENR, VALORRETENIDO, CODDOCSUSTENTO, NUMDOCSUSTENTO, "
                 + "FECHAEMISIONDOCSUSTENTO FROM V_RETENCION_ELECTRONICA_D WHERE "
                 + "NUM_RETENCION_INTERNO = " + numRetencionInterno;
-        PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
-        ResultSet rsd = detallePreparedStatement.executeQuery();
-        while (rsd.next()) {
-            ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
-            impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE"));
-            impuesto.setCodDocSustento(rsd.getString("CODDOCSUSTENTO"));
-            impuesto.setCodigo(rsd.getString("CODIGO"));
-            impuesto.setCodigoRetencion(rsd.getString("CODIGORETENCION"));
-            String oldDate = rsd.getString("FECHAEMISIONDOCSUSTENTO");
+        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
+                ResultSet rsd = detallePreparedStatement.executeQuery()) {
+            while (rsd.next()) {
+                ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
+                impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE"));
+                impuesto.setCodDocSustento(rsd.getString("CODDOCSUSTENTO"));
+                impuesto.setCodigo(rsd.getString("CODIGO"));
+                impuesto.setCodigoRetencion(rsd.getString("CODIGORETENCION"));
+                String oldDate = rsd.getString("FECHAEMISIONDOCSUSTENTO");
+                LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+                String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                impuesto.setFechaEmisionDocSustento(newDate);
+                impuesto.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
+                impuesto.setPorcentajeRetener(rsd.getBigDecimal("PORCENTAJERETENR"));
+                impuesto.setValorRetenido(rsd.getBigDecimal("VALORRETENIDO").setScale(2));
+                impuestos.getImpuesto().add(impuesto);
+            }
+            comprobanteRetencion.setImpuestos(impuestos);
+
+            ComprobanteRetencion.InfoAdicional infoAdicional = new ComprobanteRetencion.InfoAdicional();
+            ComprobanteRetencion.InfoAdicional.CampoAdicional direccion = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
+            direccion.setNombre("Direccion");
+            direccion.setValue(rs.getString("DIRECCION_RETENIDO"));
+            ComprobanteRetencion.InfoAdicional.CampoAdicional telefono = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
+            telefono.setValue(rs.getString("TELEFONO_RETENIDO"));
+            telefono.setNombre("Telefono");
+            ComprobanteRetencion.InfoAdicional.CampoAdicional email = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
+            email.setValue(rs.getString("EMAIL_RETENIDO"));
+            email.setNombre("Email");
+            if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
+                infoAdicional.getCampoAdicional().add(direccion);
+            }
+            if (telefono.getValue() != null && !telefono.getValue().isEmpty()) {
+                infoAdicional.getCampoAdicional().add(telefono);
+            }
+            if (email.getValue() != null && !email.getValue().isEmpty()) {
+                infoAdicional.getCampoAdicional().add(email);
+            }
+            comprobanteRetencion.setInfoAdicional(infoAdicional);
+
+            ComprobanteRetencion.InfoCompRetencion infoCompRetencion = new ComprobanteRetencion.InfoCompRetencion();
+            infoCompRetencion.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
+            infoCompRetencion.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
+            String oldDate = rs.getString("FECHA_RETENCION");
             LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
             String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            impuesto.setFechaEmisionDocSustento(newDate);
-            impuesto.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
-            impuesto.setPorcentajeRetener(rsd.getBigDecimal("PORCENTAJERETENR"));
-            impuesto.setValorRetenido(rsd.getBigDecimal("VALORRETENIDO").setScale(2));
-            impuestos.getImpuesto().add(impuesto);
-        }
-        comprobanteRetencion.setImpuestos(impuestos);
+            infoCompRetencion.setFechaEmision(newDate);
+            infoCompRetencion.setIdentificacionSujetoRetenido(rs.getString("IDENTIFICACION_SUJETO_RETENIDO"));
+            infoCompRetencion.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
+            infoCompRetencion.setPeriodoFiscal(rs.getString("PERIODO_FISCAL"));
+            infoCompRetencion.setRazonSocialSujetoRetenido(rs.getString("RAZON_SOCIAL_SUJETO_RETENIDO"));
+            infoCompRetencion.setTipoIdentificacionSujetoRetenido(rs.getString("TIPO_IDENT_SUJETO_RETENIDO"));
+            comprobanteRetencion.setInfoCompRetencion(infoCompRetencion);
 
-        ComprobanteRetencion.InfoAdicional infoAdicional = new ComprobanteRetencion.InfoAdicional();
-        ComprobanteRetencion.InfoAdicional.CampoAdicional direccion = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
-        direccion.setNombre("Direccion");
-        direccion.setValue(rs.getString("DIRECCION_RETENIDO"));
-        ComprobanteRetencion.InfoAdicional.CampoAdicional telefono = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
-        telefono.setValue(rs.getString("TELEFONO_RETENIDO"));
-        telefono.setNombre("Telefono");
-        ComprobanteRetencion.InfoAdicional.CampoAdicional email = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
-        email.setValue(rs.getString("EMAIL_RETENIDO"));
-        email.setNombre("Email");
-        if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
-            infoAdicional.getCampoAdicional().add(direccion);
-        }
-        if (telefono.getValue() != null && !telefono.getValue().isEmpty()) {
-            infoAdicional.getCampoAdicional().add(telefono);
-        }
-        if (email.getValue() != null && !email.getValue().isEmpty()) {
-            infoAdicional.getCampoAdicional().add(email);
-        }
-        comprobanteRetencion.setInfoAdicional(infoAdicional);
+            InfoTributaria infoTributaria = new InfoTributaria();
+            infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
+            infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
+            infoTributaria.setCodDoc(rs.getString("COD_DOCUMENTO"));
+            infoTributaria.setDirMatriz(rs.getString("DIRECCION_MATRIZ"));
+            infoTributaria.setEstab(rs.getString("ESTABLECIMIENTO"));
+            infoTributaria.setNombreComercial(rs.getString("NOMBRE_COMERCIAL"));
+            infoTributaria.setPtoEmi(rs.getString("PUNTO_EMISION"));
+            infoTributaria.setRazonSocial(rs.getString("RAZON_SOCIAL_EMPRESA"));
+            infoTributaria.setRuc(rs.getString("RUC_EMPRESA"));
+            infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
+            infoTributaria.setTipoEmision("1"); //PENDIENTE
+            comprobanteRetencion.setInfoTributaria(infoTributaria);
+            comprobanteRetencion.setVersion("1.1.0");
 
-        ComprobanteRetencion.InfoCompRetencion infoCompRetencion = new ComprobanteRetencion.InfoCompRetencion();
-        infoCompRetencion.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
-        infoCompRetencion.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
-        String oldDate = rs.getString("FECHA_RETENCION");
-        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
-        String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-        infoCompRetencion.setFechaEmision(newDate);
-        infoCompRetencion.setIdentificacionSujetoRetenido(rs.getString("IDENTIFICACION_SUJETO_RETENIDO"));
-        infoCompRetencion.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
-        infoCompRetencion.setPeriodoFiscal(rs.getString("PERIODO_FISCAL"));
-        infoCompRetencion.setRazonSocialSujetoRetenido(rs.getString("RAZON_SOCIAL_SUJETO_RETENIDO"));
-        infoCompRetencion.setTipoIdentificacionSujetoRetenido(rs.getString("TIPO_IDENT_SUJETO_RETENIDO"));
-        comprobanteRetencion.setInfoCompRetencion(infoCompRetencion);
+            comprobantes.add(comprobanteRetencion);
+            rsd.close();
+            detallePreparedStatement.close();
+        }
+    }
 
-        InfoTributaria infoTributaria = new InfoTributaria();
-        infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
-        infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
-        infoTributaria.setCodDoc(rs.getString("COD_DOCUMENTO"));
-        infoTributaria.setDirMatriz(rs.getString("DIRECCION_MATRIZ"));
-        infoTributaria.setEstab(rs.getString("ESTABLECIMIENTO"));
-        infoTributaria.setNombreComercial(rs.getString("NOMBRE_COMERCIAL"));
-        infoTributaria.setPtoEmi(rs.getString("PUNTO_EMISION"));
-        infoTributaria.setRazonSocial(rs.getString("RAZON_SOCIAL_EMPRESA"));
-        infoTributaria.setRuc(rs.getString("RUC_EMPRESA"));
-        infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
-        infoTributaria.setTipoEmision("1"); //PENDIENTE
-        comprobanteRetencion.setInfoTributaria(infoTributaria);
-        comprobanteRetencion.setVersion("1.1.0");
+    private void _buildNotasDebitos(ResultSet rs, List comprobantes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
 
-        comprobantes.add(comprobanteRetencion);
-        rsd.close();
-        detallePreparedStatement.close();
+    private void _buildNotasCreditos(ResultSet rs, List comprobantes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    private void _buildGuiasRemisiones(ResultSet rs, List comprobantes) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }
