@@ -50,6 +50,16 @@
             <groupId>com.sire</groupId>
             <artifactId>SIRE-Services-API</artifactId>
             <version>1.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sire</groupId>
+                    <artifactId>SIRE-Commons</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sire</groupId>
+                    <artifactId>SIRE-Entities</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
