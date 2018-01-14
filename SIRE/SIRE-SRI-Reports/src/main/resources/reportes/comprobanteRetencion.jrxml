@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="comprobanteRetencion" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3eaa0e8-2300-4d0d-bb98-ea16c8d01451">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="115"/>
+	<property name="ireport.y" value="249"/>
 	<parameter name="RUC" class="java.lang.String"/>
 	<parameter name="NUM_AUT" class="java.lang.String"/>
 	<parameter name="FECHA_AUT" class="java.lang.String"/>
@@ -123,37 +123,39 @@
 				<textFieldExpression><![CDATA[$P{CLAVE_ACC}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement mode="Transparent" x="1" y="346" width="192" height="13" uuid="f083eac7-1599-4343-9fb7-642786ffe32e"/>
+				<reportElement mode="Transparent" x="1" y="346" width="182" height="13" uuid="f083eac7-1599-4343-9fb7-642786ffe32e"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Razón Social / Nombres y Apellidos:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="369" y="346" width="66" height="13" uuid="5e376151-976f-45be-9b5e-7d04ca942c4a"/>
+				<reportElement mode="Transparent" x="373" y="346" width="73" height="13" uuid="5e376151-976f-45be-9b5e-7d04ca942c4a"/>
 				<textElement verticalAlignment="Middle">
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Identificación:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="1" y="375" width="87" height="12" uuid="7501feea-7442-4dc7-9e76-55a429bbbf28"/>
+				<reportElement mode="Transparent" x="1" y="375" width="77" height="12" uuid="7501feea-7442-4dc7-9e76-55a429bbbf28"/>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha Emisión:]]></text>
 			</staticText>
 			<textField>
-				<reportElement mode="Transparent" x="181" y="346" width="186" height="13" uuid="731a68dc-7a6e-4153-a391-8b4aef4ec5a0"/>
+				<reportElement mode="Transparent" x="184" y="346" width="185" height="13" uuid="731a68dc-7a6e-4153-a391-8b4aef4ec5a0"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{RS_COMPRADOR}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="436" y="346" width="118" height="13" uuid="ec9d05f5-b93b-4b50-9aaf-c875359ec703"/>
+				<reportElement mode="Transparent" x="447" y="346" width="107" height="13" uuid="ec9d05f5-b93b-4b50-9aaf-c875359ec703"/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{RUC_COMPRADOR}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yy">
 				<reportElement mode="Transparent" x="80" y="374" width="114" height="12" uuid="3903f07f-aa52-4aa0-8db5-e5ffbd97b6b8"/>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{FECHA_EMISION}]]></textFieldExpression>

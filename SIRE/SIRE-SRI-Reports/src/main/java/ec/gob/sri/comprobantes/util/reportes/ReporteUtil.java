@@ -137,18 +137,51 @@ public class ReporteUtil {
         }
     }
 
-    public void generarReporte(String urlReporte, NotaDebitoReporte rep, String numAut, String fechaAut)
+//    public void generarReporte(String urlReporte, NotaDebitoReporte rep, String numAut, String fechaAut)
+//            throws SQLException, ClassNotFoundException, IOException {
+//        FileInputStream is = null;
+//        try {
+//            JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getDetallesAdiciones());
+//            is = new FileInputStream(urlReporte);
+//            JasperPrint reporte_view = JasperFillManager.fillReport(is, obtenerMapaParametrosReportes(obtenerParametrosInfoTriobutaria(rep.getNotaDebito().getInfoTributaria(), numAut, fechaAut), obtenerInfoND(rep.getNotaDebito().getInfoNotaDebito())), dataSource);
+//
+//            showReport(reporte_view);
+//        } catch (FileNotFoundException | JRException ex) {
+//            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                if (is != null) {
+//                    is.close();
+//                }
+//            } catch (IOException ex) {
+//                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//    }
+    public byte[] generarReporte(String urlReporte, NotaDebitoReporte rep, String numAut, String fechaAut)
             throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getDetallesAdiciones());
             is = new FileInputStream(urlReporte);
             JasperPrint reporte_view = JasperFillManager.fillReport(is, obtenerMapaParametrosReportes(obtenerParametrosInfoTriobutaria(rep.getNotaDebito().getInfoTributaria(), numAut, fechaAut), obtenerInfoND(rep.getNotaDebito().getInfoNotaDebito())), dataSource);
+            JasperExportManager.exportReportToPdfStream(reporte_view, outputStream);
 
-            showReport(reporte_view);
+//            showReport(reporte_view);
+            return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
             Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
+            //clean off
+            if (null != outputStream) {
+                try {
+                    outputStream.close();
+                    outputStream = null;
+                } catch (IOException ex) {
+                }
+            }
             try {
                 if (is != null) {
                     is.close();
@@ -159,18 +192,50 @@ public class ReporteUtil {
         }
     }
 
-    public void generarReporte(String urlReporte, NotaCreditoReporte rep, String numAut, String fechaAut)
+//    public void generarReporte(String urlReporte, NotaCreditoReporte rep, String numAut, String fechaAut)
+//            throws SQLException, ClassNotFoundException, IOException {
+//        FileInputStream is = null;
+//        try {
+//            JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getDetallesAdiciones());
+//            is = new FileInputStream(urlReporte);
+//            JasperPrint reporte_view = JasperFillManager.fillReport(is, obtenerMapaParametrosReportes(obtenerParametrosInfoTriobutaria(rep.getNotaCredito().getInfoTributaria(), numAut, fechaAut), obtenerInfoNC(rep.getNotaCredito().getInfoNotaCredito(), rep)), dataSource);
+//
+//            showReport(reporte_view);
+//        } catch (FileNotFoundException | JRException ex) {
+//            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                if (is != null) {
+//                    is.close();
+//                }
+//            } catch (IOException ex) {
+//                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//    }
+    public byte[] generarReporte(String urlReporte, NotaCreditoReporte rep, String numAut, String fechaAut)
             throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getDetallesAdiciones());
             is = new FileInputStream(urlReporte);
             JasperPrint reporte_view = JasperFillManager.fillReport(is, obtenerMapaParametrosReportes(obtenerParametrosInfoTriobutaria(rep.getNotaCredito().getInfoTributaria(), numAut, fechaAut), obtenerInfoNC(rep.getNotaCredito().getInfoNotaCredito(), rep)), dataSource);
-
-            showReport(reporte_view);
+            JasperExportManager.exportReportToPdfStream(reporte_view, outputStream);
+//            showReport(reporte_view);
+            return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
             Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
+            //clean off
+            if (null != outputStream) {
+                try {
+                    outputStream.close();
+                    outputStream = null;
+                } catch (IOException ex) {
+                }
+            }
             try {
                 if (is != null) {
                     is.close();
@@ -181,18 +246,50 @@ public class ReporteUtil {
         }
     }
 
-    public void generarReporte(String urlReporte, GuiaRemisionReporte rep, String numAut, String fechaAut, GuiaRemision guiaRemision)
+//    public void generarReporte(String urlReporte, GuiaRemisionReporte rep, String numAut, String fechaAut, GuiaRemision guiaRemision)
+//            throws SQLException, ClassNotFoundException, IOException {
+//        FileInputStream is = null;
+//        try {
+//            JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getGuiaRemisionList());
+//            is = new FileInputStream(urlReporte);
+//            JasperPrint reporte_view = JasperFillManager.fillReport(is, obtenerMapaParametrosReportes(obtenerParametrosInfoTriobutaria(rep.getGuiaRemision().getInfoTributaria(), numAut, fechaAut), obtenerInfoGR(rep.getGuiaRemision().getInfoGuiaRemision(), guiaRemision)), dataSource);
+//
+//            showReport(reporte_view);
+//        } catch (FileNotFoundException | JRException ex) {
+//            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+//        } finally {
+//            try {
+//                if (is != null) {
+//                    is.close();
+//                }
+//            } catch (IOException ex) {
+//                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+//            }
+//        }
+//    }
+    public byte[] generarReporte(String urlReporte, GuiaRemisionReporte rep, String numAut, String fechaAut, GuiaRemision guiaRemision)
             throws SQLException, ClassNotFoundException, IOException {
         FileInputStream is = null;
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             JRDataSource dataSource = new JRBeanCollectionDataSource(rep.getGuiaRemisionList());
             is = new FileInputStream(urlReporte);
             JasperPrint reporte_view = JasperFillManager.fillReport(is, obtenerMapaParametrosReportes(obtenerParametrosInfoTriobutaria(rep.getGuiaRemision().getInfoTributaria(), numAut, fechaAut), obtenerInfoGR(rep.getGuiaRemision().getInfoGuiaRemision(), guiaRemision)), dataSource);
-
-            showReport(reporte_view);
+            JasperExportManager.exportReportToPdfStream(reporte_view, outputStream);
+//            showReport(reporte_view);
+            return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
             Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         } finally {
+            //clean off
+            if (null != outputStream) {
+                try {
+                    outputStream.close();
+                    outputStream = null;
+                } catch (IOException ex) {
+                }
+            }
             try {
                 if (is != null) {
                     is.close();
@@ -224,7 +321,6 @@ public class ReporteUtil {
 //            }
 //        }
 //    }
-
     private Map<String, Object> obtenerMapaParametrosReportes(Map<String, Object> mapa1, Map<String, Object> mapa2) {
         mapa1.putAll(mapa2);
         return mapa1;

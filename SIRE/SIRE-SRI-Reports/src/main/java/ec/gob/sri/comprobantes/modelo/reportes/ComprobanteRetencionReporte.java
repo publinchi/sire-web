@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ComprobanteRetencionReporte {
-    
+
     private ComprobanteRetencion comprobanteRetencion;
     private List<DetallesAdicionalesReporte> detallesAdiciones;
     private List<InformacionAdicional> infoAdicional;
@@ -24,19 +24,19 @@ public class ComprobanteRetencionReporte {
     private static final String NOTA_DEBITO = "NOTA DE D��BITO";
     private static final String GUIA_REMISION = "GU��A DE REMISI��N";
     private static final String COMP_RETENCION = "COMPROBANTE RETENCI��N";
-    
+
     public ComprobanteRetencionReporte(ComprobanteRetencion comprobanteRetencion) {
         this.comprobanteRetencion = comprobanteRetencion;
     }
-    
+
     public ComprobanteRetencion getComprobanteRetencion() {
         return this.comprobanteRetencion;
     }
-    
+
     public void setComprobanteRetencion(ComprobanteRetencion comprobanteRetencion) {
         this.comprobanteRetencion = comprobanteRetencion;
     }
-    
+
     public List<DetallesAdicionalesReporte> getDetallesAdiciones() {
         this.detallesAdiciones = new ArrayList();
         System.out.println(this.comprobanteRetencion.getImpuestos().getImpuesto().size());
@@ -54,26 +54,26 @@ public class ComprobanteRetencionReporte {
         }
         return this.detallesAdiciones;
     }
-    
+
     private String obtenerDecripcionComprobante(String codDocSustento) {
         if ("01".equals(codDocSustento)) {
             return "FACTURA";
         }
         if ("04".equals(codDocSustento)) {
-            return "NOTA DE CR��DITO";
+            return "NOTA DE CRÉDITO";
         }
         if ("05".equals(codDocSustento)) {
-            return "NOTA DE D��BITO";
+            return "NOTA DE DÉBITO";
         }
         if ("06".equals(codDocSustento)) {
-            return "GU��A DE REMISI��N";
+            return "GUÍA DE REMISIÓN";
         }
         if ("07".equals(codDocSustento)) {
-            return "COMPROBANTE RETENCI��N";
+            return "COMPROBANTE RETENCIÓN";
         }
         return null;
     }
-    
+
     private String obtenerImpuestoDecripcion(String codigoImpuesto) {
         if (codigoImpuesto.equals("1")) {
             return "RENTA";
@@ -89,11 +89,11 @@ public class ComprobanteRetencionReporte {
         }
         return null;
     }
-    
+
     public void setDetallesAdiciones(List<DetallesAdicionalesReporte> detallesAdiciones) {
         this.detallesAdiciones = detallesAdiciones;
     }
-    
+
     public List<InformacionAdicional> getInfoAdicional() {
         if (this.comprobanteRetencion.getInfoAdicional() != null) {
             this.infoAdicional = new ArrayList();
@@ -105,7 +105,7 @@ public class ComprobanteRetencionReporte {
         }
         return this.infoAdicional;
     }
-    
+
     public void setInfoAdicional(List<InformacionAdicional> infoAdicional) {
         this.infoAdicional = infoAdicional;
     }
