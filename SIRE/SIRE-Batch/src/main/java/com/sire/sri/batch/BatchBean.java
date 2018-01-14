@@ -30,129 +30,106 @@ import org.javaee7.util.BatchTestHelper;
 @Startup
 public class BatchBean {
 
+    /* RECEPCIONES */
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionFacturaJob()
             throws InterruptedException, NamingException, IOException {
         System.out.println("-> sriRecepcionFacturaJob");
-        String comprobanteSQL = "SELECT COD_EMPRESA, RUC_EMPRESA, RAZON_SOCIAL_EMPRESA, "
-                + "NOMBRE_COMERCIAL, COD_DOCUMENTO, NUM_FACTURA_INTERNO, ESTABLECIMIENTO, "
-                + "PUNTO_EMISION, SECUENCIAL, DIRECCION_MATRIZ, DIRECCION_ESTABLECIMIENTO, "
-                + "CONTRIBUYENTE_ESPECIAL, LLEVA_CONTABILIDAD, RAZON_SOCIAL_COMPRADOR, "
-                + "FECHA_FACTURA, TIPO_IDENTIFICACION_COMPRADOR, IDENTIFICACION_COMPRADOR, "
-                + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
-                + "TOTAL_SIN_IMPUESTOS, TOTAL_DESCUENTOS, PROPINA, IMPORTE_TOTAL, "
-                + "CLAVE_ACCESO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, BASE_IMPONIBLE, "
-                + "VALOR, MONEDA, OBSERVACION FROM V_FACTURA_ELECTRONICA_C WHERE "
-                + "ESTADO_SRI='GRABADA' AND ROWNUM <= 20 ORDER BY FECHA_FACTURA";
-        String home = System.getProperty("sire.home");
-        if (home == null) {
-            home = System.getProperty("user.home");
-        }
-        Properties runtimeParameters = new Properties();
-        runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
-        runtimeParameters.setProperty("comprobanteSQL", comprobanteSQL);
-        runtimeParameters.setProperty("tipoComprobante", "01");
 
-        JobOperator jobOperator = BatchRuntime.getJobOperator();
-        Long executionId = Long.valueOf(jobOperator.start("SriRecepcionJob", runtimeParameters));
-        JobExecution jobExecution = jobOperator.getJobExecution(executionId.longValue());
+        executeJob("SriRecepcionJob", "01");
+    }
 
-        jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
+    private void sriRecepcionNotaCreditoJob()
+            throws InterruptedException, NamingException, IOException {
+        System.out.println("-> sriRecepcionNotaCreditoJob");
 
-        List<StepExecution> stepExecutions = jobOperator.getStepExecutions(executionId.longValue());
-        for (StepExecution stepExecution : stepExecutions) {
-            if (stepExecution.getStepName().equals("f1_chunk1")) {
-                Map<Metric.MetricType, Long> metricsMap = BatchTestHelper.getMetricsMap(stepExecution.getMetrics());
-                System.out.println("READ_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.READ_COUNT)).longValue());
-                System.out.println("WRITE_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.WRITE_COUNT)).longValue());
-                System.out.println("COMMIT_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.COMMIT_COUNT)).longValue());
-            }
-        }
+        executeJob("SriRecepcionJob", "04");
+    }
+
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
+    private void sriRecepcionNotaDebitoJob()
+            throws InterruptedException, NamingException, IOException {
+        System.out.println("-> sriRecepcionNotaDebitoJob");
+
+        executeJob("SriRecepcionJob", "05");
+    }
+
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
+    private void sriRecepcionGuiaRemisionJob()
+            throws InterruptedException, NamingException, IOException {
+        System.out.println("-> sriRecepcionGuiaRemisionJob");
+
+        executeJob("SriRecepcionJob", "06");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionRetencionJob()
             throws InterruptedException, NamingException, IOException {
         System.out.println("-> sriRecepcionRetencionJob");
-        String comprobanteSQL = "SELECT COD_EMPRESA, RUC_EMPRESA, RAZON_SOCIAL_EMPRESA, "
-                + "NOMBRE_COMERCIAL, COD_DOCUMENTO, NUM_RETENCION_INTERNO, CLAVE_ACCESO, "
-                + "ESTABLECIMIENTO, PUNTO_EMISION, SECUENCIAL, DIRECCION_MATRIZ, "
-                + "DIRECCION_ESTABLECIMIENTO, CONTRIBUYENTE_ESPECIAL, LLEVA_CONTABILIDAD, "
-                + "RAZON_SOCIAL_SUJETO_RETENIDO, DIRECCION_RETENIDO, TELEFONO_RETENIDO, "
-                + "EMAIL_RETENIDO, FECHA_RETENCION, TIPO_IDENT_SUJETO_RETENIDO, "
-                + "IDENTIFICACION_SUJETO_RETENIDO, PERIODO_FISCAL, ESTADO_SRI, "
-                + "CLAVE_ACCESO_LOTE FROM V_RETENCION_ELECTRONICA_C WHERE "
-                + "ESTADO_SRI='GRABADA' AND ROWNUM <= 20 ORDER BY FECHA_RETENCION";
-        String home = System.getProperty("sire.home");
-        if (home == null) {
-            home = System.getProperty("user.home");
-        }
-        Properties runtimeParameters = new Properties();
-        runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
-        runtimeParameters.setProperty("comprobanteSQL", comprobanteSQL);
-        runtimeParameters.setProperty("tipoComprobante", "07");
 
-        JobOperator jobOperator = BatchRuntime.getJobOperator();
-        Long executionId = Long.valueOf(jobOperator.start("SriRecepcionJob", runtimeParameters));
-        JobExecution jobExecution = jobOperator.getJobExecution(executionId.longValue());
-
-        jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
-
-        List<StepExecution> stepExecutions = jobOperator.getStepExecutions(executionId.longValue());
-        for (StepExecution stepExecution : stepExecutions) {
-            if (stepExecution.getStepName().equals("f1_chunk1")) {
-                Map<Metric.MetricType, Long> metricsMap = BatchTestHelper.getMetricsMap(stepExecution.getMetrics());
-                System.out.println("READ_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.READ_COUNT)).longValue());
-                System.out.println("WRITE_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.WRITE_COUNT)).longValue());
-                System.out.println("COMMIT_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.COMMIT_COUNT)).longValue());
-            }
-        }
+        executeJob("SriRecepcionJob", "07");
     }
 
+    /* AUTORIZACIONES*/
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionFacturaJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
         System.out.println("-> sriAutorizacionFacturaJob");
-        String home = System.getProperty("sire.home");
-        if (home == null) {
-            home = System.getProperty("user.home");
-        }
-        Properties runtimeParameters = new Properties();
-        runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
-        runtimeParameters.setProperty("tipoComprobante", "01");
 
-        JobOperator jobOperator = BatchRuntime.getJobOperator();
-        Long executionId = Long.valueOf(jobOperator.start("SriAutorizacionJob", runtimeParameters));
-        JobExecution jobExecution = jobOperator.getJobExecution(executionId.longValue());
+        executeJob("SriAutorizacionJob", "01", "factura.jasper");
+    }
 
-        jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
+    private void sriAutorizacionNotaCreditoJob()
+            throws InterruptedException, NamingException, FileNotFoundException, IOException {
+        System.out.println("-> sriAutorizacionNotaCreditoJob");
 
-        List<StepExecution> stepExecutions = jobOperator.getStepExecutions(executionId.longValue());
-        for (StepExecution stepExecution : stepExecutions) {
-            if (stepExecution.getStepName().equals("f1_chunk1")) {
-                Map<Metric.MetricType, Long> metricsMap = BatchTestHelper.getMetricsMap(stepExecution.getMetrics());
-                System.out.println("READ_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.READ_COUNT)).longValue());
-                System.out.println("WRITE_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.WRITE_COUNT)).longValue());
-                System.out.println("COMMIT_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.COMMIT_COUNT)).longValue());
-            }
-        }
+        executeJob("SriAutorizacionJob", "04", "notaCreditoFinal.jasper");
+    }
+
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
+    private void sriAutorizacionNotaDebitoJob()
+            throws InterruptedException, NamingException, FileNotFoundException, IOException {
+        System.out.println("-> sriAutorizacionNotaDebitoJob");
+
+        executeJob("SriAutorizacionJob", "05", "notaDebitoFinal.jasper");
+    }
+
+    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
+    private void sriAutorizacionGuiaRemisionJob()
+            throws InterruptedException, NamingException, FileNotFoundException, IOException {
+        System.out.println("-> sriAutorizacionGuiaRemisionJob");
+
+        executeJob("SriAutorizacionJob", "06", "guiaRemisionFinal.jasper");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionRetencionJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
         System.out.println("-> sriAutorizacionRetencionJob");
+
+        executeJob("SriAutorizacionJob", "07", "comprobanteRetencion.jasper");
+
+    }
+
+    private void executeJob(String jobName, String tipoComprobante) throws IOException, FileNotFoundException, InterruptedException {
+        //Se envía null porque la recepcion no genera reporte
+        executeJob(jobName, tipoComprobante, null);
+    }
+
+    private void executeJob(String jobName, String tipoComprobante, String reportName) throws FileNotFoundException, IOException, InterruptedException {
         String home = System.getProperty("sire.home");
         if (home == null) {
             home = System.getProperty("user.home");
         }
         Properties runtimeParameters = new Properties();
         runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
-        runtimeParameters.setProperty("urlReporte", runtimeParameters.getProperty("pathReports") + "comprobanteRetencion.jasper");
-        runtimeParameters.setProperty("tipoComprobante", "07");
+        runtimeParameters.setProperty("urlReporte", runtimeParameters.getProperty("pathReports") + reportName);
+        runtimeParameters.setProperty("tipoComprobante", tipoComprobante);
 
         JobOperator jobOperator = BatchRuntime.getJobOperator();
-        Long executionId = Long.valueOf(jobOperator.start("SriAutorizacionJob", runtimeParameters));
+        Long executionId = Long.valueOf(jobOperator.start(jobName, runtimeParameters));
         JobExecution jobExecution = jobOperator.getJobExecution(executionId.longValue());
 
         jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
@@ -167,7 +144,7 @@ public class BatchBean {
             }
         }
     }
-
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+
 }
