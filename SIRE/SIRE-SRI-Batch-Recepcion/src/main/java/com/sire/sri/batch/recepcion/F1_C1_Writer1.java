@@ -8,6 +8,9 @@ import com.sire.soap.util.SoapUtil;
 import ec.gob.sri.comprobantes.modelo.Lote;
 import com.sun.xml.bind.marshaller.DataWriter;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
+import ec.gob.sri.comprobantes.modelo.guia.GuiaRemision;
+import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
+import ec.gob.sri.comprobantes.modelo.notadebito.NotaDebito;
 import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -100,6 +103,12 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 if (claveAccesoLote == null) {
                     if (((Map) item).get("comprobante") instanceof Factura) {
                         getClaveAccesoLote("01");
+                    } else if (((Map) item).get("comprobante") instanceof NotaCredito) {
+                        getClaveAccesoLote("04");
+                    } else if (((Map) item).get("comprobante") instanceof NotaDebito) {
+                        getClaveAccesoLote("05");
+                    } else if (((Map) item).get("comprobante") instanceof GuiaRemision) {
+                        getClaveAccesoLote("06");
                     } else if (((Map) item).get("comprobante") instanceof ComprobanteRetencion) {
                         getClaveAccesoLote("07");
                     }
@@ -128,9 +137,9 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
             String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
 
-            for (Object item : items) {
+            items.forEach((item) -> {
                 processResponse(item, validarComprobanteResponse);
-            }
+            });
             String secuencial = claveAccesoLote.substring(30, 39);
 
             String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
@@ -330,7 +339,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private void processResponse(Object item, ValidarComprobanteResponse validarComprobanteResponse) {
         String claveAcceso = null;
         String secuencial = null;
-        String cabeceraSQL = null;
+        String cabeceraSQL;
         String nombreTablaComprobante = null;
         String nombreSecuencial = null;
         if (((Map) item).get("comprobante") instanceof Factura) {
@@ -339,12 +348,32 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             claveAcceso = factura.getInfoTributaria().getClaveAcceso();
             nombreTablaComprobante = "FAC_FACTURA_C";
             nombreSecuencial = "SECUENCIAL";
+        } else if (((Map) item).get("comprobante") instanceof NotaCredito) {
+            NotaCredito notaCredito = (NotaCredito) ((Map) item).get("comprobante");
+            secuencial = notaCredito.getInfoTributaria().getEstab() + "-" + notaCredito.getInfoTributaria().getPtoEmi() + "-" + notaCredito.getInfoTributaria().getSecuencial();
+            claveAcceso = notaCredito.getInfoTributaria().getClaveAcceso();
+            nombreTablaComprobante = "FAC_DEVOLUCION_C";
+            nombreSecuencial = "NUM_SECUENCIAL";
+        } else if (((Map) item).get("comprobante") instanceof NotaDebito) {
+            NotaDebito notaDebito = (NotaDebito) ((Map) item).get("comprobante");
+            secuencial = notaDebito.getInfoTributaria().getEstab() + "-" + notaDebito.getInfoTributaria().getPtoEmi() + "-" + notaDebito.getInfoTributaria().getSecuencial();
+            claveAcceso = notaDebito.getInfoTributaria().getClaveAcceso();
+            nombreTablaComprobante = "";
+            nombreSecuencial = "";
+        } else if (((Map) item).get("comprobante") instanceof GuiaRemision) {
+            GuiaRemision guiaRemision = (GuiaRemision) ((Map) item).get("comprobante");
+            secuencial = guiaRemision.getInfoTributaria().getEstab() + "-" + guiaRemision.getInfoTributaria().getPtoEmi() + "-" + guiaRemision.getInfoTributaria().getSecuencial();
+            claveAcceso = guiaRemision.getInfoTributaria().getClaveAcceso();
+            nombreTablaComprobante = "";
+            nombreSecuencial = "";
         } else if (((Map) item).get("comprobante") instanceof ComprobanteRetencion) {
             ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) ((Map) item).get("comprobante");
             secuencial = comprobanteRetencion.getInfoTributaria().getEstab() + "-" + comprobanteRetencion.getInfoTributaria().getPtoEmi() + "-" + comprobanteRetencion.getInfoTributaria().getSecuencial();
             claveAcceso = comprobanteRetencion.getInfoTributaria().getClaveAcceso();
             nombreTablaComprobante = "BAN_RETENCION_C";
             nombreSecuencial = "NUM_SECUENCIAL";
+        } else {
+            throw new RuntimeException("El comprobante no es de alguna clase conocida.");
         }
         boolean existsError = false;
         for (recepcion.ws.sri.gob.ec.Comprobante c : validarComprobanteResponse.getRespuestaRecepcionComprobante().getComprobantes().getComprobante()) {
