@@ -8,6 +8,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import javax.batch.operations.JobOperator;
 import javax.batch.runtime.JobExecution;
@@ -41,6 +42,9 @@ import org.junit.runner.RunWith;
  */
 @RunWith(Arquillian.class)
 public class SriJobTest {
+
+    private Logger log = Logger.getLogger(SriJobTest.class.getName());
+    private static Logger logger = Logger.getLogger(SriJobTest.class.getName());
 
     /**
      * We're just going to deploy the application as a +web archive+. Note the
@@ -106,7 +110,7 @@ public class SriJobTest {
                         new File("/home/pestupinan/.m2/repository/org/apache/xmlgraphics/batik-awt-util/1.7/batik-awt-util-1.7.jar"),
                         new File("/home/pestupinan/.m2/repository/org/apache/xmlgraphics/batik-gvt/1.7/batik-gvt-1.7.jar"));
 
-        System.out.println(war.toString(true));
+        logger.info(war.toString(true));
         return war;
     }
 
@@ -138,17 +142,17 @@ public class SriJobTest {
         for (StepExecution stepExecution : stepExecutions) {
             if (stepExecution.getStepName().equals("f1_chunk1")) {
                 Map<Metric.MetricType, Long> metricsMap = BatchTestHelper.getMetricsMap(stepExecution.getMetrics());
-                System.out.println("READ_COUNT: " + metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
+                log.info("READ_COUNT: " + metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
 //                // <1> The read count should be 10 elements. Check +MyItemReader+.
 //                assertEquals(10L, metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
                 assertEquals(4L, metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
 //
-                System.out.println("WRITE_COUNT: " + metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
+                log.info("WRITE_COUNT: " + metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
 //                // <2> The write count should be 5. Only half of the elements read are processed to be written.
 //                assertEquals(10L / 2L, metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
                 assertEquals(4L, metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
 //                
-                System.out.println("COMMIT_COUNT: " + metricsMap.get(Metric.MetricType.COMMIT_COUNT).longValue());
+                log.info("COMMIT_COUNT: " + metricsMap.get(Metric.MetricType.COMMIT_COUNT).longValue());
 //                // <3> The commit count should be 4. Checkpoint is on every 3rd read, 4 commits for read elements.
 //                assertEquals(10L / 3 + (10L % 3 > 0 ? 1 : 0),
 //                    metricsMap.get(Metric.MetricType.COMMIT_COUNT).longValue());
@@ -184,17 +188,17 @@ public class SriJobTest {
         for (StepExecution stepExecution : stepExecutions) {
             if (stepExecution.getStepName().equals("f1_chunk1")) {
                 Map<Metric.MetricType, Long> metricsMap = BatchTestHelper.getMetricsMap(stepExecution.getMetrics());
-                System.out.println("READ_COUNT: " + metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
+                log.info("READ_COUNT: " + metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
 //                // <1> The read count should be 10 elements. Check +MyItemReader+.
 //                assertEquals(10L, metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
                 assertEquals(4L, metricsMap.get(Metric.MetricType.READ_COUNT).longValue());
 //
-                System.out.println("WRITE_COUNT: " + metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
+                log.info("WRITE_COUNT: " + metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
 //                // <2> The write count should be 5. Only half of the elements read are processed to be written.
 //                assertEquals(10L / 2L, metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
                 assertEquals(4L, metricsMap.get(Metric.MetricType.WRITE_COUNT).longValue());
 //                
-                System.out.println("COMMIT_COUNT: " + metricsMap.get(Metric.MetricType.COMMIT_COUNT).longValue());
+                log.info("COMMIT_COUNT: " + metricsMap.get(Metric.MetricType.COMMIT_COUNT).longValue());
 //                // <3> The commit count should be 4. Checkpoint is on every 3rd read, 4 commits for read elements.
 //                assertEquals(10L / 3 + (10L % 3 > 0 ? 1 : 0),
 //                    metricsMap.get(Metric.MetricType.COMMIT_COUNT).longValue());

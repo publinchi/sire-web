@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 import javax.batch.operations.JobOperator;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.JobExecution;
@@ -30,11 +31,13 @@ import org.javaee7.util.BatchTestHelper;
 @Startup
 public class BatchBean {
 
+    private Logger log = Logger.getLogger(BatchBean.class.getName());
+
     /* RECEPCIONES */
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionFacturaJob()
             throws InterruptedException, NamingException, IOException {
-        System.out.println("-> sriRecepcionFacturaJob");
+        log.info("-> sriRecepcionFacturaJob");
 
         executeJob("SriRecepcionJob", "01");
     }
@@ -42,7 +45,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionNotaCreditoJob()
             throws InterruptedException, NamingException, IOException {
-        System.out.println("-> sriRecepcionNotaCreditoJob");
+        log.info("-> sriRecepcionNotaCreditoJob");
 
         executeJob("SriRecepcionJob", "04");
     }
@@ -50,7 +53,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionNotaDebitoJob()
             throws InterruptedException, NamingException, IOException {
-        System.out.println("-> sriRecepcionNotaDebitoJob");
+        log.info("-> sriRecepcionNotaDebitoJob");
 
         executeJob("SriRecepcionJob", "05");
     }
@@ -58,7 +61,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionGuiaRemisionJob()
             throws InterruptedException, NamingException, IOException {
-        System.out.println("-> sriRecepcionGuiaRemisionJob");
+        log.info("-> sriRecepcionGuiaRemisionJob");
 
         executeJob("SriRecepcionJob", "06");
     }
@@ -66,7 +69,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriRecepcionRetencionJob()
             throws InterruptedException, NamingException, IOException {
-        System.out.println("-> sriRecepcionRetencionJob");
+        log.info("-> sriRecepcionRetencionJob");
 
         executeJob("SriRecepcionJob", "07");
     }
@@ -75,7 +78,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionFacturaJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        System.out.println("-> sriAutorizacionFacturaJob");
+        log.info("-> sriAutorizacionFacturaJob");
 
         executeJob("SriAutorizacionJob", "01", "factura.jasper");
     }
@@ -83,7 +86,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionNotaCreditoJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        System.out.println("-> sriAutorizacionNotaCreditoJob");
+        log.info("-> sriAutorizacionNotaCreditoJob");
 
         executeJob("SriAutorizacionJob", "04", "notaCreditoFinal.jasper");
     }
@@ -91,7 +94,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionNotaDebitoJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        System.out.println("-> sriAutorizacionNotaDebitoJob");
+        log.info("-> sriAutorizacionNotaDebitoJob");
 
         executeJob("SriAutorizacionJob", "05", "notaDebitoFinal.jasper");
     }
@@ -99,7 +102,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionGuiaRemisionJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        System.out.println("-> sriAutorizacionGuiaRemisionJob");
+        log.info("-> sriAutorizacionGuiaRemisionJob");
 
         executeJob("SriAutorizacionJob", "06", "guiaRemisionFinal.jasper");
     }
@@ -107,7 +110,7 @@ public class BatchBean {
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
     private void sriAutorizacionRetencionJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        System.out.println("-> sriAutorizacionRetencionJob");
+        log.info("-> sriAutorizacionRetencionJob");
 
         executeJob("SriAutorizacionJob", "07", "comprobanteRetencion.jasper");
 
@@ -138,9 +141,9 @@ public class BatchBean {
         for (StepExecution stepExecution : stepExecutions) {
             if (stepExecution.getStepName().equals("f1_chunk1")) {
                 Map<Metric.MetricType, Long> metricsMap = BatchTestHelper.getMetricsMap(stepExecution.getMetrics());
-                System.out.println("READ_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.READ_COUNT)).longValue());
-                System.out.println("WRITE_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.WRITE_COUNT)).longValue());
-                System.out.println("COMMIT_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.COMMIT_COUNT)).longValue());
+                log.info("READ_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.READ_COUNT)).longValue());
+                log.info("WRITE_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.WRITE_COUNT)).longValue());
+                log.info("COMMIT_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.COMMIT_COUNT)).longValue());
             }
         }
     }
