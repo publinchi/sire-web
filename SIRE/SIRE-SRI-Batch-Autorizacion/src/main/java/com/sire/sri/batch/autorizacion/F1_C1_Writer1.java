@@ -64,6 +64,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private Connection connection;
     private IMailService mailService;
     private String urlReporte;
+    private Logger log = Logger.getLogger(F1_C1_Writer1.class.getName());
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
@@ -117,7 +118,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     }
                     for (Autorizacion autorizacion : respuestaComprobante.getAutorizaciones().getAutorizacion()) {
                         if (claveAcceso.equals(autorizacion.getNumeroAutorizacion())) {
-                            System.out.println("----------------------------------------------------------------");
+                            log.info("----------------------------------------------------------------");
                             String estado = autorizacion.getEstado();
                             String fechaAutorizacion = autorizacion.getFechaAutorizacion().toGregorianCalendar().getTime().toString();
                             String year = fechaAutorizacion.substring(24);
@@ -132,7 +133,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                             String claveAccesoConsultada = respuestaComprobante.getClaveAccesoConsultada();
                             String numeroComprobantes = respuestaComprobante.getNumeroComprobantes();
 
-                            System.out.println("Secuencial: " + secuencial
+                            log.info("Secuencial: " + secuencial
                                     + ", Estado: " + estado
                                     + ", FechaAutorizacion: " + fechaAutorizacion
                                     + ", ClaveAccesoConsultada: " + claveAccesoConsultada
@@ -148,13 +149,13 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                                 mensaje = m.getMensaje();
                                 tipo = m.getTipo();
 
-                                System.out.println("Identificador: " + identificador
+                                log.info("Identificador: " + identificador
                                         + ", InformacionAdicional: " + informacionAdicional
                                         + ", Mensaje: " + mensaje
                                         + ", Tipo: " + tipo
                                 );
                             }
-                            System.out.println("-----------------------------------------------------");
+                            log.info("-----------------------------------------------------");
                             String motivo = "";
                             if (!estado.equals("AUTORIZADO") && !estado.equals("EN PROCESAMIENTO")) {
                                 motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
@@ -172,7 +173,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                                     + motivo
                                     + fechaAutorizacion
                                     + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
-                            System.out.println("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
+                            log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
                             try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
                                 preparedStatement.executeQuery();
                                 preparedStatement.close();
@@ -183,7 +184,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 String loteSQL = "UPDATE CEL_LOTE_AUTORIZADO SET "
                         + "ESTADO_SRI = 'PROCESADA'"
                         + " WHERE CLAVE_ACCESO = '" + lote.getClaveAcceso() + "'";
-                System.out.println("update CEL_LOTE_AUTORIZADO -> " + loteSQL);
+                log.info("update CEL_LOTE_AUTORIZADO -> " + loteSQL);
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL)) {
                     preparedStatement.executeQuery();
                     preparedStatement.close();
@@ -307,7 +308,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 event.setMimeMultipart(mimeMultipart);
 
                 if (recipient != null && !recipient.isEmpty()) {
-                    System.out.println("Secuencial de Comprobante a ser enviado por mail: " + secuencial);
+                    log.info("Secuencial de Comprobante a ser enviado por mail: " + secuencial);
                     getMailService().sendMail(event); //firing event!
                 }
             } catch (NamingException | MessagingException | JAXBException | SQLException | ClassNotFoundException | IOException ex) {

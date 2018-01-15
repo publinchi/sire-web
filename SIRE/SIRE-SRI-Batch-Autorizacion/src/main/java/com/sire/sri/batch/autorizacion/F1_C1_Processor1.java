@@ -14,6 +14,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Logger;
 import javax.batch.api.chunk.ItemProcessor;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
@@ -42,6 +43,7 @@ public class F1_C1_Processor1 implements ItemProcessor {
 
     @Inject
     private JobContext jobCtx;
+    private Logger log = Logger.getLogger(F1_C1_Processor1.class.getName());
 
     @Override
     public Object processItem(Object item) throws Exception {
@@ -55,8 +57,8 @@ public class F1_C1_Processor1 implements ItemProcessor {
                 null,
                 null);
         SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
-        System.out.println("Soap Autorizacion Response:");
-        System.out.println(SoapUtil.toString(soapMessage));
+        log.info("Soap Autorizacion Response:");
+        log.info(SoapUtil.toString(soapMessage));
         RespuestaComprobante respuestaComprobante = toRespuestaComprobante(soapMessage);
         Map<String, Object> map = new HashMap();
         map.put("respuestaComprobante", respuestaComprobante);

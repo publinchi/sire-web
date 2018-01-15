@@ -28,6 +28,7 @@ import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Properties;
+import java.util.logging.Logger;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
@@ -42,6 +43,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     private List lotes;
     private Iterator iterator;
     private Connection connection;
+    private Logger log = Logger.getLogger(F1_C1_Reader1.class.getName());
 
     @Override
     public Object readItem() throws Exception {
@@ -89,7 +91,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         lote.setClaveAcceso(claveAccesoLote);
         String comprobanteSQL = null;
 
-        System.out.println("tipoComprobante -> " + tipoComprobante);
+        log.info("tipoComprobante -> " + tipoComprobante);
 
         switch (tipoComprobante) {
             case "01":
@@ -111,7 +113,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                 break;
         }
 
-        System.out.println("comprobanteSQL -> " + comprobanteSQL);
+        log.info("comprobanteSQL -> " + comprobanteSQL);
         try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL);
                 ResultSet rs = comprobantePreparedStatement.executeQuery()) {
             while (rs.next()) {
@@ -143,7 +145,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     }
 
     private void _buildFacturas(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        System.out.println("_buildFacturas");
+        log.info("_buildFacturas");
         String numFacturaInterno = rs.getString("NUM_FACTURA_INTERNO");
 
         Factura factura = new Factura();
@@ -276,7 +278,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     }
 
     private void _buildRetenciones(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        System.out.println("-> _buildRetenciones");
+        log.info("-> _buildRetenciones");
         String numRetencionInterno = rs.getString("NUM_RETENCION_INTERNO");
 
         ComprobanteRetencion comprobanteRetencion = new ComprobanteRetencion();
