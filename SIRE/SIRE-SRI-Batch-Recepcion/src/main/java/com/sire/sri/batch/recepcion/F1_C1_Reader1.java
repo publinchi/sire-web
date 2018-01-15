@@ -263,30 +263,6 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 
 	private void _buildNotasCredito(ResultSet rs, List comprobantes) throws SQLException {
 		log.info("-> _buildNotasCredito");
-		String numFacturaInterno = rs.getString("NUM_FACTURA_INTERNO");
-
-		NotaCredito notaCredito = new NotaCredito();
-
-		NotaCredito.Detalles detalles = new NotaCredito.Detalles();
-		NotaCredito.Detalles.Detalle detalle = new NotaCredito.Detalles.Detalle();
-		detalles.getDetalle().add(detalle);
-		notaCredito.setDetalles(detalles);
-
-		notaCredito.setId("comprobante");
-
-		NotaCredito.InfoAdicional infoAdicional = new NotaCredito.InfoAdicional();
-		NotaCredito.InfoAdicional.CampoAdicional campoAdicional = new NotaCredito.InfoAdicional.CampoAdicional();
-		infoAdicional.getCampoAdicional().add(campoAdicional);
-		notaCredito.setInfoAdicional(infoAdicional);
-
-		NotaCredito.InfoNotaCredito infoNotaCredito = new NotaCredito.InfoNotaCredito();
-		notaCredito.setInfoNotaCredito(infoNotaCredito);
-
-		InfoTributaria infoTributaria = new InfoTributaria();
-
-		notaCredito.setInfoTributaria(infoTributaria);
-
-		notaCredito.setVersion("1.0.0");
 	}
 
 	private void _buildNotasDebito(ResultSet rs, List comprobantes) throws SQLException, NamingException {
