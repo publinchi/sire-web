@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+import java.util.logging.Logger;
 import javax.batch.api.chunk.AbstractItemReader;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
@@ -42,6 +43,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     private List comprobantes;
     private Iterator iterator;
     private Connection connection;
+    private Logger log = Logger.getLogger(F1_C1_Reader1.class.getName());
 
     @Override
     public Object readItem() throws Exception {
@@ -57,7 +59,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         String tipoComprobante = runtimeParams.getProperty("tipoComprobante");
         comprobantes = new ArrayList();
 
-        System.out.println("tipoComprobante -> " + tipoComprobante);
+        log.info("tipoComprobante -> " + tipoComprobante);
 
         buildComprobantes(tipoComprobante);
     }
@@ -72,7 +74,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     }
 
     private void buildComprobantes(String tipoComprobante) throws SQLException, NamingException {
-        System.out.println("-> buildComprobantes");
+        log.info("-> buildComprobantes");
         String comprobanteSQL;
 
         switch (tipoComprobante) {
@@ -126,7 +128,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     }
 
     private void _buildFacturas(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        System.out.println("-> _buildFacturas");
+        log.info("-> _buildFacturas");
         String numFacturaInterno = rs.getString("NUM_FACTURA_INTERNO");
 
         Factura factura = new Factura();
@@ -259,7 +261,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     }
 
     private void _buildNotasCredito(ResultSet rs, List comprobantes) throws SQLException {
-        System.out.println("-> _buildNotasCredito");
+        log.info("-> _buildNotasCredito");
         String numFacturaInterno = rs.getString("NUM_FACTURA_INTERNO");
 
         NotaCredito notaCredito = new NotaCredito();
@@ -295,7 +297,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     }
 
     private void _buildRetenciones(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        System.out.println("-> _buildRetenciones");
+        log.info("-> _buildRetenciones");
         String numRetencionInterno = rs.getString("NUM_RETENCION_INTERNO");
 
         ComprobanteRetencion comprobanteRetencion = new ComprobanteRetencion();

@@ -86,6 +86,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private String urlRecepcion;
     private String claveAccesoLote;
     private Connection connection;
+    private Logger log = Logger.getLogger(F1_C1_Writer1.class.getName());
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
@@ -123,7 +124,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
             String loteXml = object2xmlUnicode(lote);
 
-            System.out.println("loteXml: " + loteXml);
+            log.info("loteXml: " + loteXml);
 
             Map mapCall = (Map) SoapUtil.call(
                     createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
@@ -131,8 +132,8 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     null,
                     null);
             SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
-            System.out.println("Soap Recepcion Response:");
-            System.out.println(SoapUtil.toString(soapMessage));
+            log.info("Soap Recepcion Response:");
+            log.info(SoapUtil.toString(soapMessage));
             ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
 
             String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
@@ -208,8 +209,8 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             element.addChildElement("xml").addTextNode(xmlBase64);
 
             soapMsg.saveChanges();
-            System.out.println("Request Recepcion SOAP Message:");
-            System.out.println(SoapUtil.toString(soapMsg));
+            log.info("Request Recepcion SOAP Message:");
+            log.info(SoapUtil.toString(soapMsg));
             return soapMsg;
         } catch (SOAPException ex) {
             System.err.println(ex);
@@ -315,7 +316,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             claveAccesoLote = callableStatement.getString(2);
 
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            log.info(e.getMessage());
         } finally {
             if (callableStatement != null) {
                 callableStatement.close();
@@ -382,18 +383,18 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     existsError = true;
 
                     c.getMensajes().getMensaje().stream().map((mensaje) -> {
-                        System.out.println("Identificador -> " + mensaje.getIdentificador());
+                        log.info("Identificador -> " + mensaje.getIdentificador());
                         return mensaje;
                     }).map((mensaje) -> {
-                        System.out.println("Tipo -> " + mensaje.getTipo());
+                        log.info("Tipo -> " + mensaje.getTipo());
                         return mensaje;
                     }).map((mensaje) -> {
-                        System.out.println("Mensaje -> " + mensaje.getMensaje());
+                        log.info("Mensaje -> " + mensaje.getMensaje());
                         return mensaje;
                     }).forEachOrdered((mensaje) -> {
-                        System.out.println("InformacionAdicional -> " + mensaje.getInformacionAdicional());
+                        log.info("InformacionAdicional -> " + mensaje.getInformacionAdicional());
                     });
-                    System.out.println("-------------------------------------------------------------");
+                    log.info("-------------------------------------------------------------");
 
                     String estado = "DEVUELTA";
                     String claveAccesoRecibida = c.getClaveAcceso();
@@ -417,7 +418,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                             + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
                             + motivo
                             + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
-                    System.out.println("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
+                    log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
                     try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
                         preparedStatement.executeQuery();
                         preparedStatement.close();
@@ -432,7 +433,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
                         + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
                         + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
-                System.out.println("update -> " + cabeceraSQL);
+                log.info("update -> " + cabeceraSQL);
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
                     preparedStatement.executeQuery();
                     preparedStatement.close();
