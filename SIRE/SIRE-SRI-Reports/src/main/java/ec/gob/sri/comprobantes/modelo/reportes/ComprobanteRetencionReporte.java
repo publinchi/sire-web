@@ -9,6 +9,7 @@ import java.io.PrintStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ComprobanteRetencionReporte {
 
@@ -20,10 +21,11 @@ public class ComprobanteRetencionReporte {
     private static final String ICE = "ICE";
     private static final String ISD = "IMPUESTO A LA SALIDA DE DIVISAS";
     private static final String FACTURA = "FACTURA";
-    private static final String NOTA_CREDITO = "NOTA DE CR��DITO";
-    private static final String NOTA_DEBITO = "NOTA DE D��BITO";
-    private static final String GUIA_REMISION = "GU��A DE REMISI��N";
-    private static final String COMP_RETENCION = "COMPROBANTE RETENCI��N";
+    private static final String NOTA_CREDITO = "NOTA DE CRÉDITO";
+    private static final String NOTA_DEBITO = "NOTA DE DÉBITO";
+    private static final String GUIA_REMISION = "GUÍA DE REMISIÓN";
+    private static final String COMP_RETENCION = "COMPROBANTE RETENCIÓN";
+    private Logger log = Logger.getLogger(ComprobanteRetencionReporte.class.getName());
 
     public ComprobanteRetencionReporte(ComprobanteRetencion comprobanteRetencion) {
         this.comprobanteRetencion = comprobanteRetencion;
@@ -39,7 +41,6 @@ public class ComprobanteRetencionReporte {
 
     public List<DetallesAdicionalesReporte> getDetallesAdiciones() {
         this.detallesAdiciones = new ArrayList();
-        System.out.println(this.comprobanteRetencion.getImpuestos().getImpuesto().size());
         for (Impuesto im : this.comprobanteRetencion.getImpuestos().getImpuesto()) {
             DetallesAdicionalesReporte detAd = new DetallesAdicionalesReporte();
             detAd.setBaseImponible(im.getBaseImponible().setScale(2).toString());

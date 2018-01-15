@@ -68,12 +68,12 @@ public class Constantes {
         if (home == null) {
             home = System.getProperty("user.home");
         }
-//        System.out.println(" user.home " + home);
+//        log.info(" user.home " + home);
         String urlBD = null;
         try {
             props.load(new FileInputStream(home + "/comprobantes.properties"));
             urlBD = props.getProperty("database");
-//            System.out.println(" obtenerUrlBD()  urlDB " + urlBD);
+//            log.info(" obtenerUrlBD()  urlDB " + urlBD);
         } catch (FileNotFoundException ex) {
             return null;
         } catch (IOException ex) {
