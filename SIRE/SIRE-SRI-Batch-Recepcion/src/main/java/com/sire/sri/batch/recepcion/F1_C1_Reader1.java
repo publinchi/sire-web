@@ -1,7 +1,6 @@
 package com.sire.sri.batch.recepcion;
 
 import com.sire.service.IDatasourceService;
-import java.math.BigDecimal;
 import com.sire.sri.batch.recepcion.constant.RecepcionConstant;
 import ec.gob.sri.comprobantes.modelo.InfoTributaria;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
