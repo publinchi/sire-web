@@ -14,7 +14,6 @@ import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura.TotalConImpues
 import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura.TotalConImpuestos.TotalImpuesto;
 import ec.gob.sri.comprobantes.modelo.factura.Impuesto;
 import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
-import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito.InfoNotaCredito;
 import ec.gob.sri.comprobantes.modelo.notadebito.*;
 import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import java.io.Serializable;
@@ -76,7 +75,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
     }
 
     private void buildComprobantes(String tipoComprobante) throws SQLException, NamingException {
-        log.info("-> buildComprobantes");
+        log.info("-> buildComprobantes -> " + tipoComprobante);
         String comprobanteSQL;
 
         switch (tipoComprobante) {
@@ -264,6 +263,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 
     private void _buildNotasCredito(ResultSet rs, List comprobantes) throws SQLException, NamingException {
         log.info("-> _buildNotasCredito");
+
         String numNotaCreditoInterno = rs.getString("NUM_FACTURA_INTERNO");
 
         NotaCredito notaCredito = new NotaCredito();
@@ -295,23 +295,23 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 
         NotaCredito.InfoNotaCredito infoNotaCredito = new NotaCredito.InfoNotaCredito();
 
-        String oldDate = rs.getString("FECHA_FACTURA");
+        String oldDate = rs.getString("FECHA_EMISION");
         LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
         String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         infoNotaCredito.setFechaEmision(newDate);
 
         infoNotaCredito.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
-        infoNotaCredito.setTipoIdentificacionComprador(rs.getString("TIPO_IDENTIFICACION"));
+        infoNotaCredito.setTipoIdentificacionComprador(rs.getString("TIPO_IDENTIFICACION_COMPRADOR"));
         infoNotaCredito.setRazonSocialComprador(rs.getString("RAZON_SOCIAL_COMPRADOR"));
         infoNotaCredito.setIdentificacionComprador(rs.getString("IDENTIFICACION_COMPRADOR"));
         infoNotaCredito.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
         infoNotaCredito.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
-        infoNotaCredito.setRise(rs.getString(""));
-        infoNotaCredito.setCodDocModificado(rs.getString(""));
-        infoNotaCredito.setNumDocModificado(rs.getString(""));
-        infoNotaCredito.setFechaEmisionDocSustento(rs.getString(""));
+        infoNotaCredito.setRise(rs.getString("RISE"));
+        infoNotaCredito.setCodDocModificado(rs.getString("COD_DOC_MODIFICADO"));
+        infoNotaCredito.setNumDocModificado(rs.getString("NUM_DOC_MODIFICADO"));
+        infoNotaCredito.setFechaEmisionDocSustento(rs.getString("FECHA_EMISION_DOCSUSTENTO"));
         infoNotaCredito.setTotalSinImpuestos(rs.getBigDecimal("TOTAL_SIN_IMPUESTOS"));
-        infoNotaCredito.setValorModificacion(rs.getBigDecimal(""));
+        infoNotaCredito.setValorModificacion(rs.getBigDecimal("VALOR_MODIFICADO"));
         infoNotaCredito.setMoneda(rs.getString("MONEDA"));
 
         ec.gob.sri.comprobantes.modelo.notacredito.TotalConImpuestos totalConImpuestos = new ec.gob.sri.comprobantes.modelo.notacredito.TotalConImpuestos();
@@ -323,15 +323,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         totalConImpuestos.getTotalImpuesto().add(totalImpuesto);
         infoNotaCredito.setTotalConImpuestos(totalConImpuestos);
 
-        infoNotaCredito.setMotivo(rs.getString(""));
-
-        InfoNotaCredito.compensacion compensacionVar = new InfoNotaCredito.compensacion();
-        InfoNotaCredito.compensacion.detalleCompensaciones detalleDeCompensaciones = new InfoNotaCredito.compensacion.detalleCompensaciones();
-        detalleDeCompensaciones.setCodigo(rs.getInt(""));
-        detalleDeCompensaciones.setTarifa(rs.getInt(""));
-        detalleDeCompensaciones.setValor(rs.getBigDecimal(""));
-        compensacionVar.getCompensaciones().add(detalleDeCompensaciones);
-        infoNotaCredito.setCompensaciones(compensacionVar);
+        infoNotaCredito.setMotivo(rs.getString("MOTIVO"));
 
         notaCredito.setInfoNotaCredito(infoNotaCredito);
 
@@ -350,44 +342,40 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         notaCredito.setInfoTributaria(infoTributaria);
 
         notaCredito.setId("comprobante");
-        notaCredito.setVersion("1.1.0");
+        notaCredito.setVersion("1.0.0");
 
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
-        String detalleSQL = "SELECT NUM_FACTURA_INTERNO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE"
-                + "FROM FAC_DEVOLUCION_C WHERE "
-                + "NUM_FACTURA_INTERNO = " + numNotaCreditoInterno;
+
+        String detalleSQL = "SELECT COD_EMPRESA, COD_DOCUMENTO, NUM_DOCUMENTO_INTERNO, "
+                + "COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, PRECIO_UNITARIO, DESCUENTO, "
+                + "CODIGO_IMPUESTO, CODIGO_PORCENTAJE, TARIFA, BASE_IMPONIBLE, VALOR, "
+                + "PRECIO_TOTAL_SIN_IMPUESTOS FROM V_NOTA_CREDITO_ELECTRONICA_D "
+                + "WHERE NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
         PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
         ResultSet rsd = detallePreparedStatement.executeQuery();
         while (rsd.next()) {
             NotaCredito.Detalles.Detalle detalle = new NotaCredito.Detalles.Detalle();
-            detalle.setCodigoInterno(rs.getString("NUM_FACTURA_INTERNO"));
-            detalle.setCodigoAdicional(rs.getString(""));
-            detalle.setDescripcion(rs.getString(""));
-            detalle.setCantidad(rs.getBigDecimal(""));
-            detalle.setPrecioUnitario(rs.getBigDecimal(""));
-            detalle.setDescuento(rs.getBigDecimal(""));
-            detalle.setPrecioTotalSinImpuesto(rs.getBigDecimal(""));
-
-            NotaCredito.Detalles.Detalle.DetallesAdicionales detallesAdicionales = new NotaCredito.Detalles.Detalle.DetallesAdicionales();
-            NotaCredito.Detalles.Detalle.DetallesAdicionales.DetAdicional detAdicional = new NotaCredito.Detalles.Detalle.DetallesAdicionales.DetAdicional();
-            detAdicional.setNombre(rs.getString(""));
-            detAdicional.setValor(rs.getString(""));
-            detallesAdicionales.getDetAdicional().add(detAdicional);
-
-            detalle.setDetallesAdicionales(detallesAdicionales);
+            detalle.setCodigoInterno(rsd.getString("COD_ARTICULO"));
+            detalle.setDescripcion(rsd.getString("NOMBRE_ARTICULO"));
+            detalle.setCantidad(rsd.getBigDecimal("CANTIDAD"));
+            detalle.setPrecioUnitario(rsd.getBigDecimal("PRECIO_UNITARIO"));
+            detalle.setDescuento(rsd.getBigDecimal("DESCUENTO"));
+            detalle.setPrecioTotalSinImpuesto(rsd.getBigDecimal("PRECIO_TOTAL_SIN_IMPUESTOS"));
 
             NotaCredito.Detalles.Detalle.Impuestos impuestos = new NotaCredito.Detalles.Detalle.Impuestos();
             ec.gob.sri.comprobantes.modelo.notacredito.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.notacredito.Impuesto();
-            impuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
-            impuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
-            impuesto.setTarifa(rs.getBigDecimal(""));
-            impuesto.setBaseImponible(rs.getBigDecimal(""));
-            impuesto.setValor(rs.getBigDecimal(""));
+            impuesto.setCodigo(rsd.getString("CODIGO_IMPUESTO"));
+            impuesto.setCodigoPorcentaje(rsd.getString("CODIGO_PORCENTAJE"));
+            impuesto.setTarifa(rsd.getBigDecimal("TARIFA"));
+            impuesto.setBaseImponible(rsd.getBigDecimal("BASE_IMPONIBLE"));
+            impuesto.setValor(rsd.getBigDecimal("VALOR"));
 
             impuestos.getImpuesto().add(impuesto);
             detalle.setImpuestos(impuestos);
+            detalles.getDetalle().add(detalle);
         }
         notaCredito.setDetalles(detalles);
+        notaCredito.setInfoAdicional(infoAdicional);
 
         comprobantes.add(notaCredito);
         rsd.close();
@@ -490,6 +478,9 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 
         notaDebito.setInfoAdicional(infoAdicional);
         comprobantes.add(notaDebito);
+
+//        rsd.close();
+//        detallePreparedStatement.close();
     }
 
     private void _buildGuiasRemision(ResultSet rs, List comprobantes) {
