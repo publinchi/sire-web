@@ -24,6 +24,9 @@ import javax.batch.api.chunk.AbstractItemReader;
 import javax.inject.Named;
 import com.sire.service.IDatasourceService;
 import com.sire.sri.batch.autorizacion.constant.AutorizacionConstant;
+import ec.gob.sri.comprobantes.modelo.notacredito.*;
+import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito.InfoNotaCredito;
+import ec.gob.sri.comprobantes.modelo.notadebito.NotaDebito;
 import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -122,10 +125,10 @@ public class F1_C1_Reader1 extends AbstractItemReader {
                         _buildFacturas(rs, comprobantes);
                         break;
                     case "04":
-                        _buildNotasDebitos(rs, comprobantes);
+                        _buildNotasCreditos(rs, comprobantes);
                         break;
                     case "05":
-                        _buildNotasCreditos(rs, comprobantes);
+                        _buildNotasDebito(rs, comprobantes);
                         break;
                     case "06":
                         _buildGuiasRemisiones(rs, comprobantes);
@@ -364,15 +367,240 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         }
     }
 
-    private void _buildNotasDebitos(ResultSet rs, List comprobantes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+    private void _buildNotasCreditos(ResultSet rs, List comprobantes) throws SQLException, NamingException {
+        log.info("-> _buildNotasCreditos");
+        String numNotaCreditoInterno = rs.getString("NUM_FACTURA_INTERNO");
 
-    private void _buildNotasCreditos(ResultSet rs, List comprobantes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
+        //Nota de Credito
+        NotaCredito notaCredito = new NotaCredito();
+        notaCredito.setId("comprobante");
+        notaCredito.setVersion("1.1.0");
 
+        //Información Tributaria
+        InfoTributaria infoTributaria = new InfoTributaria();
+        infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
+        infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
+        infoTributaria.setCodDoc(rs.getString("COD_DOCUMENTO"));
+        infoTributaria.setDirMatriz(rs.getString("DIRECCION_MATRIZ"));
+        infoTributaria.setEstab(rs.getString("ESTABLECIMIENTO"));
+        infoTributaria.setNombreComercial(rs.getString("NOMBRE_COMERCIAL"));
+        infoTributaria.setPtoEmi(rs.getString("PUNTO_EMISION"));
+        infoTributaria.setRazonSocial(rs.getString("RAZON_SOCIAL_EMPRESA"));
+        infoTributaria.setRuc(rs.getString("RUC_EMPRESA"));
+        infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
+        infoTributaria.setTipoEmision("1");
+        notaCredito.setInfoTributaria(infoTributaria);
+
+        //Información Nota de Credito
+        NotaCredito.InfoNotaCredito infoNotaCredito = new NotaCredito.InfoNotaCredito();
+        String oldDate = rs.getString("FECHA_FACTURA");
+        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoNotaCredito.setFechaEmision(newDate);
+        infoNotaCredito.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
+        infoNotaCredito.setTipoIdentificacionComprador(rs.getString("TIPO_IDENTIFICACION"));
+        infoNotaCredito.setRazonSocialComprador(rs.getString("RAZON_SOCIAL_COMPRADOR"));
+        infoNotaCredito.setIdentificacionComprador(rs.getString("IDENTIFICACION_COMPRADOR"));
+        infoNotaCredito.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
+        infoNotaCredito.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
+        infoNotaCredito.setRise("Contribuyente Régimen Simplificado RISE");
+        infoNotaCredito.setCodDocModificado(rs.getString(""));
+        infoNotaCredito.setNumDocModificado(rs.getString(""));
+        infoNotaCredito.setFechaEmisionDocSustento(rs.getString(""));
+        infoNotaCredito.setTotalSinImpuestos(rs.getBigDecimal("TOTAL_SIN_IMPUESTOS"));
+        infoNotaCredito.setValorModificacion(rs.getBigDecimal(""));
+        infoNotaCredito.setMoneda(rs.getString("MONEDA"));
+
+        //Detalles
+        NotaCredito.Detalles detalles = new NotaCredito.Detalles();
+        String detalleSQL = "SELECT NUM_FACTURA_INTERNO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE"
+                + "FROM FAC_DEVOLUCION_C WHERE "
+                + "NUM_FACTURA_INTERNO = " + numNotaCreditoInterno;
+        PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
+        ResultSet rsd = detallePreparedStatement.executeQuery();
+        while (rsd.next()) {
+            NotaCredito.Detalles.Detalle detalle = new NotaCredito.Detalles.Detalle();
+            detalle.setCodigoInterno(rs.getString("NUM_FACTURA_INTERNO"));
+            detalle.setCodigoAdicional(rs.getString(""));
+            detalle.setDescripcion(rs.getString(""));
+            detalle.setCantidad(rs.getBigDecimal(""));
+            detalle.setPrecioUnitario(rs.getBigDecimal(""));
+            detalle.setDescuento(rs.getBigDecimal(""));
+            detalle.setPrecioTotalSinImpuesto(rs.getBigDecimal(""));
+
+            NotaCredito.Detalles.Detalle.DetallesAdicionales detallesAdicionales = new NotaCredito.Detalles.Detalle.DetallesAdicionales();
+            NotaCredito.Detalles.Detalle.DetallesAdicionales.DetAdicional detAdicional = new NotaCredito.Detalles.Detalle.DetallesAdicionales.DetAdicional();
+            detAdicional.setNombre(rs.getString(""));
+            detAdicional.setValor(rs.getString(""));
+            detallesAdicionales.getDetAdicional().add(detAdicional);
+
+            detalle.setDetallesAdicionales(detallesAdicionales);
+
+            NotaCredito.Detalles.Detalle.Impuestos impuestos = new NotaCredito.Detalles.Detalle.Impuestos();
+            ec.gob.sri.comprobantes.modelo.notacredito.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.notacredito.Impuesto();
+            impuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
+            impuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
+            impuesto.setTarifa(rs.getBigDecimal(""));
+            impuesto.setBaseImponible(rs.getBigDecimal(""));
+            impuesto.setValor(rs.getBigDecimal(""));
+
+            impuestos.getImpuesto().add(impuesto);
+            detalle.setImpuestos(impuestos);
+        }
+        notaCredito.setDetalles(detalles);
+
+        //Impuestos
+        ec.gob.sri.comprobantes.modelo.notacredito.TotalConImpuestos totalConImpuestos = new ec.gob.sri.comprobantes.modelo.notacredito.TotalConImpuestos();
+        ec.gob.sri.comprobantes.modelo.notacredito.TotalConImpuestos.TotalImpuesto totalImpuesto = new ec.gob.sri.comprobantes.modelo.notacredito.TotalConImpuestos.TotalImpuesto();
+        totalImpuesto.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE"));
+        totalImpuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
+        totalImpuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
+        totalImpuesto.setValor(rs.getBigDecimal("VALOR"));
+        totalConImpuestos.getTotalImpuesto().add(totalImpuesto);
+        infoNotaCredito.setTotalConImpuestos(totalConImpuestos);
+        infoNotaCredito.setMotivo(rs.getString(""));
+
+        //Información Adicional
+        NotaCredito.InfoAdicional infoAdicional = new NotaCredito.InfoAdicional();
+        NotaCredito.InfoAdicional.CampoAdicional direccion = new NotaCredito.InfoAdicional.CampoAdicional();
+        direccion.setValue(rs.getString("DIRECCION_COMPRADOR"));
+        direccion.setNombre("Direccion");
+        NotaCredito.InfoAdicional.CampoAdicional telefono = new NotaCredito.InfoAdicional.CampoAdicional();
+        telefono.setValue(rs.getString("TELEFONO_COMPRADOR"));
+        telefono.setNombre("Telefono");
+        NotaCredito.InfoAdicional.CampoAdicional email = new NotaCredito.InfoAdicional.CampoAdicional();
+        email.setValue(rs.getString("EMAIL_COMPRADOR"));
+        email.setNombre("Email");
+        NotaCredito.InfoAdicional.CampoAdicional observacion = new NotaCredito.InfoAdicional.CampoAdicional();
+        observacion.setValue(rs.getString("OBSERVACION"));
+        observacion.setNombre("Observacion");
+        if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(direccion);
+        }
+        if (telefono.getValue() != null && !telefono.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(telefono);
+        }
+        if (email.getValue() != null && !email.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(email);
+        }
+        if (observacion.getValue() != null && !observacion.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(observacion);
+        }
+
+        //Compensación
+        InfoNotaCredito.compensacion compensacionVar = new InfoNotaCredito.compensacion();
+        InfoNotaCredito.compensacion.detalleCompensaciones detalleDeCompensaciones = new InfoNotaCredito.compensacion.detalleCompensaciones();
+        detalleDeCompensaciones.setCodigo(rs.getInt(""));
+        detalleDeCompensaciones.setTarifa(rs.getInt(""));
+        detalleDeCompensaciones.setValor(rs.getBigDecimal(""));
+        compensacionVar.getCompensaciones().add(detalleDeCompensaciones);
+        infoNotaCredito.setCompensaciones(compensacionVar);
+        notaCredito.setInfoNotaCredito(infoNotaCredito);
+
+        comprobantes.add(notaCredito);
+        rsd.close();
+        detallePreparedStatement.close();
+    }
+    
+    private void _buildNotasDebito(ResultSet rs, List comprobantes) throws SQLException, NamingException {
+        log.info("-> _buildNotasDebito");
+
+        /* Nota de Débito */
+        NotaDebito notaDebito = new NotaDebito();
+        notaDebito.setId("comprobante");
+        notaDebito.setVersion("1.0.0");
+
+        /* Información Tributaria */
+        InfoTributaria infoTributaria = new InfoTributaria();
+        infoTributaria.setTipoEmision("1");
+        infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
+        infoTributaria.setRazonSocial(rs.getString("RAZON_SOCIAL_EMPRESA"));
+        infoTributaria.setNombreComercial(rs.getString("NOMBRE_COMERCIAL"));
+        infoTributaria.setRuc(rs.getString("RUC_EMPRESA"));
+        infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
+        infoTributaria.setCodDoc(rs.getString("COD_DOCUMENTO"));
+        infoTributaria.setEstab(rs.getString("ESTABLECIMIENTO"));
+        infoTributaria.setPtoEmi(rs.getString("PUNTO_EMISION"));
+        infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
+        infoTributaria.setDirMatriz(rs.getString("DIRECCION_MATRIZ"));
+        notaDebito.setInfoTributaria(infoTributaria);
+
+        /* Información Nota de Débito */
+        NotaDebito.InfoNotaDebito infoNotaDebito = new NotaDebito.InfoNotaDebito();
+        infoNotaDebito.setFechaEmision(rs.getString("FECHA_EMISION"));
+        infoNotaDebito.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
+        infoNotaDebito.setTipoIdentificacionComprador(rs.getString("IDENTIFICACION_COMPRADOR"));
+        infoNotaDebito.setRazonSocialComprador(rs.getString("RAZON_SOCIAL_COMPRADOR"));
+        infoNotaDebito.setIdentificacionComprador(rs.getString("IDENTIFICACION_COMPRADOR"));
+        infoNotaDebito.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
+        infoNotaDebito.setObligadoContabilidad(rs.getString("OBLIGADO_CONTABILIDAD"));
+        infoNotaDebito.setCodDocModificado(rs.getString("COD_DOC_MODIFICADO"));
+        infoNotaDebito.setNumDocModificado(rs.getString("NUM_DOC_MODIFICADO"));
+        infoNotaDebito.setFechaEmisionDocSustento(rs.getString("FECHA_EMISION_DOC_SUSTENTO"));
+        infoNotaDebito.setTotalSinImpuestos(rs.getBigDecimal("TOTAL_SIN_IMPUESTOS"));
+
+        //Impuestos
+        NotaDebito.InfoNotaDebito.Impuestos impuestos = new NotaDebito.InfoNotaDebito.Impuestos();
+        ec.gob.sri.comprobantes.modelo.notadebito.Impuesto impuesto;
+        impuesto = new ec.gob.sri.comprobantes.modelo.notadebito.Impuesto();
+        impuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
+        impuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
+        impuesto.setTarifa(rs.getBigDecimal("TARIFA"));
+        impuesto.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE"));
+        impuesto.setValor(rs.getBigDecimal("VALOR"));
+        impuestos.getImpuesto().add(impuesto);
+        infoNotaDebito.setImpuestos(impuestos);
+        infoNotaDebito.setValorTotal(rs.getBigDecimal("VALOR_TOTAL"));
+
+        //Pagos
+        NotaDebito.InfoNotaDebito.Pago pagos = new NotaDebito.InfoNotaDebito.Pago();
+        NotaDebito.InfoNotaDebito.Pago.DetallePago detallePago = new NotaDebito.InfoNotaDebito.Pago.DetallePago();
+        detallePago.setFormaPago(rs.getString("FORMA_PAGO"));
+        detallePago.setTotal(rs.getBigDecimal("TOTAL_SIN_IMPUESTOS"));
+        detallePago.setPlazo(rs.getString("PLAZO"));
+        detallePago.setUnidadTiempo(rs.getString("UNIDAD_TIEMPO"));
+        pagos.getPagos().add(detallePago);
+        infoNotaDebito.setPagos(pagos);
+        notaDebito.setInfoNotaDebito(infoNotaDebito);
+
+        /* Motivos */
+        NotaDebito.Motivos motivos = new NotaDebito.Motivos();
+        NotaDebito.Motivos.Motivo motivo = new NotaDebito.Motivos.Motivo();
+        motivo.setRazon(rs.getString("RAZON"));
+        motivo.setValor(rs.getBigDecimal("VALOR"));
+        notaDebito.setMotivos(motivos);
+
+        /* Información Adicional */
+        NotaDebito.InfoAdicional infoAdicional = new NotaDebito.InfoAdicional();
+        NotaDebito.InfoAdicional.CampoAdicional direccion = new NotaDebito.InfoAdicional.CampoAdicional();
+        direccion.setValue(rs.getString("DIRECCION"));
+        direccion.setNombre("Dirección");
+
+        NotaDebito.InfoAdicional.CampoAdicional email = new NotaDebito.InfoAdicional.CampoAdicional();
+        email.setValue(rs.getString("EMAIL"));
+        email.setNombre("Email");
+
+        NotaDebito.InfoAdicional.CampoAdicional telefono = new NotaDebito.InfoAdicional.CampoAdicional();
+        telefono.setValue(rs.getString("TELEFONO"));
+        telefono.setNombre("Teléfono");
+
+        if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(direccion);
+        }
+
+        if (email.getValue() != null && !email.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(email);
+        }
+
+        if (telefono.getValue() != null && !telefono.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(telefono);
+        }
+
+        notaDebito.setInfoAdicional(infoAdicional);
+        comprobantes.add(notaDebito);
+    }
+    
     private void _buildGuiasRemisiones(ResultSet rs, List comprobantes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+       
     }
 }
