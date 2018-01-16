@@ -60,6 +60,14 @@
                     <groupId>com.sire.commons</groupId>
                     <artifactId>SIRE-Commons</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.sire</groupId>
+                    <artifactId>SIRE-Entities</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.sire</groupId>
+                    <artifactId>SIRE-Commons</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
