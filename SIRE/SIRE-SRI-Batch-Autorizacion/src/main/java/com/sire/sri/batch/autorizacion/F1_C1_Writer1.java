@@ -91,24 +91,24 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                         claveAcceso = factura.getInfoTributaria().getClaveAcceso();
                         nombreTablaComprobante = "FAC_FACTURA_C";
                         nombreSecuencial = "SECUENCIAL";
-                    } else if (comprobante instanceof NotaDebito) {
-                        NotaDebito notaDebito = (NotaDebito) comprobante;
-                        secuencial = notaDebito.getInfoTributaria().getEstab() + "-" + notaDebito.getInfoTributaria().getPtoEmi() + "-" + notaDebito.getInfoTributaria().getSecuencial();
-                        claveAcceso = notaDebito.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "";
-                        nombreSecuencial = "";
                     } else if (comprobante instanceof NotaCredito) {
                         NotaCredito notaCredito = (NotaCredito) comprobante;
                         secuencial = notaCredito.getInfoTributaria().getEstab() + "-" + notaCredito.getInfoTributaria().getPtoEmi() + "-" + notaCredito.getInfoTributaria().getSecuencial();
                         claveAcceso = notaCredito.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "";
-                        nombreSecuencial = "";
+                        nombreTablaComprobante = "FAC_DEVOLUCION_C";
+                        nombreSecuencial = "NUM_SECUENCIAL";
+                    } else if (comprobante instanceof NotaDebito) {
+                        NotaDebito notaDebito = (NotaDebito) comprobante;
+                        secuencial = notaDebito.getInfoTributaria().getEstab() + "-" + notaDebito.getInfoTributaria().getPtoEmi() + "-" + notaDebito.getInfoTributaria().getSecuencial();
+                        claveAcceso = notaDebito.getInfoTributaria().getClaveAcceso();
+                        nombreTablaComprobante = "CXC_DOC_COBRAR";
+                        nombreSecuencial = "NUM_SECUENCIAL";
                     } else if (comprobante instanceof GuiaRemision) {
                         GuiaRemision guiaRemision = (GuiaRemision) comprobante;
                         secuencial = guiaRemision.getInfoTributaria().getEstab() + "-" + guiaRemision.getInfoTributaria().getPtoEmi() + "-" + guiaRemision.getInfoTributaria().getSecuencial();
                         claveAcceso = guiaRemision.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "";
-                        nombreSecuencial = "";
+                        nombreTablaComprobante = "PED_DESPACHO_C";
+                        nombreSecuencial = "NUM_SECUENCIAL";
                     } else if (comprobante instanceof ComprobanteRetencion) {
                         ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) comprobante;
                         secuencial = comprobanteRetencion.getInfoTributaria().getEstab() + "-" + comprobanteRetencion.getInfoTributaria().getPtoEmi() + "-" + comprobanteRetencion.getInfoTributaria().getSecuencial();
