@@ -15,6 +15,8 @@ import ec.gob.sri.comprobantes.modelo.factura.Factura.InfoFactura.TotalConImpues
 import ec.gob.sri.comprobantes.modelo.factura.Impuesto;
 import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
 import ec.gob.sri.comprobantes.modelo.notadebito.*;
+import ec.gob.sri.comprobantes.modelo.guia.*;
+import ec.gob.sri.comprobantes.modelo.guia.Detalle.DetallesAdicionales;
 import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -483,8 +485,96 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 //        detallePreparedStatement.close();
     }
 
-    private void _buildGuiasRemision(ResultSet rs, List comprobantes) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void _buildGuiasRemision(ResultSet rs, List comprobantes) throws SQLException, NamingException {
+        log.info("-> _buildGuiasRemision");
+        GuiaRemision guiaRemision = new GuiaRemision();
+        guiaRemision.setId("comprobante");
+        guiaRemision.setVersion("1.1.0");
+
+        /* Información Tributaria */
+        InfoTributaria infoTributaria = new InfoTributaria();
+        infoTributaria.setAmbiente("1");
+        infoTributaria.setTipoEmision("1");
+        infoTributaria.setRazonSocial(rs.getString("RAZON_SOCIAL_EMPRESA"));
+        infoTributaria.setNombreComercial(rs.getString("NOMBRE_COMERCIAL"));
+        infoTributaria.setRuc(rs.getString("RUC_EMPRESA"));
+        infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
+        infoTributaria.setCodDoc(rs.getString("COD_DOCUMENTO"));
+        infoTributaria.setEstab(rs.getString("ESTABLECIMIENTO"));
+        infoTributaria.setPtoEmi(rs.getString("PUNTO_EMISION"));
+        infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
+        infoTributaria.setDirMatriz(rs.getString("DIRECCION_MATRIZ"));
+        guiaRemision.setInfoTributaria(infoTributaria);
+
+        /* Información Guia de Remisión */
+        GuiaRemision.InfoGuiaRemision infoGuiaRemision = new GuiaRemision.InfoGuiaRemision();
+        infoGuiaRemision.setDirEstablecimiento("");
+        infoGuiaRemision.setDirPartida("");
+        infoGuiaRemision.setRazonSocialTransportista("");
+        infoGuiaRemision.setTipoIdentificacionTransportista("");
+        infoGuiaRemision.setRucTransportista("");
+        infoGuiaRemision.setRise("");
+        infoGuiaRemision.setObligadoContabilidad("SI");
+        infoGuiaRemision.setContribuyenteEspecial("5368");
+        infoGuiaRemision.setFechaIniTransporte("");
+        infoGuiaRemision.setFechaFinTransporte("");
+        infoGuiaRemision.setPlaca("");
+        guiaRemision.setInfoGuiaRemision(infoGuiaRemision);
+
+        /* Destinatarios */
+        GuiaRemision.Destinatarios destinatarios = new GuiaRemision.Destinatarios();
+        Destinatario destinatario = new Destinatario();
+        destinatario.setIdentificacionDestinatario("");
+        destinatario.setDirDestinatario("");
+        destinatario.setMotivoTraslado("");
+        destinatario.setDocAduaneroUnico("");
+        destinatario.setCodEstabDestino("");
+        destinatario.setRuta("");
+        destinatario.setCodDocSustento("");
+        destinatario.setNumDocSustento("");
+        destinatario.setNumAutDocSustento("");
+        destinatario.setFechaEmisionDocSustento("");
+
+        /* Detalles */
+        Destinatario.Detalles detalles = new Destinatario.Detalles();
+        ec.gob.sri.comprobantes.modelo.guia.Detalle detalle = new ec.gob.sri.comprobantes.modelo.guia.Detalle();
+        detalle.setCodigoInterno("");
+        detalle.setCodigoAdicional("");
+        detalle.setDescripcion("");
+        detalle.setCantidad(rs.getBigDecimal("CANTIDAD"));
+        DetallesAdicionales detallesAdicionales = new DetallesAdicionales();
+        DetallesAdicionales.DetAdicional detalleAdicional = new DetallesAdicionales.DetAdicional();
+        detalleAdicional.setValor("EFGH");
+        detalleAdicional.setNombre("ABCD");
+        detallesAdicionales.getDetAdicional().add(detalleAdicional);
+        detalle.setDetallesAdicionales(detallesAdicionales);
+        detalles.getDetalle().add(detalle);
+        destinatario.setDetalles(detalles);
+        destinatarios.getDestinatario().add(destinatario);
+        guiaRemision.setDestinatarios(destinatarios);
+
+        /* Información Adicional */
+        GuiaRemision.InfoAdicional infoAdicional = new GuiaRemision.InfoAdicional();
+
+        GuiaRemision.InfoAdicional.CampoAdicional telefono = new GuiaRemision.InfoAdicional.CampoAdicional();
+        telefono.setValue(rs.getString("2312312321321321"));
+        telefono.setNombre("TELEFONO");
+
+        GuiaRemision.InfoAdicional.CampoAdicional email = new GuiaRemision.InfoAdicional.CampoAdicional();
+        email.setValue(rs.getString("info@organizacion.com"));
+        email.setNombre("EMAIL");
+
+        GuiaRemision.InfoAdicional.CampoAdicional sucursal = new GuiaRemision.InfoAdicional.CampoAdicional();
+        email.setValue(rs.getString("Guayaquil 12 de Octubre"));
+        email.setNombre("SUCURSAL 03");
+
+        infoAdicional.getCampoAdicional().add(telefono);
+        infoAdicional.getCampoAdicional().add(email);
+        infoAdicional.getCampoAdicional().add(sucursal);
+
+        guiaRemision.setInfoAdicional(infoAdicional);
+        comprobantes.add(guiaRemision);
+
     }
 
     private void _buildRetenciones(ResultSet rs, List comprobantes) throws SQLException, NamingException {
