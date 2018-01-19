@@ -155,7 +155,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                                         + ", Tipo: " + tipo
                                 );
                             }
-                            log.info("-----------------------------------------------------");
+                          
                             String motivo = "";
                             if (!estado.equals("AUTORIZADO") && !estado.equals("EN PROCESAMIENTO")) {
                                 motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
