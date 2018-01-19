@@ -344,7 +344,7 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         notaCredito.setInfoTributaria(infoTributaria);
 
         notaCredito.setId("comprobante");
-        notaCredito.setVersion("1.0.0");
+        notaCredito.setVersion("1.1.0");
 
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
 
