@@ -63,7 +63,7 @@ public class BatchBean {
             throws InterruptedException, NamingException, IOException {
         log.info("-> sriRecepcionGuiaRemisionJob");
 
-//        executeJob("SriRecepcionJob", "06");
+        executeJob("SriRecepcionJob", "06");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
@@ -104,7 +104,7 @@ public class BatchBean {
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
         log.info("-> sriAutorizacionGuiaRemisionJob");
 
-//        executeJob("SriAutorizacionJob", "06", "guiaRemisionFinal.jasper");
+        executeJob("SriAutorizacionJob", "06", "guiaRemisionFinal.jasper");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
