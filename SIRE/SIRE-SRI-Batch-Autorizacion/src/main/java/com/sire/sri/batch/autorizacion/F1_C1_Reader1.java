@@ -608,15 +608,15 @@ public class F1_C1_Reader1 extends AbstractItemReader {
 
             GuiaRemision.InfoAdicional.CampoAdicional telefono = new GuiaRemision.InfoAdicional.CampoAdicional();
             telefono.setValue(rsd.getString("TELDESTINATARIO"));
-            telefono.setNombre("TELEFONO");
+            telefono.setNombre("Telefono");
 
             GuiaRemision.InfoAdicional.CampoAdicional email = new GuiaRemision.InfoAdicional.CampoAdicional();
             email.setValue(rsd.getString("MAILDESTINATARIO"));
-            email.setNombre("EMAIL");
+            email.setNombre("Email");
 
             GuiaRemision.InfoAdicional.CampoAdicional sucursal = new GuiaRemision.InfoAdicional.CampoAdicional();
             email.setValue(rsd.getString("DIRDESTINATARIO"));
-            email.setNombre("DIRECCION");
+            email.setNombre("Dirección");
 
             if (sucursal.getValue() != null && !sucursal.getValue().isEmpty()) {
                 infoAdicional.getCampoAdicional().add(sucursal);
