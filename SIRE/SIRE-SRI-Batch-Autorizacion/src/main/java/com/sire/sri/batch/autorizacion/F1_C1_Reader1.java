@@ -538,8 +538,14 @@ public class F1_C1_Reader1 extends AbstractItemReader {
         infoGuiaRemision.setRise(rs.getString("RISE"));
         infoGuiaRemision.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
         infoGuiaRemision.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
-        infoGuiaRemision.setFechaIniTransporte(rs.getString("FECHA_INICIO_TRANSPORTE"));
-        infoGuiaRemision.setFechaFinTransporte(rs.getString("FECHA_FIN_TRANSPORTE"));
+        String oldDate = rs.getString("FECHA_INICIO_TRANSPORTE");
+        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoGuiaRemision.setFechaIniTransporte(newDate);
+        String oldDate1 = rs.getString("FECHA_FIN_TRANSPORTE");
+        LocalDateTime datetime1 = LocalDateTime.parse(oldDate1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate1 = datetime1.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoGuiaRemision.setFechaFinTransporte(newDate1);
         infoGuiaRemision.setPlaca(rs.getString("PLACA"));
         guiaRemision.setInfoGuiaRemision(infoGuiaRemision);
 
