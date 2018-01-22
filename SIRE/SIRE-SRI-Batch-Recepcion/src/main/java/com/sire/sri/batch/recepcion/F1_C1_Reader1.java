@@ -576,7 +576,10 @@ public class F1_C1_Reader1 extends AbstractItemReader {
             destinatario.setCodDocSustento(rsd.getString("CODDOSUSTENTO"));
             destinatario.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
             destinatario.setNumAutDocSustento(rsd.getString("NUMAUTDOCSUSTENTO"));
-            destinatario.setFechaEmisionDocSustento(rsd.getString("FECHAEMISIONDOCSUSTENTO"));
+            String oldDate2 = rsd.getString("FECHAEMISIONDOCSUSTENTO");
+            LocalDateTime datetime2 = LocalDateTime.parse(oldDate2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+            String newDate2 = datetime2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            destinatario.setFechaEmisionDocSustento(newDate2);
             destinatario.setRazonSocialDestinatario(rsd.getString("RAZONSOCIALDESTINATARIO"));
             destinatario.setDetalles(detalles);
 
