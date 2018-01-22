@@ -365,8 +365,8 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             GuiaRemision guiaRemision = (GuiaRemision) ((Map) item).get("comprobante");
             secuencial = guiaRemision.getInfoTributaria().getEstab() + "-" + guiaRemision.getInfoTributaria().getPtoEmi() + "-" + guiaRemision.getInfoTributaria().getSecuencial();
             claveAcceso = guiaRemision.getInfoTributaria().getClaveAcceso();
-            nombreTablaComprobante = "";
-            nombreSecuencial = "";
+            nombreTablaComprobante = "PED_DESPACHO_C";
+            nombreSecuencial = "NUM_SECUENCIAL";
         } else if (((Map) item).get("comprobante") instanceof ComprobanteRetencion) {
             ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) ((Map) item).get("comprobante");
             secuencial = comprobanteRetencion.getInfoTributaria().getEstab() + "-" + comprobanteRetencion.getInfoTributaria().getPtoEmi() + "-" + comprobanteRetencion.getInfoTributaria().getSecuencial();
