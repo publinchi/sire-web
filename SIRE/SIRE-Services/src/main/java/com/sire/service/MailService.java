@@ -37,6 +37,7 @@ public class MailService implements IMailService {
     @Lock(LockType.READ)
     @Override
     public void sendMail(MailEvent event) {
+        Message message = null;
         try {
             String mail = System.getProperty("sire.mail");
             if (mail == null) {
@@ -44,7 +45,7 @@ public class MailService implements IMailService {
             }
             Context initContext = new InitialContext();
             Session mailSession = (Session) initContext.lookup(mail);
-            Message message = new MimeMessage(mailSession);
+            message = new MimeMessage(mailSession);
 
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(event.getTo()));
             message.setSubject(event.getSubject());
@@ -57,7 +58,15 @@ public class MailService implements IMailService {
             Transport.send(message);
             System.out.println("E-Mail sent to " + event.getTo());
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            try {
+                System.out.println("E-Mail not sent to " + event.getTo() + ", Cause: " + e.getCause());
+                System.out.println("Retrying after 5 seconds ...");
+                Thread.sleep(5000L);
+                Transport.send(message);
+                System.out.println("E-Mail sent again to " + event.getTo());
+            } catch (InterruptedException | MessagingException ex) {
+                Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } catch (NamingException ex) {
             Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
         }
