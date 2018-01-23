@@ -8,20 +8,14 @@ package com.sire.sri.batch;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Logger;
 import javax.batch.operations.JobOperator;
 import javax.batch.runtime.BatchRuntime;
-import javax.batch.runtime.JobExecution;
-import javax.batch.runtime.Metric;
-import javax.batch.runtime.StepExecution;
 import javax.ejb.Schedule;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.naming.NamingException;
-import org.javaee7.util.BatchTestHelper;
 
 /**
  *
@@ -33,84 +27,82 @@ public class BatchBean {
 
     private Logger log = Logger.getLogger(BatchBean.class.getName());
 
-    /* RECEPCIONES */
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
-    private void sriRecepcionFacturaJob()
+    void sriRecepcionFacturaJob()
             throws InterruptedException, NamingException, IOException {
-        log.info("-> sriRecepcionFacturaJob");
+        log.info("* sriRecepcionFacturaJob -> 01");
 
         executeJob("SriRecepcionJob", "01");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriRecepcionNotaCreditoJob()
+    void sriRecepcionNotaCreditoJob()
             throws InterruptedException, NamingException, IOException {
-        log.info("-> sriRecepcionNotaCreditoJob");
+        log.info("* sriRecepcionNotaCreditoJob -> 04");
 
         executeJob("SriRecepcionJob", "04");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriRecepcionNotaDebitoJob()
+    void sriRecepcionNotaDebitoJob()
             throws InterruptedException, NamingException, IOException {
-        log.info("-> sriRecepcionNotaDebitoJob");
+        log.info("* sriRecepcionNotaDebitoJob -> 05");
 
-//        executeJob("SriRecepcionJob", "05");
+        executeJob("SriRecepcionJob", "05");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriRecepcionGuiaRemisionJob()
+    void sriRecepcionGuiaRemisionJob()
             throws InterruptedException, NamingException, IOException {
-        log.info("-> sriRecepcionGuiaRemisionJob");
+        log.info("* sriRecepcionGuiaRemisionJob -> 06");
 
         executeJob("SriRecepcionJob", "06");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriRecepcionRetencionJob()
+    void sriRecepcionRetencionJob()
             throws InterruptedException, NamingException, IOException {
-        log.info("-> sriRecepcionRetencionJob");
+        log.info("* sriRecepcionRetencionJob -> 07");
 
         executeJob("SriRecepcionJob", "07");
     }
 
-    /* AUTORIZACIONES*/
     @Schedule(hour = "*", minute = "*/15", info = "Every 15 minutes timer", timezone = "UTC", persistent = false)
-    private void sriAutorizacionFacturaJob()
+    void sriAutorizacionFacturaJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        log.info("-> sriAutorizacionFacturaJob");
+        log.info("* sriAutorizacionFacturaJob -> 01");
 
         executeJob("SriAutorizacionJob", "01", "factura.jasper");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriAutorizacionNotaCreditoJob()
+    void sriAutorizacionNotaCreditoJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        log.info("-> sriAutorizacionNotaCreditoJob");
+        log.info("* sriAutorizacionNotaCreditoJob -> 04");
 
         executeJob("SriAutorizacionJob", "04", "notaCreditoFinal.jasper");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriAutorizacionNotaDebitoJob()
+    void sriAutorizacionNotaDebitoJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        log.info("-> sriAutorizacionNotaDebitoJob");
+        log.info("* sriAutorizacionNotaDebitoJob -> 05");
 
-//        executeJob("SriAutorizacionJob", "05", "notaDebitoFinal.jasper");
+        executeJob("SriAutorizacionJob", "05", "notaDebitoFinal.jasper");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriAutorizacionGuiaRemisionJob()
+    void sriAutorizacionGuiaRemisionJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        log.info("-> sriAutorizacionGuiaRemisionJob");
+        log.info("* sriAutorizacionGuiaRemisionJob -> 06");
 
         executeJob("SriAutorizacionJob", "06", "guiaRemisionFinal.jasper");
     }
 
     @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    private void sriAutorizacionRetencionJob()
+    void sriAutorizacionRetencionJob()
             throws InterruptedException, NamingException, FileNotFoundException, IOException {
-        log.info("-> sriAutorizacionRetencionJob");
+        log.info("* sriAutorizacionRetencionJob -> 07");
 
         executeJob("SriAutorizacionJob", "07", "comprobanteRetencion.jasper");
 
@@ -132,20 +124,8 @@ public class BatchBean {
         runtimeParameters.setProperty("tipoComprobante", tipoComprobante);
 
         JobOperator jobOperator = BatchRuntime.getJobOperator();
-        Long executionId = Long.valueOf(jobOperator.start(jobName, runtimeParameters));
-        JobExecution jobExecution = jobOperator.getJobExecution(executionId.longValue());
-
-        jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
-
-        List<StepExecution> stepExecutions = jobOperator.getStepExecutions(executionId.longValue());
-        for (StepExecution stepExecution : stepExecutions) {
-            if (stepExecution.getStepName().equals("f1_chunk1")) {
-                Map<Metric.MetricType, Long> metricsMap = BatchTestHelper.getMetricsMap(stepExecution.getMetrics());
-                log.info("READ_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.READ_COUNT)).longValue());
-                log.info("WRITE_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.WRITE_COUNT)).longValue());
-                log.info("COMMIT_COUNT: " + ((Long) metricsMap.get(Metric.MetricType.COMMIT_COUNT)).longValue());
-            }
-        }
+        Long executionId = jobOperator.start(jobName, runtimeParameters);
+        jobOperator.getJobExecution(executionId);
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
