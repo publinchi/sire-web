@@ -348,7 +348,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         impuesto.setValor(rs.getBigDecimal("VALOR"));
         impuestos.getImpuesto().add(impuesto);
         infoNotaDebito.setImpuestos(impuestos);
-        infoNotaDebito.setValorTotal(rs.getBigDecimal("")); //PENDIENTE
+        infoNotaDebito.setValorTotal(rs.getBigDecimal("VALOR_TOTAL"));
 
         String pagoSQL = "SELECT COD_EMPRESA, NUM_DOCUMENTO_INTERNO, CODIGO, "
                 + "FORMA_PAGO, PLAZO, TIEMPO, VALOR_FORMA_PAGO "
@@ -362,7 +362,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             while (rsp.next()) {
                 NotaDebito.InfoNotaDebito.Pago.DetallePago detallePago = new NotaDebito.InfoNotaDebito.Pago.DetallePago();
                 detallePago.setFormaPago(rsp.getString("FORMA_PAGO"));
-                detallePago.setTotal(rsp.getBigDecimal("")); //PENDIENTE
+                detallePago.setTotal(rsp.getBigDecimal("VALOR_FORMA_PAGO"));
                 detallePago.setPlazo(rsp.getString("PLAZO"));
                 detallePago.setUnidadTiempo(rsp.getString("TIEMPO"));
                 pagos.getPagos().add(detallePago);
