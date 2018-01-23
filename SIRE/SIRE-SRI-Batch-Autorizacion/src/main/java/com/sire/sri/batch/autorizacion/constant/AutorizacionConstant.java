@@ -48,7 +48,7 @@ public class AutorizacionConstant {
             + "CLAVE_ACCESO_LOTE = 'claveAccesoLote' AND "
             + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
 
-    public static String NOTA_DEBITO = "SELECT COD_EMPRESA, RUC_EMPRESA, "
+    public static String NOTA_DEBITO_SQL = "SELECT COD_EMPRESA, RUC_EMPRESA, "
             + "RAZON_SOCIAL_EMPRESA, NOMBRE_COMERCIAL, COD_DOCUMENTO, "
             + "NUM_DOCUMENTO_INTERNO, CLAVE_ACCESO, ESTABLECIMIENTO, "
             + "PUNTO_EMISION, SECUENCIAL, DIRECCION_MATRIZ, "

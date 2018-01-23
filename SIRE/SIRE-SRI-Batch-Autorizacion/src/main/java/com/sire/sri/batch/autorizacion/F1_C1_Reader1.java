@@ -75,7 +75,7 @@ public class F1_C1_Reader1 extends CommonsItemReader {
                 comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL.replace("claveAccesoLote", claveAccesoLote);
                 break;
             case "05":
-                comprobanteSQL = AutorizacionConstant.NOTA_DEBITO.replace("claveAccesoLote", claveAccesoLote);
+                comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL.replace("claveAccesoLote", claveAccesoLote);
                 break;
             case "06":
                 comprobanteSQL = AutorizacionConstant.GUIA_REMISION_SQL.replace("claveAccesoLote", claveAccesoLote);
