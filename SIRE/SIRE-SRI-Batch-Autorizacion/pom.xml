@@ -12,18 +12,6 @@
     <dependencies>
         <dependency>
             <groupId>com.sire.sri</groupId>
-            <artifactId>SIRE-SRI-Entities</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sire.sri</groupId>
-                    <artifactId>ComprobantesDesktop</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.sire.sri</groupId>
             <artifactId>SIRE-SRI-Signature</artifactId>
             <version>1.0.0</version>
             <type>jar</type>
@@ -41,38 +29,8 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>SIRE-SRI-Reports</artifactId>
-            <version>${project.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sire.sri</groupId>
-                    <artifactId>ComprobantesDesktop</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.sire</groupId>
-            <artifactId>SIRE-Services-API</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sire.commons</groupId>
-                    <artifactId>SIRE-Commons</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sire</groupId>
-                    <artifactId>SIRE-Entities</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sire</groupId>
-                    <artifactId>SIRE-Commons</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.sire</groupId>
-            <artifactId>SIRE-Commons</artifactId>
+            <groupId>com.sire.sri</groupId>
+            <artifactId>SIRE-SRI-Batch-Commons</artifactId>
             <version>1.0.0</version>
             <type>jar</type>
         </dependency>
