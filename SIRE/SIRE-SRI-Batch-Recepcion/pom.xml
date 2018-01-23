@@ -11,18 +11,6 @@
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.sire.sri</groupId>
-            <artifactId>SIRE-SRI-Entities</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sire.sri</groupId>
-                    <artifactId>ComprobantesDesktop</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>com.sire</groupId>
             <artifactId>SIRE-Soap</artifactId>
             <version>1.0.0</version>
@@ -47,23 +35,8 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.sire</groupId>
-            <artifactId>SIRE-Services-API</artifactId>
-            <version>1.0.0</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.sire</groupId>
-                    <artifactId>SIRE-Commons</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.sire</groupId>
-                    <artifactId>SIRE-Entities</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>SIRE-SRI-Reports</artifactId>
+            <artifactId>SIRE-SRI-Batch-Commons</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
