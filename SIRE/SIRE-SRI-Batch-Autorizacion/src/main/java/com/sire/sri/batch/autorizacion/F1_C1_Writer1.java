@@ -155,7 +155,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                                         + ", Tipo: " + tipo
                                 );
                             }
-                          
+
                             String motivo = "";
                             if (!estado.equals("AUTORIZADO") && !estado.equals("EN PROCESAMIENTO")) {
                                 motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
@@ -196,6 +196,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
         duplaFinal.keySet().forEach((key) -> {
             try {
+                String nombreComprobante = null;
                 String claveAcceso = null;
                 String secuencial = null;
                 String recipient = null;
@@ -208,6 +209,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 String numAut = autorizacion.getNumeroAutorizacion();
                 String fechaAut = autorizacion.getFechaAutorizacion().toString();
                 if (key instanceof Factura) {
+                    nombreComprobante = "Factura";
                     Factura factura = (Factura) key;
                     for (Factura.InfoAdicional.CampoAdicional campoAdicional : factura.getInfoAdicional().getCampoAdicional()) {
                         if (campoAdicional.getNombre().equals("Email")) {
@@ -222,6 +224,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     nombreComercial = factura.getInfoTributaria().getNombreComercial();
                     ruc = factura.getInfoTributaria().getRuc();
                 } else if (key instanceof NotaCredito) {
+                    nombreComprobante = "Nota de Crédito";
                     NotaCredito notaCredito = (NotaCredito) key;
                     for (NotaCredito.InfoAdicional.CampoAdicional campoAdicional : notaCredito.getInfoAdicional().getCampoAdicional()) {
                         if (campoAdicional.getNombre().equals("Email")) {
@@ -236,6 +239,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     nombreComercial = notaCredito.getInfoTributaria().getNombreComercial();
                     ruc = notaCredito.getInfoTributaria().getRuc();
                 } else if (key instanceof NotaDebito) {
+                    nombreComprobante = "Nota de Débito";
                     NotaDebito notaDebito = (NotaDebito) key;
                     for (NotaDebito.InfoAdicional.CampoAdicional campoAdicional : notaDebito.getInfoAdicional().getCampoAdicional()) {
                         if (campoAdicional.getNombre().equals("Email")) {
@@ -250,6 +254,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     nombreComercial = notaDebito.getInfoTributaria().getNombreComercial();
                     ruc = notaDebito.getInfoTributaria().getRuc();
                 } else if (key instanceof GuiaRemision) {
+                    nombreComprobante = "Guía de Remisión";
                     GuiaRemision guiaRemision = (GuiaRemision) key;
                     for (GuiaRemision.InfoAdicional.CampoAdicional campoAdicional : guiaRemision.getInfoAdicional().getCampoAdicional()) {
                         if (campoAdicional.getNombre().equals("Email")) {
@@ -264,6 +269,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     nombreComercial = guiaRemision.getInfoTributaria().getNombreComercial();
                     ruc = guiaRemision.getInfoTributaria().getRuc();
                 } else if (key instanceof ComprobanteRetencion) {
+                    nombreComprobante = "Retención";
                     ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) key;
                     for (ComprobanteRetencion.InfoAdicional.CampoAdicional campoAdicional : comprobanteRetencion.getInfoAdicional().getCampoAdicional()) {
                         if (campoAdicional.getNombre().equals("Email")) {
@@ -304,7 +310,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
 
                 MailEvent event = new MailEvent();
                 event.setTo(recipient);
-                event.setSubject("Comprobante EMITIDO");
+                event.setSubject("Comprobante - " + nombreComprobante);
                 event.setMimeMultipart(mimeMultipart);
 
                 if (recipient != null && !recipient.isEmpty()) {
