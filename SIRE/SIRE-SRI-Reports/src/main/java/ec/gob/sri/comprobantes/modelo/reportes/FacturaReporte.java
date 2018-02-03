@@ -89,11 +89,13 @@ public class FacturaReporte {
             detAd.setCodigoAuxiliar(det.getCodigoAuxiliar());
             detAd.setDescripcion(det.getDescripcion());
             detAd.setCantidad(det.getCantidad().toPlainString());
-            detAd.setPrecioTotalSinImpuesto(det.getPrecioTotalSinImpuesto().toString());
+            detAd.setPrecioTotalSinImpuesto(det.getPrecioTotalSinImpuesto().setScale(2).toString());
             detAd.setPrecioUnitario(det.getPrecioUnitario());
             detAd.setPrecioSinSubsidio(det.getPrecioSinSubsidio());
             if (det.getDescuento() != null) {
-                detAd.setDescuento(det.getDescuento().toString());
+                detAd.setDescuento(det.getDescuento().setScale(2).toString());
+            } else {
+                detAd.setDescuento(BigDecimal.ZERO.setScale(2).toString());
             }
             int i = 0;
             if ((det.getDetallesAdicionales() != null) && (det.getDetallesAdicionales().getDetAdicional() != null) && (!det.getDetallesAdicionales().getDetAdicional().isEmpty())) {
