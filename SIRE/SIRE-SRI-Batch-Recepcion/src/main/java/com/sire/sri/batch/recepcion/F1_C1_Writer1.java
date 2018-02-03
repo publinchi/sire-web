@@ -210,8 +210,6 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             element.addChildElement("xml").addTextNode(xmlBase64);
 
             soapMsg.saveChanges();
-//            log.info("Request Recepcion SOAP Message:");
-//            log.info(SoapUtil.toString(soapMsg));
             return soapMsg;
         } catch (SOAPException ex) {
             System.err.println(ex);
