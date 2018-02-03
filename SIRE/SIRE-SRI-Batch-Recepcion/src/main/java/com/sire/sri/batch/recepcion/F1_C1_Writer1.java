@@ -119,12 +119,13 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 String signedXml = genericXMLSignature.toSignedXml();
                 lote.getComprobantes().getComprobante().add(appendCdata(signedXml));
             }
+
             lote.setRuc(lote.getClaveAcceso().substring(10, 23));
             lote.setVersion("1.0.0");
 
             String loteXml = object2xmlUnicode(lote);
 
-            log.info("loteXml: " + loteXml);
+            log.log(Level.INFO, "loteXml: {0}", loteXml);
 
             Map mapCall = (Map) SoapUtil.call(
                     createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
@@ -381,16 +382,16 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     existsError = true;
 
                     c.getMensajes().getMensaje().stream().map((mensaje) -> {
-                        log.info("Identificador -> " + mensaje.getIdentificador());
+                        log.log(Level.INFO, "Identificador -> {0}", mensaje.getIdentificador());
                         return mensaje;
                     }).map((mensaje) -> {
-                        log.info("Tipo -> " + mensaje.getTipo());
+                        log.log(Level.INFO, "Tipo -> {0}", mensaje.getTipo());
                         return mensaje;
                     }).map((mensaje) -> {
-                        log.info("Mensaje -> " + mensaje.getMensaje());
+                        log.log(Level.INFO, "Mensaje -> {0}", mensaje.getMensaje());
                         return mensaje;
                     }).forEachOrdered((mensaje) -> {
-                        log.info("InformacionAdicional -> " + mensaje.getInformacionAdicional());
+                        log.log(Level.INFO, "InformacionAdicional -> {0}", mensaje.getInformacionAdicional());
                     });
                     log.info("-------------------------------------------------------------");
 
@@ -416,7 +417,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                             + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
                             + motivo
                             + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
-                    log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
+                    log.log(Level.INFO, "update {0} -> {1}", new Object[]{nombreTablaComprobante, cabeceraSQL});
                     try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
                         preparedStatement.executeQuery();
                         preparedStatement.close();
@@ -431,7 +432,7 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
                         + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
                         + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
-                log.info("update -> " + cabeceraSQL);
+                log.log(Level.INFO, "update -> {0}", cabeceraSQL);
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
                     preparedStatement.executeQuery();
                     preparedStatement.close();
