@@ -59,7 +59,7 @@ public class MapaBean {
         try {
             LOGGER.log(Level.INFO, "lat: {0}", lat);
             LOGGER.log(Level.INFO, "lng: {0}", lng);
-            GeoApiContext googleContext = new GeoApiContext().setApiKey("AIzaSyDoXgacFtGDCtWfYPQeJO4Kz7NUEQWkNAA");
+            GeoApiContext googleContext = new GeoApiContext().setApiKey("AIzaSyANMxmwffAoDgnwXrOXMSEgjJJEt_bRTJI");
             LatLng location = new LatLng(Double.valueOf(lat), Double.valueOf(lng));
             GeocodingResult[] results = GeocodingApi.reverseGeocode(googleContext, location).await();
             direccion = results[0].formattedAddress;
