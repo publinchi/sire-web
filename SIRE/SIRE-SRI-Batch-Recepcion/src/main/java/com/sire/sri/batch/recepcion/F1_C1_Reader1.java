@@ -22,12 +22,12 @@ public class F1_C1_Reader1 extends CommonsItemReader {
 
     @Inject
     private JobContext jobCtx;
-    private List comprobantes;
     private Iterator iterator;
     static int COUNT = 0;
+    private String codEmpresa;
 
     @Override
-    public Object readItem() throws Exception {
+    public Object readItem() {
         if (iterator.hasNext()) {
             COUNT++;
             return iterator.next();
@@ -39,9 +39,15 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     public void open(Serializable checkpoint) throws Exception {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         String tipoComprobante = runtimeParams.getProperty("tipoComprobante");
+        codEmpresa = runtimeParams.getProperty("codEmpresa");
         comprobantes = new ArrayList();
 
         log.log(Level.INFO, "tipoComprobante -> {0}", tipoComprobante);
+        log.log(Level.INFO, "codEmpresa -> {0}", codEmpresa);
+
+        if (codEmpresa != null && !codEmpresa.isEmpty()) {
+            RecepcionConstant.codEmpresa = "COD_EMPRESA = '" + codEmpresa + "' AND ";
+        }
 
         buildComprobantes(tipoComprobante);
     }
@@ -71,29 +77,12 @@ public class F1_C1_Reader1 extends CommonsItemReader {
                         + "asociada al tipo de comprobante " + tipoComprobante);
         }
 
-        try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL);
-                ResultSet rs = comprobantePreparedStatement.executeQuery()) {
-            while (rs.next()) {
-                switch (tipoComprobante) {
-                    case "01":
-                        _buildFacturas(rs, comprobantes);
-                        break;
-                    case "04":
-                        _buildNotasCredito(rs, comprobantes);
-                        break;
-                    case "05":
-                        _buildNotasDebito(rs, comprobantes);
-                        break;
-                    case "06":
-                        _buildGuiasRemision(rs, comprobantes);
-                        break;
-                    case "07":
-                        _buildRetenciones(rs, comprobantes);
-                        break;
-                    default:
-                        break;
-                }
-            }
+        log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
+        try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL)) {
+            comprobantePreparedStatement.setString(1, codEmpresa);
+            ResultSet rs = comprobantePreparedStatement.executeQuery();
+
+            validarTipoComprobante(tipoComprobante, rs);
             iterator = comprobantes.iterator();
             rs.close();
             comprobantePreparedStatement.close();

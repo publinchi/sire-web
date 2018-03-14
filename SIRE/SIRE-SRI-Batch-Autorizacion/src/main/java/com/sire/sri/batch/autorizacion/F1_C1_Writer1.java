@@ -169,12 +169,14 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                             }
 
                             String cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
-                                    + "ESTADO_SRI = '" + estado + "'"
+                                    + "ESTADO_SRI = ?"
                                     + motivo
                                     + fechaAutorizacion
-                                    + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
+                                    + " WHERE " + nombreSecuencial + " = ?";
                             log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
                             try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                                preparedStatement.setString(1, estado);
+                                preparedStatement.setString(2, secuencial);
                                 preparedStatement.executeQuery();
                                 preparedStatement.close();
                             }
@@ -183,9 +185,10 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 }
                 String loteSQL = "UPDATE CEL_LOTE_AUTORIZADO SET "
                         + "ESTADO_SRI = 'PROCESADA'"
-                        + " WHERE CLAVE_ACCESO = '" + lote.getClaveAcceso() + "'";
+                        + " WHERE CLAVE_ACCESO = ?";
                 log.info("update CEL_LOTE_AUTORIZADO -> " + loteSQL);
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL)) {
+                    preparedStatement.setString(1, lote.getClaveAcceso());
                     preparedStatement.executeQuery();
                     preparedStatement.close();
                 }

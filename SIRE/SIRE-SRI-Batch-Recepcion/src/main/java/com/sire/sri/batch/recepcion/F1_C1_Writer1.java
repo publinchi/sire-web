@@ -85,12 +85,14 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
     private String passSignature;
     private String urlRecepcion;
     private String claveAccesoLote;
+    private String codEmpresa;
     private Connection connection;
     private Logger log = Logger.getLogger(F1_C1_Writer1.class.getName());
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
+        codEmpresa = runtimeParams.getProperty("codEmpresa");
         pathSignature = runtimeParams.getProperty("pathSignature");
         passSignature = runtimeParams.getProperty("passSignature");
         urlRecepcion = runtimeParams.getProperty("urlRecepcion");
@@ -102,16 +104,22 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             Lote lote = new Lote();
             for (Object item : items) {
                 if (claveAccesoLote == null) {
+                    Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "comprobante: " + ((Map) item).get("comprobante"));
                     if (((Map) item).get("comprobante") instanceof Factura) {
                         getClaveAccesoLote("01");
+                        Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "tipo: " + "01");
                     } else if (((Map) item).get("comprobante") instanceof NotaCredito) {
                         getClaveAccesoLote("04");
+                        Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "tipo: " + "04");
                     } else if (((Map) item).get("comprobante") instanceof NotaDebito) {
                         getClaveAccesoLote("05");
+                        Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "tipo: " + "05");
                     } else if (((Map) item).get("comprobante") instanceof GuiaRemision) {
                         getClaveAccesoLote("06");
+                        Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "tipo: " + "06");
                     } else if (((Map) item).get("comprobante") instanceof ComprobanteRetencion) {
                         getClaveAccesoLote("07");
+                        Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "tipo: " + "07");
                     }
                     lote.setClaveAcceso(claveAccesoLote);
                 }
@@ -120,37 +128,42 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 lote.getComprobantes().getComprobante().add(appendCdata(signedXml));
             }
 
-            lote.setRuc(lote.getClaveAcceso().substring(10, 23));
-            lote.setVersion("1.0.0");
+            Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "# Items: " + items.size());
+            Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.INFO, "Lote Clave Acceso: " + lote.getClaveAcceso());
 
-            String loteXml = object2xmlUnicode(lote);
+            if (lote.getClaveAcceso() != null) {
+                lote.setRuc(lote.getClaveAcceso().substring(10, 23));
+                lote.setVersion("1.0.0");
 
-            log.log(Level.INFO, "loteXml: {0}", loteXml);
+                String loteXml = object2xmlUnicode(lote);
 
-            Map mapCall = (Map) SoapUtil.call(
-                    createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
-                    new URL(urlRecepcion),
-                    null,
-                    null);
-            SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
-            log.info("Soap Recepcion Response:");
-            log.info(SoapUtil.toString(soapMessage));
-            ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
+                log.log(Level.INFO, "loteXml: {0}", loteXml);
 
-            String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
+                Map mapCall = (Map) SoapUtil.call(
+                        createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
+                        new URL(urlRecepcion),
+                        null,
+                        null);
+                SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
+                log.info("Soap Recepcion Response:");
+                log.info(SoapUtil.toString(soapMessage));
+                ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
 
-            items.forEach((item) -> {
-                processResponse(item, validarComprobanteResponse);
-            });
-            String secuencial = claveAccesoLote.substring(30, 39);
+                String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
 
-            String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+                items.forEach((item) -> {
+                    processResponse(item, validarComprobanteResponse);
+                });
+                String secuencial = claveAccesoLote.substring(30, 39);
 
-            String insertSQL = "INSERT INTO CEL_LOTE_AUTORIZADO "
-                    + "VALUES ('01'," + secuencial + ",'01','" + claveAccesoLote + "','" + estadoLote + "','" + fechaEstado + "')";
-            try (PreparedStatement preparedStatement = getConnection().prepareStatement(insertSQL)) {
-                preparedStatement.executeQuery();
-                preparedStatement.close();
+                String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance().getTime());
+
+                String insertSQL = "INSERT INTO CEL_LOTE_AUTORIZADO "
+                        + "VALUES ('" + codEmpresa + "',"+ secuencial + ",'01','" + claveAccesoLote + "','" + estadoLote + "','" + fechaEstado + "')";
+                try (PreparedStatement preparedStatement = getConnection().prepareStatement(insertSQL)) {
+                    preparedStatement.executeQuery();
+                    preparedStatement.close();
+                }
             }
         } catch (SQLException | NamingException | SOAPException | XPathExpressionException | MalformedURLException | JAXBException ex) {
             Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
@@ -301,18 +314,19 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
         Connection dbConnection = null;
         CallableStatement callableStatement = null;
 
-        String getClaveAccesoLote = "{call SP_CLAVE_ACCESO_LOTE(?,?)}";
+        String getClaveAccesoLote = "{call SP_CLAVE_ACCESO_LOTE(?,?,?)}";
 
         try {
             dbConnection = getConnection();
             callableStatement = dbConnection.prepareCall(getClaveAccesoLote);
 
-            callableStatement.setString(1, tipoComprobante);
-            callableStatement.registerOutParameter(2, java.sql.Types.VARCHAR);
+            callableStatement.setString(1, codEmpresa);
+            callableStatement.setString(2, tipoComprobante);
+            callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);
 
             callableStatement.executeUpdate();
 
-            claveAccesoLote = callableStatement.getString(2);
+            claveAccesoLote = callableStatement.getString(3);
 
         } catch (SQLException e) {
             log.info(e.getMessage());
@@ -416,9 +430,10 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                     cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
                             + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
                             + motivo
-                            + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
+                            + " WHERE " + nombreSecuencial + " = ?";
                     log.log(Level.INFO, "update {0} -> {1}", new Object[]{nombreTablaComprobante, cabeceraSQL});
                     try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                        preparedStatement.setString(1, secuencial);
                         preparedStatement.executeQuery();
                         preparedStatement.close();
                     }
@@ -431,9 +446,10 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             try {
                 cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
                         + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
-                        + " WHERE " + nombreSecuencial + " = '" + secuencial + "'";
+                        + " WHERE " + nombreSecuencial + " = ?";
                 log.log(Level.INFO, "update -> {0}", cabeceraSQL);
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
+                    preparedStatement.setString(1, secuencial);
                     preparedStatement.executeQuery();
                     preparedStatement.close();
                 }

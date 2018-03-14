@@ -26,9 +26,10 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     private List lotes;
     private Iterator iterator;
     static int COUNT = 0;
+    private String codEmpresa;
 
     @Override
-    public Object readItem() throws Exception {
+    public Object readItem() {
         if (iterator.hasNext()) {
             LoteXml lote = (LoteXml) iterator.next();
             COUNT++;
@@ -41,14 +42,22 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     public void open(Serializable checkpoint) throws Exception {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         String tipoComprobante = runtimeParams.getProperty("tipoComprobante");
+        codEmpresa = runtimeParams.getProperty("codEmpresa");
         lotes = new ArrayList();
+
+        log.log(Level.INFO, "tipoComprobante -> {0}", tipoComprobante);
+        log.log(Level.INFO, "codEmpresa -> {0}", codEmpresa);
+
+        if (codEmpresa != null && !codEmpresa.isEmpty()) {
+            AutorizacionConstant.codEmpresa = "COD_EMPRESA = '" + codEmpresa + "' AND ";
+        }
 
         String loteSQL = "SELECT COD_EMPRESA, SECUENCIAL, COD_DOCUMENTO, "
                 + "CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO "
-                + "FROM CEL_LOTE_AUTORIZADO WHERE ESTADO_SRI = 'RECIBIDA' "
-                + "AND SUBSTR(CLAVE_ACCESO,9,2) = '" + tipoComprobante + "'";
-        try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL);
-                ResultSet loteRs = preparedStatemenT.executeQuery()) {
+                + "FROM CEL_LOTE_AUTORIZADO WHERE COD_EMPRESA = ? AND ESTADO_SRI = 'RECIBIDA' "
+                + "AND SUBSTR(CLAVE_ACCESO,9,2) = ?";
+        try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL)) {
+            ResultSet loteRs = getResultSet(tipoComprobante, preparedStatemenT);
             while (loteRs.next()) {
                 String claveAccesoLote = loteRs.getString("CLAVE_ACCESO");
                 buildComprobantes(claveAccesoLote, tipoComprobante);
@@ -69,52 +78,39 @@ public class F1_C1_Reader1 extends CommonsItemReader {
 
         switch (tipoComprobante) {
             case "01":
-                comprobanteSQL = AutorizacionConstant.FACTURA_SQL.replace("claveAccesoLote", claveAccesoLote);
+                comprobanteSQL = AutorizacionConstant.FACTURA_SQL;
                 break;
             case "04":
-                comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL.replace("claveAccesoLote", claveAccesoLote);
+                comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL;
                 break;
             case "05":
-                comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL.replace("claveAccesoLote", claveAccesoLote);
+                comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL;
                 break;
             case "06":
-                comprobanteSQL = AutorizacionConstant.GUIA_REMISION_SQL.replace("claveAccesoLote", claveAccesoLote);
+                comprobanteSQL = AutorizacionConstant.GUIA_REMISION_SQL;
                 break;
             case "07":
-                comprobanteSQL = AutorizacionConstant.RETENCION_SQL.replace("claveAccesoLote", claveAccesoLote);
+                comprobanteSQL = AutorizacionConstant.RETENCION_SQL;
                 break;
             default:
-                break;
+                throw new RuntimeException("No se ha encontrado ninguna sentencia sql "
+                        + "asociada al tipo de comprobante " + tipoComprobante);
         }
 
         log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
-        try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL);
-                ResultSet rs = comprobantePreparedStatement.executeQuery()) {
-            while (rs.next()) {
-                switch (tipoComprobante) {
-                    case "01":
-                        _buildFacturas(rs, comprobantes);
-                        break;
-                    case "04":
-                        _buildNotasCredito(rs, comprobantes);
-                        break;
-                    case "05":
-                        _buildNotasDebito(rs, comprobantes);
-                        break;
-                    case "06":
-                        _buildGuiasRemision(rs, comprobantes);
-                        break;
-                    case "07":
-                        _buildRetenciones(rs, comprobantes);
-                        break;
-                    default:
-                        break;
-                }
-            }
+        try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL)) {
+            ResultSet rs = getResultSet(claveAccesoLote, comprobantePreparedStatement);
+            validarTipoComprobante(tipoComprobante, rs);
             lote.setComprobantes(comprobantes);
             lotes.add(lote);
             rs.close();
             comprobantePreparedStatement.close();
         }
+    }
+
+    private ResultSet getResultSet(String claveAccesoLote, PreparedStatement comprobantePreparedStatement) throws SQLException {
+        comprobantePreparedStatement.setString(1, codEmpresa);
+        comprobantePreparedStatement.setString(2, claveAccesoLote);
+        return comprobantePreparedStatement.executeQuery();
     }
 }

@@ -32,6 +32,7 @@ import java.util.logging.Logger;
 import javax.batch.api.chunk.AbstractItemReader;
 import javax.naming.NamingException;
 import com.sire.service.IDatasourceService;
+import com.sire.sri.batch.constant.Constant;
 import javax.naming.InitialContext;
 
 /**
@@ -40,6 +41,7 @@ import javax.naming.InitialContext;
  */
 public abstract class CommonsItemReader extends AbstractItemReader {
 
+    protected List comprobantes;
     protected Connection connection;
     protected Logger log = Logger.getLogger(this.getClass().getName());
 
@@ -91,18 +93,27 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setRazonSocialComprador(rs.getString("RAZON_SOCIAL_COMPRADOR"));
         infoFactura.setTipoIdentificacionComprador(rs.getString("TIPO_IDENTIFICACION_COMPRADOR"));
         TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
-        TotalImpuesto totalImpuesto = new TotalImpuesto();
-        totalImpuesto.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE"));
-        totalImpuesto.setCodigo(rs.getString("CODIGO_IMPUESTO"));
-        totalImpuesto.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
-        totalImpuesto.setValor(rs.getBigDecimal("VALOR"));
-        totalConImpuestos.getTotalImpuesto().add(totalImpuesto);
+
+        TotalImpuesto totalImpuesto1 = new TotalImpuesto();
+        totalImpuesto1.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE"));
+        totalImpuesto1.setCodigo(rs.getString("CODIGO_IMPUESTO"));
+        totalImpuesto1.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE"));
+        totalImpuesto1.setValor(rs.getBigDecimal("VALOR"));
+        totalConImpuestos.getTotalImpuesto().add(totalImpuesto1);
+
+        TotalImpuesto totalImpuesto2 = new TotalImpuesto();
+        totalImpuesto2.setBaseImponible(rs.getBigDecimal("BASE_IMPONIBLE_SIN_IVA"));
+        totalImpuesto2.setCodigo(rs.getString("CODIGO_IMPUESTO_SIN_IVA"));
+        totalImpuesto2.setCodigoPorcentaje(rs.getString("CODIGO_PORCENTAJE_SIN_IVA"));
+        totalImpuesto2.setTarifa(rs.getBigDecimal("TARIFA_IVA_SIN_IVA"));
+        totalImpuesto2.setValor(rs.getBigDecimal("VALOR_IVA_SIN_IVA"));
+        totalConImpuestos.getTotalImpuesto().add(totalImpuesto2);
+
         infoFactura.setTotalConImpuestos(totalConImpuestos);
         infoFactura.setTotalDescuento(rs.getBigDecimal("TOTAL_DESCUENTOS"));
         infoFactura.setTotalSinImpuestos(rs.getBigDecimal("TOTAL_SIN_IMPUESTOS"));
 
-        String pagosSQL = "SELECT CODIGO, FORMA_PAGO, PLAZO, TIEMPO, "
-                + "VALOR_FORMA_PAGO FROM V_FACTURA_ELECTRONICA_PAGO WHERE "
+        String pagosSQL = Constant.FACTURA_PAGO_SQL
                 + "NUM_FACTURA = " + numFacturaInterno;
         try (PreparedStatement pagosPreparedStatement = getConnection().prepareStatement(pagosSQL);
                 ResultSet prs = pagosPreparedStatement.executeQuery()) {
@@ -141,11 +152,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         Detalles detalles = new Detalles();
 
-        String detalleSQL = "SELECT COD_EMPRESA, COD_DOCUMENTO, NUM_DOCUMENTO_INTERNO, "
-                + "COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, PRECIO_UNITARIO, "
-                + "DESCUENTO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, TARIFA, "
-                + "BASE_IMPONIBLE, VALOR, PRECIO_TOTAL_SIN_IMPUESTOS "
-                + "FROM V_FACTURA_ELECTRONICA_D WHERE "
+        String detalleSQL = Constant.FACTURA_D_SQL
                 + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
                 ResultSet rsd = detallePreparedStatement.executeQuery()) {
@@ -261,11 +268,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
 
-        String detalleSQL = "SELECT COD_EMPRESA, COD_DOCUMENTO, NUM_DOCUMENTO_INTERNO, "
-                + "COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, PRECIO_UNITARIO, DESCUENTO, "
-                + "CODIGO_IMPUESTO, CODIGO_PORCENTAJE, TARIFA, BASE_IMPONIBLE, VALOR, "
-                + "PRECIO_TOTAL_SIN_IMPUESTOS FROM V_NOTA_CREDITO_ELECTRONICA_D "
-                + "WHERE NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
+        String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
                 ResultSet rsd = detallePreparedStatement.executeQuery()) {
             while (rsd.next()) {
@@ -350,10 +353,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoNotaDebito.setImpuestos(impuestos);
         infoNotaDebito.setValorTotal(rs.getBigDecimal("VALOR_TOTAL"));
 
-        String pagoSQL = "SELECT COD_EMPRESA, NUM_DOCUMENTO_INTERNO, CODIGO, "
-                + "FORMA_PAGO, PLAZO, TIEMPO, VALOR_FORMA_PAGO "
-                + "FROM V_NOTA_DEBITO_ELECTRONICA_PAGO "
-                + "WHERE NUM_DOCUMENTO_INTERNO = " + numDocumentoInterno;
+        String pagoSQL = Constant.NOTA_DEBITO_PAGO_SQL + "NUM_DOCUMENTO_INTERNO = " + numDocumentoInterno;
 
         //Pagos
         NotaDebito.InfoNotaDebito.Pago pagos = new NotaDebito.InfoNotaDebito.Pago();
@@ -445,8 +445,17 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoGuiaRemision.setRise(rs.getString("RISE"));
         infoGuiaRemision.setObligadoContabilidad(rs.getString("LLEVA_CONTABILIDAD"));
         infoGuiaRemision.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
-        infoGuiaRemision.setFechaIniTransporte(rs.getString("FECHA_INICIO_TRANSPORTE"));
-        infoGuiaRemision.setFechaFinTransporte(rs.getString("FECHA_FIN_TRANSPORTE"));
+
+        String oldDate = rs.getString("FECHA_INICIO_TRANSPORTE");
+        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoGuiaRemision.setFechaIniTransporte(newDate);
+
+        String oldDate1 = rs.getString("FECHA_FIN_TRANSPORTE");
+        LocalDateTime datetime1 = LocalDateTime.parse(oldDate1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate1 = datetime1.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoGuiaRemision.setFechaFinTransporte(newDate1);
+
         infoGuiaRemision.setPlaca(rs.getString("PLACA"));
         guiaRemision.setInfoGuiaRemision(infoGuiaRemision);
 
@@ -456,10 +465,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         /* Detalles */
         Destinatario.Detalles detalles = new Destinatario.Detalles();
 
-        String articuloSQL = "SELECT NUM_DESPACHO_INTERNO, CODIGOINTERNO, "
-                + "DESCRIPCION, CANTIDAD, DETALLEADICIONAL1, DETALLEADICIONAL2 "
-                + "FROM V_GUIA_REMISION_ARTICULO "
-                + "WHERE NUM_DESPACHO_INTERNO = " + numDespachoInterno;
+        String articuloSQL = Constant.GUIA_REMISION_ARTICULO_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
 
         try (PreparedStatement articuloPreparedStatement = getConnection().prepareStatement(articuloSQL);
                 ResultSet rsa = articuloPreparedStatement.executeQuery()) {
@@ -475,12 +481,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             articuloPreparedStatement.close();
         }
 
-        String detalleSQL = "SELECT NUM_DESPACHO_INTERNO, IDENTIFICACION_DESTINATARIO, "
-                + "RAZONSOCIALDESTINATARIO, DIRDESTINATARIO, TELDESTINATARIO, "
-                + "MAILDESTINATARIO, MOTIVOTRASLADO, DOCADUANEROUNICO, RUTA, "
-                + "COD_ESTAB_DESTINO, CODDOSUSTENTO, NUMDOCSUSTENTO, NUMAUTDOCSUSTENTO, "
-                + "FECHAEMISIONDOCSUSTENTO FROM V_GUIA_REMISION_ELECTRONICA_D "
-                + "WHERE NUM_DESPACHO_INTERNO = " + numDespachoInterno;
+        String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
 
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
                 ResultSet rsd = detallePreparedStatement.executeQuery()) {
@@ -496,7 +497,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 destinatario.setCodDocSustento(rsd.getString("CODDOSUSTENTO"));
                 destinatario.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
                 destinatario.setNumAutDocSustento(rsd.getString("NUMAUTDOCSUSTENTO"));
-                destinatario.setFechaEmisionDocSustento(rsd.getString("FECHAEMISIONDOCSUSTENTO"));
+                String oldDate2 = rsd.getString("FECHAEMISIONDOCSUSTENTO");
+                LocalDateTime datetime2 = LocalDateTime.parse(oldDate2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+                String newDate2 = datetime2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                destinatario.setFechaEmisionDocSustento(newDate2);
                 destinatario.setRazonSocialDestinatario(rsd.getString("RAZONSOCIALDESTINATARIO"));
                 destinatario.setDetalles(detalles);
 
@@ -548,15 +552,12 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         comprobanteRetencion.setId("comprobante");
         ComprobanteRetencion.Impuestos impuestos = new ComprobanteRetencion.Impuestos();
 
-        String detalleSQL = "SELECT CODIGO, CODIGORETENCION, BASEIMPONIBLE, "
-                + "PORCENTAJERETENR, VALORRETENIDO, CODDOCSUSTENTO, NUMDOCSUSTENTO, "
-                + "FECHAEMISIONDOCSUSTENTO FROM V_RETENCION_ELECTRONICA_D WHERE "
-                + "NUM_RETENCION_INTERNO = " + numRetencionInterno;
+        String detalleSQL = Constant.RETENCION_D_SQL + "NUM_RETENCION_INTERNO = " + numRetencionInterno;
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
                 ResultSet rsd = detallePreparedStatement.executeQuery()) {
             while (rsd.next()) {
                 ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
-                impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE").setScale(2));
+                    impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE").setScale(2));
                 impuesto.setCodDocSustento(rsd.getString("CODDOCSUSTENTO"));
                 impuesto.setCodigo(rsd.getString("CODIGO"));
                 impuesto.setCodigoRetencion(rsd.getString("CODIGORETENCION"));
@@ -634,5 +635,29 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             connection = datasourceService.getConnection();
         }
         return connection;
+    }
+
+    protected void validarTipoComprobante(String tipoComprobante, ResultSet rs) throws SQLException, NamingException {
+        while (rs.next()) {
+            switch (tipoComprobante) {
+                case "01":
+                    _buildFacturas(rs, comprobantes);
+                    break;
+                case "04":
+                    _buildNotasCredito(rs, comprobantes);
+                    break;
+                case "05":
+                    _buildNotasDebito(rs, comprobantes);
+                    break;
+                case "06":
+                    _buildGuiasRemision(rs, comprobantes);
+                    break;
+                case "07":
+                    _buildRetenciones(rs, comprobantes);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
