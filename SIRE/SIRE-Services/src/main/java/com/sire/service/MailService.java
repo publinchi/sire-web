@@ -13,6 +13,7 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
@@ -46,13 +47,35 @@ public class MailService implements IMailService {
             Context initContext = new InitialContext();
             Session mailSession = (Session) initContext.lookup(mail);
             message = new MimeMessage(mailSession);
-
-            message.setRecipient(Message.RecipientType.TO, new InternetAddress(event.getTo()));
             message.setSubject(event.getSubject());
             if (event.getMimeMultipart() == null) {
                 message.setContent(event.getMessage(), "text/plain");
             } else {
                 message.setContent(event.getMimeMultipart());
+            }
+
+            String mailFrom;
+
+            mailFrom = mailSession.getProperties().get("mail.smtp.from") != null ? mailSession.getProperties().get("mail.smtp.from").toString() : null;
+
+            if(mailFrom == null)
+                mailFrom = mailSession.getProperties().get("mail.smtps.from") != null ? mailSession.getProperties().get("mail.smtps.from").toString() : null;
+            
+            if (mailFrom == null) {
+                mailFrom = System.getProperty("sire.mail.from");
+            }
+
+            if(mailFrom != null){
+                Address[] from = InternetAddress.parse(mailFrom);//Your domain email
+                message.addFrom(from);
+            }
+
+            String mailCopy = System.getProperty("sire.mail.copy");
+            if (mailCopy == null) {
+                message.addRecipient(Message.RecipientType.TO, new InternetAddress(event.getTo()));
+            } else {
+                Address[] to = InternetAddress.parse(event.getTo() + "," + mailCopy);
+                message.addRecipients(Message.RecipientType.TO, to);
             }
 
             Transport.send(message);
