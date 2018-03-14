@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="comprobanteRetencion" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3eaa0e8-2300-4d0d-bb98-ea16c8d01451">
-	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.zoom" value="2.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="249"/>
+	<property name="ireport.y" value="494"/>
 	<parameter name="RUC" class="java.lang.String"/>
 	<parameter name="NUM_AUT" class="java.lang.String"/>
 	<parameter name="FECHA_AUT" class="java.lang.String"/>
@@ -137,7 +137,7 @@
 				<text><![CDATA[Identificación:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="1" y="375" width="77" height="12" uuid="7501feea-7442-4dc7-9e76-55a429bbbf28"/>
+				<reportElement mode="Transparent" x="1" y="374" width="77" height="12" uuid="7501feea-7442-4dc7-9e76-55a429bbbf28"/>
 				<textElement>
 					<font size="9" isBold="true"/>
 				</textElement>
@@ -334,17 +334,17 @@
 				<text><![CDATA[Comprobante]]></text>
 			</staticText>
 			<staticText>
-				<reportElement mode="Transparent" x="71" y="0" width="51" height="28" uuid="63a3a47d-7fa1-4c19-a0e7-b48e1e88f251"/>
+				<reportElement mode="Transparent" x="71" y="0" width="55" height="28" uuid="63a3a47d-7fa1-4c19-a0e7-b48e1e88f251"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Número]]></text>
 			</staticText>
 			<line>
-				<reportElement mode="Transparent" x="123" y="0" width="1" height="28" uuid="1602817c-457e-498c-8ae0-98e31d1fb9eb"/>
+				<reportElement mode="Transparent" x="127" y="0" width="1" height="28" uuid="1602817c-457e-498c-8ae0-98e31d1fb9eb"/>
 			</line>
 			<staticText>
-				<reportElement mode="Transparent" x="127" y="0" width="58" height="28" uuid="ab220188-b351-4ba0-831c-6685caad7ae5"/>
+				<reportElement mode="Transparent" x="130" y="0" width="60" height="28" uuid="ab220188-b351-4ba0-831c-6685caad7ae5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -405,14 +405,14 @@
 			</line>
 			<textField isBlankWhenNull="false">
 				<reportElement x="2" y="0" width="63" height="25" uuid="1e457aad-12c6-4b33-8023-b46ffb590645"/>
-				<textElement verticalAlignment="Middle">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{nombreComprobante}==null?"OTRO":$F{nombreComprobante}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="71" y="0" width="51" height="25" uuid="8ebcf710-246d-44dd-81a0-e8f05166c661"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="71" y="0" width="55" height="25" uuid="8ebcf710-246d-44dd-81a0-e8f05166c661"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{numeroComprobante}]]></textFieldExpression>
@@ -425,11 +425,11 @@
 				<textFieldExpression><![CDATA[$P{EJERCICIO_FISCAL}]]></textFieldExpression>
 			</textField>
 			<line>
-				<reportElement mode="Transparent" x="123" y="0" width="1" height="25" uuid="97e5ab4b-f310-4ef5-b74d-ffd1a91e2b62"/>
+				<reportElement mode="Transparent" x="127" y="0" width="1" height="25" uuid="97e5ab4b-f310-4ef5-b74d-ffd1a91e2b62"/>
 			</line>
 			<textField>
-				<reportElement x="128" y="0" width="61" height="25" uuid="83990487-9c48-4c0f-a8b7-8717d4d5c59a"/>
-				<textElement verticalAlignment="Middle">
+				<reportElement x="130" y="0" width="60" height="25" uuid="83990487-9c48-4c0f-a8b7-8717d4d5c59a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{fechaEmisionCcompModificado}]]></textFieldExpression>

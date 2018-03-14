@@ -1,5 +1,6 @@
 package ec.gob.sri.comprobantes.modelo.reportes;
 
+import ec.gob.sri.comprobantes.modelo.reportes.TotalesComprobante;
 import ec.gob.sri.comprobantes.administracion.modelo.Compensaciones;
 import ec.gob.sri.comprobantes.administracion.modelo.ImpuestoValor;
 import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
@@ -57,9 +58,9 @@ public class NotaCreditoReporte {
             detAd.setCodigoAuxiliar(det.getCodigoAdicional());
             detAd.setDescripcion(det.getDescripcion());
             detAd.setCantidad(det.getCantidad().toPlainString());
-            detAd.setPrecioTotalSinImpuesto(det.getPrecioTotalSinImpuesto().toString());
-            detAd.setPrecioUnitario(det.getPrecioUnitario());
-            detAd.setDescuento(det.getDescuento().toString());
+            detAd.setPrecioTotalSinImpuesto(det.getPrecioTotalSinImpuesto().setScale(2).toString());
+            detAd.setPrecioUnitario(det.getPrecioUnitario().setScale(2));
+            detAd.setDescuento(det.getDescuento().setScale(2).toString());
             int i = 0;
             if ((det.getDetallesAdicionales() != null) && (det.getDetallesAdicionales().getDetAdicional() != null)) {
                 for (NotaCredito.Detalles.Detalle.DetallesAdicionales.DetAdicional detAdicional : det.getDetallesAdicionales().getDetAdicional()) {

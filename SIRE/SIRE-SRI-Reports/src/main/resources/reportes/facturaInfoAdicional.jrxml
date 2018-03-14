@@ -19,14 +19,12 @@
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
-			<textField isBlankWhenNull="true" isStretchWithOverflow="true">
-				<reportElement uuid="76a2c15a-293b-4661-943d-e150bd676905" x="0" y="2" width="128" height="18"/>
-				<textElement/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="2" width="128" height="18" uuid="76a2c15a-293b-4661-943d-e150bd676905"/>
 				<textFieldExpression><![CDATA[$F{nombre}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true" isStretchWithOverflow="true">
-				<reportElement uuid="bd8fc27c-0a40-4169-b79e-2bbb7a44462e" stretchType="RelativeToTallestObject" x="129" y="2" width="160" height="18"/>
-				<textElement/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="129" y="2" width="170" height="18" uuid="bd8fc27c-0a40-4169-b79e-2bbb7a44462e"/>
 				<textFieldExpression><![CDATA[$F{valor}]]></textFieldExpression>
 			</textField>
 		</band>

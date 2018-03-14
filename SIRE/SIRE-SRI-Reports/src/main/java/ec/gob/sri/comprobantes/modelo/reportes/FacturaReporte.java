@@ -1,5 +1,6 @@
 package ec.gob.sri.comprobantes.modelo.reportes;
 
+import ec.gob.sri.comprobantes.modelo.reportes.TotalesComprobante;
 import ec.gob.sri.comprobantes.administracion.modelo.Compensaciones;
 import ec.gob.sri.comprobantes.administracion.modelo.ImpuestoValor;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;

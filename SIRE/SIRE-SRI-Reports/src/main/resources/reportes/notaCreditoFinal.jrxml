@@ -400,14 +400,14 @@
 			</rectangle>
 			<textField>
 				<reportElement mode="Transparent" x="112" y="0" width="46" height="24" uuid="4fe9e0b6-24c5-40ec-83ee-ac49e4cd948e"/>
-				<textElement textAlignment="Left" verticalAlignment="Middle">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{cantidad}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Transparent" x="163" y="0" width="220" height="24" uuid="2c23745e-6374-4c41-ae07-997c8db3f578"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<textElement verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{descripcion}]]></textFieldExpression>
@@ -439,8 +439,8 @@
 				<textFieldExpression><![CDATA[$F{precioTotalSinImpuesto}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement mode="Transparent" x="391" y="0" width="51" height="24" uuid="bcccc5b5-6eb8-4942-9316-b6136657e90e"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
+				<reportElement mode="Transparent" x="388" y="0" width="51" height="24" uuid="bcccc5b5-6eb8-4942-9316-b6136657e90e"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{precioUnitario}]]></textFieldExpression>
