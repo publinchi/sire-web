@@ -1,0 +1,77 @@
+# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
+# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
+
+# User-specific stuff:
+SIRE/.idea/**/workspace.xml
+SIRE/.idea/**/tasks.xml
+SIRE/.idea/dictionaries
+
+# Sensitive or high-churn files:
+SIRE/.idea/**/dataSources/
+SIRE/.idea/**/dataSources.ids
+SIRE/.idea/**/dataSources.local.xml
+SIRE/.idea/**/sqlDataSources.xml
+SIRE/.idea/**/dynamic.xml
+SIRE/.idea/**/uiDesigner.xml
+
+# Gradle:
+SIRE/.idea/**/gradle.xml
+SIRE/.idea/**/libraries
+
+# CMake
+cmake-build-debug/
+cmake-build-release/
+
+# Mongo Explorer plugin:
+SIRE/.idea/**/mongoSettings.xml
+
+## File-based project format:
+SIRE/*.iws
+
+## Plugin-specific files:
+
+# IntelliJ
+SIRE/out/
+
+# mpeltonen/sbt-idea plugin
+SIRE/.idea_modules/
+
+# JIRA plugin
+SIRE/atlassian-ide-plugin.xml
+
+# Cursive Clojure plugin
+SIRE/.idea/replstate.xml
+
+# Crashlytics plugin (for Android Studio and IntelliJ)
+SIRE/com_crashlytics_export_strings.xml
+SIRE/crashlytics.properties
+SIRE/crashlytics-build.properties
+SIRE/fabric.properties
+
+SIRE/SIRE-WS/target/
+SIRE/SIRE-Commons/target/
+SIRE/SIRE-Entities/target/
+SIRE/SIRE-Services/target/
+SIRE/SIRE-Services-API/target/
+SIRE/SIRE-RS-Client/target/
+SIRE/SIRE-Web/target/
+SIRE/SIRE-UI/nbproject/private/
+SIRE/SIRE-Batch/target/
+SIRE/SRI-WS-Client/target/
+SIRE/SIRE-SRI-Entities/target/
+SIRE/SIRE-Signature/target/
+SIRE/SIRE-SRI-WSClient/target/
+SIRE/target/
+SIRE/SIRE-Soap/target/
+SIRE/SIRE-Batch-SRI-Recepcion/target/
+SIRE/SIRE-SRI-Batch-Recepcion/target/
+SIRE/SIRE-SRI-Signature/target/
+SIRE/SIRE-SRI-Batch-Autorizacion/target/
+SIRE/SIRE-SRI-Batch/target/
+SIRE/SIRE-SRI-Reports/target/
+SIRE/SIRE-SRI-Batch-Commons/target/
+
+SIRE/SIRE-UI/node_modules/
+
+SIRE/SIRE-Movil/
+
