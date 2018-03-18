@@ -18,6 +18,7 @@
     <module>SIRE-Commons</module>
     <module>SIRE-Batch</module>
     <module>SIRE-Soap</module>
+    <module>SIRE-SRI-Batch-Commons</module>
     <module>SIRE-SRI-Batch-Recepcion</module>
     <module>SIRE-SRI-Entities</module>
     <module>SIRE-SRI-Signature</module>

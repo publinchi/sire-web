@@ -63,7 +63,7 @@ public class SoapUtil {
      * @return
      */
     public static Map<String, Object> call(SOAPMessage soapMsg, URL url, String returnObjectName,
-            Class aClass) {
+            Class aClass) throws SOAPException {
         SOAPConnection soapConnection = null;
         String cookie;
         try {
@@ -97,8 +97,6 @@ public class SoapUtil {
             }
 
             return map;
-        } catch (SOAPException ex) {
-            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             if (soapConnection != null) {
                 try {
@@ -108,7 +106,6 @@ public class SoapUtil {
                 }
             }
         }
-        return null;
     }
 
     private static Object soapToObject(SOAPMessage soapResponse, String localName, Class aClass) {

@@ -41,7 +41,6 @@ import javax.naming.InitialContext;
  */
 public abstract class CommonsItemReader extends AbstractItemReader {
 
-    protected List comprobantes;
     protected Connection connection;
     protected Logger log = Logger.getLogger(this.getClass().getName());
 
@@ -637,7 +636,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         return connection;
     }
 
-    protected void validarTipoComprobante(String tipoComprobante, ResultSet rs) throws SQLException, NamingException {
+    protected void validarTipoComprobante(String tipoComprobante, ResultSet rs, List comprobantes) throws SQLException, NamingException {
         while (rs.next()) {
             switch (tipoComprobante) {
                 case "01":

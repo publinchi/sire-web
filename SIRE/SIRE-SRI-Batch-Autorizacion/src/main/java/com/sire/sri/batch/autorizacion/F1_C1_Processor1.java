@@ -5,6 +5,7 @@ import autorizacion.ws.sri.gob.ec.Mensaje;
 import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
 import com.sire.soap.util.SoapUtil;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
+import java.io.StringReader;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -37,6 +38,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 @Named
 public class F1_C1_Processor1 implements ItemProcessor {
@@ -157,6 +159,10 @@ public class F1_C1_Processor1 implements ItemProcessor {
                     default:
                         break;
                 }
+            }
+            if(autorizacion.getNumeroAutorizacion() == null) {
+                InputSource source = new InputSource(new StringReader(autorizacion.getComprobante()));
+                autorizacion.setNumeroAutorizacion(xpath.evaluate("//claveAcceso", source));
             }
         }
 

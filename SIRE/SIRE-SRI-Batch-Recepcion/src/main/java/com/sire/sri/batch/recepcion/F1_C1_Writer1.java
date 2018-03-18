@@ -1,12 +1,11 @@
 package com.sire.sri.batch.recepcion;
 
 import com.sire.service.IDatasourceService;
-import com.sire.sri.batch.recepcion.util.JaxbCharacterEscapeHandler;
 import com.sire.signature.GenericXMLSignature;
 import com.sire.signature.XAdESBESSignature;
 import com.sire.soap.util.SoapUtil;
+import com.sire.sri.batch.commons.CommonsItemWriter;
 import ec.gob.sri.comprobantes.modelo.Lote;
-import com.sun.xml.bind.marshaller.DataWriter;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
 import ec.gob.sri.comprobantes.modelo.guia.GuiaRemision;
 import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
@@ -16,7 +15,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import org.dom4j.CDATA;
 import org.dom4j.DocumentHelper;
 import java.io.Serializable;
@@ -36,7 +34,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.batch.api.chunk.AbstractItemWriter;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
@@ -77,7 +74,7 @@ import recepcion.ws.sri.gob.ec.RespuestaSolicitud;
 import recepcion.ws.sri.gob.ec.ValidarComprobanteResponse;
 
 @Named
-public class F1_C1_Writer1 extends AbstractItemWriter {
+public class F1_C1_Writer1 extends CommonsItemWriter {
 
     @Inject
     private JobContext jobCtx;
@@ -192,19 +189,6 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
             System.exit(-1);
             return null;
         }
-    }
-
-    private String object2xmlUnicode(Object item) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(item.getClass());
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter);
-        DataWriter dataWriter = new DataWriter(printWriter, "UTF-8", new JaxbCharacterEscapeHandler());
-
-        jaxbMarshaller.marshal(item, dataWriter);
-
-        return stringWriter.toString();
     }
 
     private SOAPMessage createSOAPMessage(String xmlBase64) {

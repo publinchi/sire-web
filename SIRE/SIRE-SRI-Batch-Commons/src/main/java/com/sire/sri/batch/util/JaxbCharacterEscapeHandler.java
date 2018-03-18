@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sire.sri.batch.autorizacion.util;
+package com.sire.sri.batch.util;
 
 import com.sun.xml.bind.marshaller.CharacterEscapeHandler;
+
 import java.io.IOException;
 import java.io.Writer;
 
