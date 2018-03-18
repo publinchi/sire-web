@@ -67,7 +67,8 @@ public class BatchBean {
             Collection<Timer> timers = timerService.getTimers();
             log.info("************** TIMERS INFO **************");
             for (Timer timer : timers) {
-                log.log(Level.INFO, "Name: {0}", timer.getInfo() + " -> " + timer.getSchedule().getMinute());
+                log.log(Level.INFO, "Name: {0}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
+                        + " m: " + timer.getSchedule().getMinute());
             }
             log.log(Level.INFO, "Total timers: {0}", timers.size());
         } catch (IOException ex) {
@@ -92,8 +93,9 @@ public class BatchBean {
             Properties runtimeParameters = new Properties();
             runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
             String minute = runtimeParameters.getProperty(jobName + ".minute");
+            String hour = runtimeParameters.getProperty(jobName + ".hour");
             final TimerConfig timerConfig = new TimerConfig(jobName, false);
-            return timerService.createCalendarTimer(new ScheduleExpression().hour("*").minute(minute).timezone("UTC"), timerConfig);
+            return timerService.createCalendarTimer(new ScheduleExpression().hour(hour).minute(minute).timezone("UTC"), timerConfig);
         } catch (IOException ex) {
             Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -110,6 +112,22 @@ public class BatchBean {
             log.info("************** TIMERS INFO **************");
             for (Timer timer : timers) {
                 String jobName = (String) timer.getInfo();
+                String hour = runtimeParameters.getProperty(jobName + ".hour");
+                if (hour != null) {
+                    hour = hour.trim();
+                }
+                log.log(Level.INFO, "Timer Name: {0}", jobName + " -> Disk = " + hour
+                        + " -> Mem = " + timer.getSchedule().getMinute());
+                if (hour != null && !hour.equals(timer.getSchedule().getHour())) {
+                    log.log(Level.INFO, "Diferentes");
+                    log.log(Level.INFO, "Cancelling timer: {0}", timer.getInfo());
+                    timer.cancel();
+                    log.log(Level.INFO, "Timer {0} cancelled.", timer.getInfo());
+                    log.log(Level.INFO, "Creating timer {0} -> Every {1} hours.", new Object[]{jobName, hour});
+                    Timer t = createCalendarTimer(jobName);
+                    if(t != null)
+                        log.log(Level.INFO, "New timer {0} created -> Every {1} hours.", new Object[]{t.getInfo(), t.getSchedule().getHour()});
+                }
                 String minute = runtimeParameters.getProperty(jobName + ".minute");
                 if (minute != null) {
                     minute = minute.trim();
