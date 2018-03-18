@@ -40,7 +40,6 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         String tipoComprobante = runtimeParams.getProperty("tipoComprobante");
         codEmpresa = runtimeParams.getProperty("codEmpresa");
-        comprobantes = new ArrayList();
 
         log.log(Level.INFO, "tipoComprobante -> {0}", tipoComprobante);
         log.log(Level.INFO, "codEmpresa -> {0}", codEmpresa);
@@ -53,6 +52,7 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     }
 
     private void buildComprobantes(String tipoComprobante) throws SQLException, NamingException {
+        List comprobantes = new ArrayList();
         log.log(Level.INFO, "-> buildComprobantes -> {0}", tipoComprobante);
         String comprobanteSQL;
 
@@ -81,8 +81,7 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL)) {
             comprobantePreparedStatement.setString(1, codEmpresa);
             ResultSet rs = comprobantePreparedStatement.executeQuery();
-
-            validarTipoComprobante(tipoComprobante, rs);
+            validarTipoComprobante(tipoComprobante, rs, comprobantes);
             iterator = comprobantes.iterator();
             rs.close();
             comprobantePreparedStatement.close();
