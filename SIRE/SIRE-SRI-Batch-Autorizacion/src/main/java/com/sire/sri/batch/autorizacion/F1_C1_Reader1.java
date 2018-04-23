@@ -26,7 +26,6 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     private List lotes;
     private Iterator iterator;
     static int COUNT = 0;
-    private String codEmpresa;
 
     @Override
     public Object readItem() {
@@ -100,7 +99,7 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
         try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL)) {
             ResultSet rs = getResultSet(claveAccesoLote, comprobantePreparedStatement);
-            validarTipoComprobante(tipoComprobante, rs);
+            validarTipoComprobante(tipoComprobante, rs, comprobantes);
             lote.setComprobantes(comprobantes);
             lotes.add(lote);
             rs.close();

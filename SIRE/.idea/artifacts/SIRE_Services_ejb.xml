@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="ejb-jar" name="SIRE-Services:ejb">
+    <output-path>$PROJECT_DIR$/SIRE-Services/target</output-path>
+    <root id="archive" name="SIRE-Services-1.0.1.jar">
+      <element id="artifact" artifact-name="SIRE-Services:ejb exploded" />
+    </root>
+  </artifact>
+</component>
