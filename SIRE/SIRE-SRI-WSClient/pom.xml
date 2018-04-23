@@ -8,6 +8,7 @@
     </parent>
     <groupId>com.sire.sri</groupId>
     <artifactId>SIRE-SRI-WSClient</artifactId>
+    <version>${SIRE-SRI-WSClient.version}</version>
     <packaging>jar</packaging>
     <build>
         <resources>

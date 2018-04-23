@@ -7,12 +7,13 @@
         <version>1.0.0</version>
     </parent>
     <artifactId>SIRE-Services-API</artifactId>
+    <version>${SIRE-Services-API.version}</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Entities</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-Entities.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>commons-beanutils</groupId>
@@ -43,7 +44,7 @@
         <dependency>
             <groupId>com.sire</groupId>
             <artifactId>SIRE-Commons</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-Commons.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>

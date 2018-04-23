@@ -15,7 +15,6 @@
     <orderEntry type="module" module-name="SIRE-Commons" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.16.12" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.1" level="project" />
-    <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-api:6.0" level="project" />
   </component>
 </module>

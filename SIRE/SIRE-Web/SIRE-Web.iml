@@ -35,7 +35,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
     <orderEntry type="module" module-name="SIRE-Commons" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.1" level="project" />
-    <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: javax:javaee-api:7.0" level="project" />
     <orderEntry type="module" module-name="SIRE-RS-Client" />
     <orderEntry type="library" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:2.5.1" level="project" />
@@ -45,6 +44,7 @@
     <orderEntry type="library" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jersey.core:jersey-server:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: javax.validation:validation-api:1.1.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.jersey.core:jersey-client:2.5.1" level="project" />
     <orderEntry type="library" name="Maven: com.google.guava:guava:14.0.1" level="project" />
     <orderEntry type="library" name="Maven: org.glassfish.hk2:hk2-api:2.2.0-b21" level="project" />

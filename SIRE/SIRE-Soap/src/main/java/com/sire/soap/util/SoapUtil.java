@@ -63,7 +63,7 @@ public class SoapUtil {
      * @return
      */
     public static Map<String, Object> call(SOAPMessage soapMsg, URL url, String returnObjectName,
-            Class aClass) throws SOAPException {
+                                           Class aClass) throws SOAPException {
         SOAPConnection soapConnection = null;
         String cookie;
         try {
@@ -165,20 +165,21 @@ public class SoapUtil {
     private static void disableSslVerification() {
         try {
             // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[]{new X509TrustManager() {
-                @Override
-                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                    return null;
-                }
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
 
-                @Override
-                public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                }
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
 
-                @Override
-                public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                }
-            }
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
             };
 
             // Install the all-trusting trust manager

@@ -8,13 +8,6 @@
     </parent>
     <artifactId>SIRE-RS-Client</artifactId>
     <packaging>jar</packaging>
-    <repositories>
-        <repository>
-            <id>unknown-jars-temp-repo</id>
-            <name>A temporary repository created by NetBeans for libraries and jars it could not identify. Please replace the dependencies in this repository with correct ones and delete this repository.</name>
-            <url>file:${project.basedir}/lib</url>
-        </repository>
-    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.glassfish.jersey.containers</groupId>
@@ -34,7 +27,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Entities</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-Entities.version}</version>
             <type>jar</type>
         </dependency>
     </dependencies>

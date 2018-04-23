@@ -23,7 +23,6 @@
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
     <orderEntry type="module" module-name="SIRE-Commons" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.1" level="project" />
-    <orderEntry type="library" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: javax:javaee-api:7.0" level="project" />
   </component>
 </module>

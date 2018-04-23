@@ -132,7 +132,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 lote.setRuc(lote.getClaveAcceso().substring(10, 23));
                 lote.setVersion("1.0.0");
 
-                String loteXml = object2xmlUnicode(lote);
+                String loteXml = object2xmlUnicode(lote, null,null,null);
 
                 log.log(Level.INFO, "loteXml: {0}", loteXml);
 
@@ -412,12 +412,15 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     String motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
 
                     cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
-                            + "ESTADO_SRI = '" + estado + "', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
+                            + "ESTADO_SRI = ?, "
+                            + "CLAVE_ACCESO_LOTE = ?"
                             + motivo
                             + " WHERE " + nombreSecuencial + " = ?";
                     log.log(Level.INFO, "update {0} -> {1}", new Object[]{nombreTablaComprobante, cabeceraSQL});
                     try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
-                        preparedStatement.setString(1, secuencial);
+                        preparedStatement.setString(1, estado);
+                        preparedStatement.setString(2, claveAccesoLote);
+                        preparedStatement.setString(3, secuencial);
                         preparedStatement.executeQuery();
                         preparedStatement.close();
                     }
@@ -429,11 +432,13 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
         if (existsError == false) {
             try {
                 cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
-                        + "ESTADO_SRI = 'RECIBIDA', CLAVE_ACCESO_LOTE = '" + claveAccesoLote + "'"
-                        + " WHERE " + nombreSecuencial + " = ?";
+                        + "ESTADO_SRI = 'RECIBIDA', "
+                        + "CLAVE_ACCESO_LOTE = ? "
+                        + "WHERE " + nombreSecuencial + " = ?";
                 log.log(Level.INFO, "update -> {0}", cabeceraSQL);
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
-                    preparedStatement.setString(1, secuencial);
+                    preparedStatement.setString(1, claveAccesoLote);
+                    preparedStatement.setString(2, secuencial);
                     preparedStatement.executeQuery();
                     preparedStatement.close();
                 }
