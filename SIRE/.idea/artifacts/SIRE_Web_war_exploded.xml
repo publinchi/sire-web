@@ -18,7 +18,6 @@
             <element id="module-output" name="SIRE-Commons" />
           </element>
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.9.1" />
-          <element id="library" level="project" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" />
           <element id="library" level="project" name="Maven: javax:javaee-api:7.0" />
           <element id="archive" name="SIRE-RS-Client-1.0.0.jar">
             <element id="module-output" name="SIRE-RS-Client" />
@@ -30,6 +29,7 @@
           <element id="library" level="project" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" />
           <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-server:2.5.1" />
           <element id="library" level="project" name="Maven: javax.validation:validation-api:1.1.0.Final" />
+          <element id="library" level="project" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0" />
           <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-client:2.5.1" />
           <element id="library" level="project" name="Maven: com.google.guava:guava:14.0.1" />
           <element id="library" level="project" name="Maven: org.glassfish.hk2:hk2-api:2.2.0-b21" />

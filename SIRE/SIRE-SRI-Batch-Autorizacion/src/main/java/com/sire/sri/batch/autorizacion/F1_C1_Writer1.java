@@ -286,7 +286,8 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 MimeMultipart mimeMultipart = new MimeMultipart();
                 addBodyPart(pdfBytes, "application/pdf", claveAcceso + ".pdf", mimeMultipart);
 
-                String autorizacionXml = object2xmlUnicode(autorizacion);
+                String autorizacionXml = object2xmlUnicode(autorizacion, Autorizacion.class, "ec.gob.sri.ws.autorizacion",
+                        "autorizacion");
                 addBodyPart(autorizacionXml.getBytes(), "application/xml", claveAcceso + ".xml", mimeMultipart);
 
                 BodyPart messageBodyPart = new MimeBodyPart();

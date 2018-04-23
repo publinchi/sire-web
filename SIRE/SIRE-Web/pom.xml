@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>SIRE-Web</artifactId>
+    <version>${SIRE-Web.version}</version>
     <packaging>war</packaging>
 
     <name>SIRE-Web</name>
@@ -27,12 +28,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Entities</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-Entities.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-RS-Client</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-RS-Client.version}</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>

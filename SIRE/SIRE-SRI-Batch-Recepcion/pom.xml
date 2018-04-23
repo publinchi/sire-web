@@ -8,24 +8,19 @@
     </parent>
     <groupId>com.sire.sri</groupId>
     <artifactId>SIRE-SRI-Batch-Recepcion</artifactId>
+    <version>${SIRE-SRI-Batch-Recepcion.version}</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.sire</groupId>
-            <artifactId>SIRE-Soap</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-        </dependency>
-        <dependency>
-            <groupId>com.sire.sri</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-SRI-WSClient</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-SRI-WSClient.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.sire.sri</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-SRI-Signature</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-SRI-Signature.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -37,7 +32,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-SRI-Batch-Commons</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-SRI-Batch-Commons.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sire</groupId>
@@ -54,6 +49,11 @@
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>${parent.groupId}</groupId>
+            <artifactId>SIRE-Soap</artifactId>
+            <version>${SIRE-Soap.version}</version>
         </dependency>
     </dependencies>
     <properties>

@@ -43,6 +43,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
     protected Connection connection;
     protected Logger log = Logger.getLogger(this.getClass().getName());
+    protected String codEmpresa;
 
     protected void _buildFacturas(ResultSet rs, List comprobantes) throws SQLException, NamingException {
         log.info("-> _buildFacturas");
@@ -551,9 +552,11 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         comprobanteRetencion.setId("comprobante");
         ComprobanteRetencion.Impuestos impuestos = new ComprobanteRetencion.Impuestos();
 
-        String detalleSQL = Constant.RETENCION_D_SQL + "NUM_RETENCION_INTERNO = " + numRetencionInterno;
-        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
-                ResultSet rsd = detallePreparedStatement.executeQuery()) {
+        String detalleSQL = Constant.RETENCION_D_SQL + "NUM_RETENCION_INTERNO = ? AND COD_EMPRESA = ?";
+        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL)) {
+            detallePreparedStatement.setString(1, numRetencionInterno);
+            detallePreparedStatement.setString(2, codEmpresa);
+            ResultSet rsd = detallePreparedStatement.executeQuery();
             while (rsd.next()) {
                 ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
                     impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE").setScale(2));

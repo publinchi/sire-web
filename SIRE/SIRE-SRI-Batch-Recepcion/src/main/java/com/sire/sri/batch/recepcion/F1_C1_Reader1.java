@@ -24,7 +24,6 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     private JobContext jobCtx;
     private Iterator iterator;
     static int COUNT = 0;
-    private String codEmpresa;
 
     @Override
     public Object readItem() {

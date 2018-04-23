@@ -8,36 +8,37 @@
     </parent>
     <groupId>com.sire.sri</groupId>
     <artifactId>SIRE-SRI-Batch-Autorizacion</artifactId>
+    <version>${SIRE-SRI-Batch-Autorizacion.version}</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
-            <groupId>com.sire.sri</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-SRI-Signature</artifactId>
             <version>1.0.0</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.sire</groupId>
+            <groupId>${parent.groupId}</groupId>
             <artifactId>SIRE-Soap</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-Soap.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.sire.sri</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-SRI-WSClient</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-SRI-WSClient.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.sire.sri</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-SRI-Batch-Commons</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-SRI-Batch-Commons.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>com.sire</groupId>
+            <groupId>${parent.groupId}</groupId>
             <artifactId>SIRE-Commons</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-Commons.version}</version>
             <type>jar</type>
         </dependency>
         <dependency>
