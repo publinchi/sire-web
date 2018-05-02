@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>SIRE-WS</artifactId>
+    <version>${SIRE-WS.version}</version>
     <packaging>war</packaging>
 
     <name>SIRE-WS</name>
@@ -21,12 +22,12 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Entities</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-Entities.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Commons</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-Commons.version}</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>

@@ -8,6 +8,7 @@
     </parent>
 
     <artifactId>SIRE-Services</artifactId>
+    <version>${SIRE-Services.version}</version>
     <packaging>ejb</packaging>
 
     <name>SIRE-Services</name>
@@ -21,7 +22,7 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Entities</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-Entities.version}</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -38,13 +39,18 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Services-API</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-Services-API.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sire.commons</groupId>
                     <artifactId>SIRE-Commons</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SIRE-Commons</artifactId>
+            <version>${SIRE-Commons.version}</version>
         </dependency>
         <dependency>
             <groupId>fish.payara.api</groupId>

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="SIRE-Batch:war">
+    <output-path>$PROJECT_DIR$/SIRE-Batch/target</output-path>
+    <root id="archive" name="SIRE-Batch-1.0.1.war">
+      <element id="artifact" artifact-name="SIRE-Batch:war exploded" />
+    </root>
+  </artifact>
+</component>

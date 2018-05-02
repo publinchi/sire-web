@@ -11,8 +11,7 @@ import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
 import com.sire.event.MailEvent;
 import com.sire.service.IDatasourceService;
 import com.sire.service.IMailService;
-import com.sire.sri.batch.autorizacion.util.JaxbCharacterEscapeHandler;
-import com.sun.xml.bind.marshaller.DataWriter;
+import com.sire.sri.batch.commons.CommonsItemWriter;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import javax.batch.api.chunk.AbstractItemWriter;
 import javax.inject.Named;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
 import ec.gob.sri.comprobantes.modelo.guia.GuiaRemision;
@@ -37,9 +35,7 @@ import ec.gob.sri.comprobantes.modelo.reportes.NotaCreditoReporte;
 import ec.gob.sri.comprobantes.modelo.reportes.NotaDebitoReporte;
 import ec.gob.sri.comprobantes.util.reportes.ReporteUtil;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.io.Serializable;
-import java.io.StringWriter;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Properties;
@@ -52,12 +48,10 @@ import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 
 @Named
-public class F1_C1_Writer1 extends AbstractItemWriter {
+public class F1_C1_Writer1 extends CommonsItemWriter {
 
     @Inject
     private JobContext jobCtx;
@@ -292,7 +286,8 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 MimeMultipart mimeMultipart = new MimeMultipart();
                 addBodyPart(pdfBytes, "application/pdf", claveAcceso + ".pdf", mimeMultipart);
 
-                String autorizacionXml = object2xmlUnicode(autorizacion);
+                String autorizacionXml = object2xmlUnicode(autorizacion, Autorizacion.class, "ec.gob.sri.ws.autorizacion",
+                        "autorizacion");
                 addBodyPart(autorizacionXml.getBytes(), "application/xml", claveAcceso + ".xml", mimeMultipart);
 
                 BodyPart messageBodyPart = new MimeBodyPart();
@@ -324,19 +319,6 @@ public class F1_C1_Writer1 extends AbstractItemWriter {
                 Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-    }
-
-    private String object2xmlUnicode(Object item) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(item.getClass());
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter);
-        DataWriter dataWriter = new DataWriter(printWriter, "UTF-8", new JaxbCharacterEscapeHandler());
-
-        jaxbMarshaller.marshal(item, dataWriter);
-
-        return stringWriter.toString();
     }
 
     private void addBodyPart(byte[] bytes, String type, String fileName, MimeMultipart mimeMultipart) throws MessagingException {

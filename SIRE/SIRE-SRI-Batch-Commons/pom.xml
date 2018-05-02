@@ -8,17 +8,18 @@
     </parent>
     <groupId>com.sire.sri</groupId>
     <artifactId>SIRE-SRI-Batch-Commons</artifactId>
+    <version>${SIRE-SRI-Batch-Commons.version}</version>
     <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-SRI-Reports</artifactId>
-            <version>${project.version}</version>
+            <version>${SIRE-SRI-Reports.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.sire</groupId>
+            <groupId>${parent.groupId}</groupId>
             <artifactId>SIRE-Services-API</artifactId>
-            <version>1.0.0</version>
+            <version>${SIRE-Services-API.version}</version>
             <exclusions>
                 <exclusion>
                     <groupId>com.sire</groupId>
@@ -35,6 +36,11 @@
             <artifactId>javaee-api</artifactId>
             <version>7.0</version>
             <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>2.3.0</version>
         </dependency>
     </dependencies>
     <properties>
