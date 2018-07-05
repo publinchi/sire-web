@@ -11,14 +11,12 @@ import ec.gob.sri.comprobantes.modelo.guia.GuiaRemision;
 import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
 import ec.gob.sri.comprobantes.modelo.notadebito.NotaDebito;
 import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
+
 import org.dom4j.CDATA;
 import org.dom4j.DocumentHelper;
-import java.io.Serializable;
-import java.io.StringWriter;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -88,9 +86,14 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
+        String home = System.getProperty("sire.home");
+        if (home == null) {
+            log.warning("SIRE HOME NOT FOUND.");
+            return;
+        }
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         codEmpresa = runtimeParams.getProperty("codEmpresa");
-        pathSignature = runtimeParams.getProperty("pathSignature");
+        pathSignature = home + File.separator + runtimeParams.getProperty("pathSignature");
         passSignature = runtimeParams.getProperty("passSignature");
         urlRecepcion = runtimeParams.getProperty("urlRecepcion");
     }
@@ -158,7 +161,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 String insertSQL = "INSERT INTO CEL_LOTE_AUTORIZADO "
                         + "VALUES ('" + codEmpresa + "',"+ secuencial + ",'01','" + claveAccesoLote + "','" + estadoLote + "','" + fechaEstado + "')";
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(insertSQL)) {
-                    preparedStatement.executeQuery();
+                    preparedStatement.executeUpdate();
                     preparedStatement.close();
                 }
             }
@@ -421,7 +424,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                         preparedStatement.setString(1, estado);
                         preparedStatement.setString(2, claveAccesoLote);
                         preparedStatement.setString(3, secuencial);
-                        preparedStatement.executeQuery();
+                        preparedStatement.executeUpdate();
                         preparedStatement.close();
                     }
                 } catch (SQLException | NamingException ex) {
@@ -439,7 +442,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
                     preparedStatement.setString(1, claveAccesoLote);
                     preparedStatement.setString(2, secuencial);
-                    preparedStatement.executeQuery();
+                    preparedStatement.executeUpdate();
                     preparedStatement.close();
                 }
             } catch (SQLException | NamingException ex) {
