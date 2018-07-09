@@ -28,6 +28,7 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.batch.api.chunk.AbstractItemReader;
 import javax.naming.NamingException;
@@ -115,6 +116,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String pagosSQL = Constant.FACTURA_PAGO_SQL
                 + "NUM_FACTURA = " + numFacturaInterno;
+        log.log(Level.INFO, "pagosSQL -> {0}", pagosSQL);
         try (PreparedStatement pagosPreparedStatement = getConnection().prepareStatement(pagosSQL);
                 ResultSet prs = pagosPreparedStatement.executeQuery()) {
             InfoFactura.Pago pagos = new InfoFactura.Pago();
@@ -154,6 +156,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String detalleSQL = Constant.FACTURA_D_SQL
                 + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
+        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
                 ResultSet rsd = detallePreparedStatement.executeQuery()) {
             while (rsd.next()) {
@@ -269,6 +272,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
 
         String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
+        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
                 ResultSet rsd = detallePreparedStatement.executeQuery()) {
             while (rsd.next()) {
@@ -357,6 +361,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         //Pagos
         NotaDebito.InfoNotaDebito.Pago pagos = new NotaDebito.InfoNotaDebito.Pago();
+        log.log(Level.INFO, "pagoSQL -> {0}", pagoSQL);
         try (PreparedStatement pagoPreparedStatement = getConnection().prepareStatement(pagoSQL);
                 ResultSet rsp = pagoPreparedStatement.executeQuery()) {
             while (rsp.next()) {
@@ -467,6 +472,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String articuloSQL = Constant.GUIA_REMISION_ARTICULO_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
 
+        log.log(Level.INFO, "articuloSQL -> {0}", articuloSQL);
         try (PreparedStatement articuloPreparedStatement = getConnection().prepareStatement(articuloSQL);
                 ResultSet rsa = articuloPreparedStatement.executeQuery()) {
             while (rsa.next()) {
@@ -482,7 +488,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }
 
         String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
-
+        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
                 ResultSet rsd = detallePreparedStatement.executeQuery()) {
             while (rsd.next()) {
@@ -515,11 +521,11 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
                 GuiaRemision.InfoAdicional.CampoAdicional email = new GuiaRemision.InfoAdicional.CampoAdicional();
                 email.setValue(rsd.getString("MAILDESTINATARIO"));
-                email.setNombre("EMAIL");
+                email.setNombre(Constant.EMAIL);
 
                 GuiaRemision.InfoAdicional.CampoAdicional sucursal = new GuiaRemision.InfoAdicional.CampoAdicional();
-                email.setValue(rsd.getString("DIRDESTINATARIO"));
-                email.setNombre("DIRECCION");
+                sucursal.setValue(rsd.getString("DIRDESTINATARIO"));
+                sucursal.setNombre("DIRECCION");
 
                 if (sucursal.getValue() != null && !sucursal.getValue().isEmpty()) {
                     infoAdicional.getCampoAdicional().add(sucursal);
@@ -553,13 +559,14 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         ComprobanteRetencion.Impuestos impuestos = new ComprobanteRetencion.Impuestos();
 
         String detalleSQL = Constant.RETENCION_D_SQL + "NUM_RETENCION_INTERNO = ? AND COD_EMPRESA = ?";
+        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
         try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL)) {
             detallePreparedStatement.setString(1, numRetencionInterno);
             detallePreparedStatement.setString(2, codEmpresa);
             ResultSet rsd = detallePreparedStatement.executeQuery();
             while (rsd.next()) {
                 ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
-                    impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE").setScale(2));
+                impuesto.setBaseImponible(rsd.getBigDecimal("BASEIMPONIBLE").setScale(2));
                 impuesto.setCodDocSustento(rsd.getString("CODDOCSUSTENTO"));
                 impuesto.setCodigo(rsd.getString("CODIGO"));
                 impuesto.setCodigoRetencion(rsd.getString("CODIGORETENCION"));
