@@ -4,6 +4,7 @@ import autorizacion.ws.sri.gob.ec.Autorizacion;
 import autorizacion.ws.sri.gob.ec.Mensaje;
 import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
 import com.sire.soap.util.SoapUtil;
+import com.sun.xml.internal.messaging.saaj.soap.impl.ElementImpl;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
 import java.io.StringReader;
 import java.net.URL;
@@ -60,7 +61,7 @@ public class F1_C1_Processor1 implements ItemProcessor {
                 null);
         SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
         log.info("Soap Autorizacion Response:");
-        log.info(SoapUtil.toString(soapMessage));
+        log.info(SoapUtil.getStringFromSoapMessage(soapMessage));
         RespuestaComprobante respuestaComprobante = toRespuestaComprobante(soapMessage);
         Map<String, Object> map = new HashMap();
         map.put("respuestaComprobante", respuestaComprobante);
@@ -128,13 +129,19 @@ public class F1_C1_Processor1 implements ItemProcessor {
                         autorizacion.setAmbiente(hijosAutorizacion.item(j).getTextContent());
                         break;
                     case "mensajes":
-                        NodeList mensajesNodeList = (NodeList) hijosAutorizacion.item(j);
+                        NodeList mensajesNodeList;
+                        if(hijosAutorizacion.item(j) instanceof ElementImpl) {
+                            ElementImpl elementImpl = (ElementImpl) hijosAutorizacion.item(j);
+                            mensajesNodeList = elementImpl.getChildNodes();
+                        }else {
+                            mensajesNodeList = (NodeList) hijosAutorizacion.item(j);
+                        }
                         Autorizacion.Mensajes mensajes = new Autorizacion.Mensajes();
                         autorizacion.setMensajes(mensajes);
+                        Mensaje mensaje = new Mensaje();
                         for (int k = 0; k < mensajesNodeList.getLength(); k++) {
                             Node mensajeNode = (Node) mensajesNodeList.item(k);
                             NodeList hijos = mensajeNode.getChildNodes();
-                            Mensaje mensaje = new Mensaje();
                             for (int l = 0; l < hijos.getLength(); l++) {
                                 switch (hijos.item(l).getNodeName()) {
                                     case "identificador":
@@ -153,22 +160,26 @@ public class F1_C1_Processor1 implements ItemProcessor {
                                         break;
                                 }
                             }
-                            mensajes.getMensaje().add(mensaje);
                         }
+                        mensajes.getMensaje().add(mensaje);
                         break;
                     default:
                         break;
                 }
             }
-            if(autorizacion.getNumeroAutorizacion() == null) {
+            if(autorizacion.getNumeroAutorizacion() == null && autorizacion.getComprobante() != null) {
                 InputSource source = new InputSource(new StringReader(autorizacion.getComprobante()));
                 autorizacion.setNumeroAutorizacion(xpath.evaluate("//claveAcceso", source));
             }
         }
 
         respuestaComprobante.setAutorizaciones(autorizaciones);
-        respuestaComprobante.setClaveAccesoConsultada(claveAccesoLoteConsultadaNode.getValue());
-        respuestaComprobante.setNumeroComprobantes(numeroComprobantesLoteNode.getValue());
+        if(claveAccesoLoteConsultadaNode != null){
+            respuestaComprobante.setClaveAccesoConsultada(claveAccesoLoteConsultadaNode.getValue());
+        }
+        if(numeroComprobantesLoteNode != null){
+            respuestaComprobante.setNumeroComprobantes(numeroComprobantesLoteNode.getValue());
+        }
         return respuestaComprobante;
     }
 }

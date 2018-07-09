@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
@@ -27,12 +28,7 @@ import javax.net.ssl.X509TrustManager;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.soap.MimeHeader;
-import javax.xml.soap.MimeHeaders;
-import javax.xml.soap.SOAPConnection;
-import javax.xml.soap.SOAPConnectionFactory;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
+import javax.xml.soap.*;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -89,9 +85,9 @@ public class SoapUtil {
 //            Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO,
 //                    "Response SOAP Message cookie: {0}", cookie);
 //
-            toString(soapMessage);
+            getStringFromSoapMessage(soapMessage);
             if (returnObjectName != null && aClass != null) {
-                map.put("object", SoapUtil.soapToObject(soapMessage, returnObjectName, aClass));
+                map.put("object", SoapUtil.getObjectFromSoapMessage(soapMessage, returnObjectName, aClass));
             } else {
                 map.put("soapMessage", soapMessage);
             }
@@ -108,7 +104,7 @@ public class SoapUtil {
         }
     }
 
-    private static Object soapToObject(SOAPMessage soapResponse, String localName, Class aClass) {
+    protected static Object getObjectFromSoapMessage(SOAPMessage soapResponse, String localName, Class aClass) {
         XMLStreamReader xsr = null;
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -117,8 +113,11 @@ public class SoapUtil {
             StreamSource xml = new StreamSource(new ByteArrayInputStream(bos.toByteArray()));
             xsr = xif.createXMLStreamReader(xml);
             xsr.nextTag();
-            while (!xsr.getLocalName().equals(localName)) {
-                xsr.nextTag();
+            while(xsr.hasNext()) {
+                if(xsr.isStartElement() && xsr.getLocalName().equals(localName)) {
+                    break;
+                }
+                xsr.next();
             }
 
             JAXBContext jc = JAXBContext.newInstance(aClass);
@@ -139,7 +138,7 @@ public class SoapUtil {
         return null;
     }
 
-    public static String toString(SOAPMessage soapMessage) {
+    public static String getStringFromSoapMessage(SOAPMessage soapMessage) {
         try {
             Source sourceContent = soapMessage.getSOAPPart().getContent();
             StreamResult sr = new StreamResult();
@@ -205,5 +204,17 @@ public class SoapUtil {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO,
                     "Name: {0} Value: {1}", new Object[]{mime.getName(), mime.getValue()});
         }
+    }
+
+    public static SOAPMessage getSoapMessageFromString(String xml) {
+        MessageFactory factory;
+        SOAPMessage message = null;
+        try {
+            factory = MessageFactory.newInstance();
+            message = factory.createMessage(new MimeHeaders(), new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
+        } catch (IOException | SOAPException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return message;
     }
 }

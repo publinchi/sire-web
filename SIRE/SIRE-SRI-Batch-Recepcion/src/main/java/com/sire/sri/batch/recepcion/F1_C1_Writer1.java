@@ -1,24 +1,22 @@
 package com.sire.sri.batch.recepcion;
 
-import com.sire.service.IDatasourceService;
 import com.sire.signature.GenericXMLSignature;
 import com.sire.signature.XAdESBESSignature;
 import com.sire.soap.util.SoapUtil;
 import com.sire.sri.batch.commons.CommonsItemWriter;
+import com.sun.xml.messaging.saaj.soap.impl.ElementImpl;
 import ec.gob.sri.comprobantes.modelo.Lote;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
 import ec.gob.sri.comprobantes.modelo.guia.GuiaRemision;
 import ec.gob.sri.comprobantes.modelo.notacredito.NotaCredito;
 import ec.gob.sri.comprobantes.modelo.notadebito.NotaDebito;
 import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
+
 import org.dom4j.CDATA;
 import org.dom4j.DocumentHelper;
-import java.io.Serializable;
-import java.io.StringWriter;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -38,7 +36,6 @@ import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -83,14 +80,18 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
     private String urlRecepcion;
     private String claveAccesoLote;
     private String codEmpresa;
-    private Connection connection;
     private Logger log = Logger.getLogger(F1_C1_Writer1.class.getName());
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
+        String home = System.getProperty("sire.home");
+        if (home == null) {
+            log.warning("SIRE HOME NOT FOUND.");
+            return;
+        }
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         codEmpresa = runtimeParams.getProperty("codEmpresa");
-        pathSignature = runtimeParams.getProperty("pathSignature");
+        pathSignature = home + File.separator + runtimeParams.getProperty("pathSignature");
         passSignature = runtimeParams.getProperty("passSignature");
         urlRecepcion = runtimeParams.getProperty("urlRecepcion");
     }
@@ -143,7 +144,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                         null);
                 SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
                 log.info("Soap Recepcion Response:");
-                log.info(SoapUtil.toString(soapMessage));
+                log.info(SoapUtil.getStringFromSoapMessage(soapMessage));
                 ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
 
                 String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
@@ -158,7 +159,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 String insertSQL = "INSERT INTO CEL_LOTE_AUTORIZADO "
                         + "VALUES ('" + codEmpresa + "',"+ secuencial + ",'01','" + claveAccesoLote + "','" + estadoLote + "','" + fechaEstado + "')";
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(insertSQL)) {
-                    preparedStatement.executeQuery();
+                    preparedStatement.executeUpdate();
                     preparedStatement.close();
                 }
             }
@@ -241,13 +242,19 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 if (hijosComprobante.item(j).getNodeName().equals("claveAcceso")) {
                     comprobante.setClaveAcceso(hijosComprobante.item(j).getTextContent());
                 } else if (hijosComprobante.item(j).getNodeName().equals("mensajes")) {
-                    NodeList mensajesNodeList = (NodeList) hijosComprobante.item(j);
+                    NodeList mensajesNodeList;
+                    if(hijosComprobante.item(j) instanceof ElementImpl) {
+                        ElementImpl elementImpl = (ElementImpl) hijosComprobante.item(j);
+                        mensajesNodeList = elementImpl.getChildNodes();
+                    }else {
+                        mensajesNodeList = (NodeList) hijosComprobante.item(j);
+                    }
                     recepcion.ws.sri.gob.ec.Comprobante.Mensajes mensajes = new recepcion.ws.sri.gob.ec.Comprobante.Mensajes();
                     comprobante.setMensajes(mensajes);
+                    Mensaje mensaje = new Mensaje();
                     for (int k = 0; k < mensajesNodeList.getLength(); k++) {
                         Node mensajeNode = (Node) mensajesNodeList.item(k);
                         NodeList hijos = mensajeNode.getChildNodes();
-                        Mensaje mensaje = new Mensaje();
                         for (int l = 0; l < hijos.getLength(); l++) {
                             switch (hijos.item(l).getNodeName()) {
                                 case "identificador":
@@ -266,8 +273,8 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                                     break;
                             }
                         }
-                        mensajes.getMensaje().add(mensaje);
                     }
+                    mensajes.getMensaje().add(mensaje);
                 }
             }
         }
@@ -323,15 +330,6 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             }
         }
 
-    }
-
-    private Connection getConnection() throws SQLException, NamingException {
-        if (connection == null || (connection != null && connection.isClosed())) {
-            InitialContext ic = new InitialContext();
-            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.IDatasourceService");
-            connection = datasourceService.getConnection();
-        }
-        return connection;
     }
 
     private void processResponse(Object item, ValidarComprobanteResponse validarComprobanteResponse) {
@@ -421,7 +419,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                         preparedStatement.setString(1, estado);
                         preparedStatement.setString(2, claveAccesoLote);
                         preparedStatement.setString(3, secuencial);
-                        preparedStatement.executeQuery();
+                        preparedStatement.executeUpdate();
                         preparedStatement.close();
                     }
                 } catch (SQLException | NamingException ex) {
@@ -430,21 +428,12 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             }
         }
         if (existsError == false) {
-            try {
-                cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
-                        + "ESTADO_SRI = 'RECIBIDA', "
-                        + "CLAVE_ACCESO_LOTE = ? "
-                        + "WHERE " + nombreSecuencial + " = ?";
-                log.log(Level.INFO, "update -> {0}", cabeceraSQL);
-                try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
-                    preparedStatement.setString(1, claveAccesoLote);
-                    preparedStatement.setString(2, secuencial);
-                    preparedStatement.executeQuery();
-                    preparedStatement.close();
-                }
-            } catch (SQLException | NamingException ex) {
-                Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
+                    + "ESTADO_SRI = 'RECIBIDA', "
+                    + "CLAVE_ACCESO_LOTE = ? "
+                    + "WHERE " + nombreSecuencial + " = ?";
+            log.log(Level.INFO, "update -> {0}", cabeceraSQL);
+            executeSql(cabeceraSQL, claveAccesoLote , secuencial);
         }
     }
 }

@@ -5,11 +5,15 @@
  */
 package com.sire.sri.batch;
 
+import com.sire.sri.batch.constant.Constant;
+
+import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,28 +44,37 @@ public class BatchBean {
 
     private static final Logger log = Logger.getLogger(BatchBean.class.getName());
     private String home;
+    private static String comprobantePropertiesPath;
 
     @PostConstruct
     public void init() {
         try {
             home = System.getProperty("sire.home");
             if (home == null) {
-                home = System.getProperty("user.home");
+                log.severe("SIRE HOME NOT FOUND.");
+                return;
+                //home = System.getProperty("user.home");
             }
+
+            log.info("SIRE HOME --> " + home);
+
+            comprobantePropertiesPath = home + File.separator + Constant.COMPROBANTES_PROPERTIES;
+
+            log.info("Comprobantes Properties --> " + comprobantePropertiesPath);
 
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
 
-            String[] jobRecepcionNames = runtimeParameters.getProperty("jobRecepcionNames").split(",");
+            String[] timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES).split(",");
 
-            for (String jobName : jobRecepcionNames) {
-                createCalendarTimer(jobName);
+            for (String timerName : timerRecepcionNames) {
+                createCalendarTimer(timerName);
             }
 
-            String[] jobAutorizacionNames = runtimeParameters.getProperty("jobAutorizacionNames").split(",");
+            String[] timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES).split(",");
 
-            for (String jobName : jobAutorizacionNames) {
-                createCalendarTimer(jobName);
+            for (String timerName : timerAutorizacionNames) {
+                createCalendarTimer(timerName);
             }
 
             Collection<Timer> timers = timerService.getTimers();
@@ -79,22 +92,35 @@ public class BatchBean {
     @Timeout
     public void timeout(Timer timer) {
         try {
+            Map map = (Map) timer.getInfo();
+            log.info("timeout: jobName --> " + map.get(Constant.JOB_NAME) + ", tipoComprobante --> "
+                    + map.get(Constant.TIPO_COMPROBANTE) + ", reportName --> " + map.get(Constant.REPORT_NAME));
             InitialContext ic = new InitialContext();
             BatchBean batchBean = (BatchBean) ic.lookup("java:global/SIRE-Batch/BatchBean!com.sire.sri.batch.BatchBean");
-            java.lang.reflect.Method method = this.getClass().getDeclaredMethod((String) timer.getInfo());
-            method.invoke(batchBean);
+            java.lang.reflect.Method method = this.getClass().getDeclaredMethod(Constant.EXECUTE_JOB, String.class,
+                    String.class, String.class);
+            method.invoke(batchBean,map.get(Constant.JOB_NAME), map.get(Constant.TIPO_COMPROBANTE),
+                    map.get(Constant.REPORT_NAME));
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NamingException ex) {
             Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    private Timer createCalendarTimer(String jobName) {
+    private Timer createCalendarTimer(String timerName) {
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
-            String minute = runtimeParameters.getProperty(jobName + ".minute");
-            String hour = runtimeParameters.getProperty(jobName + ".hour");
-            final TimerConfig timerConfig = new TimerConfig(jobName, false);
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
+            String minute = runtimeParameters.getProperty(timerName + ".minute");
+            String hour = runtimeParameters.getProperty(timerName + ".hour");
+            String tipoComprobante = runtimeParameters.getProperty(timerName + "." + Constant.TIPO_COMPROBANTE);
+            String jobName = runtimeParameters.getProperty(timerName + "." + Constant.JOB_NAME);
+            String reportName = runtimeParameters.getProperty(timerName + "." + Constant.REPORT_NAME);
+            final TimerConfig timerConfig = new TimerConfig(timerName, false);
+            HashMap hashMap = new HashMap<String, String>();
+            hashMap.put(Constant.JOB_NAME, jobName);
+            hashMap.put(Constant.TIPO_COMPROBANTE, tipoComprobante);
+            hashMap.put(Constant.REPORT_NAME, reportName);
+            timerConfig.setInfo(hashMap);
             return timerService.createCalendarTimer(new ScheduleExpression().hour(hour).minute(minute).timezone("UTC"), timerConfig);
         } catch (IOException ex) {
             Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -103,10 +129,10 @@ public class BatchBean {
     }
 
 //    @Schedule(hour = "*", minute = "*/1", info = "reconfigJob", timezone = "UTC", persistent = false)
-    public void reconfigJob() {
+    public void reconfigJob() { //TODO Refactorizar toda la implementación de este método
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
 
             Collection<Timer> timers = timerService.getTimers();
             log.info("************** TIMERS INFO **************");
@@ -151,87 +177,12 @@ public class BatchBean {
         }
     }
 
-//    @Schedule(hour = "*", minute = "*/5", info = "Every 5 minutes timer", timezone = "UTC", persistent = false)
-    public void sriRecepcionFacturaJob() {
-        log.info("* sriRecepcionFacturaJob -> 01");
-
-        executeJob("SriRecepcionJob", "01");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriRecepcionNotaCreditoJob() {
-        log.info("* sriRecepcionNotaCreditoJob -> 04");
-
-        executeJob("SriRecepcionJob", "04");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriRecepcionNotaDebitoJob() {
-        log.info("* sriRecepcionNotaDebitoJob -> 05");
-
-        executeJob("SriRecepcionJob", "05");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriRecepcionGuiaRemisionJob() {
-        log.info("* sriRecepcionGuiaRemisionJob -> 06");
-
-        executeJob("SriRecepcionJob", "06");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriRecepcionRetencionJob() {
-        log.info("* sriRecepcionRetencionJob -> 07");
-
-        executeJob("SriRecepcionJob", "07");
-    }
-
-//    @Schedule(hour = "*", minute = "*/5", info = "Every 5 minutes timer", timezone = "UTC", persistent = false)
-    public void sriAutorizacionFacturaJob() {
-        log.info("* sriAutorizacionFacturaJob -> 01");
-
-        executeJob("SriAutorizacionJob", "01", "factura.jasper");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriAutorizacionNotaCreditoJob() {
-        log.info("* sriAutorizacionNotaCreditoJob -> 04");
-
-        executeJob("SriAutorizacionJob", "04", "notaCreditoFinal.jasper");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriAutorizacionNotaDebitoJob() {
-        log.info("* sriAutorizacionNotaDebitoJob -> 05");
-
-        executeJob("SriAutorizacionJob", "05", "notaDebitoFinal.jasper");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriAutorizacionGuiaRemisionJob() {
-        log.info("* sriAutorizacionGuiaRemisionJob -> 06");
-
-        executeJob("SriAutorizacionJob", "06", "guiaRemisionFinal.jasper");
-    }
-
-//    @Schedule(hour = "*", minute = "*/3", info = "Every 3 minutes timer", timezone = "UTC", persistent = false)
-    public void sriAutorizacionRetencionJob() {
-        log.info("* sriAutorizacionRetencionJob -> 07");
-
-        executeJob("SriAutorizacionJob", "07", "comprobanteRetencion.jasper");
-    }
-
-    private void executeJob(String jobName, String tipoComprobante) {
-        //Se envía null porque la recepcion no genera reporte
-        executeJob(jobName, tipoComprobante, null);
-    }
-
     private void executeJob(String jobName, String tipoComprobante, String reportName) {
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
             runtimeParameters.setProperty("urlReporte", runtimeParameters.getProperty("pathReports") + reportName);
-            runtimeParameters.setProperty("tipoComprobante", tipoComprobante);
+            runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
 
             JobOperator jobOperator = BatchRuntime.getJobOperator();
             Long executionId = jobOperator.start(jobName, runtimeParameters);

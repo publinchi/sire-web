@@ -15,11 +15,17 @@ public class RecepcionConstant {
 
     public static String codEmpresa = "COD_EMPRESA = ? AND ";
 
-    public static String FACTURA_SQL = Constant.FACTURA_C_SQL
+    public static String FACTURA_SQL_ORACLE = Constant.FACTURA_C_SQL
             + "(SELECT * FROM V_FACTURA_ELECTRONICA_C WHERE ESTADO_SRI='GRABADA' "
             + "ORDER BY FECHA_FACTURA) "
             + "WHERE " + codEmpresa
             + "ESTADO_SRI='GRABADA' AND ROWNUM <= 20 ORDER BY FECHA_FACTURA";
+
+    public static String FACTURA_SQL_MYSQL = Constant.FACTURA_C_SQL
+            + "(SELECT * FROM V_FACTURA_ELECTRONICA_C WHERE ESTADO_SRI='GRABADA' "
+            + "ORDER BY FECHA_FACTURA) AS V_FACTURA_ELECTRONICA_C "
+            + "WHERE " + codEmpresa
+            + "ESTADO_SRI='GRABADA' ORDER BY FECHA_FACTURA LIMIT 20";
 
     public static String RETENCION_SQL = Constant.RETENCION_C_SQL
             + codEmpresa + "ESTADO_SRI='GRABADA' AND ROWNUM <= 20 ORDER BY FECHA_RETENCION";
