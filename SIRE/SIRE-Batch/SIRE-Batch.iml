@@ -147,6 +147,9 @@
     <orderEntry type="library" name="Maven: com.sun.xml.bind:jaxb-core:2.3.0" level="project" />
     <orderEntry type="module" module-name="SIRE-SRI-Batch-Recepcion" />
     <orderEntry type="library" name="Maven: dom4j:dom4j:1.6.1" level="project" />
+    <orderEntry type="library" name="Maven: com.sun.xml.messaging.saaj:saaj-impl:1.3.20" level="project" />
+    <orderEntry type="library" name="Maven: javax.xml.soap:saaj-api:1.3.4" level="project" />
+    <orderEntry type="library" name="Maven: org.jvnet.mimepull:mimepull:1.9" level="project" />
     <orderEntry type="module" module-name="SIRE-SRI-Reports" />
     <orderEntry type="library" name="Maven: net.sf.jasperreports:jasperreports:5.6.1" level="project" />
     <orderEntry type="library" name="Maven: commons-digester:commons-digester:2.1" level="project" />
