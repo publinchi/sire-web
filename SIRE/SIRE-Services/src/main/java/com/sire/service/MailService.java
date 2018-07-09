@@ -32,8 +32,6 @@ import javax.naming.NamingException;
 @Startup
 public class MailService implements IMailService {
 
-//    @Resource(name = "mail/gmail")
-//    private Session mailSession;
     @Asynchronous
     @Lock(LockType.READ)
     @Override
@@ -79,14 +77,15 @@ public class MailService implements IMailService {
             }
 
             Transport.send(message);
-            System.out.println("E-Mail sent to " + event.getTo());
+            // TODO Eliminar System.out
+            System.out.println("E-Mail sent to " + event.getTo() + ", with secuential " + event.getProperties().get("secuencial"));
         } catch (MessagingException e) {
             try {
                 System.out.println("E-Mail not sent to " + event.getTo() + ", Cause: " + e.getCause());
                 System.out.println("Retrying after 5 seconds ...");
                 Thread.sleep(5000L);
                 Transport.send(message);
-                System.out.println("E-Mail sent again to " + event.getTo());
+                System.out.println("E-Mail sent again to " + event.getTo() + ", with secuential " + event.getProperties().get("secuencial"));
             } catch (InterruptedException | MessagingException ex) {
                 Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
             }

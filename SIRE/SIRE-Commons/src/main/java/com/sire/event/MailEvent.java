@@ -9,6 +9,8 @@ import javax.mail.internet.MimeMultipart;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Map;
+
 /**
  *
  * @author publio
@@ -21,4 +23,5 @@ public class MailEvent {
     private String message;
     private String subject;
     private MimeMultipart mimeMultipart;
+    private Map<String, String> properties;
 }

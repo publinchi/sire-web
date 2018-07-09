@@ -1,5 +1,6 @@
 package ec.gob.sri.comprobantes.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -63,22 +64,16 @@ public class Constantes {
     }
 
     public static String obtenerUrlBD() {
-        Properties props = new Properties();
+        //Properties props = new Properties();
         String home = System.getProperty("sire.home");
         if (home == null) {
-            home = System.getProperty("user.home");
-        }
-//        log.info(" user.home " + home);
-        String urlBD = null;
-        try {
-            props.load(new FileInputStream(home + "/comprobantes.properties"));
-            urlBD = props.getProperty("database");
-//            log.info(" obtenerUrlBD()  urlDB " + urlBD);
-        } catch (FileNotFoundException ex) {
+            //log.warning("SIRE HOME NOT FOUND.");
             return null;
-        } catch (IOException ex) {
-            return null;
+            //home = System.getProperty("user.home");
         }
+        String urlBD = home + File.separator + "db";
+        //props.load(new FileInputStream(home + "/comprobantes.properties"));
+        //urlBD = props.getProperty("database");
         return urlBD;
     }
 }

@@ -12,6 +12,7 @@ import com.sire.event.MailEvent;
 import com.sire.service.IDatasourceService;
 import com.sire.service.IMailService;
 import com.sire.sri.batch.commons.CommonsItemWriter;
+import com.sire.sri.batch.constant.Constant;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -137,18 +138,21 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                             String identificador = null;
                             String tipo = null;
                             String mensaje = null;
-                            for (Mensaje m : autorizacion.getMensajes().getMensaje()) {
-                                identificador = m.getIdentificador();
-                                String informacionAdicional = m.getInformacionAdicional();
-                                mensaje = m.getMensaje();
-                                tipo = m.getTipo();
 
-                                log.info("Identificador: " + identificador
-                                        + ", InformacionAdicional: " + informacionAdicional
-                                        + ", Mensaje: " + mensaje
-                                        + ", Tipo: " + tipo
-                                );
-                            }
+                            Autorizacion.Mensajes mensajes = autorizacion.getMensajes();
+                            if(mensajes != null)
+                                for (Mensaje m : mensajes.getMensaje()) {
+                                    identificador = m.getIdentificador();
+                                    String informacionAdicional = m.getInformacionAdicional();
+                                    mensaje = m.getMensaje();
+                                    tipo = m.getTipo();
+
+                                    log.info("Identificador: " + identificador
+                                            + ", InformacionAdicional: " + informacionAdicional
+                                            + ", Mensaje: " + mensaje
+                                            + ", Tipo: " + tipo
+                                    );
+                                }
 
                             String motivo = "";
                             if (!estado.equals("AUTORIZADO") && !estado.equals("EN PROCESAMIENTO")) {
@@ -168,12 +172,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                                     + fechaAutorizacion
                                     + " WHERE " + nombreSecuencial + " = ?";
                             log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
-                            try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL)) {
-                                preparedStatement.setString(1, estado);
-                                preparedStatement.setString(2, secuencial);
-                                preparedStatement.executeQuery();
-                                preparedStatement.close();
-                            }
+                            executeSql(cabeceraSQL, estado, secuencial);
                         }
                     }
                 }
@@ -183,7 +182,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 log.info("update CEL_LOTE_AUTORIZADO -> " + loteSQL);
                 try (PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL)) {
                     preparedStatement.setString(1, lote.getClaveAcceso());
-                    preparedStatement.executeQuery();
+                    preparedStatement.executeUpdate();
                     preparedStatement.close();
                 }
             } catch (SQLException | NamingException | ParseException ex) {
@@ -209,7 +208,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     nombreComprobante = "Factura";
                     Factura factura = (Factura) key;
                     for (Factura.InfoAdicional.CampoAdicional campoAdicional : factura.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -310,6 +309,9 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 event.setTo(recipient);
                 event.setSubject("Comprobante - " + nombreComprobante);
                 event.setMimeMultipart(mimeMultipart);
+                Map properties = new HashMap<String, String>();
+                properties.put("secuencial", secuencial);
+                event.setProperties(properties);
 
                 if (recipient != null && !recipient.isEmpty()) {
                     log.info("Secuencial de Comprobante a ser enviado por mail: " + secuencial);
@@ -327,15 +329,6 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
         xmlBodyPart.setDataHandler(new DataHandler(dataSource));
         xmlBodyPart.setFileName(fileName);
         mimeMultipart.addBodyPart(xmlBodyPart);
-    }
-
-    private Connection getConnection() throws SQLException, NamingException {
-        if (connection == null || (connection != null && connection.isClosed())) {
-            InitialContext ic = new InitialContext();
-            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.IDatasourceService");
-            connection = datasourceService.getConnection();
-        }
-        return connection;
     }
 
     private IMailService getMailService() throws NamingException {

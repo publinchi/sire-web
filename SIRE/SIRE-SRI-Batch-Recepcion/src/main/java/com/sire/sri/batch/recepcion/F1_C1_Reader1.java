@@ -1,11 +1,10 @@
 package com.sire.sri.batch.recepcion;
 
 import com.sire.sri.batch.commons.CommonsItemReader;
+import com.sire.sri.batch.constant.Constant;
 import com.sire.sri.batch.recepcion.constant.RecepcionConstant;
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,13 +50,20 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     }
 
     private void buildComprobantes(String tipoComprobante) throws SQLException, NamingException {
+        Connection connection = getConnection();
+        DatabaseMetaData databaseMetaData = connection.getMetaData();
+        String databaseProductName = databaseMetaData.getDatabaseProductName();
+        log.log(Level.INFO, "databaseProductName -> {0}", databaseProductName);
         List comprobantes = new ArrayList();
         log.log(Level.INFO, "-> buildComprobantes -> {0}", tipoComprobante);
-        String comprobanteSQL;
+        String comprobanteSQL = null;
 
         switch (tipoComprobante) {
             case "01":
-                comprobanteSQL = RecepcionConstant.FACTURA_SQL;
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.FACTURA_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.FACTURA_SQL_ORACLE;
                 break;
             case "04":
                 comprobanteSQL = RecepcionConstant.NOTA_CREDITO_SQL;
@@ -77,7 +83,7 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         }
 
         log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
-        try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL)) {
+        try (PreparedStatement comprobantePreparedStatement = connection.prepareStatement(comprobanteSQL)) {
             comprobantePreparedStatement.setString(1, codEmpresa);
             ResultSet rs = comprobantePreparedStatement.executeQuery();
             validarTipoComprobante(tipoComprobante, rs, comprobantes);

@@ -11,6 +11,17 @@ package com.sire.sri.batch.constant;
  */
 public class Constant {
 
+    public static final String COMPROBANTES_PROPERTIES = "comprobantes.properties";
+    public final static String EMAIL = "Email";
+    public static final String EXECUTE_JOB = "executeJob";
+    public static final String JOB_NAME = "jobName";
+    public final static String MYSQL = "MySQL";
+    public final static String ORACLE = "Oracle";
+    public static final String REPORT_NAME = "reportName";
+    public static final String TIMER_AUTORIZACION_NAMES = "timerAutorizacionNames";
+    public static final String TIMER_RECEPCION_NAMES = "timerRecepcionNames";
+    public static final String TIPO_COMPROBANTE = "tipoComprobante";
+
     public final static String FACTURA_C_SQL = "SELECT COD_EMPRESA, RUC_EMPRESA, RAZON_SOCIAL_EMPRESA, "
             + "NOMBRE_COMERCIAL, COD_DOCUMENTO, NUM_FACTURA_INTERNO, ESTABLECIMIENTO, "
             + "PUNTO_EMISION, SECUENCIAL, DIRECCION_MATRIZ, DIRECCION_ESTABLECIMIENTO, "
