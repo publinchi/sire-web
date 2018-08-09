@@ -15,6 +15,7 @@ public class Constant {
     public final static String EMAIL = "Email";
     public static final String EXECUTE_JOB = "executeJob";
     public static final String JOB_NAME = "jobName";
+    public final static String MICROSOFT_SQL_SERVER = "Microsoft SQL Server";
     public final static String MYSQL = "MySQL";
     public final static String ORACLE = "Oracle";
     public static final String REPORT_NAME = "reportName";
