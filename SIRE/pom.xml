@@ -41,5 +41,6 @@
         <module>SIRE-SRI-WSClient</module>
         <module>SIRE-Web</module>
         <module>SIRE-WS</module>
+        <module>SIRE-EE</module>
     </modules>
 </project>
