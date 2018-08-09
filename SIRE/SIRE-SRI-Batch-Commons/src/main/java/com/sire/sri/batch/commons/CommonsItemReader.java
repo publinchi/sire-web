@@ -80,6 +80,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         factura.setInfoAdicional(infoAdicional);
 
         InfoFactura infoFactura = new InfoFactura();
+        infoFactura.setContribuyenteEspecial(rs.getString("CONTRIBUYENTE_ESPECIAL"));
         infoFactura.setDireccionComprador(rs.getString("DIRECCION_COMPRADOR"));
         infoFactura.setDirEstablecimiento(rs.getString("DIRECCION_ESTABLECIMIENTO"));
         String oldDate = rs.getString("FECHA_FACTURA");
@@ -504,9 +505,11 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 destinatario.setNumDocSustento(rsd.getString("NUMDOCSUSTENTO"));
                 destinatario.setNumAutDocSustento(rsd.getString("NUMAUTDOCSUSTENTO"));
                 String oldDate2 = rsd.getString("FECHAEMISIONDOCSUSTENTO");
-                LocalDateTime datetime2 = LocalDateTime.parse(oldDate2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
-                String newDate2 = datetime2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                destinatario.setFechaEmisionDocSustento(newDate2);
+                if(oldDate2 != null){
+                    LocalDateTime datetime2 = LocalDateTime.parse(oldDate2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+                    String newDate2 = datetime2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+                    destinatario.setFechaEmisionDocSustento(newDate2);
+                }
                 destinatario.setRazonSocialDestinatario(rsd.getString("RAZONSOCIALDESTINATARIO"));
                 destinatario.setDetalles(detalles);
 
