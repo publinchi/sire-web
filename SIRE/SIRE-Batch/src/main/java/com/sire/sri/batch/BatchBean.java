@@ -96,7 +96,7 @@ public class BatchBean {
             log.info("timeout: jobName --> " + map.get(Constant.JOB_NAME) + ", tipoComprobante --> "
                     + map.get(Constant.TIPO_COMPROBANTE) + ", reportName --> " + map.get(Constant.REPORT_NAME));
             InitialContext ic = new InitialContext();
-            BatchBean batchBean = (BatchBean) ic.lookup("java:global/SIRE-Batch/BatchBean!com.sire.sri.batch.BatchBean");
+            BatchBean batchBean = (BatchBean) ic.lookup("java:global/SIRE-EE/SIRE-Batch/BatchBean!com.sire.sri.batch.BatchBean");
             java.lang.reflect.Method method = this.getClass().getDeclaredMethod(Constant.EXECUTE_JOB, String.class,
                     String.class, String.class);
             method.invoke(batchBean,map.get(Constant.JOB_NAME), map.get(Constant.TIPO_COMPROBANTE),
