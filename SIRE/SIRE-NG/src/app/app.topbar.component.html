@@ -124,6 +124,12 @@
                 </li>
             </ul>
         </li>
+        <li #notifications [ngClass]="{'menuitem-active':app.activeTopbarItem === notifications}">
+            <a [routerLink]="['/login']">
+                <i class="fa fa-fw fa-power-off"></i>
+                <span class="topbar-item-name">Logout</span>
+            </a>
+        </li>
     </ul>
 
     <a href="#" id="right-panel-button" [ngClass]="{'menu-button-rotate': app.rightPanelActive}" (click)="app.onRightPanelButtonClick($event)">
