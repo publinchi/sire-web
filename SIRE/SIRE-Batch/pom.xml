@@ -167,12 +167,14 @@
                     <artifactId>SIRE-Entities</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sire.sri</groupId>
             <artifactId>SIRE-SRI-Batch-Recepcion</artifactId>
             <version>${SIRE-SRI-Batch-Recepcion.version}</version>
             <type>jar</type>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sire.sri</groupId>
@@ -184,21 +186,25 @@
                     <artifactId>ComprobantesDesktop</artifactId>
                 </exclusion>
             </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Services</artifactId>
             <version>${SIRE-Services.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Commons</artifactId>
             <version>${SIRE-Commons.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Entities</artifactId>
             <version>${SIRE-Entities.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
