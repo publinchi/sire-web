@@ -1,16 +1,16 @@
 package com.sire.sri.batch.autorizacion;
 
+import com.sire.sri.batch.constant.Constant;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Named;
 import com.sire.sri.batch.autorizacion.constant.AutorizacionConstant;
 import com.sire.sri.batch.commons.CommonsItemReader;
-import java.sql.SQLException;
+
 import java.util.Properties;
 import java.util.logging.Level;
 import javax.batch.runtime.BatchRuntime;
@@ -51,10 +51,23 @@ public class F1_C1_Reader1 extends CommonsItemReader {
             AutorizacionConstant.codEmpresa = "COD_EMPRESA = '" + codEmpresa + "' AND ";
         }
 
+        Connection connection = getConnection();
+        DatabaseMetaData databaseMetaData = connection.getMetaData();
+        String databaseProductName = databaseMetaData.getDatabaseProductName();
+
+        String subString = null;
+
+        if(Constant.MYSQL.equals(databaseProductName))
+            subString = "SUBSTR";
+        else if(Constant.ORACLE.equals(databaseProductName))
+            subString = "SUBSTR";
+        else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+            subString = "SUBSTRING";
+
         String loteSQL = "SELECT COD_EMPRESA, SECUENCIAL, COD_DOCUMENTO, "
                 + "CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO "
                 + "FROM CEL_LOTE_AUTORIZADO WHERE COD_EMPRESA = ? AND ESTADO_SRI = 'RECIBIDA' "
-                + "AND SUBSTR(CLAVE_ACCESO,9,2) = ?";
+                + "AND " + subString + "(CLAVE_ACCESO,9,2) = ?";
         try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL)) {
             ResultSet loteRs = getResultSet(tipoComprobante, preparedStatemenT);
             while (loteRs.next()) {
