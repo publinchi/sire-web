@@ -64,23 +64,28 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
             subString = "SUBSTRING";
 
-        String loteSQL = "SELECT COD_EMPRESA, SECUENCIAL, COD_DOCUMENTO, "
-                + "CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO "
-                + "FROM CEL_LOTE_AUTORIZADO WHERE COD_EMPRESA = ? AND ESTADO_SRI = 'RECIBIDA' "
-                + "AND " + subString + "(CLAVE_ACCESO,9,2) = ?";
-        try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL)) {
-            ResultSet loteRs = getResultSet(tipoComprobante, preparedStatemenT);
-            while (loteRs.next()) {
-                String claveAccesoLote = loteRs.getString("CLAVE_ACCESO");
-                buildComprobantes(claveAccesoLote, tipoComprobante);
+        StringBuffer loteSQL = new StringBuffer();
+
+        loteSQL.append("SELECT COD_EMPRESA, SECUENCIAL, COD_DOCUMENTO, ")
+                .append("CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO ")
+                .append("FROM CEL_LOTE_AUTORIZADO WHERE COD_EMPRESA = ? AND ESTADO_SRI = 'RECIBIDA' ")
+                .append("AND ").append(subString).append("(CLAVE_ACCESO,9,2) = ?");
+        try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL.toString())) {
+            try(ResultSet loteRs = getResultSet(tipoComprobante, preparedStatemenT)){
+                while (loteRs.next()) {
+                    String claveAccesoLote = loteRs.getString("CLAVE_ACCESO");
+                    buildComprobantes(claveAccesoLote, tipoComprobante);
+                }
+                iterator = lotes.iterator();
             }
-            iterator = lotes.iterator();
-            loteRs.close();
-            preparedStatemenT.close();
         }
     }
 
     private void buildComprobantes(String claveAccesoLote, String tipoComprobante) throws SQLException, NamingException {
+        Connection connection = getConnection();
+        DatabaseMetaData databaseMetaData = connection.getMetaData();
+        String databaseProductName = databaseMetaData.getDatabaseProductName();
+        log.log(Level.INFO, "databaseProductName -> {0}", databaseProductName);
         List comprobantes = new ArrayList();
         LoteXml lote = new LoteXml();
         lote.setClaveAcceso(claveAccesoLote);
@@ -93,10 +98,20 @@ public class F1_C1_Reader1 extends CommonsItemReader {
                 comprobanteSQL = AutorizacionConstant.FACTURA_SQL;
                 break;
             case "04":
-                comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL;
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL_MICROSOFT_SQL_SERVER;
                 break;
             case "05":
-                comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL;
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL_MICROSOFT_SQL_SERVER;
                 break;
             case "06":
                 comprobanteSQL = AutorizacionConstant.GUIA_REMISION_SQL;
@@ -111,12 +126,11 @@ public class F1_C1_Reader1 extends CommonsItemReader {
 
         log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
         try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL)) {
-            ResultSet rs = getResultSet(claveAccesoLote, comprobantePreparedStatement);
-            validarTipoComprobante(tipoComprobante, rs, comprobantes);
-            lote.setComprobantes(comprobantes);
-            lotes.add(lote);
-            rs.close();
-            comprobantePreparedStatement.close();
+            try(ResultSet rs = getResultSet(claveAccesoLote, comprobantePreparedStatement)){
+                validarTipoComprobante(tipoComprobante, rs, comprobantes);
+                lote.setComprobantes(comprobantes);
+                lotes.add(lote);
+            }
         }
     }
 

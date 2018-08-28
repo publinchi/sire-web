@@ -186,14 +186,12 @@
                     <artifactId>ComprobantesDesktop</artifactId>
                 </exclusion>
             </exclusions>
-            <scope>provided</scope>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Services</artifactId>
             <version>${SIRE-Services.version}</version>
-            <scope>provided</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Commons</artifactId>

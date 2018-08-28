@@ -70,10 +70,11 @@ SIRE/SIRE-SRI-Batch-Autorizacion/target/
 SIRE/SIRE-SRI-Batch/target/
 SIRE/SIRE-SRI-Reports/target/
 SIRE/SIRE-SRI-Batch-Commons/target/
+SIRE/SIRE-EE/target/
 
 SIRE/SIRE-UI/node_modules/
 
 SIRE/SIRE-Movil/
+SIRE/SIRE-NG/node_modules/
 
-/SIRE/SIRE-EE/nbproject/private/
-/SIRE/SIRE-EE/SIRE-EE/target/
+SIRE/SIRE-NG/dist/

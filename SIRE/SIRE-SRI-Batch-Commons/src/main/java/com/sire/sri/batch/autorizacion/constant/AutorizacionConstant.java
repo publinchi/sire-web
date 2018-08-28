@@ -21,15 +21,31 @@ public class AutorizacionConstant {
             + "CLAVE_ACCESO_LOTE = ? AND (ESTADO_SRI='RECIBIDA' "
             + "OR ESTADO_SRI='EN PROCESAMIENTO') ";
 
-    public static String RETENCION_SQL = Constant.RETENCION_C_SQL
+    public static String RETENCION_SQL = Constant.RETENCION_C_SQL_ORACLE
             + codEmpresa + "CLAVE_ACCESO_LOTE = ? AND "
             + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
 
-    public static String NOTA_CREDITO_SQL = Constant.NOTA_CREDITO_C_SQL
+    public static String NOTA_CREDITO_SQL_MYSQL = Constant.NOTA_CREDITO_C_SQL_MYSQL
             + codEmpresa + "CLAVE_ACCESO_LOTE = ? AND "
             + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
 
-    public static String NOTA_DEBITO_SQL = Constant.NOTA_DEBITO_SQL
+    public static String NOTA_CREDITO_SQL_ORACLE = Constant.NOTA_CREDITO_C_SQL_ORACLE
+            + codEmpresa + "CLAVE_ACCESO_LOTE = ? AND "
+            + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
+
+    public static String NOTA_CREDITO_SQL_MICROSOFT_SQL_SERVER = Constant.NOTA_CREDITO_C_SQL_MICROSOFT_SQL_SERVER
+            + codEmpresa + "CLAVE_ACCESO_LOTE = ? AND "
+            + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
+
+    public static String NOTA_DEBITO_SQL_MYSQL = Constant.NOTA_DEBITO_C_SQL_MYSQL
+            + codEmpresa + "CLAVE_ACCESO_LOTE = ? AND "
+            + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
+
+    public static String NOTA_DEBITO_SQL_ORACLE = Constant.NOTA_DEBITO_C_SQL_ORACLE
+            + codEmpresa + "CLAVE_ACCESO_LOTE = ? AND "
+            + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
+
+    public static String NOTA_DEBITO_SQL_MICROSOFT_SQL_SERVER = Constant.NOTA_DEBITO_C_SQL_MICROSOFT_SQL_SERVER
             + codEmpresa + "CLAVE_ACCESO_LOTE = ? AND "
             + "(ESTADO_SRI='RECIBIDA' OR ESTADO_SRI='EN PROCESAMIENTO') ";
 
