@@ -11,6 +11,8 @@ SIRE/.idea/**/dataSources/
 SIRE/.idea/**/dataSources.ids
 SIRE/.idea/**/dataSources.local.xml
 SIRE/.idea/**/sqlDataSources.xml
+SIRE/.idea/**/dataSources.xml
+SIRE/.idea/**/sqldialects.xml
 SIRE/.idea/**/dynamic.xml
 SIRE/.idea/**/uiDesigner.xml
 
