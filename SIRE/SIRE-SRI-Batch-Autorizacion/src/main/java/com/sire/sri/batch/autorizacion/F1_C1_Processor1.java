@@ -4,7 +4,7 @@ import autorizacion.ws.sri.gob.ec.Autorizacion;
 import autorizacion.ws.sri.gob.ec.Mensaje;
 import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
 import com.sire.soap.util.SoapUtil;
-import com.sun.xml.internal.messaging.saaj.soap.impl.ElementImpl;
+import com.sun.xml.messaging.saaj.soap.impl.ElementImpl;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
 import java.io.StringReader;
 import java.net.URL;
