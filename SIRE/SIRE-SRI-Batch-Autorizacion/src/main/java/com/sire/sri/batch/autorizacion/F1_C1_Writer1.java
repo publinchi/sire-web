@@ -261,7 +261,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     secuencial = guiaRemision.getInfoTributaria().getSecuencial();
                     GuiaRemisionReporte guiaRemisionReporte = new GuiaRemisionReporte(guiaRemision);
                     pdfBytes = reporteUtil.generarReporte(urlReporte, guiaRemisionReporte, numAut, fechaAut, guiaRemision);
-                    razonSocialComprador = guiaRemision.getInfoGuiaRemision().getRazonSocialTransportista();
+                    razonSocialComprador = guiaRemision.getDestinatarios().getDestinatario().get(0).getRazonSocialDestinatario();
                     nombreComercial = guiaRemision.getInfoTributaria().getNombreComercial();
                     ruc = guiaRemision.getInfoTributaria().getRuc();
                 } else if (key instanceof ComprobanteRetencion) {
