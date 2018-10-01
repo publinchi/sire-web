@@ -5,6 +5,8 @@
  */
 package com.sire.soap.util;
 
+import org.w3c.dom.Document;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.net.ssl.HostnameVerifier;
@@ -29,16 +32,14 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.soap.*;
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
 
 /**
  *
@@ -50,6 +51,12 @@ public class SoapUtil {
         disableSslVerification();
     }
 
+    private static Map<Class, JAXBContext> contextStore = new ConcurrentHashMap<>();
+
+    public static Map<String, Object> call(SOAPMessage soapMsg, URL url,
+                                           Class aClass) throws SOAPException {
+        return call(soapMsg,url,null, aClass);
+    }
     /**
      *
      * @param soapMsg
@@ -85,11 +92,9 @@ public class SoapUtil {
 //            Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO,
 //                    "Response SOAP Message cookie: {0}", cookie);
 //
-            getStringFromSoapMessage(soapMessage);
-            if (returnObjectName != null && aClass != null) {
-                map.put("object", SoapUtil.getObjectFromSoapMessage(soapMessage, returnObjectName, aClass));
-            } else {
-                map.put("soapMessage", soapMessage);
+            map.put("soapMessage", clone(soapMessage));
+            if (aClass != null) {
+                map.put("object", SoapUtil.getObjectFromSoapMessage(soapMessage, aClass));
             }
 
             return map;
@@ -104,38 +109,33 @@ public class SoapUtil {
         }
     }
 
-    protected static Object getObjectFromSoapMessage(SOAPMessage soapResponse, String localName, Class aClass) {
-        XMLStreamReader xsr = null;
+    protected static Object getObjectFromSoapMessage(SOAPMessage soapResponse, Class aClass) {
+        Object object = null;
         try {
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             soapResponse.writeTo(bos);
-            XMLInputFactory xif = XMLInputFactory.newInstance();
-            StreamSource xml = new StreamSource(new ByteArrayInputStream(bos.toByteArray()));
-            xsr = xif.createXMLStreamReader(xml);
-            xsr.nextTag();
-            while(xsr.hasNext()) {
-                if(xsr.isStartElement() && xsr.getLocalName().equals(localName)) {
-                    break;
-                }
-                xsr.next();
-            }
 
-            JAXBContext jc = JAXBContext.newInstance(aClass);
-            Unmarshaller unmarshaller = jc.createUnmarshaller();
-            return unmarshaller.unmarshal(xsr, aClass).getValue();
-        } catch (SOAPException | IOException | XMLStreamException | JAXBException ex) {
+            JAXBContext jaxbContext = getContextInstance(aClass);
+            Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+            if(soapResponse.getSOAPBody().hasFault()){
+                Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, soapResponse.getSOAPBody().getFault().getFaultString());
+                object = unmarshaller.unmarshal(soapResponse.getSOAPBody().getFault());
+            } else {
+                object = unmarshaller.unmarshal(soapResponse.getSOAPBody().extractContentAsDocument());
+            }
+        } catch (SOAPException | IOException | JAXBException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            try {
-                if (xsr != null) {
-                    xsr.close();
-                }
-            } catch (XMLStreamException ex) {
-                Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
-            }
         }
+        return object;
+    }
 
-        return null;
+    protected static JAXBContext getContextInstance(Class objectClass) throws JAXBException{
+        JAXBContext context = contextStore.get(objectClass);
+        if (context==null){
+            context = JAXBContext.newInstance(objectClass);
+            contextStore.put(objectClass, context);
+        }
+        return context;
     }
 
     public static String getStringFromSoapMessage(SOAPMessage soapMessage) {
@@ -216,5 +216,41 @@ public class SoapUtil {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
         return message;
+    }
+
+    public static SOAPMessage clone(SOAPMessage message) {
+        return toSOAPMessage(toDocument(message));
+    }
+
+    public static SOAPMessage toSOAPMessage(Document doc) {
+        return toSOAPMessage(doc, SOAPConstants.SOAP_1_2_PROTOCOL);
+    }
+
+    public static SOAPMessage toSOAPMessage(Document doc, String protocol) {
+        DOMSource domSource;
+        SOAPMessage retorno;
+        MessageFactory messageFactory;
+        try {
+            domSource = new DOMSource(doc);
+            messageFactory = MessageFactory.newInstance(protocol);
+            retorno = messageFactory.createMessage();
+            retorno.getSOAPPart().setContent(domSource);
+            return retorno;
+        } catch (SOAPException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public static Document toDocument(SOAPMessage soapMSG) {
+        try {
+            Source source = soapMSG.getSOAPPart().getContent();
+            TransformerFactory factoryTransform = TransformerFactory.newInstance();
+            Transformer transform = factoryTransform.newTransformer();
+            DOMResult retorno = new DOMResult();
+            transform.transform(source, retorno);
+            return (Document) retorno.getNode();
+        } catch (Exception e) {
+            throw new SecurityException(e);
+        }
     }
 }

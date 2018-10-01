@@ -28,6 +28,12 @@
             <artifactId>dom4j</artifactId>
             <version>1.6.1</version>
             <type>jar</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>

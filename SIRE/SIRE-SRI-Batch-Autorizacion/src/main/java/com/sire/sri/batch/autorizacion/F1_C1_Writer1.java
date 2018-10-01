@@ -220,7 +220,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     nombreComprobante = "Nota de Crédito";
                     NotaCredito notaCredito = (NotaCredito) key;
                     for (NotaCredito.InfoAdicional.CampoAdicional campoAdicional : notaCredito.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -235,7 +235,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     nombreComprobante = "Nota de Débito";
                     NotaDebito notaDebito = (NotaDebito) key;
                     for (NotaDebito.InfoAdicional.CampoAdicional campoAdicional : notaDebito.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -250,7 +250,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     nombreComprobante = "Guía de Remisión";
                     GuiaRemision guiaRemision = (GuiaRemision) key;
                     for (GuiaRemision.InfoAdicional.CampoAdicional campoAdicional : guiaRemision.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -258,14 +258,14 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     secuencial = guiaRemision.getInfoTributaria().getSecuencial();
                     GuiaRemisionReporte guiaRemisionReporte = new GuiaRemisionReporte(guiaRemision);
                     pdfBytes = reporteUtil.generarReporte(urlReporte, guiaRemisionReporte, numAut, fechaAut, guiaRemision);
-                    razonSocialComprador = guiaRemision.getInfoGuiaRemision().getRazonSocialTransportista();
+                    razonSocialComprador = guiaRemision.getDestinatarios().getDestinatario().get(0).getRazonSocialDestinatario();
                     nombreComercial = guiaRemision.getInfoTributaria().getNombreComercial();
                     ruc = guiaRemision.getInfoTributaria().getRuc();
                 } else if (key instanceof ComprobanteRetencion) {
                     nombreComprobante = "Retención";
                     ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) key;
                     for (ComprobanteRetencion.InfoAdicional.CampoAdicional campoAdicional : comprobanteRetencion.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
