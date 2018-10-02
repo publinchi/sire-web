@@ -51,7 +51,6 @@ public abstract class CommonsItemWriter extends AbstractItemWriter {
                 i++;
             }
             preparedStatement.executeUpdate();
-            preparedStatement.close();
         } catch (SQLException | NamingException ex) {
             Logger.getLogger(CommonsItemWriter.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -60,7 +59,7 @@ public abstract class CommonsItemWriter extends AbstractItemWriter {
     protected Connection getConnection() throws SQLException, NamingException {
         if (connection == null || (connection != null && connection.isClosed())) {
             InitialContext ic = new InitialContext();
-            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-Batch/DatasourceService!com.sire.service.IDatasourceService");
+            IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-EE/SIRE-Services/DatasourceService!com.sire.service.IDatasourceService");
             connection = datasourceService.getConnection();
         }
         return connection;

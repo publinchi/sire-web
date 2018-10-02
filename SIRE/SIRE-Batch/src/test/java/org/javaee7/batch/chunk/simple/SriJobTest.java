@@ -40,7 +40,7 @@ import org.junit.runner.RunWith;
  *
  * @author Roberto Cortez
  */
-@RunWith(Arquillian.class)
+//@RunWith(Arquillian.class)
 public class SriJobTest {
 
     private Logger log = Logger.getLogger(SriJobTest.class.getName());
@@ -54,7 +54,7 @@ public class SriJobTest {
      *
      * The +myJob.xml+ file is needed for running the batch definition.
      */
-    @Deployment(name = "SIRE-Batch")
+  //  @Deployment(name = "SIRE-Batch")
     public static WebArchive createDeployment() {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "SIRE-Batch.war")
                 .addClass(BatchTestHelper.class)

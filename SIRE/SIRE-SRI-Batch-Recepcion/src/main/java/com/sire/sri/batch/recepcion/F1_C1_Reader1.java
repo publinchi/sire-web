@@ -36,8 +36,8 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     @Override
     public void open(Serializable checkpoint) throws Exception {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
-        String tipoComprobante = runtimeParams.getProperty("tipoComprobante");
-        codEmpresa = runtimeParams.getProperty("codEmpresa");
+        String tipoComprobante = runtimeParams.getProperty(Constant.TIPO_COMPROBANTE);
+        codEmpresa = runtimeParams.getProperty(Constant.COD_EMPRESA);
 
         log.log(Level.INFO, "tipoComprobante -> {0}", tipoComprobante);
         log.log(Level.INFO, "codEmpresa -> {0}", codEmpresa);
@@ -59,23 +59,40 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         String comprobanteSQL = null;
 
         switch (tipoComprobante) {
-            case "01":
+            case Constant.CERO_UNO:
                 if(Constant.MYSQL.equals(databaseProductName))
                     comprobanteSQL = RecepcionConstant.FACTURA_SQL_MYSQL;
                 else if(Constant.ORACLE.equals(databaseProductName))
                     comprobanteSQL = RecepcionConstant.FACTURA_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.FACTURA_SQL_MICROSOFT_SQL_SERVER;
                 break;
-            case "04":
-                comprobanteSQL = RecepcionConstant.NOTA_CREDITO_SQL;
+            case Constant.CERO_CUATRO:
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.NOTA_CREDITO_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.NOTA_CREDITO_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.NOTA_CREDITO_SQL_MICROSOFT_SQL_SERVER;
                 break;
-            case "05":
-                comprobanteSQL = RecepcionConstant.NOTA_DEBITO_SQL;
+            case Constant.CERO_CINCO:
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.NOTA_DEBITO_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.NOTA_DEBITO_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.NOTA_DEBITO_SQL_MICROSOFT_SQL_SERVER;
                 break;
-            case "06":
+            case Constant.CERO_SEIS:
                 comprobanteSQL = RecepcionConstant.GUIA_REMISION_SQL;
                 break;
-            case "07":
-                comprobanteSQL = RecepcionConstant.RETENCION_SQL;
+            case Constant.CERO_SIETE:
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.RETENCION_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.RETENCION_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = RecepcionConstant.RETENCION_SQL_MICROSOFT_SQL_SERVER;
                 break;
             default:
                 throw new RuntimeException("No se ha encontrado ninguna sentencia sql "
@@ -83,13 +100,12 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         }
 
         log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
-        try (PreparedStatement comprobantePreparedStatement = connection.prepareStatement(comprobanteSQL)) {
+        try(PreparedStatement comprobantePreparedStatement = connection.prepareStatement(comprobanteSQL)) {
             comprobantePreparedStatement.setString(1, codEmpresa);
-            ResultSet rs = comprobantePreparedStatement.executeQuery();
-            validarTipoComprobante(tipoComprobante, rs, comprobantes);
-            iterator = comprobantes.iterator();
-            rs.close();
-            comprobantePreparedStatement.close();
+            try(ResultSet rs = comprobantePreparedStatement.executeQuery()){
+                validarTipoComprobante(tipoComprobante, rs, comprobantes);
+                iterator = comprobantes.iterator();
+            }
         }
     }
 }

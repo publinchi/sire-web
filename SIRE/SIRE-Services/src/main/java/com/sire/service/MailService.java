@@ -32,6 +32,8 @@ import javax.naming.NamingException;
 @Startup
 public class MailService implements IMailService {
 
+    private static final Logger log = Logger.getLogger(MailService.class.getName());
+
     @Asynchronous
     @Lock(LockType.READ)
     @Override
@@ -54,10 +56,12 @@ public class MailService implements IMailService {
 
             String mailFrom;
 
-            mailFrom = mailSession.getProperties().get("mail.smtp.from") != null ? mailSession.getProperties().get("mail.smtp.from").toString() : null;
+            mailFrom = mailSession.getProperties().get("mail.smtp.from") != null ?
+                    mailSession.getProperties().get("mail.smtp.from").toString() : null;
 
             if(mailFrom == null)
-                mailFrom = mailSession.getProperties().get("mail.smtps.from") != null ? mailSession.getProperties().get("mail.smtps.from").toString() : null;
+                mailFrom = mailSession.getProperties().get("mail.smtps.from") != null ?
+                        mailSession.getProperties().get("mail.smtps.from").toString() : null;
             
             if (mailFrom == null) {
                 mailFrom = System.getProperty("sire.mail.from");
@@ -77,15 +81,17 @@ public class MailService implements IMailService {
             }
 
             Transport.send(message);
-            // TODO Eliminar System.out
-            System.out.println("E-Mail sent to " + event.getTo() + ", with secuential " + event.getProperties().get("secuencial"));
+            log.log(Level.INFO,"E-Mail sent to {0} , with secuential {1}",
+                    new Object[]{event.getTo(), event.getProperties().get("secuencial")});
         } catch (MessagingException e) {
             try {
-                System.out.println("E-Mail not sent to " + event.getTo() + ", Cause: " + e.getCause());
-                System.out.println("Retrying after 5 seconds ...");
+                log.log(Level.INFO,"E-Mail not sent to {0}, Cause: {1}",
+                        new Object[]{event.getTo(), e.getCause()});
+                log.info("Retrying after 5 seconds ...");
                 Thread.sleep(5000L);
                 Transport.send(message);
-                System.out.println("E-Mail sent again to " + event.getTo() + ", with secuential " + event.getProperties().get("secuencial"));
+                log.log(Level.INFO,"E-Mail sent again to {0} , with secuential {1}",
+                        new Object[]{event.getTo(), event.getProperties().get("secuencial")});
             } catch (InterruptedException | MessagingException ex) {
                 Logger.getLogger(MailService.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -1,0 +1,25 @@
+<div class="layout-wrapper" [ngClass]="{'layout-menu-horizontal': menuMode === 'horizontal',
+                                        'layout-menu-overlay': menuMode === 'overlay',
+                                        'layout-menu-static': menuMode === 'static',
+                                        'layout-menu-slim': menuMode === 'slim',
+                                        'layout-menu-light': lightMenu === true,
+                                        'layout-menu-overlay-active': overlayMenuActive,
+                                        'layout-menu-mobile-active': staticMenuMobileActive,
+                                        'layout-menu-static-inactive': staticMenuDesktopInactive}" (click)="onLayoutClick()">
+    <app-topbar></app-topbar>
+
+    <app-rightpanel></app-rightpanel>
+
+    <app-menu [reset]="resetMenu"></app-menu>
+
+    <div class="layout-main">
+        <app-breadcrumb></app-breadcrumb>
+
+        <div class="layout-content">
+            <alert></alert>
+            <router-outlet></router-outlet>
+        </div>
+
+        <app-footer></app-footer>
+    </div>
+</div>

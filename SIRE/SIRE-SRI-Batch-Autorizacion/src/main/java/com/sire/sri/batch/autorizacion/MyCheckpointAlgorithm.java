@@ -51,7 +51,7 @@ import javax.inject.Named;
 @Named
 public class MyCheckpointAlgorithm extends AbstractCheckpointAlgorithm {
     
-    public static CountDownLatch checkpointCountDownLatch = new CountDownLatch(10);
+    public static CountDownLatch checkpointCountDownLatch = new CountDownLatch(20);
 
     @Override
     public boolean isReadyToCheckpoint() throws Exception {
