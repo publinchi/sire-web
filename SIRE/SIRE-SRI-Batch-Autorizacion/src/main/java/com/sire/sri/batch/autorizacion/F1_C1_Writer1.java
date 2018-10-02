@@ -9,12 +9,10 @@ import autorizacion.ws.sri.gob.ec.Autorizacion;
 import autorizacion.ws.sri.gob.ec.Mensaje;
 import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
 import com.sire.event.MailEvent;
-import com.sire.service.IDatasourceService;
 import com.sire.service.IMailService;
 import com.sire.sri.batch.commons.CommonsItemWriter;
 import com.sire.sri.batch.constant.Constant;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.DateFormat;
@@ -56,13 +54,12 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
     @Inject
     private JobContext jobCtx;
-    private Connection connection;
     private IMailService mailService;
     private String urlReporte;
     private Logger log = Logger.getLogger(F1_C1_Writer1.class.getName());
 
     @Override
-    public void open(Serializable checkpoint) throws Exception {
+    public void open(Serializable checkpoint) {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
         urlReporte = runtimeParams.getProperty("urlReporte");
     }
@@ -154,36 +151,36 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                                     );
                                 }
 
-                            String motivo = "";
+                            StringBuffer motivo = new StringBuffer();
                             if (!estado.equals("AUTORIZADO") && !estado.equals("EN PROCESAMIENTO")) {
-                                motivo = ", MOTIVO_SRI = '" + identificador + ":" + tipo + ":" + mensaje + "'";
+                                motivo.append(", MOTIVO_SRI = '").append(identificador).append(":").append(tipo)
+                                        .append(":").append(mensaje).append("'");
                                 fechaAutorizacion = "";
                             } else if (estado.equals("AUTORIZADO")) {
                                 fechaAutorizacion = ", FECHA_AUTORIZACION = '" + fechaAutorizacion + "'";
-                                motivo = ", MOTIVO_SRI = ''";
+                                motivo.append(", MOTIVO_SRI = ''");
                                 duplaFinal.put(comprobante, autorizacion);
                             } else {
                                 fechaAutorizacion = "";
                             }
 
-                            String cabeceraSQL = "UPDATE " + nombreTablaComprobante + " SET "
-                                    + "ESTADO_SRI = ?"
-                                    + motivo
-                                    + fechaAutorizacion
-                                    + " WHERE " + nombreSecuencial + " = ?";
+                            StringBuffer cabeceraSQL = new StringBuffer();
+                            cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
+                                    .append("ESTADO_SRI = ?").append(motivo).append(fechaAutorizacion).append(" WHERE ")
+                                    .append(nombreSecuencial).append(" = ?");
+
                             log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
-                            executeSql(cabeceraSQL, estado, secuencial);
+                            executeSql(cabeceraSQL.toString(), estado, secuencial);
                         }
                     }
                 }
-                String loteSQL = "UPDATE CEL_LOTE_AUTORIZADO SET "
-                        + "ESTADO_SRI = 'PROCESADA'"
-                        + " WHERE CLAVE_ACCESO = ?";
+                StringBuffer loteSQL = new StringBuffer();
+                loteSQL.append("UPDATE CEL_LOTE_AUTORIZADO SET ").append("ESTADO_SRI = 'PROCESADA'")
+                        .append(" WHERE CLAVE_ACCESO = ?");
                 log.info("update CEL_LOTE_AUTORIZADO -> " + loteSQL);
-                try (PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL)) {
+                try (PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL.toString())) {
                     preparedStatement.setString(1, lote.getClaveAcceso());
                     preparedStatement.executeUpdate();
-                    preparedStatement.close();
                 }
             } catch (SQLException | NamingException | ParseException ex) {
                 Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
@@ -223,7 +220,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     nombreComprobante = "Nota de Crédito";
                     NotaCredito notaCredito = (NotaCredito) key;
                     for (NotaCredito.InfoAdicional.CampoAdicional campoAdicional : notaCredito.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -238,7 +235,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     nombreComprobante = "Nota de Débito";
                     NotaDebito notaDebito = (NotaDebito) key;
                     for (NotaDebito.InfoAdicional.CampoAdicional campoAdicional : notaDebito.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -253,7 +250,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     nombreComprobante = "Guía de Remisión";
                     GuiaRemision guiaRemision = (GuiaRemision) key;
                     for (GuiaRemision.InfoAdicional.CampoAdicional campoAdicional : guiaRemision.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -261,14 +258,14 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     secuencial = guiaRemision.getInfoTributaria().getSecuencial();
                     GuiaRemisionReporte guiaRemisionReporte = new GuiaRemisionReporte(guiaRemision);
                     pdfBytes = reporteUtil.generarReporte(urlReporte, guiaRemisionReporte, numAut, fechaAut, guiaRemision);
-                    razonSocialComprador = guiaRemision.getInfoGuiaRemision().getRazonSocialTransportista();
+                    razonSocialComprador = guiaRemision.getDestinatarios().getDestinatario().get(0).getRazonSocialDestinatario();
                     nombreComercial = guiaRemision.getInfoTributaria().getNombreComercial();
                     ruc = guiaRemision.getInfoTributaria().getRuc();
                 } else if (key instanceof ComprobanteRetencion) {
                     nombreComprobante = "Retención";
                     ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) key;
                     for (ComprobanteRetencion.InfoAdicional.CampoAdicional campoAdicional : comprobanteRetencion.getInfoAdicional().getCampoAdicional()) {
-                        if (campoAdicional.getNombre().equals("Email")) {
+                        if (campoAdicional.getNombre().equals(Constant.EMAIL)) {
                             recipient = campoAdicional.getValue();
                         }
                     }
@@ -290,19 +287,22 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 addBodyPart(autorizacionXml.getBytes(), "application/xml", claveAcceso + ".xml", mimeMultipart);
 
                 BodyPart messageBodyPart = new MimeBodyPart();
-                messageBodyPart.setContent("Estimado Cliente " + razonSocialComprador + ",<br>"
-                        + "<br>"
-                        + "Nos complace adjuntar su e-Comprobante con el siguiente detalle:<br>"
-                        + "<br>"
-                        + "e - Comprobante No: <b>" + numAut.substring(24, 39) + "</b><br>"
-                        + "<br>"
-                        + "Fecha Emisión: <b>" + fechaAut + "</b><br>"
-                        + "<br>"
-                        + "El documento pdf y xml de su comprobante se encuentra adjunto a este correo.<br>"
-                        + "<br>"
-                        + "Atentamente:<br>"
-                        + nombreComercial + "<br>"
-                        + "RUC: " + ruc, "text/html; charset=utf-8");
+                StringBuffer content = new StringBuffer();
+                content.append("Estimado Cliente ")
+                        .append(razonSocialComprador)
+                        .append(",<br><br>Nos complace adjuntar su e-Comprobante con el siguiente detalle:<br>")
+                        .append("<br>e - Comprobante No: <b>")
+                        .append(numAut, 24, 39)
+                        .append("</b><br><br>Fecha Emisión: <b>")
+                        .append(fechaAut)
+                        .append("</b><br><br>")
+                        .append("El documento pdf y xml de su comprobante se encuentra adjunto a este correo.<br>")
+                        .append("<br>Atentamente:<br>")
+                        .append(nombreComercial)
+                        .append("<br>RUC: ")
+                        .append(ruc);
+
+                messageBodyPart.setContent(content.toString(),"text/html; charset=utf-8");
                 mimeMultipart.addBodyPart(messageBodyPart);
 
                 MailEvent event = new MailEvent();
@@ -321,6 +321,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        urlReporte = null;
     }
 
     private void addBodyPart(byte[] bytes, String type, String fileName, MimeMultipart mimeMultipart) throws MessagingException {
@@ -334,7 +335,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
     private IMailService getMailService() throws NamingException {
         if (mailService == null) {
             InitialContext ic = new InitialContext();
-            mailService = (IMailService) ic.lookup("java:global/SIRE-Batch/MailService!com.sire.service.IMailService");
+            mailService = (IMailService) ic.lookup("java:global/SIRE-EE/SIRE-Services/MailService!com.sire.service.IMailService");
         }
         return mailService;
     }

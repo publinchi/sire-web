@@ -11,6 +11,8 @@ SIRE/.idea/**/dataSources/
 SIRE/.idea/**/dataSources.ids
 SIRE/.idea/**/dataSources.local.xml
 SIRE/.idea/**/sqlDataSources.xml
+SIRE/.idea/**/dataSources.xml
+SIRE/.idea/**/sqldialects.xml
 SIRE/.idea/**/dynamic.xml
 SIRE/.idea/**/uiDesigner.xml
 
@@ -70,8 +72,11 @@ SIRE/SIRE-SRI-Batch-Autorizacion/target/
 SIRE/SIRE-SRI-Batch/target/
 SIRE/SIRE-SRI-Reports/target/
 SIRE/SIRE-SRI-Batch-Commons/target/
+SIRE/SIRE-EE/target/
 
 SIRE/SIRE-UI/node_modules/
 
 SIRE/SIRE-Movil/
+SIRE/SIRE-NG/node_modules/
 
+SIRE/SIRE-NG/dist/

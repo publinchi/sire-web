@@ -35,13 +35,19 @@
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <wsdlFiles>
+                            <wsdlUrls>
+                                <wsdlUrl>https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl</wsdlUrl>
+                            </wsdlUrls>
+                            <!--<wsdlFiles>
                                 <wsdlFile>celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline.wsdl</wsdlFile>
-                            </wsdlFiles>
+                            </wsdlFiles>-->
                             <packageName></packageName>
                             <vmArgs>
                                 <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                             </vmArgs>
+                            <xjcArgs>
+                                <xjcArg>-Xsetters</xjcArg>
+                            </xjcArgs>
                             <wsdlLocation>https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantesOffline?wsdl</wsdlLocation>
                             <staleFile>${project.build.directory}/jaxws/stale/AutorizacionComprobantesOffline.stale</staleFile>
                         </configuration>
@@ -53,13 +59,19 @@
                             <goal>wsimport</goal>
                         </goals>
                         <configuration>
-                            <wsdlFiles>
+                            <wsdlUrls>
+                                <wsdlUrl>https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl</wsdlUrl>
+                            </wsdlUrls>
+                            <!--<wsdlFiles>
                                 <wsdlFile>celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline.wsdl</wsdlFile>
-                            </wsdlFiles>
+                            </wsdlFiles>-->
                             <packageName></packageName>
                             <vmArgs>
                                 <vmArg>-Djavax.xml.accessExternalSchema=all</vmArg>
                             </vmArgs>
+                            <xjcArgs>
+                                <xjcArg>-Xsetters</xjcArg>
+                            </xjcArgs>
                             <wsdlLocation>https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantesOffline?wsdl</wsdlLocation>
                             <staleFile>${project.build.directory}/jaxws/stale/RecepcionComprobantesOffline.stale</staleFile>
                         </configuration>
@@ -72,6 +84,11 @@
                         <groupId>javax.xml</groupId>
                         <artifactId>webservices-api</artifactId>
                         <version>2.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jvnet.jaxb2_commons</groupId>
+                        <artifactId>jaxb2-basics</artifactId>
+                        <version>1.11.1</version>
                     </dependency>
                 </dependencies>
                 <configuration>
@@ -95,6 +112,12 @@
             <artifactId>jaxb-api</artifactId>
             <version>2.2.9</version>
             <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics</artifactId>
+            <version>0.9.5</version>
         </dependency>
     </dependencies>
 </project>

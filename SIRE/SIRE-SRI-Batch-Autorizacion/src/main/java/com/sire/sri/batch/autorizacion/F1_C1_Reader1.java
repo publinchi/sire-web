@@ -1,16 +1,16 @@
 package com.sire.sri.batch.autorizacion;
 
+import com.sire.sri.batch.constant.Constant;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
 import java.io.Serializable;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.inject.Named;
 import com.sire.sri.batch.autorizacion.constant.AutorizacionConstant;
 import com.sire.sri.batch.commons.CommonsItemReader;
-import java.sql.SQLException;
+
 import java.util.Properties;
 import java.util.logging.Level;
 import javax.batch.runtime.BatchRuntime;
@@ -51,23 +51,41 @@ public class F1_C1_Reader1 extends CommonsItemReader {
             AutorizacionConstant.codEmpresa = "COD_EMPRESA = '" + codEmpresa + "' AND ";
         }
 
-        String loteSQL = "SELECT COD_EMPRESA, SECUENCIAL, COD_DOCUMENTO, "
-                + "CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO "
-                + "FROM CEL_LOTE_AUTORIZADO WHERE COD_EMPRESA = ? AND ESTADO_SRI = 'RECIBIDA' "
-                + "AND SUBSTR(CLAVE_ACCESO,9,2) = ?";
-        try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL)) {
-            ResultSet loteRs = getResultSet(tipoComprobante, preparedStatemenT);
-            while (loteRs.next()) {
-                String claveAccesoLote = loteRs.getString("CLAVE_ACCESO");
-                buildComprobantes(claveAccesoLote, tipoComprobante);
+        Connection connection = getConnection();
+        DatabaseMetaData databaseMetaData = connection.getMetaData();
+        String databaseProductName = databaseMetaData.getDatabaseProductName();
+
+        String subString = null;
+
+        if(Constant.MYSQL.equals(databaseProductName))
+            subString = "SUBSTR";
+        else if(Constant.ORACLE.equals(databaseProductName))
+            subString = "SUBSTR";
+        else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+            subString = "SUBSTRING";
+
+        StringBuffer loteSQL = new StringBuffer();
+
+        loteSQL.append("SELECT COD_EMPRESA, SECUENCIAL, COD_DOCUMENTO, ")
+                .append("CLAVE_ACCESO, ESTADO_SRI, FECHA_ESTADO ")
+                .append("FROM CEL_LOTE_AUTORIZADO WHERE COD_EMPRESA = ? AND ESTADO_SRI = 'RECIBIDA' ")
+                .append("AND ").append(subString).append("(CLAVE_ACCESO,9,2) = ?");
+        try (PreparedStatement preparedStatemenT = getConnection().prepareStatement(loteSQL.toString())) {
+            try(ResultSet loteRs = getResultSet(tipoComprobante, preparedStatemenT)){
+                while (loteRs.next()) {
+                    String claveAccesoLote = loteRs.getString("CLAVE_ACCESO");
+                    buildComprobantes(claveAccesoLote, tipoComprobante);
+                }
+                iterator = lotes.iterator();
             }
-            iterator = lotes.iterator();
-            loteRs.close();
-            preparedStatemenT.close();
         }
     }
 
     private void buildComprobantes(String claveAccesoLote, String tipoComprobante) throws SQLException, NamingException {
+        Connection connection = getConnection();
+        DatabaseMetaData databaseMetaData = connection.getMetaData();
+        String databaseProductName = databaseMetaData.getDatabaseProductName();
+        log.log(Level.INFO, "databaseProductName -> {0}", databaseProductName);
         List comprobantes = new ArrayList();
         LoteXml lote = new LoteXml();
         lote.setClaveAcceso(claveAccesoLote);
@@ -80,10 +98,20 @@ public class F1_C1_Reader1 extends CommonsItemReader {
                 comprobanteSQL = AutorizacionConstant.FACTURA_SQL;
                 break;
             case "04":
-                comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL;
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_CREDITO_SQL_MICROSOFT_SQL_SERVER;
                 break;
             case "05":
-                comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL;
+                if(Constant.MYSQL.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL_MYSQL;
+                else if(Constant.ORACLE.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL_ORACLE;
+                else if(Constant.MICROSOFT_SQL_SERVER.equals(databaseProductName))
+                    comprobanteSQL = AutorizacionConstant.NOTA_DEBITO_SQL_MICROSOFT_SQL_SERVER;
                 break;
             case "06":
                 comprobanteSQL = AutorizacionConstant.GUIA_REMISION_SQL;
@@ -98,12 +126,11 @@ public class F1_C1_Reader1 extends CommonsItemReader {
 
         log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
         try (PreparedStatement comprobantePreparedStatement = getConnection().prepareStatement(comprobanteSQL)) {
-            ResultSet rs = getResultSet(claveAccesoLote, comprobantePreparedStatement);
-            validarTipoComprobante(tipoComprobante, rs, comprobantes);
-            lote.setComprobantes(comprobantes);
-            lotes.add(lote);
-            rs.close();
-            comprobantePreparedStatement.close();
+            try(ResultSet rs = getResultSet(claveAccesoLote, comprobantePreparedStatement)){
+                validarTipoComprobante(tipoComprobante, rs, comprobantes);
+                lote.setComprobantes(comprobantes);
+                lotes.add(lote);
+            }
         }
     }
 

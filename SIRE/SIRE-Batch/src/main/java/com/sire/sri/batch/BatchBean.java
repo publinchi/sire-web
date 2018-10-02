@@ -41,10 +41,14 @@ public class BatchBean {
 
     @Resource
     private TimerService timerService;
+    @Resource(lookup="java:module/ModuleName")
+    private String moduleName;
+    @Resource(lookup="java:app/AppName")
+    private String applicationName;
 
     private static final Logger log = Logger.getLogger(BatchBean.class.getName());
     private String home;
-    private static String comprobantePropertiesPath;
+    private static StringBuffer comprobantePropertiesPath;
 
     @PostConstruct
     public void init() {
@@ -58,12 +62,17 @@ public class BatchBean {
 
             log.info("SIRE HOME --> " + home);
 
-            comprobantePropertiesPath = home + File.separator + Constant.COMPROBANTES_PROPERTIES;
+            comprobantePropertiesPath = new StringBuffer();
+            comprobantePropertiesPath.append(home);
+            comprobantePropertiesPath.append(File.separator);
+            comprobantePropertiesPath.append(Constant.COMPROBANTES_PROPERTIES);
 
+            log.log(Level.INFO, "applicationName -> {0}", applicationName);
+            log.log(Level.INFO, "moduleName -> {0}", moduleName);
             log.info("Comprobantes Properties --> " + comprobantePropertiesPath);
 
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
 
             String[] timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES).split(",");
 
@@ -96,7 +105,13 @@ public class BatchBean {
             log.info("timeout: jobName --> " + map.get(Constant.JOB_NAME) + ", tipoComprobante --> "
                     + map.get(Constant.TIPO_COMPROBANTE) + ", reportName --> " + map.get(Constant.REPORT_NAME));
             InitialContext ic = new InitialContext();
-            BatchBean batchBean = (BatchBean) ic.lookup("java:global/SIRE-Batch/BatchBean!com.sire.sri.batch.BatchBean");
+            String jndi;
+            if(applicationName.equals(moduleName)){
+                jndi = "java:global/" + applicationName + "/BatchBean!com.sire.sri.batch.BatchBean";
+            } else {
+                jndi = "java:global/" + applicationName + "/" + moduleName + "/BatchBean!com.sire.sri.batch.BatchBean";
+            }
+            BatchBean batchBean = (BatchBean) ic.lookup(jndi);
             java.lang.reflect.Method method = this.getClass().getDeclaredMethod(Constant.EXECUTE_JOB, String.class,
                     String.class, String.class);
             method.invoke(batchBean,map.get(Constant.JOB_NAME), map.get(Constant.TIPO_COMPROBANTE),
@@ -109,7 +124,7 @@ public class BatchBean {
     private Timer createCalendarTimer(String timerName) {
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
             String minute = runtimeParameters.getProperty(timerName + ".minute");
             String hour = runtimeParameters.getProperty(timerName + ".hour");
             String tipoComprobante = runtimeParameters.getProperty(timerName + "." + Constant.TIPO_COMPROBANTE);
@@ -132,7 +147,7 @@ public class BatchBean {
     public void reconfigJob() { //TODO Refactorizar toda la implementación de este método
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
 
             Collection<Timer> timers = timerService.getTimers();
             log.info("************** TIMERS INFO **************");
@@ -180,7 +195,7 @@ public class BatchBean {
     private void executeJob(String jobName, String tipoComprobante, String reportName) {
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath));
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
             runtimeParameters.setProperty("urlReporte", runtimeParameters.getProperty("pathReports") + reportName);
             runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
 

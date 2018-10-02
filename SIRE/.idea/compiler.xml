@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="SIRE-Batch" />
         <module name="SIRE-Commons" />
+        <module name="SIRE-EE" />
         <module name="SIRE-Entities" />
         <module name="SIRE-RS-Client" />
         <module name="SIRE-Services" />
@@ -25,9 +26,12 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="CISConectorOSBConsultaORG" target="1.5" />
+      <module name="CISConectorVisionPlusTarjeta" target="1.5" />
       <module name="SIRE" target="1.5" />
       <module name="SIRE-Batch" target="1.7" />
       <module name="SIRE-Commons" target="1.8" />
+      <module name="SIRE-EE" target="1.8" />
       <module name="SIRE-Entities" target="1.7" />
       <module name="SIRE-RS-Client" target="1.7" />
       <module name="SIRE-Services" target="1.7" />
