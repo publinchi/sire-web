@@ -28,6 +28,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: fish.payara.arquillian:arquillian-payara-server-4-managed:1.0.Beta2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:2.2.6" level="project" />
     <orderEntry type="library" name="Maven: javax.batch:javax.batch-api:1.0.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.junit:arquillian-junit-container:1.1.14.Final" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.junit:arquillian-junit-core:1.1.14.Final" level="project" />
@@ -113,8 +115,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.glassfish.grizzly:grizzly-framework:2.3.25" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.glassfish.grizzly:grizzly-http-server:2.3.25" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.glassfish.grizzly:grizzly-http:2.3.25" level="project" />
-    <orderEntry type="library" name="Maven: org.javaee7:util:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: fish.payara.arquillian:arquillian-payara-server-4-managed:1.0.Beta2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: xmlunit:xmlunit:1.5" level="project" />
     <orderEntry type="library" name="Maven: fish.payara.arquillian:arquillian-payara-micro-5-managed:1.0.Beta3" level="project" />
     <orderEntry type="library" name="Maven: fish.payara.arquillian:payara-container-4-common:1.0.Beta3" level="project" />
@@ -125,8 +125,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-javaee:2.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-javaee:2.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-impl-base:2.0.0" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.javaee7:test-utils:1.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:2.2.6" level="project" />
     <orderEntry type="module" module-name="SIRE-SRI-Batch-Autorizacion" />
     <orderEntry type="module" module-name="SIRE-SRI-Signature" />
     <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibTSA:1.1.7" level="project" />
@@ -210,6 +208,8 @@
     <orderEntry type="library" name="Maven: javax.activation:activation:1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api:3.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-spi:3.0.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:3.0.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model:3.3.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-spi-maven:3.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-archive:3.0.0" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:3.0.0" level="project" />
@@ -221,7 +221,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.aether:aether-transport-wagon:1.0.2.v20150114" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-aether-provider:3.3.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-component-annotations:1.6" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model:3.3.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model-builder:3.3.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-artifact:3.3.9" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-builder-support:3.3.9" level="project" />
