@@ -136,7 +136,7 @@ public class SriJobTest {
         Long executionId = jobOperator.start("SriRecepcionJob", runtimeParameters);
         JobExecution jobExecution = jobOperator.getJobExecution(executionId);
 
-        jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
+        BatchTestHelper.keepTestAlive(jobExecution);
 
         List<StepExecution> stepExecutions = jobOperator.getStepExecutions(executionId);
         for (StepExecution stepExecution : stepExecutions) {
@@ -182,7 +182,7 @@ public class SriJobTest {
         Long executionId = jobOperator.start("SriAutorizacionJob", null);
         JobExecution jobExecution = jobOperator.getJobExecution(executionId);
 
-        jobExecution = BatchTestHelper.keepTestAlive(jobExecution);
+        BatchTestHelper.keepTestAlive(jobExecution);
 
         List<StepExecution> stepExecutions = jobOperator.getStepExecutions(executionId);
         for (StepExecution stepExecution : stepExecutions) {
