@@ -3,13 +3,16 @@ package com.sire.sri.batch.recepcion;
 import com.sire.sri.batch.commons.CommonsItemReader;
 import com.sire.sri.batch.constant.Constant;
 import com.sire.sri.batch.recepcion.constant.RecepcionConstant;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
@@ -23,6 +26,8 @@ public class F1_C1_Reader1 extends CommonsItemReader {
     private JobContext jobCtx;
     private Iterator iterator;
     static int COUNT = 0;
+
+    private static final Logger log = LogManager.getLogger(F1_C1_Reader1.class);
 
     @Override
     public Object readItem() {
@@ -39,8 +44,8 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         String tipoComprobante = runtimeParams.getProperty(Constant.TIPO_COMPROBANTE);
         codEmpresa = runtimeParams.getProperty(Constant.COD_EMPRESA);
 
-        log.log(Level.INFO, "tipoComprobante -> {0}", tipoComprobante);
-        log.log(Level.INFO, "codEmpresa -> {0}", codEmpresa);
+        log.info("tipoComprobante -> {}", tipoComprobante);
+        log.info("codEmpresa -> {}", codEmpresa);
 
         if (codEmpresa != null && !codEmpresa.isEmpty()) {
             RecepcionConstant.codEmpresa = "COD_EMPRESA = '" + codEmpresa + "' AND ";
@@ -49,13 +54,12 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         buildComprobantes(tipoComprobante);
     }
 
-    private void buildComprobantes(String tipoComprobante) throws SQLException, NamingException {
-        Connection connection = getConnection();
-        DatabaseMetaData databaseMetaData = connection.getMetaData();
-        String databaseProductName = databaseMetaData.getDatabaseProductName();
-        log.log(Level.INFO, "databaseProductName -> {0}", databaseProductName);
+    private void buildComprobantes(String tipoComprobante) {
+        String databaseProductName = getDatabaseProductName();
+
+        log.info("databaseProductName -> {}", databaseProductName);
         List comprobantes = new ArrayList();
-        log.log(Level.INFO, "-> buildComprobantes -> {0}", tipoComprobante);
+
         String comprobanteSQL = null;
 
         switch (tipoComprobante) {
@@ -99,13 +103,37 @@ public class F1_C1_Reader1 extends CommonsItemReader {
                         + "asociada al tipo de comprobante " + tipoComprobante);
         }
 
-        log.log(Level.INFO, "comprobanteSQL -> {0}", comprobanteSQL);
-        try(PreparedStatement comprobantePreparedStatement = connection.prepareStatement(comprobanteSQL)) {
-            comprobantePreparedStatement.setString(1, codEmpresa);
-            try(ResultSet rs = comprobantePreparedStatement.executeQuery()){
-                validarTipoComprobante(tipoComprobante, rs, comprobantes);
-                iterator = comprobantes.iterator();
-            }
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection =  getDatasourceService().getConnection();
+            preparedStatement = connection.prepareStatement(comprobanteSQL);
+            preparedStatement.setString(1, codEmpresa);
+            resultSet = preparedStatement.executeQuery();
+            validarTipoComprobante(tipoComprobante, resultSet, comprobantes);
+            iterator = comprobantes.iterator();
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        } finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
     }
 }

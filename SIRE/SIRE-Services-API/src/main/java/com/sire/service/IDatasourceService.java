@@ -15,5 +15,7 @@ import javax.naming.NamingException;
  */
 public interface IDatasourceService {
 
-    public Connection getConnection() throws SQLException, NamingException;
+    Connection getConnection() throws SQLException, NamingException;
+    Connection getConnection(int timeout) throws SQLException, NamingException;
+    String getDatabaseProductName() throws SQLException, NamingException;
 }

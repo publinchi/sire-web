@@ -21,6 +21,8 @@ public class Constant {
     public static final String REPORT_NAME = "reportName";
     public static final String TIMER_AUTORIZACION_NAMES = "timerAutorizacionNames";
     public static final String TIMER_RECEPCION_NAMES = "timerRecepcionNames";
+    public static final String TIMER_NAMES = "timerNames";
+    public static final Object TIMER_NAME = "timerName";
     public static final String TIPO_COMPROBANTE = "tipoComprobante";
     public static final String COMPROBANTE = "comprobante";
     public static final String SIRE_HOME = "sire.home";
@@ -42,12 +44,20 @@ public class Constant {
     public static final String MENSAJE = "mensaje";
     public static final String INFORMACION_ADICIONAL = "informacionAdicional";
     public static final String DEVUELTA = "DEVUELTA";
+    public static final String URL_REPORTE = "urlReporte";
+    public static final String LOTE = "lote";
+    public static final String SPACE = " ";
+    public static final String DATE_FORMAT_1 = "EEE MMM d HH:mm:ss yyyy";
+    public static final String DATE_FORMAT_2 = "dd-MM-yyyy HH:mm:ss";
+    public static final String AUTORIZADO = "AUTORIZADO";
+    public static final String EN_PROCESAMIENTO = "EN PROCESAMIENTO";
 
     // Tablas
     public static final String FAC_FACTURA_C = "FAC_FACTURA_C";
     public static final String FAC_DEVOLUCION_C = "FAC_DEVOLUCION_C";
     public static final String PED_DESPACHO_C = "PED_DESPACHO_C";
     public static final String BAN_RETENCION_C = "BAN_RETENCION_C";
+    public static final String CXC_DOC_COBRAR = "CXC_DOC_COBRAR";
 
     // Columnas
     public static final String SECUENCIAL = "SECUENCIAL";
@@ -277,7 +287,7 @@ public class Constant {
             + "DIRECCION_ESTABLECIMIENTO, CONTRIBUYENTE_ESPECIAL, "
             + "LLEVA_CONTABILIDAD, RISE, RAZON_SOCIAL_COMPRADOR, "
             + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
-            + "OBSERVACION, FECHA_EMISION, TIPO_IDENTIFICACION_COMPRADOR, "
+            + "RAZON, FECHA_EMISION, TIPO_IDENTIFICACION_COMPRADOR, "
             + "IDENTIFICACION_COMPRADOR, COD_DOC_MODIFICADO, NUM_DOC_MODIFICADO, "
             + "FECHA_EMISION_DOCSUSTENTO, TOTAL_SIN_IMPUESTOS, CODIGO_IMPUESTO, "
             + "CODIGO_PORCENTAJE, TARIFA, BASE_IMPONIBLE, VALOR, ESTADO_SRI, "
@@ -292,7 +302,7 @@ public class Constant {
             + "DIRECCION_ESTABLECIMIENTO, CONTRIBUYENTE_ESPECIAL, "
             + "LLEVA_CONTABILIDAD, RISE, RAZON_SOCIAL_COMPRADOR, "
             + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
-            + "OBSERVACION, FECHA_EMISION, TIPO_IDENTIFICACION_COMPRADOR, "
+            + "RAZON, FECHA_EMISION, TIPO_IDENTIFICACION_COMPRADOR, "
             + "IDENTIFICACION_COMPRADOR, COD_DOC_MODIFICADO, NUM_DOC_MODIFICADO, "
             + "FECHA_EMISION_DOCSUSTENTO, TOTAL_SIN_IMPUESTOS, CODIGO_IMPUESTO, "
             + "CODIGO_PORCENTAJE, TARIFA, BASE_IMPONIBLE, VALOR, ESTADO_SRI, "
@@ -307,7 +317,7 @@ public class Constant {
             + "DIRECCION_ESTABLECIMIENTO, CONTRIBUYENTE_ESPECIAL, "
             + "LLEVA_CONTABILIDAD, RISE, RAZON_SOCIAL_COMPRADOR, "
             + "DIRECCION_COMPRADOR, TELEFONO_COMPRADOR, EMAIL_COMPRADOR, "
-            + "OBSERVACION, FECHA_EMISION, TIPO_IDENTIFICACION_COMPRADOR, "
+            + "RAZON, FECHA_EMISION, TIPO_IDENTIFICACION_COMPRADOR, "
             + "IDENTIFICACION_COMPRADOR, COD_DOC_MODIFICADO, NUM_DOC_MODIFICADO, "
             + "FECHA_EMISION_DOCSUSTENTO, TOTAL_SIN_IMPUESTOS, CODIGO_IMPUESTO, "
             + "CODIGO_PORCENTAJE, TARIFA, BASE_IMPONIBLE, VALOR, ESTADO_SRI, "

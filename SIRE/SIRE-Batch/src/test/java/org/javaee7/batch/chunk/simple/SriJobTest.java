@@ -126,7 +126,7 @@ public class SriJobTest {
      * @throws Exception an exception if the batch could not complete
      * successfully.
      */
-    @Test
+    //@Test
     public void testSriRecepcionJob() throws Exception {
         Properties runtimeParameters = new Properties();
         runtimeParameters.setProperty("pathSignature", "/opt/payara41/SIRE/keystore.p12");
@@ -176,7 +176,7 @@ public class SriJobTest {
      * @throws Exception an exception if the batch could not complete
      * successfully.
      */
-    @Test
+    //@Test
     public void testSriAutorizacionJob() throws Exception {
         JobOperator jobOperator = getJobOperator();
         Long executionId = jobOperator.start("SriAutorizacionJob", null);
