@@ -1,19 +1,12 @@
 
-import autorizacion.ws.sri.gob.ec.AutorizacionComprobantesOffline;
-import autorizacion.ws.sri.gob.ec.AutorizacionComprobantesOfflineService;
-import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
-import java.io.StringReader;
+import ec.gob.sri.ws.recepcion.Comprobante;
+import ec.gob.sri.ws.recepcion.Mensaje;
+import ec.gob.sri.ws.recepcion.RespuestaSolicitud;
+
 import java.io.StringWriter;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.ws.Response;
-import recepcion.ws.sri.gob.ec.Comprobante;
-import recepcion.ws.sri.gob.ec.Mensaje;
-import recepcion.ws.sri.gob.ec.RecepcionComprobantesOfflineService;
-import recepcion.ws.sri.gob.ec.RespuestaSolicitud;
-import recepcion.ws.sri.gob.ec.ValidarComprobanteResponse;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
