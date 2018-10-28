@@ -10,7 +10,7 @@
     border-top-right-radius: $val;
     -moz-border-radius-bottomright: $val;
     -webkit-border-bottom-right-radius: $val;
-    border-bottom-right-radius: $val; 
+    border-bottom-right-radius: $val;
 }
 
 @mixin border-radius-left($val) {
@@ -81,6 +81,18 @@
     -moz-box-shadow: none;
 }
 
+@mixin shadow($value) {
+    box-shadow: $value;
+    -webkit-box-shadow: $value;
+    -moz-box-shadow: $value;
+}
+
+@mixin multi-shadow($value1, $value2) {
+    -webkit-box-shadow: $value1, $value2;
+    -moz-box-shadow: $value1, $value2;
+    box-shadow: $value1, $value2;
+}
+
 @mixin hover-element {
     background-color: $hoverBgColor;
     color: $hoverTextColor;
@@ -95,12 +107,6 @@
   opacity: $opacity;
   $opacity-ie: $opacity * 100;
   filter: alpha(opacity=$opacity-ie);
-}
-
-@mixin icon-override($icon) {    
-    &:before {
-        content: $icon;
-    }
 }
 
 @mixin material-icon($icon) {
@@ -129,13 +135,17 @@
 
     /* Support for IE. */
     font-feature-settings: 'liga';
-    
+
     &:before {
         content: $icon;
     }
 }
 
-@mixin rotate($deg) {    
+@mixin icon-override($icon) {
+    @include material-icon($icon);
+}
+
+@mixin rotate($deg) {
     -webkit-transform: rotate($deg);
     -moz-transform: rotate($deg);
     -o-transform: rotate($deg);
@@ -143,7 +153,7 @@
     transform: rotate($deg);
 }
 
-@mixin scale($deg) {    
+@mixin scale($deg) {
     -webkit-transform: scale($deg);
     -moz-transform: scale($deg);
     -o-transform: scale($deg);
@@ -152,8 +162,14 @@
 }
 
 @mixin rippleitem() {
-    position: relative; 
+    position: relative;
     overflow: hidden;
+}
+
+@mixin animation-duration($value) {
+     -webkit-animation-duration: $value;
+    -moz-animation-duration: $value;
+    animation-duration: $value;
 }
 
 @mixin animation($delay, $duration, $animation) {
@@ -174,4 +190,27 @@
     animation-name: $animation;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+}
+
+@mixin box-sizing($box-model) {
+    -webkit-box-sizing: $box-model;
+    -moz-box-sizing: $box-model;
+    box-sizing: $box-model;
+}
+
+@mixin flex() {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+@mixin clearfix() {
+    &:before,
+    &:after {
+        content: "";
+        display: table;
+    }
+    &:after {
+        clear: both;
+    }
 }
