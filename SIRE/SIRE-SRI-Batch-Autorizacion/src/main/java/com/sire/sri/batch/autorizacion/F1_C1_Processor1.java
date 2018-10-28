@@ -1,8 +1,6 @@
 package com.sire.sri.batch.autorizacion;
 
-import autorizacion.ws.sri.gob.ec.Autorizacion;
-import autorizacion.ws.sri.gob.ec.Mensaje;
-import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
+import ec.gob.sri.ws.autorizacion.*;
 import com.sire.soap.util.SoapUtil;
 import com.sun.xml.messaging.saaj.soap.impl.ElementImpl;
 import ec.gob.sri.comprobantes.modelo.LoteXml;
@@ -16,7 +14,6 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Logger;
 import javax.batch.api.chunk.ItemProcessor;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
@@ -38,6 +35,8 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
@@ -46,7 +45,7 @@ public class F1_C1_Processor1 implements ItemProcessor {
 
     @Inject
     private JobContext jobCtx;
-    private Logger log = Logger.getLogger(F1_C1_Processor1.class.getName());
+    private static final Logger log = LogManager.getLogger(F1_C1_Processor1.class);
 
     @Override
     public Object processItem(Object item) throws Exception {
@@ -60,8 +59,6 @@ public class F1_C1_Processor1 implements ItemProcessor {
                 null,
                 null);
         SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
-        log.info("Soap Autorizacion Response:");
-        log.info(SoapUtil.getStringFromSoapMessage(soapMessage));
         RespuestaComprobante respuestaComprobante = toRespuestaComprobante(soapMessage);
         Map<String, Object> map = new HashMap();
         map.put("respuestaComprobante", respuestaComprobante);
