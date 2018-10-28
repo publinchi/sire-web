@@ -79,20 +79,6 @@
             <version>1.7</version>
             <scope>test</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-jackson</artifactId>
-            <version>2.25.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-json-processing</artifactId>
-            <version>2.25.1</version>
-            <scope>test</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>rhino</groupId>
             <artifactId>js</artifactId>
@@ -180,11 +166,6 @@
             </exclusions>
             <scope>provided</scope>
         </dependency>
-        <!--<dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>SIRE-Services</artifactId>
-            <version>${SIRE-Services.version}</version>
-        </dependency>-->
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>SIRE-Commons</artifactId>
@@ -209,12 +190,6 @@
             <version>3.0.0</version>
             <type>pom</type>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle</groupId>
-            <artifactId>ojdbc6</artifactId>
-            <version>11.2.0.2</version>
-            <type>jar</type>
         </dependency>
     </dependencies>
     <build>

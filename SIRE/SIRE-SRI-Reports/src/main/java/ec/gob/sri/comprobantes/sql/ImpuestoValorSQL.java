@@ -1,6 +1,7 @@
 package ec.gob.sri.comprobantes.sql;
 
 import ec.gob.sri.comprobantes.administracion.modelo.ImpuestoValor;
+import ec.gob.sri.comprobantes.constant.Constant;
 import ec.gob.sri.comprobantes.util.Constantes;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -25,7 +26,7 @@ public class ImpuestoValorSQL {
 
     private String getStringURL() {
         if (Constantes.obtenerUrlBD() != null) {
-            this.url = ("jdbc:hsqldb:file:" + Constantes.obtenerUrlBD() + "/" + "producto;readonly=true");
+            this.url = (Constantes.URL_CONECCION + Constantes.obtenerUrlBD() + "/" + Constantes.PRODUCTO_READONLY);
         }
         return null;
     }
@@ -34,10 +35,11 @@ public class ImpuestoValorSQL {
             throws SQLException, ClassNotFoundException {
         if (Constantes.obtenerUrlBD() != null) {
             Constantes.cargarJDC();
-            this.conn = DriverManager.getConnection(this.url);
-            StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto=2and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A')");
-            this.statement = this.conn.createStatement();
-            this.rs = this.statement.executeQuery(sql.toString());
+            try(Connection conn = DriverManager.getConnection(this.url);
+                Statement statement = conn.createStatement();
+                ResultSet resultSet = statement.executeQuery("select * from impuesto_valor where codigo_impuesto=2and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A')");){
+                this.rs = resultSet;
+            }
             return obtenerImpuestoValorIVA();
         }
         return new ArrayList();
@@ -47,10 +49,11 @@ public class ImpuestoValorSQL {
             throws SQLException, ClassNotFoundException {
         if (Constantes.obtenerUrlBD() != null) {
             Constantes.cargarJDC();
-            this.conn = DriverManager.getConnection(this.url);
-            StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto =2 and MARCA_PORCENTAJE_LIBRE = 'N' and PORCENTAJE > 0 and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A')");
-            this.statement = this.conn.createStatement();
-            this.rs = this.statement.executeQuery(sql.toString());
+            try(Connection conn = DriverManager.getConnection(this.url);
+                Statement statement = conn.createStatement()){
+                StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto =2 and MARCA_PORCENTAJE_LIBRE = 'N' and PORCENTAJE > 0 and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A')");
+                this.rs = statement.executeQuery(sql.toString());
+            }
             return obtenerImpuestoValorIVA();
         }
         return new ArrayList();
@@ -59,14 +62,15 @@ public class ImpuestoValorSQL {
     public List<ImpuestoValor> obtenerIvaComboProducto(Date fechaActual)
             throws SQLException, ClassNotFoundException {
         if (Constantes.obtenerUrlBD() != null) {
-            SimpleDateFormat formateador = new SimpleDateFormat("yyyy-MM-dd");
+            SimpleDateFormat formateador = new SimpleDateFormat(Constant.DATE_FORMAT);
             List<ImpuestoValor> impuestoValorList = new ArrayList();
             String fechaEmisionString = formateador.format(fechaActual);
             Constantes.cargarJDC();
-            this.conn = DriverManager.getConnection(this.url);
-            StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto=2and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A') and FECHA_INICIO <= '" + fechaEmisionString + "' and (FECHA_FIN >= '" + fechaEmisionString + "' or FECHA_FIN IS NULL) order by codigo_adm");
-            this.statement = this.conn.createStatement();
-            this.rs = this.statement.executeQuery(sql.toString());
+            try(Connection conn = DriverManager.getConnection(this.url);
+                Statement statement = conn.createStatement()){
+                StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto=2and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A') and FECHA_INICIO <= '" + fechaEmisionString + "' and (FECHA_FIN >= '" + fechaEmisionString + "' or FECHA_FIN IS NULL) order by codigo_adm");
+                this.rs = statement.executeQuery(sql.toString());
+            }
             impuestoValorList = obtenerImpuestoValorIVA();
             for (int i = 0; i < impuestoValorList.size(); i++) {
                 if (((ImpuestoValor) impuestoValorList.get(i)).getPorcentaje().doubleValue() > 0.0D) {
@@ -110,10 +114,11 @@ public class ImpuestoValorSQL {
             throws SQLException, ClassNotFoundException {
         if (Constantes.obtenerUrlBD() != null) {
             Constantes.cargarJDC();
-            this.conn = DriverManager.getConnection(this.url);
-            StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto=3and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A' )");
-            this.statement = this.conn.createStatement();
-            this.rs = this.statement.executeQuery(sql.toString());
+            try(Connection conn = DriverManager.getConnection(this.url);
+                Statement statement = conn.createStatement()){
+                StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto=3and (TIPO_IMPUESTO='I' or TIPO_IMPUESTO='A' )");
+                this.rs = statement.executeQuery(sql.toString());
+            }
             return obtenerImpuestoValor();
         }
         return new ArrayList();
@@ -123,10 +128,11 @@ public class ImpuestoValorSQL {
             throws SQLException, ClassNotFoundException {
         if (Constantes.obtenerUrlBD() != null) {
             Constantes.cargarJDC();
-            this.conn = DriverManager.getConnection(this.url);
-            StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto=5 and TIPO_IMPUESTO='B'");
-            this.statement = this.conn.createStatement();
-            this.rs = this.statement.executeQuery(sql.toString());
+            try(Connection conn = DriverManager.getConnection(this.url);
+                Statement statement = conn.createStatement()){
+                StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_impuesto=5 and TIPO_IMPUESTO='B'");
+                this.rs = statement.executeQuery(sql.toString());
+            }
             return obtenerImpuestoValor();
         }
         return new ArrayList();
@@ -137,16 +143,16 @@ public class ImpuestoValorSQL {
         List<ImpuestoValor> impuestoValorList = new ArrayList();
         while (this.rs.next()) {
             ImpuestoValor imp = new ImpuestoValor();
-            imp.setCodigo(this.rs.getString("CODIGO"));
-            imp.setCodigoImpuesto(Integer.valueOf(this.rs.getInt("CODIGO_IMPUESTO")));
-            imp.setPorcentaje(Double.valueOf(this.rs.getDouble("PORCENTAJE")));
-            imp.setPorcentajeRentencion(Double.valueOf(this.rs.getDouble("PORCENTAJE_RETENCION")));
-            imp.setTipoImpuesto(this.rs.getString("TIPO_IMPUESTO"));
-            imp.setFechaInicio(this.rs.getDate("FECHA_INICIO"));
-            imp.setFechaFin(this.rs.getDate("FECHA_FIN"));
-            imp.setDescripcion(this.rs.getString("DESCRIPCION"));
-            imp.setCodigo_Adm(Integer.valueOf(this.rs.getInt("CODIGO_ADM")));
-            imp.setMarcaPorcentajeLibre(this.rs.getString("MARCA_PORCENTAJE_LIBRE"));
+            imp.setCodigo(this.rs.getString(Constant.CODIGO));
+            imp.setCodigoImpuesto(Integer.valueOf(this.rs.getInt(Constant.CODIGO_IMPUESTO)));
+            imp.setPorcentaje(Double.valueOf(this.rs.getDouble(Constant.PORCENTAJE)));
+            imp.setPorcentajeRentencion(Double.valueOf(this.rs.getDouble(Constant.PORCENTAJE_RETENCION)));
+            imp.setTipoImpuesto(this.rs.getString(Constant.TIPO_IMPUESTO));
+            imp.setFechaInicio(this.rs.getDate(Constant.FECHA_INICIO));
+            imp.setFechaFin(this.rs.getDate(Constant.FECHA_FIN));
+            imp.setDescripcion(this.rs.getString(Constant.DESCRIPCION));
+            imp.setCodigo_Adm(Integer.valueOf(this.rs.getInt(Constant.CODIGO_ADM)));
+            imp.setMarcaPorcentajeLibre(this.rs.getString(Constant.MARCA_PORCENTAJE_LIBRE));
             impuestoValorList.add(imp);
         }
         return impuestoValorList;
@@ -157,16 +163,16 @@ public class ImpuestoValorSQL {
         List<ImpuestoValor> impuestoValorList = new ArrayList();
         while (this.rs.next()) {
             ImpuestoValor imp = new ImpuestoValor();
-            imp.setCodigo(this.rs.getString("CODIGO_ADM"));
-            imp.setCodigoImpuesto(Integer.valueOf(this.rs.getInt("CODIGO_IMPUESTO")));
-            imp.setPorcentaje(Double.valueOf(this.rs.getDouble("PORCENTAJE")));
-            imp.setPorcentajeRentencion(Double.valueOf(this.rs.getDouble("PORCENTAJE_RETENCION")));
-            imp.setTipoImpuesto(this.rs.getString("TIPO_IMPUESTO"));
-            imp.setFechaInicio(this.rs.getDate("FECHA_INICIO"));
-            imp.setFechaFin(this.rs.getDate("FECHA_FIN"));
-            imp.setDescripcion(this.rs.getString("DESCRIPCION"));
-            imp.setMarcaPorcentajeLibre(this.rs.getString("MARCA_PORCENTAJE_LIBRE"));
-            imp.setCodigo_Adm(Integer.valueOf(this.rs.getInt("CODIGO_ADM")));
+            imp.setCodigo(this.rs.getString(Constant.CODIGO_ADM));
+            imp.setCodigoImpuesto(Integer.valueOf(this.rs.getInt(Constant.CODIGO_IMPUESTO)));
+            imp.setPorcentaje(Double.valueOf(this.rs.getDouble(Constant.PORCENTAJE)));
+            imp.setPorcentajeRentencion(Double.valueOf(this.rs.getDouble(Constant.PORCENTAJE_RETENCION)));
+            imp.setTipoImpuesto(this.rs.getString(Constant.TIPO_IMPUESTO));
+            imp.setFechaInicio(this.rs.getDate(Constant.FECHA_INICIO));
+            imp.setFechaFin(this.rs.getDate(Constant.FECHA_FIN));
+            imp.setDescripcion(this.rs.getString(Constant.DESCRIPCION));
+            imp.setMarcaPorcentajeLibre(this.rs.getString(Constant.MARCA_PORCENTAJE_LIBRE));
+            imp.setCodigo_Adm(Integer.valueOf(this.rs.getInt(Constant.CODIGO_ADM)));
             impuestoValorList.add(imp);
         }
         return impuestoValorList;
@@ -175,21 +181,23 @@ public class ImpuestoValorSQL {
     public List<ImpuestoValor> obtenerValorImpuestoRenta()
             throws SQLException, ClassNotFoundException {
         Constantes.cargarJDC();
-        this.conn = DriverManager.getConnection(this.url);
-        StringBuilder sql = new StringBuilder("select * from impuesto_valor where  codigo_impuesto= 1 and TIPO_IMPUESTO='R' ");
-        this.statement = this.conn.createStatement();
-        this.rs = this.statement.executeQuery(sql.toString());
+        try(Connection conn = DriverManager.getConnection(this.url);
+            Statement statement = conn.createStatement()){
+            StringBuilder sql = new StringBuilder("select * from impuesto_valor where  codigo_impuesto= 1 and TIPO_IMPUESTO='R' ");
+            this.rs = statement.executeQuery(sql.toString());
+        }
         return obtenerImpuestoValor();
     }
 
     public List<ImpuestoValor> obtenerIVARetencion()
             throws SQLException, ClassNotFoundException {
         Constantes.cargarJDC();
-        this.conn = DriverManager.getConnection(this.url);
-        StringBuilder sql = new StringBuilder("select * from impuesto_valor where (codigo_impuesto=2 and TIPO_IMPUESTO='R') ");
-        sql.append("or (codigo_impuesto= 2 and TIPO_IMPUESTO='A') order by CODIGO_ADM");
-        this.statement = this.conn.createStatement();
-        this.rs = this.statement.executeQuery(sql.toString());
+        try(Connection conn = DriverManager.getConnection(this.url);
+            Statement statement = conn.createStatement()){
+            StringBuilder sql = new StringBuilder("select * from impuesto_valor where (codigo_impuesto=2 and TIPO_IMPUESTO='R') ");
+            sql.append("or (codigo_impuesto= 2 and TIPO_IMPUESTO='A') order by CODIGO_ADM");
+            this.rs = statement.executeQuery(sql.toString());
+        }
         return obtenerImpuestoValorIVA();
     }
 
@@ -197,12 +205,13 @@ public class ImpuestoValorSQL {
             throws SQLException, ClassNotFoundException {
         if (this.url != null) {
             Constantes.cargarJDC();
-            this.conn = DriverManager.getConnection(this.url);
-            StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo = '");
-            sql.append(codigo);
-            sql.append("'");
-            this.statement = this.conn.createStatement();
-            this.rs = this.statement.executeQuery(sql.toString());
+            try(Connection conn = DriverManager.getConnection(this.url);
+                Statement statement = conn.createStatement()){
+                StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo = '");
+                sql.append(codigo);
+                sql.append("'");
+                this.rs = statement.executeQuery(sql.toString());
+            }
             List<ImpuestoValor> impuestos = obtenerImpuestoValor();
             if (!impuestos.isEmpty()) {
                 return (ImpuestoValor) impuestos.get(0);
@@ -216,12 +225,13 @@ public class ImpuestoValorSQL {
             throws SQLException, ClassNotFoundException {
         if (this.url != null) {
             Constantes.cargarJDC();
-            this.conn = DriverManager.getConnection(this.url);
-            StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_adm = '");
-            sql.append(codigo);
-            sql.append("'");
-            this.statement = this.conn.createStatement();
-            this.rs = this.statement.executeQuery(sql.toString());
+            try(Connection conn = DriverManager.getConnection(this.url);
+                Statement statement = conn.createStatement()){
+                StringBuilder sql = new StringBuilder("select * from impuesto_valor where codigo_adm = '");
+                sql.append(codigo);
+                sql.append("'");
+                this.rs = statement.executeQuery(sql.toString());
+            }
             List<ImpuestoValor> impuestos = obtenerImpuestoValorIVA();
             if (!impuestos.isEmpty()) {
                 return (ImpuestoValor) impuestos.get(0);

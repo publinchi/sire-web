@@ -9,7 +9,7 @@
 
     <groupId>com.sire</groupId>
     <artifactId>SIRE-EE</artifactId>
-    <version>1.0.0</version>
+    <version>${SIRE-EE.version}</version>
     <packaging>ear</packaging>
 
     <name>SIRE-EE</name>
@@ -65,6 +65,36 @@
             <artifactId>SIRE-Services</artifactId>
             <version>${SIRE-Services.version}</version>
             <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>com.sire.sri</groupId>
+            <artifactId>SIRE-SRI-Signature</artifactId>
+            <version>${SIRE-SRI-Signature.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SIRE-Soap</artifactId>
+            <version>${SIRE-Soap.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.sire.sri</groupId>
+            <artifactId>SIRE-SRI-WSClient</artifactId>
+            <version>${SIRE-SRI-WSClient.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>SIRE-Commons</artifactId>
+            <version>${SIRE-Commons.version}</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.sire.sri</groupId>
+            <artifactId>SIRE-SRI-Batch-Commons</artifactId>
+            <version>${SIRE-SRI-Batch-Commons.version}</version>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.sire.sri</groupId>

@@ -1,134 +1,148 @@
-import {NgModule}      from '@angular/core';
-import {FormsModule} from '@angular/forms';
-import {HttpModule}    from '@angular/http';
+import {NgModule} from '@angular/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {HttpClientModule, HTTP_INTERCEPTORS} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {LocationStrategy,HashLocationStrategy} from '@angular/common';
+import {LocationStrategy, HashLocationStrategy} from '@angular/common';
 import {AppRoutes} from './app.routes';
-import 'rxjs/add/operator/toPromise';
 
-import {AccordionModule} from 'primeng/primeng';
-import {AutoCompleteModule} from 'primeng/primeng';
-import {BreadcrumbModule} from 'primeng/primeng';
-import {ButtonModule} from 'primeng/primeng';
-import {CalendarModule} from 'primeng/primeng';
-import {CarouselModule} from 'primeng/primeng';
-import {ChartModule} from 'primeng/primeng';
-import {CheckboxModule} from 'primeng/primeng';
-import {ChipsModule} from 'primeng/primeng';
-import {CodeHighlighterModule} from 'primeng/primeng';
-import {ConfirmDialogModule} from 'primeng/primeng';
-import {SharedModule} from 'primeng/primeng';
-import {ContextMenuModule} from 'primeng/primeng';
-import {DataGridModule} from 'primeng/primeng';
-import {DataListModule} from 'primeng/primeng';
-import {DataScrollerModule} from 'primeng/primeng';
-import {DataTableModule} from 'primeng/primeng';
-import {DialogModule} from 'primeng/primeng';
-import {DragDropModule} from 'primeng/primeng';
-import {DropdownModule} from 'primeng/primeng';
-import {EditorModule} from 'primeng/primeng';
-import {FieldsetModule} from 'primeng/primeng';
-import {FileUploadModule} from 'primeng/primeng';
-import {GalleriaModule} from 'primeng/primeng';
-import {GMapModule} from 'primeng/primeng';
-import {GrowlModule} from 'primeng/primeng';
-import {InputMaskModule} from 'primeng/primeng';
-import {InputSwitchModule} from 'primeng/primeng';
-import {InputTextModule} from 'primeng/primeng';
-import {InputTextareaModule} from 'primeng/primeng';
-import {LightboxModule} from 'primeng/primeng';
-import {ListboxModule} from 'primeng/primeng';
-import {MegaMenuModule} from 'primeng/primeng';
-import {MenuModule} from 'primeng/primeng';
-import {MenubarModule} from 'primeng/primeng';
-import {MessagesModule} from 'primeng/primeng';
-import {MultiSelectModule} from 'primeng/primeng';
-import {OrderListModule} from 'primeng/primeng';
-import {OverlayPanelModule} from 'primeng/primeng';
-import {PaginatorModule} from 'primeng/primeng';
-import {PanelModule} from 'primeng/primeng';
-import {PanelMenuModule} from 'primeng/primeng';
-import {PasswordModule} from 'primeng/primeng';
-import {PickListModule} from 'primeng/primeng';
-import {ProgressBarModule} from 'primeng/primeng';
-import {RadioButtonModule} from 'primeng/primeng';
-import {RatingModule} from 'primeng/primeng';
-import {ScheduleModule} from 'primeng/primeng';
-import {SelectButtonModule} from 'primeng/primeng';
-import {SlideMenuModule} from 'primeng/primeng';
-import {SliderModule} from 'primeng/primeng';
-import {SpinnerModule} from 'primeng/primeng';
-import {SplitButtonModule} from 'primeng/primeng';
-import {StepsModule} from 'primeng/primeng';
-import {TabMenuModule} from 'primeng/primeng';
-import {TabViewModule} from 'primeng/primeng';
-import {TerminalModule} from 'primeng/primeng';
-import {TieredMenuModule} from 'primeng/primeng';
-import {ToggleButtonModule} from 'primeng/primeng';
-import {ToolbarModule} from 'primeng/primeng';
-import {TooltipModule} from 'primeng/primeng';
-import {TreeModule} from 'primeng/primeng';
-import {TreeTableModule} from 'primeng/primeng';
+import { AccordionModule } from 'primeng/accordion';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { BreadcrumbModule } from 'primeng/breadcrumb';
+import { ButtonModule } from 'primeng/button';
+import { CalendarModule } from 'primeng/calendar';
+import { CardModule } from 'primeng/card';
+import { CarouselModule } from 'primeng/carousel';
+import { ChartModule } from 'primeng/chart';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ChipsModule } from 'primeng/chips';
+import { CodeHighlighterModule } from 'primeng/codehighlighter';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ColorPickerModule } from 'primeng/colorpicker';
+import { ContextMenuModule } from 'primeng/contextmenu';
+import { DataViewModule } from 'primeng/dataview';
+import { DialogModule } from 'primeng/dialog';
+import { DropdownModule } from 'primeng/dropdown';
+import { EditorModule } from 'primeng/editor';
+import { FieldsetModule } from 'primeng/fieldset';
+import { FileUploadModule } from 'primeng/fileupload';
+import { GalleriaModule } from 'primeng/galleria';
+import { GrowlModule } from 'primeng/growl';
+import { InplaceModule } from 'primeng/inplace';
+import { InputMaskModule } from 'primeng/inputmask';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { InputTextModule } from 'primeng/inputtext';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { LightboxModule } from 'primeng/lightbox';
+import { ListboxModule } from 'primeng/listbox';
+import { MegaMenuModule } from 'primeng/megamenu';
+import { MenuModule } from 'primeng/menu';
+import { MenubarModule } from 'primeng/menubar';
+import { MessagesModule } from 'primeng/messages';
+import { MessageModule } from 'primeng/message';
+import { MultiSelectModule } from 'primeng/multiselect';
+import { OrderListModule } from 'primeng/orderlist';
+import { OrganizationChartModule } from 'primeng/organizationchart';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { PaginatorModule } from 'primeng/paginator';
+import { PanelModule } from 'primeng/panel';
+import { PanelMenuModule } from 'primeng/panelmenu';
+import { PasswordModule } from 'primeng/password';
+import { PickListModule } from 'primeng/picklist';
+import { ProgressBarModule } from 'primeng/progressbar';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { RatingModule } from 'primeng/rating';
+import { ScheduleModule } from 'primeng/schedule';
+import { ScrollPanelModule } from 'primeng/scrollpanel';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { SlideMenuModule } from 'primeng/slidemenu';
+import { SliderModule } from 'primeng/slider';
+import { SpinnerModule } from 'primeng/spinner';
+import { SplitButtonModule } from 'primeng/splitbutton';
+import { StepsModule } from 'primeng/steps';
+import { TabMenuModule } from 'primeng/tabmenu';
+import { TableModule } from 'primeng/table';
+import { TabViewModule } from 'primeng/tabview';
+import { TerminalModule } from 'primeng/terminal';
+import { TieredMenuModule } from 'primeng/tieredmenu';
+import { ToastModule } from 'primeng/toast';
+import { ToggleButtonModule } from 'primeng/togglebutton';
+import { ToolbarModule } from 'primeng/toolbar';
+import { TooltipModule } from 'primeng/tooltip';
+import { TreeModule } from 'primeng/tree';
+import { TreeTableModule } from 'primeng/treetable';
 
-import {AppComponent}  from './app.component';
-import {AppMenuComponent,AppSubMenu}  from './app.menu.component';
-import {AppTopBar}  from './app.topbar.component';
-import {AppFooter}  from './app.footer.component';
-import {InlineProfileComponent}  from './app.profile.component';
-import {DashboardDemo} from './demo/view/dashboarddemo';
-import {SampleDemo} from './demo/view/sampledemo';
-import {FormsDemo} from './demo/view/formsdemo';
-import {DataDemo} from './demo/view/datademo';
-import {PanelsDemo} from './demo/view/panelsdemo';
-import {OverlaysDemo} from './demo/view/overlaysdemo';
-import {MenusDemo} from './demo/view/menusdemo';
-import {MessagesDemo} from './demo/view/messagesdemo';
-import {MiscDemo} from './demo/view/miscdemo';
-import {EmptyDemo} from './demo/view/emptydemo';
-import {ChartsDemo} from './demo/view/chartsdemo';
-import {FileDemo} from './demo/view/filedemo';
-import {UtilsDemo} from './demo/view/utilsdemo';
-import {Documentation} from './demo/view/documentation';
+import {AppComponent} from './app.component';
+import {AppMenuComponent, AppSubMenuComponent} from './app.menu.component';
+import {AppTopbarComponent} from './app.topbar.component';
+import {AppFooterComponent} from './app.footer.component';
+import {AppBreadcrumbComponent } from './app.breadcrumb.component';
+import {AppRightpanelComponent} from './app.rightpanel.component';
+import {AppInlineProfileComponent} from './app.profile.component';
+import {DashboardDemoComponent} from './demo/view/dashboarddemo.component';
+import {SampleDemoComponent} from './demo/view/sampledemo.component';
+import {FormsDemoComponent} from './demo/view/formsdemo.component';
+import {DataDemoComponent} from './demo/view/datademo.component';
+import {PanelsDemoComponent} from './demo/view/panelsdemo.component';
+import {OverlaysDemoComponent} from './demo/view/overlaysdemo.component';
+import {MenusDemoComponent} from './demo/view/menusdemo.component';
+import {MessagesDemoComponent} from './demo/view/messagesdemo.component';
+import {MiscDemoComponent} from './demo/view/miscdemo.component';
+import {EmptyDemoComponent} from './demo/view/emptydemo.component';
+import {ChartsDemoComponent} from './demo/view/chartsdemo.component';
+import {FileDemoComponent} from './demo/view/filedemo.component';
+import {UtilsDemoComponent} from './demo/view/utilsdemo.component';
+import {DocumentationComponent} from './demo/view/documentation.component';
 
 import {CarService} from './demo/service/carservice';
 import {CountryService} from './demo/service/countryservice';
 import {EventService} from './demo/service/eventservice';
 import {NodeService} from './demo/service/nodeservice';
+import {BreadcrumbService} from './breadcrumb.service';
+
+// used to create fake backend
+import { fakeBackendProvider } from './_helpers';
+
+import { AlertComponent } from './_directives';
+import { AuthGuard } from './_guards';
+import { JwtInterceptor, ErrorInterceptor } from './_helpers';
+import { AlertService, AuthenticationService, UserService } from './_services';
+import { LoginComponent } from './login';
+import { RegisterComponent } from './register';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
+        ReactiveFormsModule,
         AppRoutes,
-        HttpModule,
+        HttpClientModule,
         BrowserAnimationsModule,
         AccordionModule,
         AutoCompleteModule,
         BreadcrumbModule,
         ButtonModule,
         CalendarModule,
+        CardModule,
         CarouselModule,
         ChartModule,
         CheckboxModule,
         ChipsModule,
         CodeHighlighterModule,
         ConfirmDialogModule,
-        SharedModule,
+        ColorPickerModule,
         ContextMenuModule,
-        DataGridModule,
-        DataListModule,
-        DataScrollerModule,
-        DataTableModule,
+        DataViewModule,
         DialogModule,
-        DragDropModule,
         DropdownModule,
         EditorModule,
         FieldsetModule,
         FileUploadModule,
         GalleriaModule,
-        GMapModule,
         GrowlModule,
+        InplaceModule,
         InputMaskModule,
         InputSwitchModule,
         InputTextModule,
@@ -138,9 +152,11 @@ import {NodeService} from './demo/service/nodeservice';
         MegaMenuModule,
         MenuModule,
         MenubarModule,
+        MessageModule,
         MessagesModule,
         MultiSelectModule,
         OrderListModule,
+        OrganizationChartModule,
         OverlayPanelModule,
         PaginatorModule,
         PanelModule,
@@ -151,49 +167,62 @@ import {NodeService} from './demo/service/nodeservice';
         RadioButtonModule,
         RatingModule,
         ScheduleModule,
+        ScrollPanelModule,
         SelectButtonModule,
         SlideMenuModule,
         SliderModule,
         SpinnerModule,
         SplitButtonModule,
         StepsModule,
+        TableModule,
         TabMenuModule,
         TabViewModule,
         TerminalModule,
         TieredMenuModule,
+        ToastModule,
         ToggleButtonModule,
         ToolbarModule,
         TooltipModule,
         TreeModule,
-        TreeTableModule
+        TreeTableModule,
+        ServiceWorkerModule.register('/ngsw-worker.js', { enabled: environment.production })
     ],
     declarations: [
         AppComponent,
         AppMenuComponent,
-        AppSubMenu,
-        AppTopBar,
-        AppFooter,
-        InlineProfileComponent,
-        DashboardDemo,
-        SampleDemo,
-        FormsDemo,
-        DataDemo,
-        PanelsDemo,
-        OverlaysDemo,
-        MenusDemo,
-        MessagesDemo,
-        MessagesDemo,
-        MiscDemo,
-        ChartsDemo,
-        EmptyDemo,
-        FileDemo,
-        UtilsDemo,
-        Documentation
+        AppSubMenuComponent,
+        AppTopbarComponent,
+        AppFooterComponent,
+        AppBreadcrumbComponent,
+        AppRightpanelComponent,
+        AppInlineProfileComponent,
+        DashboardDemoComponent,
+        SampleDemoComponent,
+        FormsDemoComponent,
+        DataDemoComponent,
+        PanelsDemoComponent,
+        OverlaysDemoComponent, MenusDemoComponent,
+        MessagesDemoComponent,
+        MiscDemoComponent,
+        ChartsDemoComponent,
+        EmptyDemoComponent,
+        FileDemoComponent,
+        UtilsDemoComponent,
+        DocumentationComponent,
+        AlertComponent,
+        LoginComponent,
+        RegisterComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
-        CarService,CountryService,EventService,NodeService
+        AuthGuard, AlertService, AuthenticationService, UserService,
+        { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+        { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true },
+        CarService, CountryService, EventService, NodeService, BreadcrumbService,
+        
+        // provider used to create fake backend
+        fakeBackendProvider
     ],
-    bootstrap:[AppComponent]
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

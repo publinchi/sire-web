@@ -40,10 +40,10 @@ public class FacturaReporte {
     private String detalle1;
     private String detalle2;
     private String detalle3;
-    private List<DetallesAdicionalesReporte> detallesAdiciones;
-    private List<InformacionAdicional> infoAdicional;
-    private List<FormasPago> formasPago;
-    private List<TotalesComprobante> totalesComprobante;
+    //private List<DetallesAdicionalesReporte> detallesAdiciones;
+    //private List<InformacionAdicional> infoAdicional;
+    //private List<FormasPago> formasPago;
+    //private List<TotalesComprobante> totalesComprobante;
 
     public FacturaReporte(Factura factura) {
         this.factura = factura;
@@ -83,7 +83,7 @@ public class FacturaReporte {
 
     public List<DetallesAdicionalesReporte> getDetallesAdiciones()
             throws SQLException, ClassNotFoundException {
-        this.detallesAdiciones = new ArrayList();
+        List<DetallesAdicionalesReporte> detallesAdiciones = new ArrayList();
         for (Factura.Detalles.Detalle det : getFactura().getDetalles().getDetalle()) {
             DetallesAdicionalesReporte detAd = new DetallesAdicionalesReporte();
             detAd.setCodigoPrincipal(det.getCodigoPrincipal());
@@ -118,43 +118,41 @@ public class FacturaReporte {
                 detAd.setFormasPago(getFormasPago());
             }
             detAd.setTotalesComprobante(getTotalesComprobante());
-            this.detallesAdiciones.add(detAd);
+            detallesAdiciones.add(detAd);
         }
-        return this.detallesAdiciones;
+        return detallesAdiciones;
     }
 
-    public void setDetallesAdiciones(List<DetallesAdicionalesReporte> detallesAdiciones) {
-        this.detallesAdiciones = detallesAdiciones;
-    }
+//    public void setDetallesAdiciones(List<DetallesAdicionalesReporte> detallesAdiciones) {
+//        this.detallesAdiciones = detallesAdiciones;
+//    }
 
     public List<InformacionAdicional> getInfoAdicional() {
-//        log.info("--->" + getFactura());
+        List<InformacionAdicional> infoAdicional = new ArrayList();
         if (getFactura().getInfoAdicional() != null) {
-            this.infoAdicional = new ArrayList();
             if ((getFactura().getInfoAdicional().getCampoAdicional() != null) && (!this.factura.getInfoAdicional().getCampoAdicional().isEmpty())) {
                 for (Factura.InfoAdicional.CampoAdicional ca : getFactura().getInfoAdicional().getCampoAdicional()) {
-                    this.infoAdicional.add(new InformacionAdicional(ca.getValue(), ca.getNombre()));
+                    infoAdicional.add(new InformacionAdicional(ca.getValue(), ca.getNombre()));
                 }
             }
         }
-        return this.infoAdicional;
+        return infoAdicional;
     }
 
-    public void setInfoAdicional(List<InformacionAdicional> infoAdicional) {
-        this.infoAdicional = infoAdicional;
-    }
+//    public void setInfoAdicional(List<InformacionAdicional> infoAdicional) {
+//        this.infoAdicional = infoAdicional;
+//    }
 
     public List<FormasPago> getFormasPago() {
-//        log.info("--->" + getFactura());
+        List<FormasPago> formasPago = new ArrayList();
         if (getFactura().getInfoFactura().getPagos() != null) {
-            this.formasPago = new ArrayList();
             if ((getFactura().getInfoFactura().getPagos().getPagos() != null) && (!this.factura.getInfoFactura().getPagos().getPagos().isEmpty())) {
                 for (Factura.InfoFactura.Pago.DetallePago pa : getFactura().getInfoFactura().getPagos().getPagos()) {
-                    this.formasPago.add(new FormasPago(obtenerDetalleFormaPago(pa.getFormaPago()), pa.getTotal().setScale(2).toString()));
+                    formasPago.add(new FormasPago(obtenerDetalleFormaPago(pa.getFormaPago()), pa.getTotal().setScale(2).toString()));
                 }
             }
         }
-        return this.formasPago;
+        return formasPago;
     }
 
     private String obtenerDetalleFormaPago(String codigo) {
@@ -175,30 +173,30 @@ public class FacturaReporte {
         return "";
     }
 
-    public void setFormasPago(List<FormasPago> formasPago) {
-        this.formasPago = formasPago;
-    }
+    //public void setFormasPago(List<FormasPago> formasPago) {
+    //    this.formasPago = formasPago;
+    //}
 
     public List<TotalesComprobante> getTotalesComprobante()
             throws SQLException, ClassNotFoundException {
-        this.totalesComprobante = new ArrayList();
+        List<TotalesComprobante> totalesComprobante = new ArrayList();
         BigDecimal importeTotal = BigDecimal.ZERO.setScale(2);
         BigDecimal compensaciones = BigDecimal.ZERO.setScale(2);
         TotalComprobante tc = getTotales(this.factura.getInfoFactura());
         for (IvaDiferenteCeroReporte iva : tc.getIvaDistintoCero()) {
-            this.totalesComprobante.add(new TotalesComprobante("SUBTOTAL " + iva.getTarifa() + "%", iva.getSubtotal(), false));
+            totalesComprobante.add(new TotalesComprobante("SUBTOTAL " + iva.getTarifa() + "%", iva.getSubtotal(), false));
         }
-        this.totalesComprobante.add(new TotalesComprobante("SUBTOTAL IVA 0%", tc.getSubtotal0(), false));
-        this.totalesComprobante.add(new TotalesComprobante("SUBTOTAL NO OBJETO IVA", tc.getSubtotalNoSujetoIva(), false));
-        this.totalesComprobante.add(new TotalesComprobante("SUBTOTAL EXENTO IVA", tc.getSubtotalExentoIVA(), false));
-        this.totalesComprobante.add(new TotalesComprobante("SUBTOTAL SIN IMPUESTOS", this.factura.getInfoFactura().getTotalSinImpuestos(), false));
-        this.totalesComprobante.add(new TotalesComprobante("DESCUENTO", this.factura.getInfoFactura().getTotalDescuento(), false));
-        this.totalesComprobante.add(new TotalesComprobante("ICE", tc.getTotalIce(), false));
+        totalesComprobante.add(new TotalesComprobante("SUBTOTAL IVA 0%", tc.getSubtotal0(), false));
+        totalesComprobante.add(new TotalesComprobante("SUBTOTAL NO OBJETO IVA", tc.getSubtotalNoSujetoIva(), false));
+        totalesComprobante.add(new TotalesComprobante("SUBTOTAL EXENTO IVA", tc.getSubtotalExentoIVA(), false));
+        totalesComprobante.add(new TotalesComprobante("SUBTOTAL SIN IMPUESTOS", this.factura.getInfoFactura().getTotalSinImpuestos(), false));
+        totalesComprobante.add(new TotalesComprobante("DESCUENTO", this.factura.getInfoFactura().getTotalDescuento(), false));
+        totalesComprobante.add(new TotalesComprobante("ICE", tc.getTotalIce(), false));
         for (IvaDiferenteCeroReporte iva : tc.getIvaDistintoCero()) {
-            this.totalesComprobante.add(new TotalesComprobante("IVA " + iva.getTarifa() + "%", iva.getValor(), false));
+            totalesComprobante.add(new TotalesComprobante("IVA " + iva.getTarifa() + "%", iva.getValor(), false));
         }
-        this.totalesComprobante.add(new TotalesComprobante("IRBPNR", tc.getTotalIRBPNR(), false));
-        this.totalesComprobante.add(new TotalesComprobante("PROPINA", this.factura.getInfoFactura().getPropina(), false));
+        totalesComprobante.add(new TotalesComprobante("IRBPNR", tc.getTotalIRBPNR(), false));
+        totalesComprobante.add(new TotalesComprobante("PROPINA", this.factura.getInfoFactura().getPropina(), false));
         if (this.factura.getInfoFactura().getCompensaciones() != null) {
             for (Factura.InfoFactura.compensacion.detalleCompensaciones compensacion : this.factura.getInfoFactura().getCompensaciones().getCompensaciones()) {
                 compensaciones = compensaciones.add(compensacion.getValor());
@@ -206,24 +204,24 @@ public class FacturaReporte {
             importeTotal = this.factura.getInfoFactura().getImporteTotal().add(compensaciones);
         }
         if (!compensaciones.equals(BigDecimal.ZERO.setScale(2))) {
-            this.totalesComprobante.add(new TotalesComprobante("VALOR TOTAL", importeTotal, false));
+            totalesComprobante.add(new TotalesComprobante("VALOR TOTAL", importeTotal, false));
             for (Factura.InfoFactura.compensacion.detalleCompensaciones compensacion : this.factura.getInfoFactura().getCompensaciones().getCompensaciones()) {
                 if (!compensacion.getValor().equals(BigDecimal.ZERO.setScale(2))) {
                     CompensacionSQL compensacionSQL = new CompensacionSQL();
                     String detalleCompensacion = ((Compensaciones) compensacionSQL.obtenerCompensacionesPorCodigo(compensacion.getCodigo()).get(0)).getTipoCompensacion();
-                    this.totalesComprobante.add(new TotalesComprobante("(-) " + detalleCompensacion, compensacion.getValor(), true));
+                    totalesComprobante.add(new TotalesComprobante("(-) " + detalleCompensacion, compensacion.getValor(), true));
                 }
             }
-            this.totalesComprobante.add(new TotalesComprobante("VALOR A PAGAR", this.factura.getInfoFactura().getImporteTotal(), false));
+            totalesComprobante.add(new TotalesComprobante("VALOR A PAGAR", this.factura.getInfoFactura().getImporteTotal(), false));
         } else {
-            this.totalesComprobante.add(new TotalesComprobante("VALOR TOTAL", this.factura.getInfoFactura().getImporteTotal(), false));
+            totalesComprobante.add(new TotalesComprobante("VALOR TOTAL", this.factura.getInfoFactura().getImporteTotal(), false));
         }
-        return this.totalesComprobante;
+        return totalesComprobante;
     }
 
-    public void setTotalesComprobante(List<TotalesComprobante> totalesComprobante) {
-        this.totalesComprobante = totalesComprobante;
-    }
+    //public void setTotalesComprobante(List<TotalesComprobante> totalesComprobante) {
+    //    this.totalesComprobante = totalesComprobante;
+    //}
 
     private TotalComprobante getTotales(Factura.InfoFactura infoFactura) {
         List<IvaDiferenteCeroReporte> ivaDiferenteCero = new ArrayList();

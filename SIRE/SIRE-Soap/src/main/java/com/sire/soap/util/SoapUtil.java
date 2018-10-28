@@ -7,9 +7,8 @@ package com.sire.soap.util;
 
 import org.w3c.dom.Document;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.lang.annotation.Annotation;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
@@ -28,9 +27,8 @@ import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
+import javax.xml.namespace.QName;
 import javax.xml.soap.*;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
@@ -40,6 +38,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 /**
  *
@@ -94,7 +93,9 @@ public class SoapUtil {
 //
             map.put("soapMessage", clone(soapMessage));
             if (aClass != null) {
-                map.put("object", SoapUtil.getObjectFromSoapMessage(soapMessage, aClass));
+                Object object = SoapUtil.getObjectFromSoapMessage(soapMessage, aClass);
+                if(object != null)
+                    map.put("object", object);
             }
 
             return map;
@@ -112,27 +113,36 @@ public class SoapUtil {
     protected static Object getObjectFromSoapMessage(SOAPMessage soapResponse, Class aClass) {
         Object object = null;
         try {
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            soapResponse.writeTo(bos);
-
             JAXBContext jaxbContext = getContextInstance(aClass);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+
+            JAXBElement root =
+                    unmarshaller.unmarshal(soapResponse.getSOAPBody().extractContentAsDocument(), aClass);
+            object = root.getValue();
+            if(object != null) {
+                return object;
+            }
+
             if(soapResponse.getSOAPBody().hasFault()){
                 Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, soapResponse.getSOAPBody().getFault().getFaultString());
                 object = unmarshaller.unmarshal(soapResponse.getSOAPBody().getFault());
             } else {
                 object = unmarshaller.unmarshal(soapResponse.getSOAPBody().extractContentAsDocument());
             }
-        } catch (SOAPException | IOException | JAXBException ex) {
+        } catch (SOAPException | JAXBException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
         return object;
     }
 
-    protected static JAXBContext getContextInstance(Class objectClass) throws JAXBException{
+    public static JAXBContext getContextInstance(Class objectClass) {
         JAXBContext context = contextStore.get(objectClass);
         if (context==null){
-            context = JAXBContext.newInstance(objectClass);
+            try {
+                context = JAXBContext.newInstance(objectClass);
+            } catch (JAXBException e) {
+                Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
+            }
             contextStore.put(objectClass, context);
         }
         return context;
@@ -151,7 +161,7 @@ public class SoapUtil {
             trans.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
             trans.transform(sourceContent, sr);
 
-//            Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, "Transform: {0}", out);
+            //Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, "Transform: {0}", out);
 
             return out.toString();
         } catch (TransformerException | SOAPException ex) {
@@ -159,6 +169,48 @@ public class SoapUtil {
         }
 
         return null;
+    }
+
+    public static String getStringFromObject(Object object) {
+        String result = null;
+        try {
+            StringWriter stringWriter = new StringWriter();
+            JAXBContext jaxbContext = getContextInstance(object.getClass());
+            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+
+            // format the XML output
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT,
+                    true);
+
+            Annotation annotation = object.getClass().getDeclaredAnnotation(javax.xml.bind.annotation.XmlType.class);
+
+            QName qName = new QName(object.getClass().getPackage().getName(), ((javax.xml.bind.annotation.XmlType)annotation).name());
+            JAXBElement root = new JAXBElement(qName, object.getClass(), object);
+
+            jaxbMarshaller.marshal(root, stringWriter);
+
+            result = stringWriter.toString();
+            //Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, result);
+        } catch (JAXBException e) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, e.getMessage(), e);
+        }
+        return result;
+    }
+
+    public static Object getObjectFromString(String xml, Class aClass) {
+        Object object = null;
+        try {
+            JAXBContext jaxbContext = getContextInstance(aClass);
+
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            JAXBElement root = jaxbUnmarshaller.unmarshal(new StreamSource(new StringReader(xml)), aClass);
+            object = root.getValue();
+
+            //Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, object.toString());
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     private static void disableSslVerification() {
@@ -218,15 +270,15 @@ public class SoapUtil {
         return message;
     }
 
-    public static SOAPMessage clone(SOAPMessage message) {
+    private static SOAPMessage clone(SOAPMessage message) {
         return toSOAPMessage(toDocument(message));
     }
 
-    public static SOAPMessage toSOAPMessage(Document doc) {
-        return toSOAPMessage(doc, SOAPConstants.SOAP_1_2_PROTOCOL);
+    private static SOAPMessage toSOAPMessage(Document doc) {
+        return toSOAPMessage(doc, SOAPConstants.DEFAULT_SOAP_PROTOCOL);
     }
 
-    public static SOAPMessage toSOAPMessage(Document doc, String protocol) {
+    private static SOAPMessage toSOAPMessage(Document doc, String protocol) {
         DOMSource domSource;
         SOAPMessage retorno;
         MessageFactory messageFactory;
@@ -241,7 +293,7 @@ public class SoapUtil {
         }
     }
 
-    public static Document toDocument(SOAPMessage soapMSG) {
+    private static Document toDocument(SOAPMessage soapMSG) {
         try {
             Source source = soapMSG.getSOAPPart().getContent();
             TransformerFactory factoryTransform = TransformerFactory.newInstance();
@@ -252,5 +304,15 @@ public class SoapUtil {
         } catch (Exception e) {
             throw new SecurityException(e);
         }
+    }
+
+    public static String object2xml(Object item) throws JAXBException {
+        JAXBContext jaxbContext = getContextInstance(item.getClass());
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        StringWriter sw = new StringWriter();
+        jaxbMarshaller.marshal(item, sw);
+
+        return sw.toString();
     }
 }

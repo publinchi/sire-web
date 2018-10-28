@@ -15,6 +15,9 @@ import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 
 import java.io.*;
 
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.dom4j.CDATA;
 import org.dom4j.DocumentHelper;
 
@@ -31,8 +34,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
@@ -67,9 +68,7 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import recepcion.ws.sri.gob.ec.Mensaje;
-import recepcion.ws.sri.gob.ec.RespuestaSolicitud;
-import recepcion.ws.sri.gob.ec.ValidarComprobanteResponse;
+import ec.gob.sri.ws.recepcion.*;
 
 @Named
 public class F1_C1_Writer1 extends CommonsItemWriter {
@@ -79,15 +78,14 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
     private StringBuffer pathSignature;
     private String passSignature;
     private String urlRecepcion;
-    private String claveAccesoLote;
     private String codEmpresa;
-    private Logger log = Logger.getLogger(F1_C1_Writer1.class.getName());
+    private static final Logger log = LogManager.getLogger(F1_C1_Writer1.class);
 
     @Override
     public void open(Serializable checkpoint) throws Exception {
         String home = System.getProperty(Constant.SIRE_HOME);
         if (home == null) {
-            log.warning("SIRE HOME NOT FOUND.");
+            log.warn("SIRE HOME NOT FOUND.");
             return;
         }
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
@@ -103,35 +101,32 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
         try {
             Lote lote = new Lote();
             for (Object item : items) {
-                if (claveAccesoLote == null) {
-                    log.log(Level.INFO, "{0}: {1}",
-                            new Object[]{Constant.COMPROBANTE, ((Map) item).get(Constant.COMPROBANTE)});
+                if (lote.getClaveAcceso() == null) {
                     if (((Map) item).get(Constant.COMPROBANTE) instanceof Factura) {
-                        getClaveAccesoLote(Constant.CERO_UNO);
-                        log.log(Level.INFO, "{0}: {1}", new Object[]{Constant.TIPO, Constant.CERO_UNO});
+                        lote.setClaveAcceso(getClaveAccesoLote(Constant.CERO_UNO));
+                        log.log(Level.INFO, "{}: {}", Constant.TIPO, Constant.CERO_UNO);
                     } else if (((Map) item).get(Constant.COMPROBANTE) instanceof NotaCredito) {
-                        getClaveAccesoLote(Constant.CERO_CUATRO);
-                        log.log(Level.INFO, "{0}: {1}", new Object[]{Constant.TIPO, Constant.CERO_CUATRO});
+                        lote.setClaveAcceso(getClaveAccesoLote(Constant.CERO_CUATRO));
+                        log.log(Level.INFO, "{}: {}", Constant.TIPO, Constant.CERO_CUATRO);
                     } else if (((Map) item).get(Constant.COMPROBANTE) instanceof NotaDebito) {
-                        getClaveAccesoLote(Constant.CERO_CINCO);
-                        log.log(Level.INFO, "{0}: {1}", new Object[]{Constant.TIPO, Constant.CERO_CINCO});
+                        lote.setClaveAcceso(getClaveAccesoLote(Constant.CERO_CINCO));
+                        log.log(Level.INFO, "{}: {}", Constant.TIPO, Constant.CERO_CINCO);
                     } else if (((Map) item).get(Constant.COMPROBANTE) instanceof GuiaRemision) {
-                        getClaveAccesoLote(Constant.CERO_SEIS);
-                        log.log(Level.INFO, "{0}: {1}", new Object[]{Constant.TIPO, Constant.CERO_SEIS});
+                        lote.setClaveAcceso(getClaveAccesoLote(Constant.CERO_SEIS));
+                        log.log(Level.INFO, "{}: {}", Constant.TIPO, Constant.CERO_SEIS);
                     } else if (((Map) item).get(Constant.COMPROBANTE) instanceof ComprobanteRetencion) {
-                        getClaveAccesoLote(Constant.CERO_SIETE);
-                        log.log(Level.INFO, "{0}: {1}", new Object[]{Constant.TIPO, Constant.CERO_SIETE});
+                        lote.setClaveAcceso(getClaveAccesoLote(Constant.CERO_SIETE));
+                        log.log(Level.INFO, "{}: {}", Constant.TIPO, Constant.CERO_SIETE);
                     }
-                    lote.setClaveAcceso(claveAccesoLote);
                 }
-                GenericXMLSignature genericXMLSignature = XAdESBESSignature.firmar(xml2document(object2xml(((Map) item)
+                GenericXMLSignature genericXMLSignature = XAdESBESSignature.firmar(xml2document(SoapUtil.object2xml(((Map) item)
                         .get(Constant.COMPROBANTE))), pathSignature.toString(), passSignature);
                 String signedXml = genericXMLSignature.toSignedXml();
                 lote.getComprobantes().getComprobante().add(appendCdata(signedXml));
             }
 
-            log.log(Level.INFO, "# Items: {0}", items.size());
-            log.log(Level.INFO, "Lote Clave Acceso: {0}", lote.getClaveAcceso());
+            log.log(Level.INFO, "# Items: {}", items.size());
+            log.log(Level.INFO, "Lote Clave Acceso: {}", lote.getClaveAcceso());
 
             if (lote.getClaveAcceso() != null) {
                 lote.setRuc(lote.getClaveAcceso().substring(10, 23));
@@ -139,7 +134,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
                 String loteXml = object2xmlUnicode(lote, null,null,null);
 
-                log.log(Level.INFO, "loteXml: {0}", loteXml);
+                //log.log(Level.INFO, "loteXml: {}", loteXml);
 
                 Map mapCall = SoapUtil.call(
                         createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
@@ -147,14 +142,14 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                         null,
                         null);
                 SOAPMessage soapMessage = (SOAPMessage) mapCall.get(Constant.SOAP_MESSAGE);
-                log.info("Soap Recepcion Response:");
-                log.info(SoapUtil.getStringFromSoapMessage(soapMessage));
+                //log.info("Soap Recepcion Response:");
+                //log.info(SoapUtil.getStringFromSoapMessage(soapMessage));
                 ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
 
                 String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
 
-                items.forEach((item) -> processResponse(item, validarComprobanteResponse));
-                String secuencial = claveAccesoLote.substring(30, 39);
+                items.forEach((item) -> processResponse(item, validarComprobanteResponse, lote.getClaveAcceso()));
+                String secuencial = lote.getClaveAcceso().substring(30, 39);
 
                 String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance()
                         .getTime());
@@ -162,27 +157,38 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 StringBuffer insertSQL = new StringBuffer();
                 insertSQL.append("INSERT INTO CEL_LOTE_AUTORIZADO ")
                         .append("VALUES ('").append(codEmpresa).append("',")
-                        .append(secuencial).append(",'01','").append(claveAccesoLote)
+                        .append(secuencial).append(",'01','").append(lote.getClaveAcceso())
                         .append("','").append(estadoLote).append("','").append(fechaEstado)
                         .append("')");
-                try (PreparedStatement preparedStatement = getConnection().prepareStatement(insertSQL.toString())) {
+
+                log.log(Level.INFO, "insertSQL -> {}", insertSQL.toString());
+
+                Connection connection = null;
+                PreparedStatement preparedStatement = null;
+                try{
+                    connection = getConnection();
+                    preparedStatement = connection.prepareStatement(insertSQL.toString());
                     preparedStatement.executeUpdate();
+                } catch (SQLException | NamingException e) {
+                    log.log(Level.ERROR, e);
+                } finally {
+                    if(preparedStatement != null)
+                        try{
+                            preparedStatement.close();
+                        }catch (SQLException e){
+                            log.log(Level.ERROR, e);
+                        }
+                    if(connection != null)
+                        try{
+                            connection.close();
+                        }catch (SQLException e){
+                            log.log(Level.ERROR, e);
+                        }
                 }
             }
-        } catch (SQLException | NamingException | SOAPException | XPathExpressionException | MalformedURLException
-                | JAXBException ex) {
-            log.log(Level.SEVERE, null, ex);
+        } catch (SOAPException | XPathExpressionException | MalformedURLException | JAXBException ex) {
+            log.log(Level.ERROR, ex);
         }
-    }
-
-    private String object2xml(Object item) throws JAXBException {
-        JAXBContext jaxbContext = JAXBContext.newInstance(item.getClass());
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        StringWriter sw = new StringWriter();
-        jaxbMarshaller.marshal(item, sw);
-
-        return sw.toString();
     }
 
     private Document xml2document(String xml) throws JAXBException {
@@ -193,7 +199,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             InputStream stream = new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8.name()));
             return db.parse(stream);
         } catch (ParserConfigurationException | SAXException | IOException | IllegalArgumentException ex) {
-            log.log(Level.SEVERE,"Error al parsear el documento: ",ex);
+            log.log(Level.ERROR,"Error al parsear el documento: ",ex);
             return null;
         }
     }
@@ -216,7 +222,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             soapMsg.saveChanges();
             return soapMsg;
         } catch (SOAPException ex) {
-            log.log(Level.SEVERE,null,ex);
+            log.log(Level.ERROR, ex);
         }
         return null;
     }
@@ -239,7 +245,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
         NodeList comprobantesNodeList = (NodeList) xpath.evaluate("//comprobantes/comprobante", soapMessage.getSOAPBody(), XPathConstants.NODESET);
 
         for (int i = 0; i < comprobantesNodeList.getLength(); i++) {
-            recepcion.ws.sri.gob.ec.Comprobante comprobante = new recepcion.ws.sri.gob.ec.Comprobante();
+            Comprobante comprobante = new Comprobante();
             comprobantes.getComprobante().add(comprobante);
             Node comprobanteNode = (Node) comprobantesNodeList.item(i);
 
@@ -256,7 +262,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     }else {
                         mensajesNodeList = (NodeList) hijosComprobante.item(j);
                     }
-                    recepcion.ws.sri.gob.ec.Comprobante.Mensajes mensajes = new recepcion.ws.sri.gob.ec.Comprobante.Mensajes();
+                    Comprobante.Mensajes mensajes = new Comprobante.Mensajes();
                     comprobante.setMensajes(mensajes);
                     Mensaje mensaje = new Mensaje();
                     for (int k = 0; k < mensajesNodeList.getLength(); k++) {
@@ -298,8 +304,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             transformer.transform(source, result);
             return out.toByteArray();
         } catch (TransformerException e) {
-            Logger.getLogger(F1_C1_Writer1.class.getName())
-                    .log(Level.SEVERE, "Error al convertir documento a arreglo de bytes.", e);
+            log.log(Level.ERROR, "Error al convertir documento a arreglo de bytes.", e);
         }
         return null;
     }
@@ -309,38 +314,44 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
         return cdata.asXML();
     }
 
-    private void getClaveAccesoLote(String tipoComprobante) throws SQLException, NamingException {
-        Connection dbConnection = null;
-        CallableStatement callableStatement = null;
+    private synchronized String getClaveAccesoLote(String tipoComprobante) {
 
         String getClaveAccesoLote = "{call SP_CLAVE_ACCESO_LOTE(?,?,?)}";
 
-        try {
-            dbConnection = getConnection();
-            callableStatement = dbConnection.prepareCall(getClaveAccesoLote);
-
+        Connection connection = null;
+        CallableStatement callableStatement = null;
+        try{
+            connection = getConnection();
+            callableStatement = connection.prepareCall(getClaveAccesoLote);
             callableStatement.setString(1, codEmpresa);
             callableStatement.setString(2, tipoComprobante);
             callableStatement.registerOutParameter(3, java.sql.Types.VARCHAR);
 
             callableStatement.executeUpdate();
 
-            claveAccesoLote = callableStatement.getString(3);
+            return callableStatement.getString(3);
 
-        } catch (SQLException e) {
-            log.log(Level.SEVERE,null, e);
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+            return null;
         } finally {
-            if (callableStatement != null) {
-                callableStatement.close();
-            }
-            if (dbConnection != null) {
-                dbConnection.close();
-            }
+            if(callableStatement != null)
+                try{
+                    callableStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
-
     }
 
-    private void processResponse(Object item, ValidarComprobanteResponse validarComprobanteResponse) {
+    private void processResponse(Object item, ValidarComprobanteResponse validarComprobanteResponse,
+                                 String claveAccesoLote) {
         String claveAcceso;
         StringBuffer secuencial;
         StringBuffer cabeceraSQL;
@@ -371,8 +382,8 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     .append(notaDebito.getInfoTributaria().getPtoEmi()).append(Constant.GUION)
                     .append(notaDebito.getInfoTributaria().getSecuencial());
             claveAcceso = notaDebito.getInfoTributaria().getClaveAcceso();
-            nombreTablaComprobante = "";
-            nombreSecuencial = "";
+            nombreTablaComprobante = Constant.CXC_DOC_COBRAR;
+            nombreSecuencial = Constant.NUM_SECUENCIAL;
         } else if (((Map) item).get(Constant.COMPROBANTE) instanceof GuiaRemision) {
             GuiaRemision guiaRemision = (GuiaRemision) ((Map) item).get(Constant.COMPROBANTE);
             secuencial = new StringBuffer();
@@ -395,56 +406,70 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             throw new RuntimeException("El comprobante no es de alguna clase conocida.");
         }
         boolean existsError = false;
-        for (recepcion.ws.sri.gob.ec.Comprobante c : validarComprobanteResponse.getRespuestaRecepcionComprobante()
+        for (Comprobante c : validarComprobanteResponse.getRespuestaRecepcionComprobante()
                 .getComprobantes().getComprobante()) {
             if (claveAcceso.equals(c.getClaveAcceso())) {
-                try {
-                    existsError = true;
+                existsError = true;
 
-                    c.getMensajes().getMensaje().stream().map((mensaje) -> {
-                        log.log(Level.INFO, "Identificador -> {0}", mensaje.getIdentificador());
-                        return mensaje;
-                    }).map((mensaje) -> {
-                        log.log(Level.INFO, "Tipo -> {0}", mensaje.getTipo());
-                        return mensaje;
-                    }).map((mensaje) -> {
-                        log.log(Level.INFO, "Mensaje -> {0}", mensaje.getMensaje());
-                        return mensaje;
-                    }).forEachOrdered((mensaje) -> {
-                        log.log(Level.INFO, "InformacionAdicional -> {0}", mensaje.getInformacionAdicional());
-                    });
-                    log.info("-------------------------------------------------------------");
+                c.getMensajes().getMensaje().stream().map((mensaje) -> {
+                    log.log(Level.INFO, "Identificador -> {}", mensaje.getIdentificador());
+                    return mensaje;
+                }).map((mensaje) -> {
+                    log.log(Level.INFO, "Tipo -> {}", mensaje.getTipo());
+                    return mensaje;
+                }).map((mensaje) -> {
+                    log.log(Level.INFO, "Mensaje -> {}", mensaje.getMensaje());
+                    return mensaje;
+                }).forEachOrdered((mensaje) -> {
+                    log.log(Level.INFO, "InformacionAdicional -> {}", mensaje.getInformacionAdicional());
+                });
+                log.info("-------------------------------------------------------------");
 
-                    String estado = Constant.DEVUELTA;
-                    String claveAccesoRecibida = c.getClaveAcceso();
-                    String identificador = c.getMensajes().getMensaje().get(0).getIdentificador();
-                    String informacionAdicional = c.getMensajes().getMensaje().get(0).getInformacionAdicional();
-                    String mensaje = c.getMensajes().getMensaje().get(0).getMensaje();
-                    String tipo = c.getMensajes().getMensaje().get(0).getTipo();
+                String estado = Constant.DEVUELTA;
+                String claveAccesoRecibida = c.getClaveAcceso();
+                String identificador = c.getMensajes().getMensaje().get(0).getIdentificador();
+                String informacionAdicional = c.getMensajes().getMensaje().get(0).getInformacionAdicional();
+                String mensaje = c.getMensajes().getMensaje().get(0).getMensaje();
+                String tipo = c.getMensajes().getMensaje().get(0).getTipo();
 
-                    log.log(Level.INFO,"Secuencial: {0}, Estado: {1}, ClaveAcceso: {2}, Identificador: {3}, " +
-                                    "InformacionAdicional: {4}, Mensaje: {5}, Tipo: {6}",
-                            new Object[]{secuencial, estado, claveAccesoRecibida, identificador, informacionAdicional
-                                    , mensaje, tipo});
+                log.log(Level.INFO,"Secuencial: {}, Estado: {}, ClaveAcceso: {}, Identificador: {}, " +
+                                "InformacionAdicional: {}, Mensaje: {}, Tipo: {}",
+                        secuencial, estado, claveAccesoRecibida, identificador, informacionAdicional, mensaje, tipo);
 
-                    StringBuffer motivo = new StringBuffer();
-                    motivo.append(", MOTIVO_SRI = '").append(identificador).append(":").append(tipo).append(":")
-                            .append(mensaje).append("'");
+                StringBuffer motivo = new StringBuffer();
+                motivo.append(", MOTIVO_SRI = '").append(identificador).append(":").append(tipo).append(":")
+                        .append(mensaje).append("'");
 
-                    cabeceraSQL = new StringBuffer();
-                    cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
-                            .append("ESTADO_SRI = ?, ").append("CLAVE_ACCESO_LOTE = ?").append(motivo)
-                            .append(" WHERE ").append(nombreSecuencial).append(" = ?");
-                    log.log(Level.INFO, "update {0} -> {1}", new Object[]{nombreTablaComprobante, cabeceraSQL});
-                    try (PreparedStatement preparedStatement = getConnection().prepareStatement(cabeceraSQL.toString()))
-                    {
-                        preparedStatement.setString(1, estado);
-                        preparedStatement.setString(2, claveAccesoLote);
-                        preparedStatement.setString(3, secuencial.toString());
-                        preparedStatement.executeUpdate();
-                    }
-                } catch (SQLException | NamingException ex) {
-                    log.log(Level.SEVERE, null, ex);
+                cabeceraSQL = new StringBuffer();
+                cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
+                        .append("ESTADO_SRI = ?, ").append("CLAVE_ACCESO_LOTE = ?").append(motivo)
+                        .append(" WHERE ").append(nombreSecuencial).append(" = ?");
+                log.log(Level.INFO, "update {} -> {}", new Object[]{nombreTablaComprobante, cabeceraSQL});
+
+                Connection connection = null;
+                PreparedStatement preparedStatement = null;
+                try{
+                    connection = getConnection();
+                    preparedStatement = connection.prepareStatement(cabeceraSQL.toString());
+                    preparedStatement.setString(1, estado);
+                    preparedStatement.setString(2, claveAccesoLote);
+                    preparedStatement.setString(3, secuencial.toString());
+                    preparedStatement.executeUpdate();
+                } catch (SQLException | NamingException e) {
+                    log.log(Level.ERROR, e);
+                } finally {
+                    if(preparedStatement != null)
+                        try{
+                            preparedStatement.close();
+                        }catch (SQLException e){
+                            log.log(Level.ERROR, e);
+                        }
+                    if(connection != null)
+                        try{
+                            connection.close();
+                        }catch (SQLException e){
+                            log.log(Level.ERROR, e);
+                        }
                 }
             }
         }
@@ -453,8 +478,13 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
                     .append("ESTADO_SRI = 'RECIBIDA', ").append("CLAVE_ACCESO_LOTE = ? ").append("WHERE ")
                     .append(nombreSecuencial).append(" = ?");
-            log.log(Level.INFO, "update -> {0}", cabeceraSQL);
+            log.log(Level.INFO, "update -> {}", cabeceraSQL);
             executeSql(cabeceraSQL.toString(), claveAccesoLote , secuencial.toString());
         }
+    }
+
+    @Override
+    public JAXBContext getContextInstance(Class objectClass) {
+        return SoapUtil.getContextInstance(objectClass);
     }
 }

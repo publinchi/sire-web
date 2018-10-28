@@ -13,5 +13,5 @@ import com.sire.event.MailEvent;
  */
 public interface IMailService {
 
-    public void sendMail(MailEvent event);
+    void sendMail(MailEvent event);
 }

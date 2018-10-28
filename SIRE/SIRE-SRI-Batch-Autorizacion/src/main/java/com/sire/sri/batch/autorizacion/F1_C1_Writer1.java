@@ -5,16 +5,15 @@ import javax.activation.DataSource;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.util.ByteArrayDataSource;
-import autorizacion.ws.sri.gob.ec.Autorizacion;
-import autorizacion.ws.sri.gob.ec.Mensaje;
-import autorizacion.ws.sri.gob.ec.RespuestaComprobante;
+import com.sire.soap.util.SoapUtil;
+import ec.gob.sri.ws.autorizacion.*;
 import com.sire.event.MailEvent;
 import com.sire.service.IMailService;
 import com.sire.sri.batch.commons.CommonsItemWriter;
 import com.sire.sri.batch.constant.Constant;
 import ec.gob.sri.comprobantes.modelo.factura.Factura;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,13 +32,13 @@ import ec.gob.sri.comprobantes.modelo.reportes.GuiaRemisionReporte;
 import ec.gob.sri.comprobantes.modelo.reportes.NotaCreditoReporte;
 import ec.gob.sri.comprobantes.modelo.reportes.NotaDebitoReporte;
 import ec.gob.sri.comprobantes.util.reportes.ReporteUtil;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
@@ -47,6 +46,7 @@ import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
 @Named
@@ -56,12 +56,12 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
     private JobContext jobCtx;
     private IMailService mailService;
     private String urlReporte;
-    private Logger log = Logger.getLogger(F1_C1_Writer1.class.getName());
+    private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(F1_C1_Writer1.class);
 
     @Override
     public void open(Serializable checkpoint) {
         Properties runtimeParams = BatchRuntime.getJobOperator().getParameters(jobCtx.getExecutionId());
-        urlReporte = runtimeParams.getProperty("urlReporte");
+        urlReporte = runtimeParams.getProperty(Constant.URL_REPORTE);
     }
 
     @Override
@@ -69,9 +69,9 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
         Map duplaFinal = new HashMap<>();
 
         items.forEach((item) -> {
-            try {
+            try{
                 RespuestaComprobante respuestaComprobante = (RespuestaComprobante) ((Map) item).get("respuestaComprobante");
-                LoteXml lote = (LoteXml) ((Map) item).get("lote");
+                LoteXml lote = (LoteXml) ((Map) item).get(Constant.LOTE);
                 for (Object comprobante : lote.getComprobantes()) {
                     String secuencial = null;
                     String claveAcceso = null;
@@ -81,109 +81,149 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                         Factura factura = (Factura) comprobante;
                         secuencial = factura.getInfoTributaria().getEstab() + "-" + factura.getInfoTributaria().getPtoEmi() + "-" + factura.getInfoTributaria().getSecuencial();
                         claveAcceso = factura.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "FAC_FACTURA_C";
-                        nombreSecuencial = "SECUENCIAL";
+                        nombreTablaComprobante = Constant.FAC_FACTURA_C;
+                        nombreSecuencial = Constant.SECUENCIAL;
                     } else if (comprobante instanceof NotaCredito) {
                         NotaCredito notaCredito = (NotaCredito) comprobante;
                         secuencial = notaCredito.getInfoTributaria().getEstab() + "-" + notaCredito.getInfoTributaria().getPtoEmi() + "-" + notaCredito.getInfoTributaria().getSecuencial();
                         claveAcceso = notaCredito.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "FAC_DEVOLUCION_C";
-                        nombreSecuencial = "NUM_SECUENCIAL";
+                        nombreTablaComprobante = Constant.FAC_DEVOLUCION_C;
+                        nombreSecuencial = Constant.NUM_SECUENCIAL;
                     } else if (comprobante instanceof NotaDebito) {
                         NotaDebito notaDebito = (NotaDebito) comprobante;
                         secuencial = notaDebito.getInfoTributaria().getEstab() + "-" + notaDebito.getInfoTributaria().getPtoEmi() + "-" + notaDebito.getInfoTributaria().getSecuencial();
                         claveAcceso = notaDebito.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "CXC_DOC_COBRAR";
-                        nombreSecuencial = "NUM_SECUENCIAL";
+                        nombreTablaComprobante = Constant.CXC_DOC_COBRAR;
+                        nombreSecuencial = Constant.NUM_SECUENCIAL;
                     } else if (comprobante instanceof GuiaRemision) {
                         GuiaRemision guiaRemision = (GuiaRemision) comprobante;
                         secuencial = guiaRemision.getInfoTributaria().getEstab() + "-" + guiaRemision.getInfoTributaria().getPtoEmi() + "-" + guiaRemision.getInfoTributaria().getSecuencial();
                         claveAcceso = guiaRemision.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "PED_DESPACHO_C";
-                        nombreSecuencial = "NUM_SECUENCIAL";
+                        nombreTablaComprobante = Constant.PED_DESPACHO_C;
+                        nombreSecuencial = Constant.NUM_SECUENCIAL;
                     } else if (comprobante instanceof ComprobanteRetencion) {
                         ComprobanteRetencion comprobanteRetencion = (ComprobanteRetencion) comprobante;
                         secuencial = comprobanteRetencion.getInfoTributaria().getEstab() + "-" + comprobanteRetencion.getInfoTributaria().getPtoEmi() + "-" + comprobanteRetencion.getInfoTributaria().getSecuencial();
                         claveAcceso = comprobanteRetencion.getInfoTributaria().getClaveAcceso();
-                        nombreTablaComprobante = "BAN_RETENCION_C";
-                        nombreSecuencial = "NUM_SECUENCIAL";
+                        nombreTablaComprobante = Constant.BAN_RETENCION_C;
+                        nombreSecuencial = Constant.NUM_SECUENCIAL;
                     }
-                    for (Autorizacion autorizacion : respuestaComprobante.getAutorizaciones().getAutorizacion()) {
-                        if (claveAcceso.equals(autorizacion.getNumeroAutorizacion())) {
-                            log.info("----------------------------------------------------------------");
-                            String estado = autorizacion.getEstado();
-                            String fechaAutorizacion = autorizacion.getFechaAutorizacion().toGregorianCalendar().getTime().toString();
-                            String year = fechaAutorizacion.substring(24);
-                            String date = fechaAutorizacion.substring(0, 19);
-                            fechaAutorizacion = date + " " + year;
 
-                            DateFormat oldFormat = new SimpleDateFormat("EEE MMM d HH:mm:ss yyyy", Locale.ENGLISH);
-                            Date oldDate = oldFormat.parse(fechaAutorizacion);
+                    Connection connection = null;
+                    Statement statement = null;
+                    try{
+                        connection = getConnection();
+                        statement = connection.createStatement();
+                        for (Autorizacion autorizacion : respuestaComprobante.getAutorizaciones().getAutorizacion()) {
+                            if (claveAcceso.equals(autorizacion.getNumeroAutorizacion())) {
+                                log.info("----------------------------------------------------------------");
+                                String estado = autorizacion.getEstado();
+                                String fechaAutorizacion = autorizacion.getFechaAutorizacion().toGregorianCalendar().getTime().toString();
+                                String year = fechaAutorizacion.substring(24);
+                                String date = fechaAutorizacion.substring(0, 19);
+                                fechaAutorizacion = date + Constant.SPACE + year;
 
-                            DateFormat newFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-                            fechaAutorizacion = newFormat.format(oldDate);
-                            String claveAccesoConsultada = respuestaComprobante.getClaveAccesoConsultada();
-                            String numeroComprobantes = respuestaComprobante.getNumeroComprobantes();
+                                DateFormat oldFormat = new SimpleDateFormat(Constant.DATE_FORMAT_1, Locale.ENGLISH);
+                                Date oldDate = oldFormat.parse(fechaAutorizacion);
 
-                            log.info("Secuencial: " + secuencial
-                                    + ", Estado: " + estado
-                                    + ", FechaAutorizacion: " + fechaAutorizacion
-                                    + ", ClaveAccesoConsultada: " + claveAccesoConsultada
-                                    + ", NumeroComprobantes: " + numeroComprobantes
-                            );
+                                DateFormat newFormat = new SimpleDateFormat(Constant.DATE_FORMAT_2);
+                                fechaAutorizacion = newFormat.format(oldDate);
+                                String claveAccesoConsultada = respuestaComprobante.getClaveAccesoConsultada();
+                                String numeroComprobantes = respuestaComprobante.getNumeroComprobantes();
 
-                            String identificador = null;
-                            String tipo = null;
-                            String mensaje = null;
+                                log.info("Secuencial: {}, Estado: {}, FechaAutorizacion: {}"
+                                                + ", ClaveAccesoConsultada: {}, NumeroComprobantes: {}"
+                                        , secuencial, estado, fechaAutorizacion, claveAccesoConsultada
+                                        , numeroComprobantes);
 
-                            Autorizacion.Mensajes mensajes = autorizacion.getMensajes();
-                            if(mensajes != null)
-                                for (Mensaje m : mensajes.getMensaje()) {
-                                    identificador = m.getIdentificador();
-                                    String informacionAdicional = m.getInformacionAdicional();
-                                    mensaje = m.getMensaje();
-                                    tipo = m.getTipo();
+                                String identificador = null;
+                                String tipo = null;
+                                String mensaje = null;
 
-                                    log.info("Identificador: " + identificador
-                                            + ", InformacionAdicional: " + informacionAdicional
-                                            + ", Mensaje: " + mensaje
-                                            + ", Tipo: " + tipo
-                                    );
+                                Autorizacion.Mensajes mensajes = autorizacion.getMensajes();
+                                if (mensajes != null)
+                                    for (Mensaje m : mensajes.getMensaje()) {
+                                        identificador = m.getIdentificador();
+                                        String informacionAdicional = m.getInformacionAdicional();
+                                        mensaje = m.getMensaje();
+                                        tipo = m.getTipo();
+
+                                        log.info("Identificador: {}, InformacionAdicional: {}"
+                                                        + ", Mensaje: {}, Tipo: {}"
+                                                , identificador, informacionAdicional, mensaje, tipo);
+                                    }
+
+                                StringBuffer motivo = new StringBuffer();
+                                if (!estado.equals(Constant.AUTORIZADO) && !estado.equals(Constant.EN_PROCESAMIENTO)) {
+                                    motivo.append(", MOTIVO_SRI = '").append(identificador).append(":").append(tipo)
+                                            .append(":").append(mensaje).append("'");
+                                    fechaAutorizacion = "";
+                                } else if (estado.equals(Constant.AUTORIZADO)) {
+                                    fechaAutorizacion = ", FECHA_AUTORIZACION = '" + fechaAutorizacion + "'";
+                                    motivo.append(", MOTIVO_SRI = ''");
+                                    duplaFinal.put(comprobante, autorizacion);
+                                } else {
+                                    fechaAutorizacion = "";
                                 }
 
-                            StringBuffer motivo = new StringBuffer();
-                            if (!estado.equals("AUTORIZADO") && !estado.equals("EN PROCESAMIENTO")) {
-                                motivo.append(", MOTIVO_SRI = '").append(identificador).append(":").append(tipo)
-                                        .append(":").append(mensaje).append("'");
-                                fechaAutorizacion = "";
-                            } else if (estado.equals("AUTORIZADO")) {
-                                fechaAutorizacion = ", FECHA_AUTORIZACION = '" + fechaAutorizacion + "'";
-                                motivo.append(", MOTIVO_SRI = ''");
-                                duplaFinal.put(comprobante, autorizacion);
-                            } else {
-                                fechaAutorizacion = "";
+                                StringBuffer cabeceraSQL = new StringBuffer();
+                                cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
+                                        .append("ESTADO_SRI = '").append(estado).append("'").append(motivo)
+                                        .append(fechaAutorizacion).append(" WHERE ")
+                                        .append(nombreSecuencial).append(" = '").append(secuencial).append("'");
+
+                                log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
+                                statement.addBatch(cabeceraSQL.toString());
                             }
-
-                            StringBuffer cabeceraSQL = new StringBuffer();
-                            cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
-                                    .append("ESTADO_SRI = ?").append(motivo).append(fechaAutorizacion).append(" WHERE ")
-                                    .append(nombreSecuencial).append(" = ?");
-
-                            log.info("update " + nombreTablaComprobante + " -> " + cabeceraSQL);
-                            executeSql(cabeceraSQL.toString(), estado, secuencial);
                         }
+                        statement.executeBatch();
+                    }catch (SQLException | NamingException e) {
+                        log.log(Level.ERROR, e);
+                    }finally {
+                        if(statement != null)
+                            try{
+                                statement.close();
+                            }catch (SQLException e){
+                                log.log(Level.ERROR, e);
+                            }
+                        if(connection != null)
+                            try{
+                                connection.close();
+                            }catch (SQLException e){
+                                log.log(Level.ERROR, e);
+                            }
                     }
                 }
                 StringBuffer loteSQL = new StringBuffer();
-                loteSQL.append("UPDATE CEL_LOTE_AUTORIZADO SET ").append("ESTADO_SRI = 'PROCESADA'")
+                loteSQL.append("UPDATE CEL_LOTE_AUTORIZADO SET ESTADO_SRI = 'PROCESADA'")
                         .append(" WHERE CLAVE_ACCESO = ?");
                 log.info("update CEL_LOTE_AUTORIZADO -> " + loteSQL);
-                try (PreparedStatement preparedStatement = getConnection().prepareStatement(loteSQL.toString())) {
+
+                Connection connection = null;
+                PreparedStatement preparedStatement = null;
+                try{
+                    connection = getConnection();
+                    preparedStatement = connection.prepareStatement(loteSQL.toString());
                     preparedStatement.setString(1, lote.getClaveAcceso());
                     preparedStatement.executeUpdate();
+                }catch (SQLException | NamingException e) {
+                    log.log(Level.ERROR, e);
+                }finally {
+                    if(preparedStatement != null)
+                        try{
+                            preparedStatement.close();
+                        }catch (SQLException e){
+                            log.log(Level.ERROR, e);
+                        }
+                    if(connection != null)
+                        try{
+                            connection.close();
+                        }catch (SQLException e){
+                            log.log(Level.ERROR, e);
+                        }
                 }
-            } catch (SQLException | NamingException | ParseException ex) {
-                Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (ParseException ex) {
+                log.log(Level.ERROR, ex);
             }
         });
 
@@ -318,7 +358,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     getMailService().sendMail(event); //firing event!
                 }
             } catch (NamingException | MessagingException | JAXBException | SQLException | ClassNotFoundException | IOException ex) {
-                Logger.getLogger(F1_C1_Writer1.class.getName()).log(Level.SEVERE, null, ex);
+                log.log(Level.ERROR, ex);
             }
         });
         urlReporte = null;
@@ -338,5 +378,10 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             mailService = (IMailService) ic.lookup("java:global/SIRE-EE/SIRE-Services/MailService!com.sire.service.IMailService");
         }
         return mailService;
+    }
+
+    @Override
+    public JAXBContext getContextInstance(Class objectClass) {
+        return SoapUtil.getContextInstance(objectClass);
     }
 }

@@ -28,8 +28,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import javax.batch.api.chunk.AbstractItemReader;
 import javax.naming.NamingException;
 import com.sire.service.IDatasourceService;
@@ -42,12 +43,10 @@ import javax.naming.InitialContext;
  */
 public abstract class CommonsItemReader extends AbstractItemReader {
 
-    protected Connection connection;
-    protected Logger log = Logger.getLogger(this.getClass().getName());
+    private static final Logger log = LogManager.getLogger(CommonsItemReader.class);
     protected String codEmpresa;
 
     protected void _buildFacturas(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        log.info("-> _buildFacturas");
         String numFacturaInterno = rs.getString(Constant.NUM_FACTURA_INTERNO);
 
         Factura factura = new Factura();
@@ -117,19 +116,46 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String pagosSQL = Constant.FACTURA_PAGO_SQL
                 + "NUM_FACTURA = " + numFacturaInterno;
-        log.log(Level.INFO, "pagosSQL -> {0}", pagosSQL);
-        try (PreparedStatement pagosPreparedStatement = getConnection().prepareStatement(pagosSQL);
-                ResultSet prs = pagosPreparedStatement.executeQuery()) {
+        log.log(Level.INFO, "pagosSQL -> {}", pagosSQL);
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = getDatasourceService().getConnection();
+            preparedStatement = connection.prepareStatement(pagosSQL);
+            resultSet = preparedStatement.executeQuery();
             InfoFactura.Pago pagos = new InfoFactura.Pago();
-            while (prs.next()) {
+            while (resultSet.next()) {
                 InfoFactura.Pago.DetallePago detallePago = new InfoFactura.Pago.DetallePago();
-                detallePago.setFormaPago(prs.getString(Constant.CODIGO));
-                detallePago.setPlazo(prs.getString(Constant.PLAZO));
-                detallePago.setTotal(prs.getBigDecimal(Constant.VALOR_FORMA_PAGO));
-                detallePago.setUnidadTiempo(prs.getString(Constant.TIEMPO));
+                detallePago.setFormaPago(resultSet.getString(Constant.CODIGO));
+                detallePago.setPlazo(resultSet.getString(Constant.PLAZO));
+                detallePago.setTotal(resultSet.getBigDecimal(Constant.VALOR_FORMA_PAGO));
+                detallePago.setUnidadTiempo(resultSet.getString(Constant.TIEMPO));
                 pagos.getPagos().add(detallePago);
             }
             infoFactura.setPagos(pagos);
+        }catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        }finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
 
         factura.setInfoFactura(infoFactura);
@@ -155,37 +181,62 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String detalleSQL = Constant.FACTURA_D_SQL
                 + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
-        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
-        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
-                ResultSet rsd = detallePreparedStatement.executeQuery()) {
-            while (rsd.next()) {
+        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
+
+        connection = null;
+        preparedStatement = null;
+        resultSet = null;
+        try{
+            connection = getDatasourceService().getConnection();
+            preparedStatement = connection.prepareStatement(detalleSQL);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
                 Detalle detalle = new Detalle();
-                detalle.setCantidad(rsd.getBigDecimal(Constant.CANTIDAD));
-                detalle.setCodigoPrincipal(rsd.getString(Constant.COD_ARTICULO));
-                detalle.setDescripcion(rsd.getString(Constant.NOMBRE_ARTICULO));
-                detalle.setDescuento(rsd.getBigDecimal(Constant.DESCUENTO));
+                detalle.setCantidad(resultSet.getBigDecimal(Constant.CANTIDAD));
+                detalle.setCodigoPrincipal(resultSet.getString(Constant.COD_ARTICULO));
+                detalle.setDescripcion(resultSet.getString(Constant.NOMBRE_ARTICULO));
+                detalle.setDescuento(resultSet.getBigDecimal(Constant.DESCUENTO));
                 Impuestos impuestos = new Impuestos();
                 Impuesto impuesto = new Impuesto();
-                impuesto.setBaseImponible(rsd.getBigDecimal(Constant.BASE_IMPONIBLE));
-                impuesto.setCodigo(rsd.getString(Constant.CODIGO_IMPUESTO));
-                impuesto.setCodigoPorcentaje(rsd.getString(Constant.CODIGO_PORCENTAJE));
-                impuesto.setTarifa(rsd.getBigDecimal(Constant.TARIFA));
-                impuesto.setValor(rsd.getBigDecimal(Constant.VALOR));
+                impuesto.setBaseImponible(resultSet.getBigDecimal(Constant.BASE_IMPONIBLE));
+                impuesto.setCodigo(resultSet.getString(Constant.CODIGO_IMPUESTO));
+                impuesto.setCodigoPorcentaje(resultSet.getString(Constant.CODIGO_PORCENTAJE));
+                impuesto.setTarifa(resultSet.getBigDecimal(Constant.TARIFA));
+                impuesto.setValor(resultSet.getBigDecimal(Constant.VALOR));
                 impuestos.getImpuesto().add(impuesto);
                 detalle.setImpuestos(impuestos);
-                detalle.setPrecioTotalSinImpuesto(rsd.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
-                detalle.setPrecioUnitario(rsd.getBigDecimal(Constant.PRECIO_UNITARIO));
+                detalle.setPrecioTotalSinImpuesto(resultSet.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
+                detalle.setPrecioUnitario(resultSet.getBigDecimal(Constant.PRECIO_UNITARIO));
                 detalles.getDetalle().add(detalle);
             }
             factura.setDetalles(detalles);
 
             comprobantes.add(factura);
+        }catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        }finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
     }
 
     protected void _buildNotasCredito(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        log.info("-> _buildNotasCredito");
-
         String numNotaCreditoInterno = rs.getString(Constant.NUM_FACTURA_INTERNO);
 
         NotaCredito notaCredito = new NotaCredito();
@@ -269,25 +320,31 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
 
         String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
-        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
-        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
-                ResultSet rsd = detallePreparedStatement.executeQuery()) {
-            while (rsd.next()) {
+        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = getDatasourceService().getConnection();
+            preparedStatement = connection.prepareStatement(detalleSQL);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
                 NotaCredito.Detalles.Detalle detalle = new NotaCredito.Detalles.Detalle();
-                detalle.setCodigoInterno(rsd.getString(Constant.COD_ARTICULO));
-                detalle.setDescripcion(rsd.getString(Constant.NOMBRE_ARTICULO));
-                detalle.setCantidad(rsd.getBigDecimal(Constant.CANTIDAD));
-                detalle.setPrecioUnitario(rsd.getBigDecimal(Constant.PRECIO_UNITARIO));
-                detalle.setDescuento(rsd.getBigDecimal(Constant.DESCUENTO));
-                detalle.setPrecioTotalSinImpuesto(rsd.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
+                detalle.setCodigoInterno(resultSet.getString(Constant.COD_ARTICULO));
+                detalle.setDescripcion(resultSet.getString(Constant.NOMBRE_ARTICULO));
+                detalle.setCantidad(resultSet.getBigDecimal(Constant.CANTIDAD));
+                detalle.setPrecioUnitario(resultSet.getBigDecimal(Constant.PRECIO_UNITARIO));
+                detalle.setDescuento(resultSet.getBigDecimal(Constant.DESCUENTO));
+                detalle.setPrecioTotalSinImpuesto(resultSet.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
 
                 NotaCredito.Detalles.Detalle.Impuestos impuestos = new NotaCredito.Detalles.Detalle.Impuestos();
                 ec.gob.sri.comprobantes.modelo.notacredito.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.notacredito.Impuesto();
-                impuesto.setCodigo(rsd.getString(Constant.CODIGO_IMPUESTO));
-                impuesto.setCodigoPorcentaje(rsd.getString(Constant.CODIGO_PORCENTAJE));
-                impuesto.setTarifa(rsd.getBigDecimal(Constant.TARIFA));
-                impuesto.setBaseImponible(rsd.getBigDecimal(Constant.BASE_IMPONIBLE));
-                impuesto.setValor(rsd.getBigDecimal(Constant.VALOR));
+                impuesto.setCodigo(resultSet.getString(Constant.CODIGO_IMPUESTO));
+                impuesto.setCodigoPorcentaje(resultSet.getString(Constant.CODIGO_PORCENTAJE));
+                impuesto.setTarifa(resultSet.getBigDecimal(Constant.TARIFA));
+                impuesto.setBaseImponible(resultSet.getBigDecimal(Constant.BASE_IMPONIBLE));
+                impuesto.setValor(resultSet.getBigDecimal(Constant.VALOR));
 
                 impuestos.getImpuesto().add(impuesto);
                 detalle.setImpuestos(impuestos);
@@ -297,12 +354,31 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             notaCredito.setInfoAdicional(infoAdicional);
 
             comprobantes.add(notaCredito);
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        } finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
     }
 
     protected void _buildNotasDebito(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        log.info("-> _buildNotasDebito");
-
         String numDocumentoInterno = rs.getString(Constant.NUM_DOCUMENTO_INTERNO);
 
         /* Nota de Débito */
@@ -313,11 +389,11 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         /* Información Tributaria */
         InfoTributaria infoTributaria = new InfoTributaria();
         infoTributaria.setTipoEmision("1");
+        infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
         infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
         infoTributaria.setRazonSocial(rs.getString(Constant.RAZON_SOCIAL_EMPRESA));
         infoTributaria.setNombreComercial(rs.getString(Constant.NOMBRE_COMERCIAL));
         infoTributaria.setRuc(rs.getString(Constant.RUC_EMPRESA));
-        infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
         infoTributaria.setCodDoc(rs.getString(Constant.COD_DOCUMENTO));
         infoTributaria.setEstab(rs.getString(Constant.ESTABLECIMIENTO));
         infoTributaria.setPtoEmi(rs.getString(Constant.PUNTO_EMISION));
@@ -327,7 +403,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         /* Información Nota de Débito */
         NotaDebito.InfoNotaDebito infoNotaDebito = new NotaDebito.InfoNotaDebito();
-        infoNotaDebito.setFechaEmision(rs.getString(Constant.FECHA_EMISION));
+        String oldDate = rs.getString(Constant.FECHA_EMISION);
+        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoNotaDebito.setFechaEmision(newDate);
         infoNotaDebito.setDirEstablecimiento(rs.getString(Constant.DIRECCION_ESTABLECIMIENTO));
         infoNotaDebito.setTipoIdentificacionComprador(rs.getString(Constant.TIPO_IDENTIFICACION_COMPRADOR));
         infoNotaDebito.setRazonSocialComprador(rs.getString(Constant.RAZON_SOCIAL_COMPRADOR));
@@ -336,7 +415,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoNotaDebito.setObligadoContabilidad(rs.getString(Constant.LLEVA_CONTABILIDAD));
         infoNotaDebito.setCodDocModificado(rs.getString(Constant.COD_DOC_MODIFICADO));
         infoNotaDebito.setNumDocModificado(rs.getString(Constant.NUM_DOC_MODIFICADO));
-        infoNotaDebito.setFechaEmisionDocSustento(rs.getString(Constant.FECHA_EMISION_DOCSUSTENTO));
+        String oldDate1 = rs.getString(Constant.FECHA_EMISION_DOCSUSTENTO);
+        LocalDateTime datetime1 = LocalDateTime.parse(oldDate1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        String newDate1 = datetime1.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        infoNotaDebito.setFechaEmisionDocSustento(newDate1);
         infoNotaDebito.setTotalSinImpuestos(rs.getBigDecimal(Constant.TOTAL_SIN_IMPUESTOS));
 
         //Impuestos
@@ -356,19 +438,46 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         //Pagos
         NotaDebito.InfoNotaDebito.Pago pagos = new NotaDebito.InfoNotaDebito.Pago();
-        log.log(Level.INFO, "pagoSQL -> {0}", pagoSQL);
-        try (PreparedStatement pagoPreparedStatement = getConnection().prepareStatement(pagoSQL);
-                ResultSet rsp = pagoPreparedStatement.executeQuery()) {
-            while (rsp.next()) {
+        log.log(Level.INFO, "pagoSQL -> {}", pagoSQL);
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = getDatasourceService().getConnection();
+            preparedStatement = connection.prepareStatement(pagoSQL);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
                 NotaDebito.InfoNotaDebito.Pago.DetallePago detallePago = new NotaDebito.InfoNotaDebito.Pago.DetallePago();
-                detallePago.setFormaPago(rsp.getString(Constant.FORMA_PAGO));
-                detallePago.setTotal(rsp.getBigDecimal(Constant.VALOR_FORMA_PAGO));
-                detallePago.setPlazo(rsp.getString(Constant.PLAZO));
-                detallePago.setUnidadTiempo(rsp.getString(Constant.TIEMPO));
+                detallePago.setFormaPago(resultSet.getString(Constant.FORMA_PAGO));
+                detallePago.setTotal(resultSet.getBigDecimal(Constant.VALOR_FORMA_PAGO));
+                detallePago.setPlazo(resultSet.getString(Constant.PLAZO));
+                detallePago.setUnidadTiempo(resultSet.getString(Constant.TIEMPO));
                 pagos.getPagos().add(detallePago);
             }
             infoNotaDebito.setPagos(pagos);
             notaDebito.setInfoNotaDebito(infoNotaDebito);
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        } finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
 
         /* Motivos */
@@ -376,20 +485,21 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         NotaDebito.Motivos.Motivo motivo = new NotaDebito.Motivos.Motivo();
         motivo.setRazon(rs.getString(Constant.RAZON));
         motivo.setValor(rs.getBigDecimal(Constant.VALOR));
+        motivos.getMotivo().add(motivo);
         notaDebito.setMotivos(motivos);
 
         /* Información Adicional */
         NotaDebito.InfoAdicional infoAdicional = new NotaDebito.InfoAdicional();
         NotaDebito.InfoAdicional.CampoAdicional direccion = new NotaDebito.InfoAdicional.CampoAdicional();
-        direccion.setValue(rs.getString(Constant.DIRECCION));
+        direccion.setValue(rs.getString(Constant.DIRECCION_COMPRADOR));
         direccion.setNombre("Dirección");
 
         NotaDebito.InfoAdicional.CampoAdicional email = new NotaDebito.InfoAdicional.CampoAdicional();
-        email.setValue(rs.getString("EMAIL"));
+        email.setValue(rs.getString(Constant.EMAIL_COMPRADOR));
         email.setNombre(Constant.EMAIL);
 
         NotaDebito.InfoAdicional.CampoAdicional telefono = new NotaDebito.InfoAdicional.CampoAdicional();
-        telefono.setValue(rs.getString(Constant.TELEFONO));
+        telefono.setValue(rs.getString(Constant.TELEFONO_COMPRADOR));
         telefono.setNombre("Teléfono");
 
         if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
@@ -409,8 +519,6 @@ public abstract class CommonsItemReader extends AbstractItemReader {
     }
 
     protected void _buildGuiasRemision(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        log.info("-> _buildGuiasRemision");
-
         String numDespachoInterno = rs.getString(Constant.NUM_DESPACHO_INTERNO);
         GuiaRemision guiaRemision = new GuiaRemision();
         guiaRemision.setId(Constant.COMPROBANTE);
@@ -463,9 +571,14 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String articuloSQL = Constant.GUIA_REMISION_ARTICULO_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
 
-        log.log(Level.INFO, "articuloSQL -> {0}", articuloSQL);
-        try (PreparedStatement articuloPreparedStatement = getConnection().prepareStatement(articuloSQL);
-                ResultSet rsa = articuloPreparedStatement.executeQuery()) {
+        log.log(Level.INFO, "articuloSQL -> {}", articuloSQL);
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            PreparedStatement articuloPreparedStatement = getDatasourceService().getConnection().prepareStatement(articuloSQL);
+            ResultSet rsa = articuloPreparedStatement.executeQuery();
             while (rsa.next()) {
                 ec.gob.sri.comprobantes.modelo.guia.Detalle detalle = new ec.gob.sri.comprobantes.modelo.guia.Detalle();
                 detalle.setCodigoInterno(rsa.getString(Constant.CODIGOINTERNO));
@@ -473,31 +586,58 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 detalle.setCantidad(rsa.getBigDecimal(Constant.CANTIDAD));
                 detalles.getDetalle().add(detalle);
             }
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        } finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
 
         String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
-        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
-        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL);
-                ResultSet rsd = detallePreparedStatement.executeQuery()) {
-            while (rsd.next()) {
+        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
+
+        connection = null;
+        preparedStatement = null;
+        resultSet = null;
+        try{
+            connection = getDatasourceService().getConnection();
+            preparedStatement = connection.prepareStatement(detalleSQL);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
 
                 Destinatario destinatario = new Destinatario();
-                destinatario.setIdentificacionDestinatario(rsd.getString(Constant.IDENTIFICACION_DESTINATARIO));
-                destinatario.setDirDestinatario(rsd.getString(Constant.DIRDESTINATARIO));
-                destinatario.setMotivoTraslado(rsd.getString(Constant.MOTIVOTRASLADO));
-                destinatario.setDocAduaneroUnico(rsd.getString(Constant.DOCADUANEROUNICO));
-                destinatario.setCodEstabDestino(rsd.getString(Constant.COD_ESTAB_DESTINO));
-                destinatario.setRuta(rsd.getString(Constant.RUTA));
-                destinatario.setCodDocSustento(rsd.getString(Constant.CODDOSUSTENTO));
-                destinatario.setNumDocSustento(rsd.getString(Constant.NUMDOCSUSTENTO));
-                destinatario.setNumAutDocSustento(rsd.getString(Constant.NUMAUTDOCSUSTENTO));
-                String oldDate2 = rsd.getString(Constant.FECHAEMISIONDOCSUSTENTO);
+                destinatario.setIdentificacionDestinatario(resultSet.getString(Constant.IDENTIFICACION_DESTINATARIO));
+                destinatario.setDirDestinatario(resultSet.getString(Constant.DIRDESTINATARIO));
+                destinatario.setMotivoTraslado(resultSet.getString(Constant.MOTIVOTRASLADO));
+                destinatario.setDocAduaneroUnico(resultSet.getString(Constant.DOCADUANEROUNICO));
+                destinatario.setCodEstabDestino(resultSet.getString(Constant.COD_ESTAB_DESTINO));
+                destinatario.setRuta(resultSet.getString(Constant.RUTA));
+                destinatario.setCodDocSustento(resultSet.getString(Constant.CODDOSUSTENTO));
+                destinatario.setNumDocSustento(resultSet.getString(Constant.NUMDOCSUSTENTO));
+                destinatario.setNumAutDocSustento(resultSet.getString(Constant.NUMAUTDOCSUSTENTO));
+                String oldDate2 = resultSet.getString(Constant.FECHAEMISIONDOCSUSTENTO);
                 if(oldDate2 != null){
                     LocalDateTime datetime2 = LocalDateTime.parse(oldDate2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
                     String newDate2 = datetime2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                     destinatario.setFechaEmisionDocSustento(newDate2);
                 }
-                destinatario.setRazonSocialDestinatario(rsd.getString(Constant.RAZONSOCIALDESTINATARIO));
+                destinatario.setRazonSocialDestinatario(resultSet.getString(Constant.RAZONSOCIALDESTINATARIO));
                 destinatario.setDetalles(detalles);
 
                 destinatarios.getDestinatario().add(destinatario);
@@ -506,15 +646,15 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 GuiaRemision.InfoAdicional infoAdicional = new GuiaRemision.InfoAdicional();
 
                 GuiaRemision.InfoAdicional.CampoAdicional telefono = new GuiaRemision.InfoAdicional.CampoAdicional();
-                telefono.setValue(rsd.getString(Constant.TELDESTINATARIO));
+                telefono.setValue(resultSet.getString(Constant.TELDESTINATARIO));
                 telefono.setNombre("TELEFONO");
 
                 GuiaRemision.InfoAdicional.CampoAdicional email = new GuiaRemision.InfoAdicional.CampoAdicional();
-                email.setValue(rsd.getString(Constant.MAILDESTINATARIO));
+                email.setValue(resultSet.getString(Constant.MAILDESTINATARIO));
                 email.setNombre(Constant.EMAIL);
 
                 GuiaRemision.InfoAdicional.CampoAdicional sucursal = new GuiaRemision.InfoAdicional.CampoAdicional();
-                sucursal.setValue(rsd.getString(Constant.DIRDESTINATARIO));
+                sucursal.setValue(resultSet.getString(Constant.DIRDESTINATARIO));
                 sucursal.setNombre("DIRECCION");
 
                 if (sucursal.getValue() != null && !sucursal.getValue().isEmpty()) {
@@ -535,11 +675,31 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             guiaRemision.setDestinatarios(destinatarios);
 
             comprobantes.add(guiaRemision);
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        } finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
     }
 
     protected void _buildRetenciones(ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        log.info("-> _buildRetenciones");
         String numRetencionInterno = rs.getString("NUM_RETENCION_INTERNO");
 
         ComprobanteRetencion comprobanteRetencion = new ComprobanteRetencion();
@@ -547,113 +707,161 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         ComprobanteRetencion.Impuestos impuestos = new ComprobanteRetencion.Impuestos();
 
         String detalleSQL = Constant.RETENCION_D_SQL + "NUM_RETENCION_INTERNO = ? AND COD_EMPRESA = ?";
-        log.log(Level.INFO, "detalleSQL -> {0}", detalleSQL);
-        try (PreparedStatement detallePreparedStatement = getConnection().prepareStatement(detalleSQL)) {
-            detallePreparedStatement.setString(1, numRetencionInterno);
-            detallePreparedStatement.setString(2, codEmpresa);
-            try(ResultSet rsd = detallePreparedStatement.executeQuery()){
-                while (rsd.next()) {
-                    ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
-                    impuesto.setBaseImponible(rsd.getBigDecimal(Constant.BASEIMPONIBLE).setScale(2));
-                    impuesto.setCodDocSustento(rsd.getString(Constant.CODDOCSUSTENTO));
-                    impuesto.setCodigo(rsd.getString(Constant.CODIGO));
-                    impuesto.setCodigoRetencion(rsd.getString(Constant.CODIGORETENCION));
-                    String oldDate = rsd.getString(Constant.FECHAEMISIONDOCSUSTENTO);
-                    LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
-                    String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                    impuesto.setFechaEmisionDocSustento(newDate);
-                    impuesto.setNumDocSustento(rsd.getString(Constant.NUMDOCSUSTENTO));
-                    impuesto.setPorcentajeRetener(rsd.getBigDecimal(Constant.PORCENTAJERETENR));
-                    impuesto.setValorRetenido(rsd.getBigDecimal(Constant.VALORRETENIDO).setScale(2));
-                    impuestos.getImpuesto().add(impuesto);
-                }
-                comprobanteRetencion.setImpuestos(impuestos);
+        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
 
-                ComprobanteRetencion.InfoAdicional infoAdicional = new ComprobanteRetencion.InfoAdicional();
-                ComprobanteRetencion.InfoAdicional.CampoAdicional direccion = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
-                direccion.setNombre("Direccion");
-                direccion.setValue(rs.getString(Constant.DIRECCION_RETENIDO));
-                ComprobanteRetencion.InfoAdicional.CampoAdicional telefono = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
-                telefono.setValue(rs.getString(Constant.TELEFONO_RETENIDO));
-                telefono.setNombre("Telefono");
-                ComprobanteRetencion.InfoAdicional.CampoAdicional email = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
-                email.setValue(rs.getString(Constant.EMAIL_RETENIDO));
-                email.setNombre("Email");
-                if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
-                    infoAdicional.getCampoAdicional().add(direccion);
-                }
-                if (telefono.getValue() != null && !telefono.getValue().isEmpty()) {
-                    infoAdicional.getCampoAdicional().add(telefono);
-                }
-                if (email.getValue() != null && !email.getValue().isEmpty()) {
-                    infoAdicional.getCampoAdicional().add(email);
-                }
-                comprobanteRetencion.setInfoAdicional(infoAdicional);
-
-                ComprobanteRetencion.InfoCompRetencion infoCompRetencion = new ComprobanteRetencion.InfoCompRetencion();
-                infoCompRetencion.setContribuyenteEspecial(rs.getString(Constant.CONTRIBUYENTE_ESPECIAL));
-                infoCompRetencion.setDirEstablecimiento(rs.getString(Constant.DIRECCION_ESTABLECIMIENTO));
-                String oldDate = rs.getString(Constant.FECHA_RETENCION);
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        try{
+            connection = getDatasourceService().getConnection();
+            preparedStatement = connection.prepareStatement(detalleSQL);
+            preparedStatement.setString(1, numRetencionInterno);
+            preparedStatement.setString(2, codEmpresa);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                ec.gob.sri.comprobantes.modelo.rentencion.Impuesto impuesto = new ec.gob.sri.comprobantes.modelo.rentencion.Impuesto();
+                impuesto.setBaseImponible(resultSet.getBigDecimal(Constant.BASEIMPONIBLE).setScale(2));
+                impuesto.setCodDocSustento(resultSet.getString(Constant.CODDOCSUSTENTO));
+                impuesto.setCodigo(resultSet.getString(Constant.CODIGO));
+                impuesto.setCodigoRetencion(resultSet.getString(Constant.CODIGORETENCION));
+                String oldDate = resultSet.getString(Constant.FECHAEMISIONDOCSUSTENTO);
                 LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
                 String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                infoCompRetencion.setFechaEmision(newDate);
-                infoCompRetencion.setIdentificacionSujetoRetenido(rs.getString(Constant.IDENTIFICACION_SUJETO_RETENIDO));
-                infoCompRetencion.setObligadoContabilidad(rs.getString(Constant.LLEVA_CONTABILIDAD));
-                infoCompRetencion.setPeriodoFiscal(rs.getString(Constant.PERIODO_FISCAL));
-                infoCompRetencion.setRazonSocialSujetoRetenido(rs.getString(Constant.RAZON_SOCIAL_SUJETO_RETENIDO));
-                infoCompRetencion.setTipoIdentificacionSujetoRetenido(rs.getString(Constant.TIPO_IDENT_SUJETO_RETENIDO));
-                comprobanteRetencion.setInfoCompRetencion(infoCompRetencion);
-
-                InfoTributaria infoTributaria = new InfoTributaria();
-                infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
-                infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
-                infoTributaria.setCodDoc(rs.getString(Constant.COD_DOCUMENTO));
-                infoTributaria.setDirMatriz(rs.getString(Constant.DIRECCION_MATRIZ));
-                infoTributaria.setEstab(rs.getString(Constant.ESTABLECIMIENTO));
-                infoTributaria.setNombreComercial(rs.getString(Constant.NOMBRE_COMERCIAL));
-                infoTributaria.setPtoEmi(rs.getString(Constant.PUNTO_EMISION));
-                infoTributaria.setRazonSocial(rs.getString(Constant.RAZON_SOCIAL_EMPRESA));
-                infoTributaria.setRuc(rs.getString(Constant.RUC_EMPRESA));
-                infoTributaria.setSecuencial(rs.getString(Constant.SECUENCIAL));
-                infoTributaria.setTipoEmision("1");
-                comprobanteRetencion.setInfoTributaria(infoTributaria);
-                comprobanteRetencion.setVersion("1.0.0");
-
-                comprobantes.add(comprobanteRetencion);
+                impuesto.setFechaEmisionDocSustento(newDate);
+                impuesto.setNumDocSustento(resultSet.getString(Constant.NUMDOCSUSTENTO));
+                impuesto.setPorcentajeRetener(resultSet.getBigDecimal(Constant.PORCENTAJERETENR));
+                impuesto.setValorRetenido(resultSet.getBigDecimal(Constant.VALORRETENIDO).setScale(2));
+                impuestos.getImpuesto().add(impuesto);
             }
+            comprobanteRetencion.setImpuestos(impuestos);
+
+            ComprobanteRetencion.InfoAdicional infoAdicional = new ComprobanteRetencion.InfoAdicional();
+            ComprobanteRetencion.InfoAdicional.CampoAdicional direccion = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
+            direccion.setNombre("Direccion");
+            direccion.setValue(rs.getString(Constant.DIRECCION_RETENIDO));
+            ComprobanteRetencion.InfoAdicional.CampoAdicional telefono = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
+            telefono.setValue(rs.getString(Constant.TELEFONO_RETENIDO));
+            telefono.setNombre("Telefono");
+            ComprobanteRetencion.InfoAdicional.CampoAdicional email = new ComprobanteRetencion.InfoAdicional.CampoAdicional();
+            email.setValue(rs.getString(Constant.EMAIL_RETENIDO));
+            email.setNombre("Email");
+            if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
+                infoAdicional.getCampoAdicional().add(direccion);
+            }
+            if (telefono.getValue() != null && !telefono.getValue().isEmpty()) {
+                infoAdicional.getCampoAdicional().add(telefono);
+            }
+            if (email.getValue() != null && !email.getValue().isEmpty()) {
+                infoAdicional.getCampoAdicional().add(email);
+            }
+            comprobanteRetencion.setInfoAdicional(infoAdicional);
+
+            ComprobanteRetencion.InfoCompRetencion infoCompRetencion = new ComprobanteRetencion.InfoCompRetencion();
+            infoCompRetencion.setContribuyenteEspecial(rs.getString(Constant.CONTRIBUYENTE_ESPECIAL));
+            infoCompRetencion.setDirEstablecimiento(rs.getString(Constant.DIRECCION_ESTABLECIMIENTO));
+            String oldDate = rs.getString(Constant.FECHA_RETENCION);
+            LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+            String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            infoCompRetencion.setFechaEmision(newDate);
+            infoCompRetencion.setIdentificacionSujetoRetenido(rs.getString(Constant.IDENTIFICACION_SUJETO_RETENIDO));
+            infoCompRetencion.setObligadoContabilidad(rs.getString(Constant.LLEVA_CONTABILIDAD));
+            infoCompRetencion.setPeriodoFiscal(rs.getString(Constant.PERIODO_FISCAL));
+            infoCompRetencion.setRazonSocialSujetoRetenido(rs.getString(Constant.RAZON_SOCIAL_SUJETO_RETENIDO));
+            infoCompRetencion.setTipoIdentificacionSujetoRetenido(rs.getString(Constant.TIPO_IDENT_SUJETO_RETENIDO));
+            comprobanteRetencion.setInfoCompRetencion(infoCompRetencion);
+
+            InfoTributaria infoTributaria = new InfoTributaria();
+            infoTributaria.setClaveAcceso(rs.getString("CLAVE_ACCESO"));
+            infoTributaria.setAmbiente(infoTributaria.getClaveAcceso().substring(23, 24));
+            infoTributaria.setCodDoc(rs.getString(Constant.COD_DOCUMENTO));
+            infoTributaria.setDirMatriz(rs.getString(Constant.DIRECCION_MATRIZ));
+            infoTributaria.setEstab(rs.getString(Constant.ESTABLECIMIENTO));
+            infoTributaria.setNombreComercial(rs.getString(Constant.NOMBRE_COMERCIAL));
+            infoTributaria.setPtoEmi(rs.getString(Constant.PUNTO_EMISION));
+            infoTributaria.setRazonSocial(rs.getString(Constant.RAZON_SOCIAL_EMPRESA));
+            infoTributaria.setRuc(rs.getString(Constant.RUC_EMPRESA));
+            infoTributaria.setSecuencial(rs.getString(Constant.SECUENCIAL));
+            infoTributaria.setTipoEmision("1");
+            comprobanteRetencion.setInfoTributaria(infoTributaria);
+            comprobanteRetencion.setVersion("1.0.0");
+
+            comprobantes.add(comprobanteRetencion);
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
+        } finally {
+            if(resultSet != null)
+                try{
+                    resultSet.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(preparedStatement != null)
+                try{
+                    preparedStatement.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
+            if(connection != null)
+                try{
+                    connection.close();
+                }catch (SQLException e){
+                    log.log(Level.ERROR, e);
+                }
         }
     }
 
-    protected Connection getConnection() throws SQLException, NamingException {
-        if (connection == null || (connection != null && connection.isClosed())) {
+    protected IDatasourceService getDatasourceService() {
+        IDatasourceService datasourceService = null;
+        try {
+            //    if (connection == null || (connection != null && connection.isClosed())) {
+            InitialContext ic = new InitialContext();
+            datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-EE/SIRE-Services/DatasourceService!com.sire.service.IDatasourceService");
+            //    }
+        } catch (NamingException e) {
+            log.log(Level.ERROR, e);
+        }
+        return datasourceService;
+    }
+
+    protected String getDatabaseProductName() {
+        String databaseProductName = null;
+        try {
+            //    if (connection == null || (connection != null && connection.isClosed())) {
             InitialContext ic = new InitialContext();
             IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-EE/SIRE-Services/DatasourceService!com.sire.service.IDatasourceService");
-            connection = datasourceService.getConnection();
+            databaseProductName = datasourceService.getDatabaseProductName();
+            //    }
+        } catch (SQLException | NamingException e) {
+            log.log(Level.ERROR, e);
         }
-        return connection;
+        return databaseProductName;
     }
 
-    protected void validarTipoComprobante(String tipoComprobante, ResultSet rs, List comprobantes) throws SQLException, NamingException {
-        while (rs.next()) {
-            switch (tipoComprobante) {
-                case Constant.CERO_UNO:
-                    _buildFacturas(rs, comprobantes);
-                    break;
-                case Constant.CERO_CUATRO:
-                    _buildNotasCredito(rs, comprobantes);
-                    break;
-                case Constant.CERO_CINCO:
-                    _buildNotasDebito(rs, comprobantes);
-                    break;
-                case Constant.CERO_SEIS:
-                    _buildGuiasRemision(rs, comprobantes);
-                    break;
-                case Constant.CERO_SIETE:
-                    _buildRetenciones(rs, comprobantes);
-                    break;
-                default:
-                    break;
+    protected synchronized void validarTipoComprobante(String tipoComprobante, ResultSet rs, List comprobantes) {
+        try{
+            while (rs.next()) {
+                switch (tipoComprobante) {
+                    case Constant.CERO_UNO:
+                        _buildFacturas(rs, comprobantes);
+                        break;
+                    case Constant.CERO_CUATRO:
+                        _buildNotasCredito(rs, comprobantes);
+                        break;
+                    case Constant.CERO_CINCO:
+                        _buildNotasDebito(rs, comprobantes);
+                        break;
+                    case Constant.CERO_SEIS:
+                        _buildGuiasRemision(rs, comprobantes);
+                        break;
+                    case Constant.CERO_SIETE:
+                        _buildRetenciones(rs, comprobantes);
+                        break;
+                    default:
+                        break;
+                }
             }
+        } catch (SQLException | NamingException e){
+            log.log(Level.ERROR, e);
         }
     }
 }

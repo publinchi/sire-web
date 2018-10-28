@@ -1,7 +1,5 @@
 package com.sire.soap.util;
 
-//import autorizacion.ws.sri.gob.ec.AutorizacionComprobanteLoteResponse;
-import com.cobiscorp.ecobis.ficohsa.connector.vp.tarjeta.utils.TarjetasURLStreamHandler;
 
 import javax.xml.soap.*;
 import java.io.IOException;
@@ -23,11 +21,19 @@ public class Test {
                             @Override
                             protected URLConnection openConnection(URL url) throws IOException {
                                 URL target = new URL(url.toString());
-                                URLConnection connection = target.openConnection();
+                                Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("192.168.65.253", 8080));
+                                URLConnection connection = target.openConnection(proxy);
+                                Authenticator authenticator = new Authenticator() {
+                                    public PasswordAuthentication getPasswordAuthentication() {
+                                        return (new PasswordAuthentication("pestupinan",
+                                                "Gamma20181".toCharArray()));
+                                    }
+                                };
+                                Authenticator.setDefault(authenticator);
                                 // Connection settings
                                 connection.setConnectTimeout(10000); // 10 sec
                                 connection.setReadTimeout(12000); // 1 min
-                                return(connection);
+                                return (connection);
                             }
                         });
 
@@ -43,33 +49,6 @@ public class Test {
 
         }
         System.out.println("\nFinished all threads");
-    }
-
-    public static URL createEndPoint(String wsdl)
-    {
-        URL endPoint = null;
-        try
-        {
-            TarjetasURLStreamHandler tarjetasURLStreamHandler = new TarjetasURLStreamHandler()
-            {
-                protected URLConnection openConnection(URL url)
-                        throws IOException
-                {
-                    URL clone_url = new URL(url.toString());
-
-                    HttpURLConnection clone_urlconnection = (HttpURLConnection)clone_url.openConnection();
-                    clone_urlconnection.setConnectTimeout(10000);
-                    clone_urlconnection.setReadTimeout(10000);
-                    return clone_urlconnection;
-                }
-            };
-            endPoint = new URL(null, wsdl, tarjetasURLStreamHandler);
-        }
-        catch (MalformedURLException e)
-        {
-            System.out.println("NO EUREKA........");
-        }
-        return endPoint;
     }
 
     private static SOAPMessage createSOAPMessage(String claveAcceso) {
@@ -107,28 +86,63 @@ public class Test {
 
         @Override
         public void run() {
-       //     try{
-                long startTotal = System.currentTimeMillis();
-                for (int i = 0; i < numExecPorHilo; i++){
-                    long startPartial = System.currentTimeMillis();
-                    try {
-                        Map map = SoapUtil.call(createSOAPMessage(String.valueOf(i)),endpoint, null,null);
-                        System.out.println(SoapUtil.getStringFromSoapMessage((SOAPMessage) map.get("soapMessage")));
-                    } catch (SOAPException e) {
-                        e.printStackTrace();
-                    }
+            //testXml2Object();
+            //testObject2Xml();
+            testSOAP2Object();
+        }
 
-                    //                  AutorizacionComprobanteLoteResponse autorizacionComprobanteLoteResponse =(AutorizacionComprobanteLoteResponse) map.get("object");
-                    //                  System.out.println("# Clave: " + autorizacionComprobanteLoteResponse.getRespuestaAutorizacionLote().getAutorizaciones().getAutorizacion().get(0).getMensajes().getMensaje().size());
-                    long finishPartial = System.currentTimeMillis();
-                    //System.out.println("Thread -> " + Thread.currentThread().getId() + ": " +"#" + (i+1) +": " + String.valueOf(finishPartial-startPartial) + " ms");
-                }
-                long finishTotal = System.currentTimeMillis();
-                System.out.println("Total " + Thread.currentThread().getId() + ": " + String.valueOf(finishTotal-startTotal) + " ms");
-      //      }
-                // catch (SOAPException e) {
-    //            e.printStackTrace();
-    //        }
+        private void testXml2Object() {
+            String xml = "<autorizacionComprobanteLoteResponse>\n" +
+                    "    <RespuestaAutorizacionLote>\n" +
+                    "        <claveAccesoLoteConsultada>123</claveAccesoLoteConsultada>\n" +
+                    "        <numeroComprobantesLote>abc</numeroComprobantesLote>\n" +
+                    "        <autorizaciones>\n" +
+                    "            <autorizacion>\n" +
+                    "                <estado>RECIBIDA</estado>\n" +
+                    "            </autorizacion>\n" +
+                    "        </autorizaciones>\n" +
+                    "    </RespuestaAutorizacionLote>\n" +
+                    "</autorizacionComprobanteLoteResponse>";
+            //AutorizacionComprobanteLoteResponse autorizacionComprobanteLoteResponse = (AutorizacionComprobanteLoteResponse) SoapUtil.getObjectFromString(xml, AutorizacionComprobanteLoteResponse.class);
+            //System.out.println("ClaveAccesoLoteConsultada: " + autorizacionComprobanteLoteResponse.getRespuestaAutorizacionLote().getClaveAccesoLoteConsultada());
+            //System.out.println("Estado: " + autorizacionComprobanteLoteResponse.getRespuestaAutorizacionLote().getAutorizaciones().getAutorizacion().get(0).getEstado());
+        }
+
+        private void testObject2Xml() {
+            //AutorizacionComprobanteLoteResponse autorizacionComprobanteLoteResponse = new AutorizacionComprobanteLoteResponse();
+            //RespuestaLote respuestaLote = new RespuestaLote();
+            //respuestaLote.setClaveAccesoLoteConsultada("123");
+            //respuestaLote.setNumeroComprobantesLote("abc");
+            //RespuestaLote.Autorizaciones autorizaciones = new RespuestaLote.Autorizaciones();
+            //Autorizacion autorizacion = new Autorizacion();
+            //autorizacion.setEstado("RECIBIDA");
+            //autorizaciones.getAutorizacion().add(autorizacion);
+            //respuestaLote.setAutorizaciones(autorizaciones);
+            //autorizacionComprobanteLoteResponse.setRespuestaAutorizacionLote(respuestaLote);
+            //SoapUtil.getStringFromObject(autorizacionComprobanteLoteResponse);
+        }
+
+        private void testSOAP2Object() {
+            long startTotal = System.currentTimeMillis();
+            for (int i = 0; i < numExecPorHilo; i++) {
+                long startPartial = System.currentTimeMillis();
+                //try {
+                    //Map map = SoapUtil.call(createSOAPMessage(String.valueOf(i)), endpoint, AutorizacionComprobanteLoteResponse.class);
+                    //AutorizacionComprobanteLoteResponse autorizacionComprobanteLoteResponse = (AutorizacionComprobanteLoteResponse) map.get("object");
+                    //if (autorizacionComprobanteLoteResponse != null) {
+                    //    System.out.println("# Clave: " + autorizacionComprobanteLoteResponse.getRespuestaAutorizacionLote().getClaveAccesoLoteConsultada());
+                    //System.out.println("# Estado: " + autorizacionComprobanteLoteResponse.getRespuestaAutorizacionLote().getAutorizaciones().getAutorizacion().get(0).getEstado());
+                    //    System.out.println("# Mensaje: " + autorizacionComprobanteLoteResponse.getRespuestaAutorizacionLote().getAutorizaciones().getAutorizacion().get(0).getMensajes().getMensaje().get(0).getMensaje());
+                    //}
+                //} catch (SOAPException e) {
+                //    e.printStackTrace();
+                //}
+
+                long finishPartial = System.currentTimeMillis();
+                System.out.println("Thread -> " + Thread.currentThread().getId() + ": " + "#" + (i + 1) + ": " + String.valueOf(finishPartial - startPartial) + " ms");
+            }
+            long finishTotal = System.currentTimeMillis();
+            System.out.println("Total " + Thread.currentThread().getId() + ": " + String.valueOf(finishTotal - startTotal) + " ms");
         }
     }
 }

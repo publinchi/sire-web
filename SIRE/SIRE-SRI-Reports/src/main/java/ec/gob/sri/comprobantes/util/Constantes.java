@@ -57,23 +57,28 @@ public class Constantes {
     public static final Integer LONGITUD_CLAVE_PREAUTORIZADA = Integer.valueOf(8);
     public static final int INTENTOS_CONEXION_WS = 3;
     public static final int INTENTOS_RESPUESTA_AUTORIZACION_WS = 5;
+    public static final String PRODUCTO_READONLY = "producto;readonly=true";
+
+    private static final String SIRE_HOME = System.getProperty("sire.home");
+    private static final String DB = "db";
+    private static final String URL_BD = SIRE_HOME + File.separator + DB;
 
     public static void cargarJDC()
             throws ClassNotFoundException {
-        Class.forName("org.hsqldb.jdbcDriver");
+        Class.forName(JDBC_CLASS);
     }
 
     public static String obtenerUrlBD() {
         //Properties props = new Properties();
-        String home = System.getProperty("sire.home");
+        String home = SIRE_HOME;
         if (home == null) {
             //log.warning("SIRE HOME NOT FOUND.");
             return null;
             //home = System.getProperty("user.home");
         }
-        String urlBD = home + File.separator + "db";
+        //String urlBD = home + File.separator + "db";
         //props.load(new FileInputStream(home + "/comprobantes.properties"));
         //urlBD = props.getProperty("database");
-        return urlBD;
+        return URL_BD;
     }
 }
