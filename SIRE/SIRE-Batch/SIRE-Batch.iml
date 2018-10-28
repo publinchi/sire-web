@@ -115,7 +115,8 @@
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.google.code.javaparser:javaparser:1.0.11" level="project" />
     <orderEntry type="module" module-name="SIRE-SRI-Batch-Commons" scope="PROVIDED" />
     <orderEntry type="module" module-name="SIRE-Services-API" scope="PROVIDED" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.xml.bind:jaxb-core:2.3.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.logging.log4j:log4j-core:2.10.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.apache.logging.log4j:log4j-api:2.10.0" level="project" />
     <orderEntry type="module" module-name="SIRE-SRI-Batch-Recepcion" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: dom4j:dom4j:1.6.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: com.sun.xml.messaging.saaj:saaj-impl:1.3.20" level="project" />
@@ -237,6 +238,5 @@
     <orderEntry type="library" scope="TEST" name="Maven: org.arquillian.spacelift:arquillian-spacelift:1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.arquillian.spacelift:arquillian-spacelift-api:1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.apache.commons:commons-compress:1.8.1" level="project" />
-    <orderEntry type="library" name="Maven: com.oracle:ojdbc6:11.2.0.2" level="project" />
   </component>
 </module>
