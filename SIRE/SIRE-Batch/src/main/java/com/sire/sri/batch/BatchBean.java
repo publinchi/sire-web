@@ -6,30 +6,26 @@
 package com.sire.sri.batch;
 
 import com.sire.sri.batch.constant.Constant;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.io.*;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
+import javax.annotation.*;
 import javax.batch.operations.JobOperator;
+import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchRuntime;
-import javax.ejb.ScheduleExpression;
+import javax.ejb.*;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
-import javax.ejb.TimerConfig;
-import javax.ejb.TimerService;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 
 /**
  *
@@ -37,6 +33,7 @@ import javax.naming.NamingException;
  */
 @Singleton
 @Startup
+@Path("timer")
 public class BatchBean {
 
     @Resource
@@ -46,55 +43,68 @@ public class BatchBean {
     @Resource(lookup="java:app/AppName")
     private String applicationName;
 
-    private static final Logger log = Logger.getLogger(BatchBean.class.getName());
+    private static final Logger log = LogManager.getLogger(BatchBean.class);
     private String home;
     private static StringBuffer comprobantePropertiesPath;
 
     @PostConstruct
     public void init() {
+        _init();
+
+        loadTimers();
+    }
+
+    private void _init(){
+        home = System.getProperty("sire.home");
+        if (home == null) {
+            log.error("SIRE HOME NOT FOUND.");
+            return;
+        }
+
+        log.info("SIRE HOME --> " + home);
+
+        comprobantePropertiesPath = new StringBuffer();
+        comprobantePropertiesPath.append(home);
+        comprobantePropertiesPath.append(File.separator);
+        comprobantePropertiesPath.append(Constant.COMPROBANTES_PROPERTIES);
+
+        log.log(Level.INFO, "applicationName -> {}", applicationName);
+        log.log(Level.INFO, "moduleName -> {}", moduleName);
+        log.info("Comprobantes Properties --> " + comprobantePropertiesPath);
+    }
+
+    public void loadTimers() {
         try {
-            home = System.getProperty("sire.home");
-            if (home == null) {
-                log.severe("SIRE HOME NOT FOUND.");
-                return;
-                //home = System.getProperty("user.home");
-            }
-
-            log.info("SIRE HOME --> " + home);
-
-            comprobantePropertiesPath = new StringBuffer();
-            comprobantePropertiesPath.append(home);
-            comprobantePropertiesPath.append(File.separator);
-            comprobantePropertiesPath.append(Constant.COMPROBANTES_PROPERTIES);
-
-            log.log(Level.INFO, "applicationName -> {0}", applicationName);
-            log.log(Level.INFO, "moduleName -> {0}", moduleName);
-            log.info("Comprobantes Properties --> " + comprobantePropertiesPath);
-
             Properties runtimeParameters = new Properties();
             runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
 
-            String[] timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES).split(",");
+            String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
+            String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
+            String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
 
-            for (String timerName : timerRecepcionNames) {
-                createCalendarTimer(timerName);
-            }
-
-            String[] timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES).split(",");
-
-            for (String timerName : timerAutorizacionNames) {
-                createCalendarTimer(timerName);
-            }
+            createCalendar(timerRecepcionNames);
+            createCalendar(timerAutorizacionNames);
+            createCalendar(timerNames);
 
             Collection<Timer> timers = timerService.getTimers();
             log.info("************** TIMERS INFO **************");
             for (Timer timer : timers) {
-                log.log(Level.INFO, "Name: {0}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
+                log.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
                         + " m: " + timer.getSchedule().getMinute());
             }
-            log.log(Level.INFO, "Total timers: {0}", timers.size());
+            log.log(Level.INFO, "Total timers: {}", timers.size());
         } catch (IOException ex) {
-            Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.ERROR, ex);
+        }
+    }
+
+    private void createCalendar(String timerNames) {
+        if(timerNames!=null){
+            String[] timerNamesArray = timerNames.split(",");
+            for (String timerName : timerNamesArray) {
+                if(!timerName.isEmpty())
+                    createCalendarTimer(timerName);
+            }
         }
     }
 
@@ -102,22 +112,13 @@ public class BatchBean {
     public void timeout(Timer timer) {
         try {
             Map map = (Map) timer.getInfo();
-            log.info("timeout: jobName --> " + map.get(Constant.JOB_NAME) + ", tipoComprobante --> "
-                    + map.get(Constant.TIPO_COMPROBANTE) + ", reportName --> " + map.get(Constant.REPORT_NAME));
-            InitialContext ic = new InitialContext();
-            String jndi;
-            if(applicationName.equals(moduleName)){
-                jndi = "java:global/" + applicationName + "/BatchBean!com.sire.sri.batch.BatchBean";
-            } else {
-                jndi = "java:global/" + applicationName + "/" + moduleName + "/BatchBean!com.sire.sri.batch.BatchBean";
-            }
-            BatchBean batchBean = (BatchBean) ic.lookup(jndi);
-            java.lang.reflect.Method method = this.getClass().getDeclaredMethod(Constant.EXECUTE_JOB, String.class,
-                    String.class, String.class);
-            method.invoke(batchBean,map.get(Constant.JOB_NAME), map.get(Constant.TIPO_COMPROBANTE),
-                    map.get(Constant.REPORT_NAME));
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NamingException ex) {
-            Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.INFO, "timeout: jobName --> {}, tipoComprobante --> {}, reportName --> {}"
+                    , map.get(Constant.JOB_NAME), (String) map.get(Constant.TIPO_COMPROBANTE)
+                    , map.get(Constant.REPORT_NAME));
+            
+            executeJob((String)map.get(Constant.JOB_NAME), (String)map.get(Constant.TIPO_COMPROBANTE), (String)map.get(Constant.REPORT_NAME));
+        } catch (SecurityException | IllegalArgumentException ex) {
+            log.log(Level.ERROR, ex);
         }
     }
 
@@ -132,81 +133,181 @@ public class BatchBean {
             String reportName = runtimeParameters.getProperty(timerName + "." + Constant.REPORT_NAME);
             final TimerConfig timerConfig = new TimerConfig(timerName, false);
             HashMap hashMap = new HashMap<String, String>();
+            hashMap.put(Constant.TIMER_NAME, timerName);
             hashMap.put(Constant.JOB_NAME, jobName);
             hashMap.put(Constant.TIPO_COMPROBANTE, tipoComprobante);
             hashMap.put(Constant.REPORT_NAME, reportName);
             timerConfig.setInfo(hashMap);
             return timerService.createCalendarTimer(new ScheduleExpression().hour(hour).minute(minute).timezone("UTC"), timerConfig);
         } catch (IOException ex) {
-            Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.ERROR, ex);
         }
         return null;
     }
 
-//    @Schedule(hour = "*", minute = "*/1", info = "reconfigJob", timezone = "UTC", persistent = false)
-    public void reconfigJob() { //TODO Refactorizar toda la implementación de este método
+    public void reconfigJob() {
         try {
             Properties runtimeParameters = new Properties();
             runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
 
             Collection<Timer> timers = timerService.getTimers();
-            log.info("************** TIMERS INFO **************");
-            for (Timer timer : timers) {
-                String jobName = (String) timer.getInfo();
-                String hour = runtimeParameters.getProperty(jobName + ".hour");
-                if (hour != null) {
-                    hour = hour.trim();
-                }
-                log.log(Level.INFO, "Timer Name: {0}", jobName + " -> Disk = " + hour
-                        + " -> Mem = " + timer.getSchedule().getMinute());
-                if (hour != null && !hour.equals(timer.getSchedule().getHour())) {
-                    log.log(Level.INFO, "Diferentes");
-                    log.log(Level.INFO, "Cancelling timer: {0}", timer.getInfo());
-                    timer.cancel();
-                    log.log(Level.INFO, "Timer {0} cancelled.", timer.getInfo());
-                    log.log(Level.INFO, "Creating timer {0} -> Every {1} hours.", new Object[]{jobName, hour});
-                    Timer t = createCalendarTimer(jobName);
-                    if(t != null)
-                        log.log(Level.INFO, "New timer {0} created -> Every {1} hours.", new Object[]{t.getInfo(), t.getSchedule().getHour()});
-                }
-                String minute = runtimeParameters.getProperty(jobName + ".minute");
-                if (minute != null) {
-                    minute = minute.trim();
-                }
-                log.log(Level.INFO, "Timer Name: {0}", jobName + " -> Disk = " + minute
-                        + " -> Mem = " + timer.getSchedule().getMinute());
-                if (minute != null && !minute.equals(timer.getSchedule().getMinute())) {
-                    log.log(Level.INFO, "Diferentes");
-                    log.log(Level.INFO, "Cancelling timer: {0}", timer.getInfo());
-                    timer.cancel();
-                    log.log(Level.INFO, "Timer {0} cancelled.", timer.getInfo());
-                    log.log(Level.INFO, "Creating timer {0} -> Every {1} minutes.", new Object[]{jobName, minute});
-                    Timer t = createCalendarTimer(jobName);
-                    if(t != null)
-                        log.log(Level.INFO, "New timer {0} created -> Every {1} minutes.", new Object[]{t.getInfo(), t.getSchedule().getMinute()});
-                }
+
+            boolean finish = createNewTimersWhenNoTimers(timers, runtimeParameters);
+            if(finish){
+                log.log(Level.INFO, "Total timers: {}", timers.size());
+                return;
             }
-            log.log(Level.INFO, "Total timers: {0}", timers.size());
+
+            log.info("***************** TIMERS INFO *****************");
+
+            for (Timer timer : timers) {
+
+                if(!cancelTimer(timer, runtimeParameters))
+                    updateTimer(timer, runtimeParameters);
+
+            }
+            timers = timerService.getTimers();
+            log.log(Level.INFO, "Total timers: {}", timers.size());
         } catch (IOException ex) {
-            Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
+            log.log(Level.ERROR, ex);
         }
     }
 
-    private void executeJob(String jobName, String tipoComprobante, String reportName) {
+    private boolean createNewTimersWhenNoTimers(Collection<Timer> timers, Properties runtimeParameters) {
+        String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
+        String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
+        String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
+
+        StringBuilder totalTimerNames = new StringBuilder();
+
+        if(timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
+            totalTimerNames.append(timerRecepcionNames);
+        if(timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty()) {
+            if (timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
+                totalTimerNames.append(",");
+            totalTimerNames.append(timerAutorizacionNames);
+        }
+        if(!timerNames.isEmpty()) {
+            if (timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty())
+                totalTimerNames.append(",");
+            totalTimerNames.append(timerNames);
+        }
+
+        log.info("totalTimerNames -> " + totalTimerNames);
+
+        // Si no hay timers en memoria y se agregan nuevos timers en el archivo properties,
+        // se crean todos los timers del properties.
+        if(timers.isEmpty() && !totalTimerNames.toString().trim().isEmpty()
+                && totalTimerNames.toString().split(",").length > 0){
+            log.info("All timers are new, creating them ...");
+            createCalendar(totalTimerNames.toString());
+            log.info("Timers created.");
+            return true;
+        } else if(timers.isEmpty() && totalTimerNames.toString().trim().isEmpty()){
+            log.info("No timers found.");
+            return true;
+        }
+        return false;
+    }
+
+    private void updateTimer(Timer timer, Properties runtimeParameters) {
+        String timerName = ((Map) timer.getInfo()).get(Constant.TIMER_NAME).toString();
+
+        String hour = runtimeParameters.getProperty(timerName + ".hour");
+        if (hour != null) {
+            hour = hour.trim();
+        }
+        log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
+                + " -> Mem Hour = " + timer.getSchedule().getHour());
+
+        String minute = runtimeParameters.getProperty(timerName + ".minute");
+        if (minute != null) {
+            minute = minute.trim();
+        }
+        log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Minute = " + minute
+                + " -> Mem Minute = " + timer.getSchedule().getMinute());
+
+        if ((hour != null && !hour.equals(timer.getSchedule().getHour())) || (minute != null && !minute.equals(timer.getSchedule().getMinute()))) {
+            log.log(Level.INFO, "Diferentes");
+            log.log(Level.INFO, "Cancelling timer: {}", timer.getInfo());
+            timer.cancel();
+            log.log(Level.INFO, "Creating timer {} -> Every {} hours - Every {} minutes.",
+                    timerName, hour, minute);
+            Timer t = createCalendarTimer(timerName);
+            if (t != null)
+                log.log(Level.INFO, "New timer {} created -> Every {} hours - Every {} minutes.",
+                        t.getInfo(), t.getSchedule().getHour(), t.getSchedule().getHour());
+        }
+    }
+
+    private boolean newTimers() {
+        boolean newTimers = false;
+
+
+        return newTimers;
+    }
+
+    private boolean cancelTimer(Timer timer, Properties runtimeParameters) {
+        String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
+        String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
+        String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
+
+        StringBuilder totalTimerNames = new StringBuilder();
+
+        if(timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
+            totalTimerNames.append(timerRecepcionNames);
+        if(timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty()) {
+            if (timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
+                totalTimerNames.append(",");
+            totalTimerNames.append(timerAutorizacionNames);
+        }
+        if(!timerNames.isEmpty()) {
+            if (timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty())
+                totalTimerNames.append(",");
+            totalTimerNames.append(timerNames);
+        }
+
+        log.info("totalTimerNames -> " + totalTimerNames);
+
+        String tn = ((Map) timer.getInfo()).get(Constant.TIMER_NAME).toString();
+        boolean delete = true;
+            String[] timerNamesArray = totalTimerNames.toString().split(",");
+            for (String timerName : timerNamesArray) {
+                if(!timerName.isEmpty() && tn.equals(timerName)) {
+                    delete = false;
+                }
+            }
+            if(delete){
+                timer.cancel();
+            }
+        return delete;
+    }
+
+    public void executeJob(String jobName, String tipoComprobante, String reportName) {
         try {
             Properties runtimeParameters = new Properties();
             runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
             runtimeParameters.setProperty("urlReporte", runtimeParameters.getProperty("pathReports") + reportName);
-            runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
+            if(tipoComprobante != null)
+                runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
 
             JobOperator jobOperator = BatchRuntime.getJobOperator();
             Long executionId = jobOperator.start(jobName, runtimeParameters);
             jobOperator.getJobExecution(executionId);
-        } catch (IOException ex) {
-            Logger.getLogger(BatchBean.class.getName()).log(Level.SEVERE, null, ex);
+
+        } catch (IOException | JobStartException ex) {
+            log.log(Level.ERROR, ex.getCause().getMessage());
         }
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
+
+    @GET
+    @Path("reload")
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public Response reloadTimers() {
+        reconfigJob();
+        return Response.ok().build();
+    }
 }
