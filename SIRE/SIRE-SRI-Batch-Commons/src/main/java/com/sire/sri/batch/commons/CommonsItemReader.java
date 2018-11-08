@@ -484,7 +484,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         NotaDebito.Motivos motivos = new NotaDebito.Motivos();
         NotaDebito.Motivos.Motivo motivo = new NotaDebito.Motivos.Motivo();
         motivo.setRazon(rs.getString(Constant.RAZON));
-        motivo.setValor(rs.getBigDecimal(Constant.VALOR));
+        motivo.setValor(rs.getBigDecimal(Constant.TOTAL_SIN_IMPUESTOS));
         motivos.getMotivo().add(motivo);
         notaDebito.setMotivos(motivos);
 
