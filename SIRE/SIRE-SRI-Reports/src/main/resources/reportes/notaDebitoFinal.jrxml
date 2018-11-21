@@ -184,8 +184,8 @@
 				</textElement>
 				<text><![CDATA[Fecha Emisión:]]></text>
 			</staticText>
-			<textField>
-				<reportElement mode="Transparent" x="188" y="344" width="149" height="13" uuid="d5328447-88dd-4fc3-b347-e89e7b09f8ef"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="188" y="344" width="149" height="13" isPrintWhenDetailOverflows="true" uuid="d5328447-88dd-4fc3-b347-e89e7b09f8ef"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{RS_COMPRADOR}]]></textFieldExpression>
 			</textField>

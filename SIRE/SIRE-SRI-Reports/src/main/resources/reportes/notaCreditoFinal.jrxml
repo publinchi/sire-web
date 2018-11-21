@@ -183,8 +183,8 @@
 				</textElement>
 				<text><![CDATA[Fecha Emisión:]]></text>
 			</staticText>
-			<textField>
-				<reportElement mode="Transparent" x="196" y="351" width="159" height="13" uuid="6b72e716-74ed-4ad1-bca5-11eb2f0ff91f"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="196" y="351" width="159" height="13" isPrintWhenDetailOverflows="true" uuid="6b72e716-74ed-4ad1-bca5-11eb2f0ff91f"/>
 				<textFieldExpression><![CDATA[$P{RS_COMPRADOR}]]></textFieldExpression>
 			</textField>
 			<textField>

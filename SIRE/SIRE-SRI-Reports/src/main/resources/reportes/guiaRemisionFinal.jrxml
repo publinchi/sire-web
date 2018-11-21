@@ -252,7 +252,7 @@
 				<textFieldExpression><![CDATA[$P{RUC_TRANSPORTISTA}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true">
-				<reportElement x="205" y="356" width="329" height="14" uuid="25c95726-78eb-4d09-911e-503f708d45b7"/>
+				<reportElement x="205" y="356" width="329" height="14" isPrintWhenDetailOverflows="true" uuid="25c95726-78eb-4d09-911e-503f708d45b7"/>
 				<textElement>
 					<font size="9"/>
 				</textElement>
