@@ -66,11 +66,11 @@ public class BatchBean {
         comprobantePropertiesPath = new StringBuffer();
         comprobantePropertiesPath.append(home);
         comprobantePropertiesPath.append(File.separator);
-        comprobantePropertiesPath.append(Constant.COMPROBANTES_PROPERTIES);
+        comprobantePropertiesPath.append(Constant.CONFIGURATION_PROPERTIES);
 
         log.log(Level.INFO, "applicationName -> {}", applicationName);
         log.log(Level.INFO, "moduleName -> {}", moduleName);
-        log.info("Comprobantes Properties --> " + comprobantePropertiesPath);
+        log.info("Configuration Properties --> " + comprobantePropertiesPath);
     }
 
     public void loadTimers() {
@@ -271,15 +271,15 @@ public class BatchBean {
 
         String tn = ((Map) timer.getInfo()).get(Constant.TIMER_NAME).toString();
         boolean delete = true;
-            String[] timerNamesArray = totalTimerNames.toString().split(",");
-            for (String timerName : timerNamesArray) {
-                if(!timerName.isEmpty() && tn.equals(timerName)) {
-                    delete = false;
-                }
+        String[] timerNamesArray = totalTimerNames.toString().split(",");
+        for (String timerName : timerNamesArray) {
+            if(!timerName.isEmpty() && tn.equals(timerName)) {
+                delete = false;
             }
-            if(delete){
-                timer.cancel();
-            }
+        }
+        if(delete){
+            timer.cancel();
+        }
         return delete;
     }
 

@@ -11,18 +11,10 @@ package com.sire.sri.batch.constant;
  */
 public class Constant {
 
-    public static final String COMPROBANTES_PROPERTIES = "comprobantes.properties";
     public static final String EMAIL = "Email";
-    public static final String EXECUTE_JOB = "executeJob";
-    public static final String JOB_NAME = "jobName";
     public static final String MICROSOFT_SQL_SERVER = "Microsoft SQL Server";
     public static final String MYSQL = "MySQL";
     public static final String ORACLE = "Oracle";
-    public static final String REPORT_NAME = "reportName";
-    public static final String TIMER_AUTORIZACION_NAMES = "timerAutorizacionNames";
-    public static final String TIMER_RECEPCION_NAMES = "timerRecepcionNames";
-    public static final String TIMER_NAMES = "timerNames";
-    public static final Object TIMER_NAME = "timerName";
     public static final String TIPO_COMPROBANTE = "tipoComprobante";
     public static final String COMPROBANTE = "comprobante";
     public static final String SIRE_HOME = "sire.home";

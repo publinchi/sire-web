@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="comprobanteRetencion" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c3eaa0e8-2300-4d0d-bb98-ea16c8d01451">
-	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.zoom" value="1.5026296018031553"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="494"/>
+	<property name="ireport.y" value="317"/>
 	<parameter name="RUC" class="java.lang.String"/>
 	<parameter name="NUM_AUT" class="java.lang.String"/>
 	<parameter name="FECHA_AUT" class="java.lang.String"/>
@@ -143,8 +143,8 @@
 				</textElement>
 				<text><![CDATA[Fecha Emisión:]]></text>
 			</staticText>
-			<textField>
-				<reportElement mode="Transparent" x="184" y="346" width="185" height="13" uuid="731a68dc-7a6e-4153-a391-8b4aef4ec5a0"/>
+			<textField isStretchWithOverflow="true">
+				<reportElement mode="Transparent" x="184" y="346" width="185" height="13" isPrintWhenDetailOverflows="true" uuid="731a68dc-7a6e-4153-a391-8b4aef4ec5a0"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$P{RS_COMPRADOR}]]></textFieldExpression>
 			</textField>
