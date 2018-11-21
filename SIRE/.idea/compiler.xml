@@ -48,4 +48,12 @@
       <module name="SIRE-WS" target="1.7" />
     </bytecodeTargetLevel>
   </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="SIRE-Batch" options="-endorseddirs $PROJECT_DIR$/SIRE-Batch/target/endorsed" />
+      <module name="SIRE-Services" options="-endorseddirs $PROJECT_DIR$/SIRE-Services/target/endorsed" />
+      <module name="SIRE-WS" options="-endorseddirs $PROJECT_DIR$/SIRE-WS/target/endorsed" />
+      <module name="SIRE-Web" options="-endorseddirs $PROJECT_DIR$/SIRE-Web/target/endorsed" />
+    </option>
+  </component>
 </project>
