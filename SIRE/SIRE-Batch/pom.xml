@@ -228,9 +228,9 @@
                             <silent>true</silent>
                             <artifactItems>
                                 <artifactItem>
-                                    <groupId>com.oracle</groupId>
+                                    <groupId>oracle</groupId>
                                     <artifactId>ojdbc6</artifactId>
-                                    <version>11.2.0.2</version>
+                                    <version>11.2.0.3</version>
                                     <type>jar</type>
                                 </artifactItem>
                             </artifactItems>
