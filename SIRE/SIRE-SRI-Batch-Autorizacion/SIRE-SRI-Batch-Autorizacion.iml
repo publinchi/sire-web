@@ -33,9 +33,6 @@
     <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibXADES:1.1.7-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.4" level="project" />
     <orderEntry type="library" name="Maven: xmlsec:xmlsec:1.1:1.4.2-ADSI" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: xalan:xalan:2.7.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: xalan:serializer:2.7.1" level="project" />
-    <orderEntry type="library" scope="RUNTIME" name="Maven: xml-apis:xml-apis:1.3.04" level="project" />
     <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibAPI:1.1.7-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk16:1.45" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcmail-jdk16:1.45" level="project" />
