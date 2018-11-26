@@ -31,7 +31,7 @@ public class F1_C1_Reader1 extends CommonsItemReader {
 
     @Override
     public Object readItem() {
-        if (iterator.hasNext()) {
+        if (iterator != null && iterator.hasNext()) {
             COUNT++;
             return iterator.next();
         }
