@@ -77,7 +77,7 @@ public class Constantes {
             //home = System.getProperty("user.home");
         }
         //String urlBD = home + File.separator + "db";
-        //props.load(new FileInputStream(home + "/comprobantes.properties"));
+        //props.load(new FileInputStream(home + "/configuration.properties"));
         //urlBD = props.getProperty("database");
         return URL_BD;
     }

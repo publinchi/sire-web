@@ -16,6 +16,24 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibTSA:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.0.1" level="project" />
+    <orderEntry type="library" name="Maven: junit:junit:3.8.1" level="project" />
+    <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.2" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibTrust:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibOCSP:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibCrypt:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibCert:tests:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibCert:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: jss:jss:4.2.5" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:iaikPkcs11Wrapper:1.1.7" level="project" />
+    <orderEntry type="library" name="Maven: DNIeJCAProvider:DNIeJCAProvider:1.4" level="project" />
+    <orderEntry type="library" name="Maven: sunpkcs11:sunpkcs11:1.0" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibXADES:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: commons-lang:commons-lang:2.4" level="project" />
+    <orderEntry type="library" name="Maven: xmlsec:xmlsec:1.1:1.4.2-ADSI" level="project" />
+    <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibAPI:1.1.7-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.4" level="project" />
     <orderEntry type="module" module-name="SIRE-SRI-Signature" />
     <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibTSA:1.1.7-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-httpclient:commons-httpclient:3.0.1" level="project" />
