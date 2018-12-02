@@ -315,4 +315,20 @@ public class SoapUtil {
 
         return sw.toString();
     }
+
+    public static Object getObjectFromInputStream(InputStream inputStream, Class aClass) {
+        Object object = null;
+        try {
+            JAXBContext jaxbContext = getContextInstance(aClass);
+
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            JAXBElement root = jaxbUnmarshaller.unmarshal(new StreamSource(inputStream), aClass);
+            object = root.getValue();
+
+            //Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, object.toString());
+        } catch (JAXBException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
 }

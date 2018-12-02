@@ -18,56 +18,49 @@
         <dependency>
             <groupId>es.mityc.jumbo.adsi</groupId>
             <artifactId>MITyCLibTSA</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>es.mityc.jumbo.adsi</groupId>
             <artifactId>MITyCLibTrust</artifactId>
-            <version>1.1.7</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.mityc.jumbo.adsi</groupId>
-            <artifactId>MITyCLibPolicy</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>es.mityc.jumbo.adsi</groupId>
             <artifactId>MITyCLibOCSP</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>es.mityc.jumbo.adsi</groupId>
             <artifactId>MITyCLibCrypt</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>es.mityc.jumbo.adsi</groupId>
             <artifactId>MITyCLibCert</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.7-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>es.mityc.jumbo.adsi</groupId>
             <artifactId>MITyCLibXADES</artifactId>
-            <version>1.1.7</version>
+            <version>1.1.7-SNAPSHOT</version>
             <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>xalan</groupId>
+                    <artifactId>xalan</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>es.mityc.jumbo.adsi</groupId>
             <artifactId>MITyCLibAPI</artifactId>
-            <version>1.1.7</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.mityc.jumbo.adsi</groupId>
-            <artifactId>xmlsec</artifactId>
-            <version>1.1</version>
+            <version>1.1.7-SNAPSHOT</version>
             <type>jar</type>
             <scope>compile</scope>
         </dependency>
@@ -96,13 +89,6 @@
             <groupId>commons-logging</groupId>
             <artifactId>commons-logging</artifactId>
             <version>1.1.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>es.mityc.jumbo.adsi</groupId>
-            <artifactId>DNIeJCAProvider</artifactId>
-            <version>1.4</version>
-            <type>jar</type>
             <scope>compile</scope>
         </dependency>
     </dependencies>
