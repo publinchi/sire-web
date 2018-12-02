@@ -352,7 +352,7 @@ public class ReporteUtil {
             home = System.getProperty("user.home");
         }
         Properties runtimeParameters = new Properties();
-        runtimeParameters.load(new FileInputStream(home + "/comprobantes.properties"));
+        runtimeParameters.load(new FileInputStream(home + "/configuration.properties"));
         String pathReports = runtimeParameters.getProperty("pathReports");
         param.put("SUBREPORT_DIR", pathReports);
         param.put("SUBREPORT_PAGOS", pathReports);
