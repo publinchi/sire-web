@@ -65,6 +65,7 @@
             <property name="eclipselink.logging.level" value="FINE"/>
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             <property name="eclipselink.logging.parameters" value="true"/>
+            <!--
             <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="sql-script"/>
             <property name="eclipselink.application-location" value="/home/pestupinan/NetBeansProjects/SIRE/SIRE-EE/SIRE/SIRE-WS/target" />
@@ -73,6 +74,7 @@
             <property name="javax.persistence.jdbc.user" value="sa"/>
             <property name="javax.persistence.jdbc.password" value="yourStrong(!)Password"/>
             <property name="javax.persistence.jdbc.driver" value="com.microsoft.sqlserver.jdbc.SQLServerDriver"/>
+            -->
         </properties>
     </persistence-unit>
 </persistence>

@@ -19,7 +19,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
-          <factory-entry name="com.sire_SIRE-WS_war_1.0.0PU" />
+          <factory-entry name="com.sire_SIRE-WS_war_1.0.0PU" value="9969c8fc-82f1-480b-bc31-c097369fdfeb" />
         </datasource-mapping>
         <naming-strategy-map />
         <deploymentDescriptor name="persistence.xml" url="file://$MODULE_DIR$/src/main/resources/META-INF/persistence.xml" />
