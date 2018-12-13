@@ -51,7 +51,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "FacCatalogoPrecioD.findByFechaModPrecio2", query = "SELECT f FROM FacCatalogoPrecioD f WHERE f.fechaModPrecio2 = :fechaModPrecio2"),
     @NamedQuery(name = "FacCatalogoPrecioD.findByFechaModPrecio3", query = "SELECT f FROM FacCatalogoPrecioD f WHERE f.fechaModPrecio3 = :fechaModPrecio3"),
     @NamedQuery(name = "FacCatalogoPrecioD.findByAnteriorPrecioVenta", query = "SELECT f FROM FacCatalogoPrecioD f WHERE f.anteriorPrecioVenta = :anteriorPrecioVenta"),
-    @NamedQuery(name = "FacCatalogoPrecioD.findByAnteriorFechaPrecio", query = "SELECT f FROM FacCatalogoPrecioD f WHERE f.anteriorFechaPrecio = :anteriorFechaPrecio")})
+    @NamedQuery(name = "FacCatalogoPrecioD.findByAnteriorFechaPrecio", query = "SELECT f FROM FacCatalogoPrecioD f WHERE f.anteriorFechaPrecio = :anteriorFechaPrecio"),
+    @NamedQuery(name = "FacCatalogoPrecioD.findByAnteriorCodEmpresaCodCatalogo", query = "SELECT f FROM FacCatalogoPrecioD f WHERE f.facCatalogoPrecioDPK.codEmpresa = :codEmpresa and f.facCatalogoPrecioDPK.codCatalogo = :codCatalogo")})
 public class FacCatalogoPrecioD implements Serializable {
 
     private static final long serialVersionUID = 1L;
