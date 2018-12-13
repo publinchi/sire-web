@@ -83,7 +83,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setDireccionComprador(rs.getString(Constant.DIRECCION_COMPRADOR));
         infoFactura.setDirEstablecimiento(rs.getString(Constant.DIRECCION_ESTABLECIMIENTO));
         String oldDate = rs.getString(Constant.FECHA_FACTURA);
-        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        LocalDateTime datetime = transformDate(oldDate);
         String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         infoFactura.setFechaEmision(newDate);
         infoFactura.setIdentificacionComprador(rs.getString(Constant.IDENTIFICACION_COMPRADOR));
@@ -269,7 +269,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         NotaCredito.InfoNotaCredito infoNotaCredito = new NotaCredito.InfoNotaCredito();
 
         String oldDate = rs.getString(Constant.FECHA_EMISION);
-        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        LocalDateTime datetime = transformDate(oldDate);
         String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         infoNotaCredito.setFechaEmision(newDate);
 
@@ -404,7 +404,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         /* Información Nota de Débito */
         NotaDebito.InfoNotaDebito infoNotaDebito = new NotaDebito.InfoNotaDebito();
         String oldDate = rs.getString(Constant.FECHA_EMISION);
-        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        LocalDateTime datetime = transformDate(oldDate);
         String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         infoNotaDebito.setFechaEmision(newDate);
         infoNotaDebito.setDirEstablecimiento(rs.getString(Constant.DIRECCION_ESTABLECIMIENTO));
@@ -416,7 +416,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoNotaDebito.setCodDocModificado(rs.getString(Constant.COD_DOC_MODIFICADO));
         infoNotaDebito.setNumDocModificado(rs.getString(Constant.NUM_DOC_MODIFICADO));
         String oldDate1 = rs.getString(Constant.FECHA_EMISION_DOCSUSTENTO);
-        LocalDateTime datetime1 = LocalDateTime.parse(oldDate1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        LocalDateTime datetime1 = transformDate(oldDate1);
         String newDate1 = datetime1.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         infoNotaDebito.setFechaEmisionDocSustento(newDate1);
         infoNotaDebito.setTotalSinImpuestos(rs.getBigDecimal(Constant.TOTAL_SIN_IMPUESTOS));
@@ -551,12 +551,12 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoGuiaRemision.setContribuyenteEspecial(rs.getString(Constant.CONTRIBUYENTE_ESPECIAL));
 
         String oldDate = rs.getString(Constant.FECHA_INICIO_TRANSPORTE);
-        LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        LocalDateTime datetime = transformDate(oldDate);
         String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         infoGuiaRemision.setFechaIniTransporte(newDate);
 
         String oldDate1 = rs.getString(Constant.FECHA_FIN_TRANSPORTE);
-        LocalDateTime datetime1 = LocalDateTime.parse(oldDate1, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        LocalDateTime datetime1 = transformDate(oldDate1);
         String newDate1 = datetime1.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         infoGuiaRemision.setFechaFinTransporte(newDate1);
 
@@ -633,7 +633,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 destinatario.setNumAutDocSustento(resultSet.getString(Constant.NUMAUTDOCSUSTENTO));
                 String oldDate2 = resultSet.getString(Constant.FECHAEMISIONDOCSUSTENTO);
                 if(oldDate2 != null){
-                    LocalDateTime datetime2 = LocalDateTime.parse(oldDate2, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+                    LocalDateTime datetime2 = transformDate(oldDate2);
                     String newDate2 = datetime2.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                     destinatario.setFechaEmisionDocSustento(newDate2);
                 }
@@ -725,7 +725,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 impuesto.setCodigo(resultSet.getString(Constant.CODIGO));
                 impuesto.setCodigoRetencion(resultSet.getString(Constant.CODIGORETENCION));
                 String oldDate = resultSet.getString(Constant.FECHAEMISIONDOCSUSTENTO);
-                LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+                LocalDateTime datetime = transformDate(oldDate);
                 String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
                 impuesto.setFechaEmisionDocSustento(newDate);
                 impuesto.setNumDocSustento(resultSet.getString(Constant.NUMDOCSUSTENTO));
@@ -760,7 +760,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             infoCompRetencion.setContribuyenteEspecial(rs.getString(Constant.CONTRIBUYENTE_ESPECIAL));
             infoCompRetencion.setDirEstablecimiento(rs.getString(Constant.DIRECCION_ESTABLECIMIENTO));
             String oldDate = rs.getString(Constant.FECHA_RETENCION);
-            LocalDateTime datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+            LocalDateTime datetime = transformDate(oldDate);
             String newDate = datetime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             infoCompRetencion.setFechaEmision(newDate);
             infoCompRetencion.setIdentificacionSujetoRetenido(rs.getString(Constant.IDENTIFICACION_SUJETO_RETENIDO));
@@ -863,5 +863,15 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e){
             log.log(Level.ERROR, e);
         }
+    }
+
+    private LocalDateTime transformDate(CharSequence oldDate){
+        LocalDateTime datetime;
+        try {
+            datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S"));
+        } catch (java.time.format.DateTimeParseException dtpe) {
+            datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        }
+        return datetime;
     }
 }
