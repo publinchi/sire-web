@@ -7,7 +7,7 @@
         <packaging>war</packaging>
       </options>
     </properties>
-    <root id="archive" name="SIRE-WS-1.0.0.war">
+    <root id="archive" name="SIRE-WS-1.0.1.war">
       <element id="artifact" artifact-name="SIRE-WS:war exploded" />
     </root>
   </artifact>

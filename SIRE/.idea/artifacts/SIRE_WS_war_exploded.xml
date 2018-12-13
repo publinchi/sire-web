@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="SIRE-WS:war exploded">
-    <output-path>$PROJECT_DIR$/SIRE-WS/target/SIRE-WS-1.0.0</output-path>
+    <output-path>$PROJECT_DIR$/SIRE-WS/target/SIRE-WS-1.0.1</output-path>
     <properties id="maven-jee-properties">
       <options>
         <exploded>true</exploded>
@@ -14,7 +14,7 @@
           <element id="module-output" name="SIRE-WS" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="SIRE-Entities-1.0.1.jar">
+          <element id="archive" name="SIRE-Entities-1.0.2.jar">
             <element id="module-output" name="SIRE-Entities" />
           </element>
           <element id="library" level="project" name="Maven: org.eclipse.persistence:eclipselink:2.5.2" />
@@ -43,7 +43,7 @@
         </element>
       </element>
       <element id="directory" name="META-INF">
-        <element id="file-copy" path="$PROJECT_DIR$/SIRE-WS/target/SIRE-WS-1.0.0/META-INF/MANIFEST.MF" />
+        <element id="file-copy" path="$PROJECT_DIR$/SIRE-WS/target/SIRE-WS-1.0.1/META-INF/MANIFEST.MF" />
       </element>
       <element id="javaee-facet-resources" facet="SIRE-WS/web/Web" />
     </root>
