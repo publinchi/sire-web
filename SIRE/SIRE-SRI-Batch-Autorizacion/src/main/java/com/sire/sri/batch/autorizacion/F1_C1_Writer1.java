@@ -132,9 +132,9 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                                 String numeroComprobantes = respuestaComprobante.getNumeroComprobantes();
 
                                 log.info("Secuencial: {}, Estado: {}, FechaAutorizacion: {}"
-                                                + ", ClaveAccesoConsultada: {}, NumeroComprobantes: {}"
+                                                + ", ClaveAccesoConsultada: {}, NumeroComprobantes: {}, Lote: {}"
                                         , secuencial, estado, fechaAutorizacion, claveAccesoConsultada
-                                        , numeroComprobantes);
+                                        , numeroComprobantes, lote.getClaveAcceso());
 
                                 String identificador = null;
                                 String tipo = null;

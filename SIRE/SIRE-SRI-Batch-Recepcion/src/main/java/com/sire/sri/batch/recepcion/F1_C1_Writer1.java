@@ -433,8 +433,9 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 String tipo = c.getMensajes().getMensaje().get(0).getTipo();
 
                 log.log(Level.INFO,"Secuencial: {}, Estado: {}, ClaveAcceso: {}, Identificador: {}, " +
-                                "InformacionAdicional: {}, Mensaje: {}, Tipo: {}",
-                        secuencial, estado, claveAccesoRecibida, identificador, informacionAdicional, mensaje, tipo);
+                                "InformacionAdicional: {}, Mensaje: {}, Tipo: {}, Lote: {}",
+                        secuencial, estado, claveAccesoRecibida, identificador, informacionAdicional, mensaje, tipo
+                        , claveAccesoLote);
 
                 StringBuffer motivo = new StringBuffer();
                 motivo.append(", MOTIVO_SRI = '").append(identificador).append(":").append(tipo).append(":")

@@ -7,6 +7,8 @@ package com.sire.ws.service;
 
 import com.sire.entities.FacCatalogoPrecioC;
 import com.sire.entities.FacCatalogoPrecioCPK;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -93,10 +95,26 @@ public class FacCatalogoPrecioCFacadeREST extends AbstractFacade<FacCatalogoPrec
     }
 
     @GET
+    @Path("aux")
+    @Produces({"application/json"})
+    public List<FacCatalogoPrecioC> findAllAux() {
+        List<FacCatalogoPrecioC> facCatalogoPrecioCS = super.findAll();
+        return getFacCatalogoPrecioCS(facCatalogoPrecioCS);
+    }
+
+    @GET
     @Path("{from}/{to}")
     @Produces({"application/xml", "application/json"})
     public List<FacCatalogoPrecioC> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
+    }
+
+    @GET
+    @Path("aux/{from}/{to}")
+    @Produces({"application/json"})
+    public List<FacCatalogoPrecioC> findRangeAux(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+        List<FacCatalogoPrecioC> facCatalogoPrecioCS = super.findRange(new int[]{from, to});
+        return getFacCatalogoPrecioCS(facCatalogoPrecioCS);
     }
 
     @GET
@@ -110,5 +128,17 @@ public class FacCatalogoPrecioCFacadeREST extends AbstractFacade<FacCatalogoPrec
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
+    private List<FacCatalogoPrecioC> getFacCatalogoPrecioCS(List<FacCatalogoPrecioC> facCatalogoPrecioCS) {
+        List<FacCatalogoPrecioC> facCatalogoPrecioCS1 = new ArrayList<>();
+        for (FacCatalogoPrecioC fcpc : facCatalogoPrecioCS) {
+            FacCatalogoPrecioC facCatalogoPrecioC = new FacCatalogoPrecioC(fcpc.getFacCatalogoPrecioCPK());
+            facCatalogoPrecioC.setDescCatalogo(fcpc.getDescCatalogo());
+            facCatalogoPrecioC.setFechaDesdeVigencia(fcpc.getFechaDesdeVigencia());
+            facCatalogoPrecioC.setFechaHastaVigencia(fcpc.getFechaHastaVigencia());
+
+            facCatalogoPrecioCS1.add(facCatalogoPrecioC);
+        }
+        return facCatalogoPrecioCS1;
+    }
 }
