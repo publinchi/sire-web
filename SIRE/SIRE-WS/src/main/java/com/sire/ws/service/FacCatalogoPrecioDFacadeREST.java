@@ -89,16 +89,42 @@ public class FacCatalogoPrecioDFacadeREST extends AbstractFacade<FacCatalogoPrec
     @Produces({"application/json"})
     public FacCatalogoPrecioD find(@PathParam("id") PathSegment id) {
         com.sire.entities.FacCatalogoPrecioDPK key = getPrimaryKey(id);
-        return super.find(key);
+        FacCatalogoPrecioD facCatalogoPrecioD = super.find(key);
+        FacCatalogoPrecioD facCatalogoPrecioD1 = new FacCatalogoPrecioD();
+        facCatalogoPrecioD1.setAnteriorFechaPrecio(facCatalogoPrecioD.getAnteriorFechaPrecio());
+        facCatalogoPrecioD1.setAnteriorPrecioVenta(facCatalogoPrecioD.getAnteriorPrecioVenta());
+        facCatalogoPrecioD1.setAnteriorUsuarioPrecio(facCatalogoPrecioD.getAnteriorUsuarioPrecio());
+        facCatalogoPrecioD1.setAuxPrecio(facCatalogoPrecioD.getAuxPrecio());
+        facCatalogoPrecioD1.setCantidadRequerida(facCatalogoPrecioD.getCantidadRequerida());
+        facCatalogoPrecioD1.setCodDivisa1(facCatalogoPrecioD.getCodDivisa1());
+        facCatalogoPrecioD1.setCodDivisa2(facCatalogoPrecioD.getCodDivisa2());
+        facCatalogoPrecioD1.setCodDivisa3(facCatalogoPrecioD.getCodDivisa3());
+        facCatalogoPrecioD1.setCodUnidad(facCatalogoPrecioD.getCodUnidad());
+        facCatalogoPrecioD1.setComentario(facCatalogoPrecioD.getComentario());
+        facCatalogoPrecioD1.setFacCatalogoPrecioC(new FacCatalogoPrecioC(facCatalogoPrecioD.getFacCatalogoPrecioC()
+                .getFacCatalogoPrecioCPK()));
+        facCatalogoPrecioD1.setFacCatalogoPrecioDPK(facCatalogoPrecioD.getFacCatalogoPrecioDPK());
+        facCatalogoPrecioD1.setFactor(facCatalogoPrecioD.getFactor());
+        facCatalogoPrecioD1.setFechaModPrecio1(facCatalogoPrecioD.getFechaModPrecio1());
+        facCatalogoPrecioD1.setFechaModPrecio2(facCatalogoPrecioD.getFechaModPrecio2());
+        facCatalogoPrecioD1.setFechaModPrecio3(facCatalogoPrecioD.getFechaModPrecio3());
+        facCatalogoPrecioD1.setOperador(facCatalogoPrecioD.getOperador());
+        facCatalogoPrecioD1.setPorcDescuento(facCatalogoPrecioD.getPorcDescuento());
+        facCatalogoPrecioD1.setPrecioVenta1(facCatalogoPrecioD.getPrecioVenta1());
+        facCatalogoPrecioD1.setPrecioVenta2(facCatalogoPrecioD.getPrecioVenta2());
+        facCatalogoPrecioD1.setPrecioVenta3(facCatalogoPrecioD.getPrecioVenta3());
+        facCatalogoPrecioD1.setUsuario(new GnrUsuarios(facCatalogoPrecioD.getUsuario().getNombreUsuario()));
+
+        return facCatalogoPrecioD1;
     }
 
     @GET
     @Path("{codEmpresa}/{codCatalogo}/{from}/{to}")
     @Produces({"application/json"})
     public List<FacCatalogoPrecioD> findAllByCodEmpresaCodCatalogo(@PathParam("codEmpresa") String codEmpresa,
-                                                                   @PathParam("codCatalogo") String codCatalogo,
-                                                                   @PathParam("from") Integer from,
-                                                                   @PathParam("to") Integer to) {
+            @PathParam("codCatalogo") String codCatalogo,
+            @PathParam("from") Integer from,
+            @PathParam("to") Integer to) {
         int[] range = new int[]{from, to};
         List<FacCatalogoPrecioD> facCatalogoPrecioDS = new ArrayList<>();
         TypedQuery<FacCatalogoPrecioD> query = em.createNamedQuery(
