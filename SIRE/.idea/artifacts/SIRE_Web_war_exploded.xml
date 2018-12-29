@@ -15,7 +15,7 @@
         </element>
         <element id="directory" name="lib">
           <element id="library" level="project" name="Maven: org.primefaces:primefaces:6.0" />
-          <element id="archive" name="SIRE-Entities-1.0.2.jar">
+          <element id="archive" name="SIRE-Entities-1.1.0.jar">
             <element id="module-output" name="SIRE-Entities" />
           </element>
           <element id="library" level="project" name="Maven: org.eclipse.persistence:eclipselink:2.5.2" />

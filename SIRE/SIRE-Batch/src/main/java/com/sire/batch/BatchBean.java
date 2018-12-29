@@ -9,6 +9,13 @@ import com.sire.batch.constant.Constant;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersBuilder;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
 import java.util.Collection;
@@ -291,10 +298,28 @@ public class BatchBean {
             if(tipoComprobante != null)
                 runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
 
-            JobOperator jobOperator = BatchRuntime.getJobOperator();
-            Long executionId = jobOperator.start(jobName, runtimeParameters);
-            jobOperator.getJobExecution(executionId);
+            String batchImplementation = runtimeParameters.getProperty(Constant.BATCH_IMPLEMENTATION) ;
 
+            log.log(Level.INFO, "batchImplementation: {}", batchImplementation);
+
+            if(batchImplementation == null || (batchImplementation != null && batchImplementation.equals(Constant.JEE))){
+                JobOperator jobOperator = BatchRuntime.getJobOperator();
+                Long executionId = jobOperator.start(jobName, runtimeParameters);
+                jobOperator.getJobExecution(executionId);
+            } else if(batchImplementation.equals(Constant.SPRING)){
+                String[] str = {"context.xml", "META-INF/batch-jobs/*.xml"};
+                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(str);
+                Job job = (Job) applicationContext.getBean(jobName);
+                JobLauncher jobLauncher = (JobLauncher) applicationContext.getBean("jobLauncher");
+                try{
+                    JobParameters jobParameters = new JobParametersBuilder()
+                            .addLong("time",System.currentTimeMillis()).toJobParameters();
+                    JobExecution execution = jobLauncher.run(job, jobParameters);
+                    log.log(Level.INFO, "Job Execution Status: {}", execution.getStatus());
+                }catch(Exception e){
+                    log.log(Level.ERROR, e.getCause().getMessage());
+                }
+            }
         } catch (IOException | JobStartException ex) {
             log.log(Level.ERROR, ex.getCause().getMessage());
         }
