@@ -16,8 +16,10 @@
     <properties>
         <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
-    
+
     <dependencies>
         <dependency>
             <groupId>javax.batch</groupId>
@@ -137,7 +139,7 @@
         <dependency>
             <groupId>javax</groupId>
             <artifactId>javaee-api</artifactId>
-            <version>7.0</version>
+            <version>8.0</version>
             <type>jar</type>
         </dependency>
         <dependency>
@@ -160,8 +162,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                     <compilerArguments>
                         <endorseddirs>${endorsed.dir}</endorseddirs>
                     </compilerArguments>
@@ -209,7 +211,7 @@
                                 <artifactItem>
                                     <groupId>fish.payara.distributions</groupId>
                                     <artifactId>payara</artifactId>
-                                    <version>5.182</version>
+                                    <version>5.184</version>
                                     <type>zip</type>
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${session.executionRootDirectory}/target</outputDirectory>
@@ -224,7 +226,7 @@
                             <goal>copy</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${session.executionRootDirectory}/target/payara41/glassfish/domains/payaradomain/lib</outputDirectory>
+                            <outputDirectory>${session.executionRootDirectory}/target/payara5/glassfish/domains/production/lib</outputDirectory>
                             <silent>true</silent>
                             <artifactItems>
                                 <artifactItem>
@@ -244,12 +246,12 @@
                 <version>2.20.1</version>
                 <configuration>
                     <environmentVariables>
-                        <GLASSFISH_HOME>${session.executionRootDirectory}/target/payara41</GLASSFISH_HOME>
+                        <GLASSFISH_HOME>${session.executionRootDirectory}/target/payara5</GLASSFISH_HOME>
                     </environmentVariables>
                     <!-- This needs tuning --> 
                     <systemPropertyVariables>
                         <!--<resourcesXml>src/test/resources/glassfish-resources.xml</resourcesXml>-->
-                        <glassfishRemote_gfHome>${session.executionRootDirectory}/target/payara41</glassfishRemote_gfHome>
+                        <glassfishRemote_gfHome>${session.executionRootDirectory}/target/payara5</glassfishRemote_gfHome>
                         <javaEEServer>payara-remote</javaEEServer>
                         <arquillian.launch>payara</arquillian.launch>
                     </systemPropertyVariables>

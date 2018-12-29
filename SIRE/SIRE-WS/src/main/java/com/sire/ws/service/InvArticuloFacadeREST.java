@@ -163,13 +163,49 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     @GET
     @Path("/findByArticuloEmpresa/{codArticulo}/{codEmpresa}")
     @Produces({"application/json"})
-    public List<InvArticulo> findByArticuloEmpresa(@PathParam("codArticulo") String codArticulo, @PathParam("codEmpresa") String codEmpresa) {
+    public InvArticulo findByArticuloEmpresa(@PathParam("codArticulo") String codArticulo, @PathParam("codEmpresa") String codEmpresa) {
         TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findByArticuloEmpresa", InvArticulo.class);
         query.setParameter("codArticulo", Integer.valueOf(codArticulo));
         query.setParameter("codEmpresa", codEmpresa);
-        List<InvArticulo> retorno = query.getResultList();
+        InvArticulo invArticulo = query.getSingleResult();
 
-        return retorno;
+        InvArticulo invArticuloNew = new InvArticulo(invArticulo.getInvArticuloPK(),
+                invArticulo.getNombreArticulo(),
+                invArticulo.getPagaIva(),
+                invArticulo.getUnidadIng(),
+                invArticulo.getUnidadEgr(),
+                invArticulo.getPesoArticulo(),
+                invArticulo.getVolumenArticulo(),
+                invArticulo.getCostoPromedio(),
+                invArticulo.getFechaCreacion(),
+                invArticulo.getCostoUltimaCompra());
+
+        return invArticuloNew;
+    }
+
+    @GET
+    @Path("/findByArticuloEmpresaEstado/{codArticulo}/{codEmpresa}/{estado}")
+    @Produces({"application/json"})
+    public InvArticulo findByArticuloEmpresaEstado(@PathParam("codArticulo") String codArticulo,
+            @PathParam("codEmpresa") String codEmpresa, @PathParam("estado") String estado) {
+        TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findByArticuloEmpresaEstado", InvArticulo.class);
+        query.setParameter("codArticulo", Integer.valueOf(codArticulo));
+        query.setParameter("codEmpresa", codEmpresa);
+        query.setParameter("estado", estado);
+        InvArticulo invArticulo = query.getSingleResult();
+
+        InvArticulo invArticuloNew = new InvArticulo(invArticulo.getInvArticuloPK(),
+                invArticulo.getNombreArticulo(),
+                invArticulo.getPagaIva(),
+                invArticulo.getUnidadIng(),
+                invArticulo.getUnidadEgr(),
+                invArticulo.getPesoArticulo(),
+                invArticulo.getVolumenArticulo(),
+                invArticulo.getCostoPromedio(),
+                invArticulo.getFechaCreacion(),
+                invArticulo.getCostoUltimaCompra());
+
+        return invArticuloNew;
     }
 
     @GET
