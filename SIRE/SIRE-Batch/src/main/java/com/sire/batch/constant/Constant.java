@@ -19,4 +19,7 @@ public class Constant {
     public static final String TIMER_NAMES = "timerNames";
     public static final Object TIMER_NAME = "timerName";
     public static final String TIPO_COMPROBANTE = "tipoComprobante";
+    public static final String BATCH_IMPLEMENTATION = "batchImplementation";
+    public static final String SPRING = "spring";
+    public static final String JEE = "jee";
 }
