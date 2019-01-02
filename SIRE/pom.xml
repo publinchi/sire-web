@@ -11,7 +11,7 @@
         <SIRE-Commons.version>1.0.1</SIRE-Commons.version>
         <SIRE-Entities.version>1.1.0</SIRE-Entities.version>
         <SIRE-RS-Client.version>1.0.0</SIRE-RS-Client.version>
-        <SIRE-Services.version>1.1.0</SIRE-Services.version>
+        <SIRE-Services.version>1.1.1</SIRE-Services.version>
         <SIRE-Services-API.version>1.1.0</SIRE-Services-API.version>
         <SIRE-Soap.version>1.2.1</SIRE-Soap.version>
         <SIRE-SRI-Batch-Autorizacion.version>1.3.1</SIRE-SRI-Batch-Autorizacion.version>
@@ -23,7 +23,7 @@
         <SIRE-SRI-WSClient.version>1.1.0</SIRE-SRI-WSClient.version>
         <SIRE-Web.version>1.0.1</SIRE-Web.version>
         <SIRE-WS.version>1.2.0</SIRE-WS.version>
-        <SIRE-EE.version>1.3.0</SIRE-EE.version>
+        <SIRE-EE.version>1.3.1</SIRE-EE.version>
     </properties>
     <modules>
         <module>SIRE-Batch</module>
