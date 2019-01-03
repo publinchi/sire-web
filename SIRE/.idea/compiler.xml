@@ -34,7 +34,7 @@
       <module name="SIRE-EE" target="1.8" />
       <module name="SIRE-Entities" target="1.7" />
       <module name="SIRE-RS-Client" target="1.7" />
-      <module name="SIRE-Services" target="1.7" />
+      <module name="SIRE-Services" target="1.8" />
       <module name="SIRE-Services-API" target="1.7" />
       <module name="SIRE-Soap" target="1.8" />
       <module name="SIRE-SRI-Batch-Autorizacion" target="1.8" />
