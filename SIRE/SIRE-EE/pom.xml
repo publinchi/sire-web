@@ -54,12 +54,7 @@
         <finalName>${project.artifactId}</finalName>
     </build>
     <dependencies>
-        <dependency>
-            <groupId>com.sire</groupId>
-            <artifactId>SIRE-Batch</artifactId>
-            <version>${SIRE-Batch.version}</version>
-            <type>war</type>
-        </dependency>
+        <!-- Opcionales -->
         <dependency>
             <groupId>com.sire</groupId>
             <artifactId>SIRE-Services</artifactId>
@@ -109,9 +104,29 @@
             <type>jar</type>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
-            <version>5.1.3.RELEASE</version>
+            <groupId>com.sire.sri</groupId>
+            <artifactId>SIRE-SRI-Reports</artifactId>
+            <version>${SIRE-SRI-Reports.version}</version>
+            <type>jar</type>
+        </dependency>
+        <!-- Obligatorios -->
+        <dependency>
+            <groupId>javax</groupId>
+            <artifactId>javaee-api</artifactId>
+            <version>8.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.10.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.sire</groupId>
+            <artifactId>SIRE-Batch</artifactId>
+            <version>${SIRE-Batch.version}</version>
+            <type>war</type>
         </dependency>
     </dependencies>
 </project>
