@@ -57,8 +57,6 @@ public class BatchBean {
     @PostConstruct
     public void init() {
         _init();
-
-        loadTimers();
     }
 
     private void _init(){
@@ -78,6 +76,8 @@ public class BatchBean {
         log.log(Level.INFO, "applicationName -> {}", applicationName);
         log.log(Level.INFO, "moduleName -> {}", moduleName);
         log.info("Configuration Properties --> " + comprobantePropertiesPath);
+
+        loadTimers();
     }
 
     public void loadTimers() {
@@ -133,12 +133,13 @@ public class BatchBean {
         try {
             Properties runtimeParameters = new Properties();
             runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
+            boolean persistent = Boolean.parseBoolean(runtimeParameters.getProperty(timerName + ".persistent"));
             String minute = runtimeParameters.getProperty(timerName + ".minute");
             String hour = runtimeParameters.getProperty(timerName + ".hour");
             String tipoComprobante = runtimeParameters.getProperty(timerName + "." + Constant.TIPO_COMPROBANTE);
             String jobName = runtimeParameters.getProperty(timerName + "." + Constant.JOB_NAME);
             String reportName = runtimeParameters.getProperty(timerName + "." + Constant.REPORT_NAME);
-            final TimerConfig timerConfig = new TimerConfig(timerName, false);
+            final TimerConfig timerConfig = new TimerConfig(timerName, persistent);
             HashMap hashMap = new HashMap<String, String>();
             hashMap.put(Constant.TIMER_NAME, timerName);
             hashMap.put(Constant.JOB_NAME, jobName);
