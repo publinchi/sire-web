@@ -90,9 +90,11 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setImporteTotal(rs.getBigDecimal(Constant.IMPORTE_TOTAL));
         infoFactura.setMoneda(rs.getString(Constant.MONEDA));
         infoFactura.setObligadoContabilidad(rs.getString(Constant.LLEVA_CONTABILIDAD));
+        infoFactura.setPlaca(rs.getString(Constant.PLACA));
         infoFactura.setPropina(rs.getBigDecimal(Constant.PROPINA));
         infoFactura.setRazonSocialComprador(rs.getString(Constant.RAZON_SOCIAL_COMPRADOR));
         infoFactura.setTipoIdentificacionComprador(rs.getString(Constant.TIPO_IDENTIFICACION_COMPRADOR));
+        infoFactura.setTotalSubsidio(rs.getBigDecimal(Constant.TOTAL_SUBSIDIO));
         TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
 
         TotalImpuesto totalImpuesto1 = new TotalImpuesto();
@@ -205,6 +207,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 impuesto.setValor(resultSet.getBigDecimal(Constant.VALOR));
                 impuestos.getImpuesto().add(impuesto);
                 detalle.setImpuestos(impuestos);
+                detalle.setPrecioSinSubsidio(resultSet.getBigDecimal(Constant.PRECIO_SIN_SUBSIDIO));
                 detalle.setPrecioTotalSinImpuesto(resultSet.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
                 detalle.setPrecioUnitario(resultSet.getBigDecimal(Constant.PRECIO_UNITARIO));
                 detalles.getDetalle().add(detalle);
