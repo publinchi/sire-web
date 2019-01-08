@@ -80,6 +80,7 @@ public class Constant {
     public static final String VALOR_IVA_SIN_IVA = "VALOR_IVA_SIN_IVA";
     public static final String TOTAL_DESCUENTOS = "TOTAL_DESCUENTOS";
     public static final String TOTAL_SIN_IMPUESTOS = "TOTAL_SIN_IMPUESTOS";
+    public static final String TOTAL_SUBSIDIO = "TOTAL_SUBSIDIO";
     public static final String CODIGO = "CODIGO";
     public static final String PLAZO = "PLAZO";
     public static final String VALOR_FORMA_PAGO = "VALOR_FORMA_PAGO";
@@ -96,6 +97,7 @@ public class Constant {
     public static final String NOMBRE_ARTICULO = "NOMBRE_ARTICULO";
     public static final String DESCUENTO = "DESCUENTO";
     public static final String TARIFA = "TARIFA";
+    public static final String PRECIO_SIN_SUBSIDIO = "PRECIO_SIN_SUBSIDIO";
     public static final String PRECIO_TOTAL_SIN_IMPUESTOS = "PRECIO_TOTAL_SIN_IMPUESTOS";
     public static final String PRECIO_UNITARIO = "PRECIO_UNITARIO";
     public static final String FECHA_EMISION = "FECHA_EMISION";
@@ -157,7 +159,7 @@ public class Constant {
             + "TOTAL_SIN_IMPUESTOS, TOTAL_DESCUENTOS, PROPINA, IMPORTE_TOTAL, "
             + "CLAVE_ACCESO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, BASE_IMPONIBLE, "
             + "VALOR, MONEDA, OBSERVACION, BASE_IMPONIBLE_SIN_IVA, CODIGO_IMPUESTO_SIN_IVA, "
-            + "CODIGO_PORCENTAJE_SIN_IVA, TARIFA_IVA_SIN_IVA, VALOR_IVA_SIN_IVA "
+            + "CODIGO_PORCENTAJE_SIN_IVA, TARIFA_IVA_SIN_IVA, VALOR_IVA_SIN_IVA, PLACA "
             + "FROM ";
 
     public static final String FACTURA_C_SQL_MICROSOFT_SQL_SERVER = "SELECT TOP 20 COD_EMPRESA, RUC_EMPRESA, RAZON_SOCIAL_EMPRESA, "
@@ -175,7 +177,7 @@ public class Constant {
     public static final String FACTURA_D_SQL = "SELECT COD_EMPRESA, COD_DOCUMENTO, "
             + "NUM_DOCUMENTO_INTERNO, COD_ARTICULO, NOMBRE_ARTICULO, CANTIDAD, "
             + "PRECIO_UNITARIO, DESCUENTO, CODIGO_IMPUESTO, CODIGO_PORCENTAJE, TARIFA, "
-            + "BASE_IMPONIBLE, VALOR, PRECIO_TOTAL_SIN_IMPUESTOS "
+            + "BASE_IMPONIBLE, VALOR, PRECIO_TOTAL_SIN_IMPUESTOS, PRECIO_SIN_SUBSIDIO "
             + "FROM V_FACTURA_ELECTRONICA_D "
             + "WHERE ";
 
