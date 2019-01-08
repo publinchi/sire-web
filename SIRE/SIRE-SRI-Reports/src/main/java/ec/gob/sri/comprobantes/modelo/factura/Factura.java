@@ -296,7 +296,7 @@ public class Factura {
     }
 
     @XmlAccessorType(XmlAccessType.FIELD)
-    @XmlType(name = "", propOrder = {"fechaEmision", "dirEstablecimiento", "contribuyenteEspecial", "obligadoContabilidad", "tipoIdentificacionComprador", "guiaRemision", "razonSocialComprador", "identificacionComprador", "direccionComprador", "totalSinImpuestos", "totalSubsidio", "totalDescuento", "totalConImpuestos", "compensaciones", "propina", "importeTotal", "moneda", "pagos"})
+    @XmlType(name = "", propOrder = {"fechaEmision", "dirEstablecimiento", "contribuyenteEspecial", "obligadoContabilidad", "tipoIdentificacionComprador", "guiaRemision", "razonSocialComprador", "identificacionComprador", "direccionComprador", "totalSinImpuestos", "totalSubsidio", "totalDescuento", "totalConImpuestos", "compensaciones", "propina", "importeTotal", "moneda", "placa", "pagos"})
     public static class InfoFactura {
 
         @XmlElement(required = true)
@@ -327,6 +327,7 @@ public class Factura {
         @XmlElement(required = true)
         protected BigDecimal importeTotal;
         protected String moneda;
+        protected String placa;
         protected Pago pagos;
 
         public String getFechaEmision() {
@@ -471,6 +472,14 @@ public class Factura {
 
         public void setMoneda(String value) {
             this.moneda = value;
+        }
+
+        public String getPlaca() {
+            return this.placa;
+        }
+
+        public void setPlaca(String value) {
+            this.placa = value;
         }
 
         @XmlAccessorType(XmlAccessType.FIELD)
