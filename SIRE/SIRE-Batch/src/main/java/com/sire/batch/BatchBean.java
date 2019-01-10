@@ -18,10 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import javax.annotation.*;
 import javax.batch.operations.JobOperator;
 import javax.batch.operations.JobStartException;
@@ -313,12 +310,22 @@ public class BatchBean {
                 Job job = (Job) applicationContext.getBean(jobName);
                 JobLauncher jobLauncher = (JobLauncher) applicationContext.getBean("jobLauncher");
                 try{
-                    JobParameters jobParameters = new JobParametersBuilder()
-                            .addLong("time",System.currentTimeMillis()).toJobParameters();
+                    JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+
+                    Enumeration<String> enums = (Enumeration<String>) runtimeParameters.propertyNames();
+                    while (enums.hasMoreElements()) {
+                        String key = enums.nextElement();
+                        String value = runtimeParameters.getProperty(key);
+                        jobParametersBuilder.addString(key, value);
+                    }
+
+                    jobParametersBuilder.addLong("time",System.currentTimeMillis());
+
+                    JobParameters jobParameters = jobParametersBuilder.toJobParameters();
                     JobExecution execution = jobLauncher.run(job, jobParameters);
                     log.log(Level.INFO, "Job Execution Status: {}", execution.getStatus());
                 }catch(Exception e){
-                    log.log(Level.ERROR, e.getCause().getMessage());
+                    log.log(Level.ERROR, e);
                 }
             }
         } catch (IOException | JobStartException ex) {
