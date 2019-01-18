@@ -305,7 +305,8 @@ public class BatchBean {
                 Long executionId = jobOperator.start(jobName, runtimeParameters);
                 jobOperator.getJobExecution(executionId);
             } else if(batchImplementation.equals(Constant.SPRING)){
-                String[] str = {"context.xml", "META-INF/batch-jobs/*.xml"};
+                StringBuilder jobXml = new StringBuilder().append("META-INF/batch-jobs/").append(jobName).append(".xml");
+                String[] str = {"context.xml",  jobXml.toString()};
                 ApplicationContext applicationContext = new ClassPathXmlApplicationContext(str);
                 Job job = (Job) applicationContext.getBean(jobName);
                 JobLauncher jobLauncher = (JobLauncher) applicationContext.getBean("jobLauncher");
