@@ -148,42 +148,46 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
                 String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
 
-                items.forEach((item) -> processResponse(item, validarComprobanteResponse, lote.getClaveAcceso()));
-                String secuencial = lote.getClaveAcceso().substring(30, 39);
+                if(estadoLote != null && !estadoLote.isEmpty()) {
 
-                String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance()
-                        .getTime());
+                    items.forEach((item) -> processResponse(item, validarComprobanteResponse, lote.getClaveAcceso()));
+                    String secuencial = lote.getClaveAcceso().substring(30, 39);
 
-                StringBuffer insertSQL = new StringBuffer();
-                insertSQL.append("INSERT INTO CEL_LOTE_AUTORIZADO ")
-                        .append("VALUES ('").append(codEmpresa).append("',")
-                        .append(secuencial).append(",'01','").append(lote.getClaveAcceso())
-                        .append("','").append(estadoLote).append("','").append(fechaEstado)
-                        .append("')");
+                    String fechaEstado = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(Calendar.getInstance()
+                            .getTime());
 
-                log.log(Level.INFO, "insertSQL -> {}", insertSQL.toString());
+                    StringBuffer insertSQL = new StringBuffer();
+                    insertSQL.append("INSERT INTO CEL_LOTE_AUTORIZADO ")
+                            .append("VALUES ('").append(codEmpresa).append("',")
+                            .append(secuencial).append(",'01','").append(lote.getClaveAcceso())
+                            .append("','").append(estadoLote).append("','").append(fechaEstado)
+                            .append("')");
 
-                Connection connection = null;
-                PreparedStatement preparedStatement = null;
-                try{
-                    connection = getConnection();
-                    preparedStatement = connection.prepareStatement(insertSQL.toString());
-                    preparedStatement.executeUpdate();
-                } catch (SQLException | NamingException e) {
-                    log.log(Level.ERROR, e);
-                } finally {
-                    if(preparedStatement != null)
-                        try{
-                            preparedStatement.close();
-                        }catch (SQLException e){
-                            log.log(Level.ERROR, e);
-                        }
-                    if(connection != null)
-                        try{
-                            connection.close();
-                        }catch (SQLException e){
-                            log.log(Level.ERROR, e);
-                        }
+                    log.log(Level.INFO, "insertSQL -> {}", insertSQL.toString());
+
+                    Connection connection = null;
+                    PreparedStatement preparedStatement = null;
+                    try {
+                        connection = getConnection();
+                        preparedStatement = connection.prepareStatement(insertSQL.toString());
+                        preparedStatement.executeUpdate();
+                    } catch (SQLException | NamingException e) {
+                        log.log(Level.ERROR, e);
+                    } finally {
+                        if (preparedStatement != null)
+                            try {
+                                preparedStatement.close();
+                            } catch (SQLException e) {
+                                log.log(Level.ERROR, e);
+                            }
+                        if (connection != null)
+                            try {
+                                connection.close();
+                            } catch (SQLException e) {
+                                log.log(Level.ERROR, e);
+                            }
+                    }
+
                 }
             }
         } catch (SOAPException | XPathExpressionException | MalformedURLException | JAXBException ex) {
