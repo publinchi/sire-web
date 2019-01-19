@@ -119,7 +119,7 @@ public class BatchBean {
             log.log(Level.INFO, "timeout: jobName --> {}, tipoComprobante --> {}, reportName --> {}"
                     , map.get(Constant.JOB_NAME), (String) map.get(Constant.TIPO_COMPROBANTE)
                     , map.get(Constant.REPORT_NAME));
-            
+
             executeJob((String)map.get(Constant.JOB_NAME), (String)map.get(Constant.TIPO_COMPROBANTE), (String)map.get(Constant.REPORT_NAME));
         } catch (SecurityException | IllegalArgumentException ex) {
             log.log(Level.ERROR, ex);
@@ -143,6 +143,18 @@ public class BatchBean {
             hashMap.put(Constant.TIPO_COMPROBANTE, tipoComprobante);
             hashMap.put(Constant.REPORT_NAME, reportName);
             timerConfig.setInfo(hashMap);
+
+            Collection<Timer> timers = timerService.getTimers();
+            log.info("************** TIMER CREATING **************");
+            for (Timer timer : timers) {
+                if(timerConfig.getInfo().equals(timer.getInfo()))
+                {
+                    log.info("Timer {} Exists: {}", timerName, true);
+                    return timer;
+                }
+            }
+
+            log.info("Timer {} Created.", timerName);
             return timerService.createCalendarTimer(new ScheduleExpression().hour(hour).minute(minute).timezone("UTC"), timerConfig);
         } catch (IOException ex) {
             log.log(Level.ERROR, ex);
