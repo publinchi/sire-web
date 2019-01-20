@@ -78,28 +78,17 @@ public class BatchBean {
     }
 
     public void loadTimers() {
-        try {
-            Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
+        reconfigTimers();
 
-            String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
-            String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
-            String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
+        configTimers();
 
-            createCalendar(timerRecepcionNames);
-            createCalendar(timerAutorizacionNames);
-            createCalendar(timerNames);
-
-            Collection<Timer> timers = timerService.getTimers();
-            log.info("************** TIMERS INFO **************");
-            for (Timer timer : timers) {
-                log.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
-                        + " m: " + timer.getSchedule().getMinute());
-            }
-            log.log(Level.INFO, "Total timers: {}", timers.size());
-        } catch (IOException ex) {
-            log.log(Level.ERROR, ex);
+        Collection<Timer> timers = timerService.getTimers();
+        log.info("************** TIMERS INFO **************");
+        for (Timer timer : timers) {
+            log.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
+                    + " m: " + timer.getSchedule().getMinute());
         }
+        log.log(Level.INFO, "Total timers: {}", timers.size());
     }
 
     private void createCalendar(String timerNames) {
@@ -145,15 +134,15 @@ public class BatchBean {
             timerConfig.setInfo(hashMap);
 
             Collection<Timer> timers = timerService.getTimers();
-            log.info("************** TIMER CREATING **************");
+
             for (Timer timer : timers) {
                 if(timerConfig.getInfo().equals(timer.getInfo()))
                 {
-                    log.info("Timer {} Exists: {}", timerName, true);
                     return timer;
                 }
             }
 
+            log.info("************** TIMER CREATING **************");
             log.info("Timer {} Created.", timerName);
             return timerService.createCalendarTimer(new ScheduleExpression().hour(hour).minute(minute).timezone("UTC"), timerConfig);
         } catch (IOException ex) {
@@ -162,7 +151,7 @@ public class BatchBean {
         return null;
     }
 
-    public void reconfigJob() {
+    public void reconfigTimers() {
         try {
             Properties runtimeParameters = new Properties();
             runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
@@ -170,7 +159,9 @@ public class BatchBean {
             Collection<Timer> timers = timerService.getTimers();
 
             boolean finish = createNewTimersWhenNoTimers(timers, runtimeParameters);
+
             if(finish){
+                timers = timerService.getTimers();
                 log.log(Level.INFO, "Total timers: {}", timers.size());
                 return;
             }
@@ -191,6 +182,24 @@ public class BatchBean {
     }
 
     private boolean createNewTimersWhenNoTimers(Collection<Timer> timers, Properties runtimeParameters) {
+        String totalTimerNames = groupTimerNames(runtimeParameters);
+
+        // Si no hay timers en memoria y se agregan nuevos timers en el archivo properties,
+        // se crean todos los timers del properties.
+        if(timers.isEmpty() && !totalTimerNames.trim().isEmpty()
+                && totalTimerNames.split(",").length > 0){
+            log.info("All timers are new, creating them ...");
+            createCalendar(totalTimerNames);
+            log.info("Timers created.");
+            return true;
+        } else if(timers.isEmpty() && totalTimerNames.trim().isEmpty()){
+            log.info("No timers found.");
+            return true;
+        }
+        return false;
+    }
+
+    private String groupTimerNames(Properties runtimeParameters) {
         String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
         String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
         String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
@@ -204,27 +213,13 @@ public class BatchBean {
                 totalTimerNames.append(",");
             totalTimerNames.append(timerAutorizacionNames);
         }
-        if(!timerNames.isEmpty()) {
+        if(timerNames != null && !timerNames.isEmpty()) {
             if (timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty())
                 totalTimerNames.append(",");
             totalTimerNames.append(timerNames);
         }
 
-        log.info("totalTimerNames -> " + totalTimerNames);
-
-        // Si no hay timers en memoria y se agregan nuevos timers en el archivo properties,
-        // se crean todos los timers del properties.
-        if(timers.isEmpty() && !totalTimerNames.toString().trim().isEmpty()
-                && totalTimerNames.toString().split(",").length > 0){
-            log.info("All timers are new, creating them ...");
-            createCalendar(totalTimerNames.toString());
-            log.info("Timers created.");
-            return true;
-        } else if(timers.isEmpty() && totalTimerNames.toString().trim().isEmpty()){
-            log.info("No timers found.");
-            return true;
-        }
-        return false;
+        return totalTimerNames.toString();
     }
 
     private void updateTimer(Timer timer, Properties runtimeParameters) {
@@ -234,67 +229,65 @@ public class BatchBean {
         if (hour != null) {
             hour = hour.trim();
         }
-        log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
-                + " -> Mem Hour = " + timer.getSchedule().getHour());
 
         String minute = runtimeParameters.getProperty(timerName + ".minute");
         if (minute != null) {
             minute = minute.trim();
         }
-        log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Minute = " + minute
-                + " -> Mem Minute = " + timer.getSchedule().getMinute());
 
         if ((hour != null && !hour.equals(timer.getSchedule().getHour())) || (minute != null && !minute.equals(timer.getSchedule().getMinute()))) {
+            log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
+                    + " -> Mem Hour = " + timer.getSchedule().getHour());
+
+            log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Minute = " + minute
+                    + " -> Mem Minute = " + timer.getSchedule().getMinute());
+
             log.log(Level.INFO, "Diferentes");
             log.log(Level.INFO, "Cancelling timer: {}", timer.getInfo());
+
             timer.cancel();
+
             log.log(Level.INFO, "Creating timer {} -> Every {} hours - Every {} minutes.",
                     timerName, hour, minute);
+
             Timer t = createCalendarTimer(timerName);
+
             if (t != null)
                 log.log(Level.INFO, "New timer {} created -> Every {} hours - Every {} minutes.",
-                        t.getInfo(), t.getSchedule().getHour(), t.getSchedule().getHour());
+                        t.getInfo(), t.getSchedule().getHour(), t.getSchedule().getMinute());
         }
     }
 
-    private boolean newTimers() {
-        boolean newTimers = false;
+    private void configTimers() {
+        try{
+            Properties runtimeParameters = new Properties();
+            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
 
+            String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
+            String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
+            String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
 
-        return newTimers;
+            createCalendar(timerRecepcionNames);
+            createCalendar(timerAutorizacionNames);
+            createCalendar(timerNames);
+        } catch (IOException ex) {
+            log.log(Level.ERROR, ex);
+        }
     }
 
     private boolean cancelTimer(Timer timer, Properties runtimeParameters) {
-        String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
-        String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
-        String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
-
-        StringBuilder totalTimerNames = new StringBuilder();
-
-        if(timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
-            totalTimerNames.append(timerRecepcionNames);
-        if(timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty()) {
-            if (timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
-                totalTimerNames.append(",");
-            totalTimerNames.append(timerAutorizacionNames);
-        }
-        if(!timerNames.isEmpty()) {
-            if (timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty())
-                totalTimerNames.append(",");
-            totalTimerNames.append(timerNames);
-        }
-
-        log.info("totalTimerNames -> " + totalTimerNames);
+        String totalTimerNames = groupTimerNames(runtimeParameters);
 
         String tn = ((Map) timer.getInfo()).get(Constant.TIMER_NAME).toString();
         boolean delete = true;
-        String[] timerNamesArray = totalTimerNames.toString().split(",");
+        String[] timerNamesArray = totalTimerNames.split(",");
         for (String timerName : timerNamesArray) {
             if(!timerName.isEmpty() && tn.equals(timerName)) {
                 delete = false;
             }
         }
         if(delete){
+            log.info("Timer Canceled -> " + timer.getInfo());
             timer.cancel();
         }
         return delete;
@@ -353,7 +346,8 @@ public class BatchBean {
     @Path("reload")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response reloadTimers() {
-        reconfigJob();
+        reconfigTimers();
+        configTimers();
         return Response.ok().build();
     }
 }
