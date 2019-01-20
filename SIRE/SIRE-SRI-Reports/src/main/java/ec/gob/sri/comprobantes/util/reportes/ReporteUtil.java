@@ -477,6 +477,7 @@ public class ReporteUtil {
         param.put("DIRECCION_CLIENTE", infoFactura.getIDireccionComprador());
         param.put("FECHA_EMISION", infoFactura.getFechaEmision());
         param.put("GUIA", infoFactura.getGuiaRemision());
+        param.put("PLACA", infoFactura.getPlaca());
         TotalComprobante tc = getTotales(infoFactura);
         if (infoFactura.getTotalSubsidio() != null) {
             TotalSinSubsidio = obtenerTotalSinSubsidio(fact);
