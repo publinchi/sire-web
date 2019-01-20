@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a90b5cc6-9a35-48d7-a2d0-ef67a99b13b8">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="34"/>
-	<property name="ireport.y" value="531"/>
+	<property name="ireport.x" value="12"/>
+	<property name="ireport.y" value="427"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -41,6 +41,7 @@
 	<parameter name="DIRECCION_CLIENTE" class="java.lang.String"/>
 	<parameter name="FECHA_EMISION" class="java.lang.String"/>
 	<parameter name="GUIA" class="java.lang.String"/>
+	<parameter name="PLACA" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["/home/marco/NetBeansProjects/comprobantes-elctronicos-cliente/resources/reportes/"]]></defaultValueExpression>
 	</parameter>
@@ -325,6 +326,20 @@
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DIRECCION_CLIENTE}==null?"":$P{DIRECCION_CLIENTE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement mode="Transparent" x="192" y="369" width="36" height="12" uuid="2ef0355f-5370-4860-9d0d-c6516acda95e"/>
+				<textElement>
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Placa:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="231" y="368" width="154" height="13" uuid="f936b3c2-3adb-4635-b8b9-4f212a771364"/>
+				<textElement>
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{PLACA}==null?"":$P{PLACA}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
