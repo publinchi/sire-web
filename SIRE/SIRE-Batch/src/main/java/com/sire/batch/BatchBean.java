@@ -19,6 +19,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 import javax.annotation.*;
 import javax.batch.operations.JobOperator;
 import javax.batch.operations.JobStartException;
@@ -51,6 +52,9 @@ public class BatchBean {
     private String home;
     private static StringBuffer comprobantePropertiesPath;
 
+    private ExecutorService executorService;
+    private int nThreads;
+
     @PostConstruct
     public void init() {
         _init();
@@ -63,7 +67,18 @@ public class BatchBean {
             return;
         }
 
-        log.info("SIRE HOME --> " + home);
+        log.info("SIRE HOME --> {}", home);
+
+        String sireThreads = System.getProperty("sire.threads");
+        if (sireThreads == null) {
+            nThreads = 10;
+            log.error("SIRE THREADS NOT FOUND. SETTING 10 THREADS BY DEFAULT.");
+        } else {
+            nThreads = Integer.parseInt(sireThreads);
+            log.info("SIRE THREADS --> {}", nThreads);
+        }
+
+        executorService = Executors.newFixedThreadPool(nThreads);
 
         comprobantePropertiesPath = new StringBuffer();
         comprobantePropertiesPath.append(home);
@@ -103,13 +118,30 @@ public class BatchBean {
 
     @Timeout
     public void timeout(Timer timer) {
+        String jobName;
         try {
             Map map = (Map) timer.getInfo();
-            log.log(Level.INFO, "timeout: jobName --> {}, tipoComprobante --> {}, reportName --> {}"
-                    , map.get(Constant.JOB_NAME), (String) map.get(Constant.TIPO_COMPROBANTE)
-                    , map.get(Constant.REPORT_NAME));
+            jobName = (String) map.get(Constant.JOB_NAME);
+            if(map.get(Constant.TIPO_COMPROBANTE) != null || map.get(Constant.REPORT_NAME) != null)
+                log.log(Level.INFO, "Executing job --> {}, tipoComprobante --> {}, reportName --> {}"
+                        , jobName, map.get(Constant.TIPO_COMPROBANTE)
+                        , map.get(Constant.REPORT_NAME));
+            else
+                log.log(Level.INFO, "Executing job --> {}", jobName);
 
-            executeJob((String)map.get(Constant.JOB_NAME), (String)map.get(Constant.TIPO_COMPROBANTE), (String)map.get(Constant.REPORT_NAME));
+            if(executorService != null && executorService instanceof ThreadPoolExecutor) {
+                int activeCount = ((ThreadPoolExecutor) executorService).getActiveCount();
+                log.info("Active Threads --> {}", activeCount);
+
+                if(activeCount == nThreads){
+                    log.warn("Se ha alcanzado el umbral de {} hilo(s) disponible(s) al intentar ejecutar el .", activeCount);
+                    log.warn("Por favor revise si existen hilos colgados.");
+                    return;
+                }
+            }
+
+            executorService.execute(new Work(map));
+
         } catch (SecurityException | IllegalArgumentException ex) {
             log.log(Level.ERROR, ex);
         }
@@ -125,12 +157,14 @@ public class BatchBean {
             String tipoComprobante = runtimeParameters.getProperty(timerName + "." + Constant.TIPO_COMPROBANTE);
             String jobName = runtimeParameters.getProperty(timerName + "." + Constant.JOB_NAME);
             String reportName = runtimeParameters.getProperty(timerName + "." + Constant.REPORT_NAME);
+            String timeout = runtimeParameters.getProperty(timerName + "." + Constant.TIMEOUT);
             final TimerConfig timerConfig = new TimerConfig(timerName, persistent);
             HashMap hashMap = new HashMap<String, String>();
             hashMap.put(Constant.TIMER_NAME, timerName);
             hashMap.put(Constant.JOB_NAME, jobName);
             hashMap.put(Constant.TIPO_COMPROBANTE, tipoComprobante);
             hashMap.put(Constant.REPORT_NAME, reportName);
+            hashMap.put(Constant.TIMEOUT, timeout);
             timerConfig.setInfo(hashMap);
 
             Collection<Timer> timers = timerService.getTimers();
@@ -293,7 +327,7 @@ public class BatchBean {
         return delete;
     }
 
-    public void executeJob(String jobName, String tipoComprobante, String reportName) {
+    public String executeJob(String jobName, String tipoComprobante, String reportName) {
         try {
             Properties runtimeParameters = new Properties();
             runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
@@ -306,16 +340,22 @@ public class BatchBean {
             log.log(Level.INFO, "batchImplementation: {}", batchImplementation);
 
             if(batchImplementation == null || (batchImplementation != null && batchImplementation.equals(Constant.JEE))){
+
                 JobOperator jobOperator = BatchRuntime.getJobOperator();
                 Long executionId = jobOperator.start(jobName, runtimeParameters);
-                jobOperator.getJobExecution(executionId);
+                String status = jobOperator.getJobExecution(executionId).getBatchStatus().name();
+                log.log(Level.INFO, "Finished {} execution, with status {}.", jobName, status);
+                return status;
+
             } else if(batchImplementation.equals(Constant.SPRING)){
+
                 StringBuilder jobXml = new StringBuilder().append("META-INF/batch-jobs/").append(jobName).append(".xml");
                 String[] str = {"context.xml",  jobXml.toString()};
                 ApplicationContext applicationContext = new ClassPathXmlApplicationContext(str);
                 Job job = (Job) applicationContext.getBean(jobName);
                 JobLauncher jobLauncher = (JobLauncher) applicationContext.getBean("jobLauncher");
-                try{
+
+                try {
                     JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
 
                     Enumeration<String> enums = (Enumeration<String>) runtimeParameters.propertyNames();
@@ -325,17 +365,22 @@ public class BatchBean {
                         jobParametersBuilder.addString(key, value);
                     }
 
-                    jobParametersBuilder.addLong("time",System.currentTimeMillis());
+                    jobParametersBuilder.addLong("time", System.currentTimeMillis());
 
                     JobParameters jobParameters = jobParametersBuilder.toJobParameters();
                     JobExecution execution = jobLauncher.run(job, jobParameters);
-                    log.log(Level.INFO, "Job Execution Status: {}", execution.getStatus());
-                }catch(Exception e){
-                    log.log(Level.ERROR, e);
+                    String status = execution.getStatus().getBatchStatus().name();
+                    log.log(Level.INFO, "Finished {} execution, with status {}.", jobName, status);
+                    return status;
+                } catch(Exception e){
+                    log.log(Level.ERROR, e.getCause().getMessage());
+                    return null;
                 }
-            }
+
+            } else { return null; }
         } catch (IOException | JobStartException ex) {
             log.log(Level.ERROR, ex.getCause().getMessage());
+            return null;
         }
     }
     // Add business logic below. (Right-click in editor and choose
@@ -346,8 +391,44 @@ public class BatchBean {
     @Path("reload")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response reloadTimers() {
-        reconfigTimers();
-        configTimers();
+        loadTimers();
         return Response.ok().build();
+    }
+
+    class Work implements Runnable {
+
+        Map map;
+
+        public Work(Map map) {
+            this.map = map;
+        }
+
+        public void run() {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future future = executorService.submit(new Runnable() {
+                @Override
+                public void run() {
+                    executeJob((String) map.get(Constant.JOB_NAME), (String) map.get(Constant.TIPO_COMPROBANTE),
+                            (String) map.get(Constant.REPORT_NAME));
+                }
+            });
+            String timeout = (String) map.get(Constant.TIMEOUT);
+            if(timeout != null) {
+                try {
+                    future.get(Long.parseLong(timeout),TimeUnit.MILLISECONDS);
+                } catch (InterruptedException | ExecutionException e) {
+                    log.error(e.getMessage());
+                } catch (TimeoutException e) {
+                    log.error("Se ha excedido el timeout de {} ms para el timer {}.", timeout,
+                            map.get(Constant.TIMER_NAME));
+                }
+            }
+            else
+                try {
+                    future.get();
+                } catch (InterruptedException | ExecutionException e) {
+                    log.error(e.getMessage());
+                }
+        }
     }
 }

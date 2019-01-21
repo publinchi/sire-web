@@ -18,6 +18,7 @@ public class Constant {
     public static final String TIMER_RECEPCION_NAMES = "timerRecepcionNames";
     public static final String TIMER_NAMES = "timerNames";
     public static final Object TIMER_NAME = "timerName";
+    public static final Object TIMEOUT = "timeout";
     public static final String TIPO_COMPROBANTE = "tipoComprobante";
     public static final String BATCH_IMPLEMENTATION = "batchImplementation";
     public static final String SPRING = "spring";
