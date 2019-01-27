@@ -133,8 +133,8 @@ public class BatchBean {
                 int activeCount = ((ThreadPoolExecutor) executorService).getActiveCount();
                 log.info("Active Threads --> {}", activeCount);
 
-                if(activeCount == nThreads){
-                    log.warn("Se ha alcanzado el umbral de {} hilo(s) disponible(s) al intentar ejecutar el .", activeCount);
+                if(activeCount >= nThreads){
+                    log.warn("Se ha alcanzado el umbral de {} hilo(s) disponible(s).", activeCount);
                     log.warn("Por favor revise si existen hilos colgados.");
                     return;
                 }
