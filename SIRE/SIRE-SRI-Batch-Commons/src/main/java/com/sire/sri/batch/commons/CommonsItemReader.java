@@ -64,6 +64,9 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         CampoAdicional observacion = new CampoAdicional();
         observacion.setValue(rs.getString(Constant.OBSERVACION));
         observacion.setNombre("Observacion");
+        CampoAdicional placa = new CampoAdicional();
+        placa.setValue(rs.getString(Constant.PLACA));
+        placa.setNombre("Placa");
         if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
             infoAdicional.getCampoAdicional().add(direccion);
         }
@@ -75,6 +78,9 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }
         if (observacion.getValue() != null && !observacion.getValue().isEmpty()) {
             infoAdicional.getCampoAdicional().add(observacion);
+        }
+        if (placa.getValue() != null && !placa.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(placa);
         }
         factura.setInfoAdicional(infoAdicional);
 
@@ -90,7 +96,6 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setImporteTotal(rs.getBigDecimal(Constant.IMPORTE_TOTAL));
         infoFactura.setMoneda(rs.getString(Constant.MONEDA));
         infoFactura.setObligadoContabilidad(rs.getString(Constant.LLEVA_CONTABILIDAD));
-        infoFactura.setPlaca(rs.getString(Constant.PLACA));
         infoFactura.setPropina(rs.getBigDecimal(Constant.PROPINA));
         infoFactura.setRazonSocialComprador(rs.getString(Constant.RAZON_SOCIAL_COMPRADOR));
         infoFactura.setTipoIdentificacionComprador(rs.getString(Constant.TIPO_IDENTIFICACION_COMPRADOR));
