@@ -6,6 +6,5 @@
     <env-entry>
         <env-entry-name>AppName</env-entry-name>
         <env-entry-value>SIRE-Batch</env-entry-value>
-        <env-entry-type>java.lang.String</env-entry-type>
     </env-entry>
 </web-app>
