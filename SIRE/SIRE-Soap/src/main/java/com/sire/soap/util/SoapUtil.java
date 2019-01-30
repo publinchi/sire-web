@@ -239,7 +239,13 @@ public class SoapUtil {
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
             // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true;
+            // TODO Cambiar a expresion lambda
+            // HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true;
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                @Override public boolean verify(String s, SSLSession session) {
+                    return true;
+                }
+            };
 
             // Install the all-trusting host verifier
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
@@ -271,7 +277,14 @@ public class SoapUtil {
     }
 
     private static SOAPMessage clone(SOAPMessage message) {
-        return toSOAPMessage(toDocument(message));
+        try {
+            return toSOAPMessage(toDocument(message));
+        } catch (TransformerException e) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
+        } catch (SOAPException e) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return null;
     }
 
     private static SOAPMessage toSOAPMessage(Document doc) {
@@ -293,17 +306,13 @@ public class SoapUtil {
         }
     }
 
-    private static Document toDocument(SOAPMessage soapMSG) {
-        try {
-            Source source = soapMSG.getSOAPPart().getContent();
-            TransformerFactory factoryTransform = TransformerFactory.newInstance();
-            Transformer transform = factoryTransform.newTransformer();
-            DOMResult retorno = new DOMResult();
-            transform.transform(source, retorno);
-            return (Document) retorno.getNode();
-        } catch (Exception e) {
-            throw new SecurityException(e);
-        }
+    private static Document toDocument(SOAPMessage soapMSG) throws TransformerException, SOAPException {
+        Source source = soapMSG.getSOAPPart().getContent();
+        TransformerFactory factoryTransform = TransformerFactory.newInstance();
+        Transformer transform = factoryTransform.newTransformer();
+        DOMResult retorno = new DOMResult();
+        transform.transform(source, retorno);
+        return (Document) retorno.getNode();
     }
 
     public static String object2xml(Object item) throws JAXBException {
