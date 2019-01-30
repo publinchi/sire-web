@@ -53,7 +53,7 @@ public class SoapUtil {
     private static Map<Class, JAXBContext> contextStore = new ConcurrentHashMap<>();
 
     public static Map<String, Object> call(SOAPMessage soapMsg, URL url,
-                                           Class aClass) throws SOAPException {
+                                           Class aClass) throws SOAPException, TransformerException {
         return call(soapMsg,url,null, aClass);
     }
     /**
@@ -65,7 +65,7 @@ public class SoapUtil {
      * @return
      */
     public static Map<String, Object> call(SOAPMessage soapMsg, URL url, String returnObjectName,
-                                           Class aClass) throws SOAPException {
+                                           Class aClass) throws SOAPException, TransformerException {
         SOAPConnection soapConnection = null;
         String cookie;
         try {
@@ -276,15 +276,8 @@ public class SoapUtil {
         return message;
     }
 
-    private static SOAPMessage clone(SOAPMessage message) {
-        try {
-            return toSOAPMessage(toDocument(message));
-        } catch (TransformerException e) {
-            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
-        } catch (SOAPException e) {
-            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
-        }
-        return null;
+    private static SOAPMessage clone(SOAPMessage message) throws TransformerException, SOAPException {
+        return toSOAPMessage(toDocument(message));
     }
 
     private static SOAPMessage toSOAPMessage(Document doc) {

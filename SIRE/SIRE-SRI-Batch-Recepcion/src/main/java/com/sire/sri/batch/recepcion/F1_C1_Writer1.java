@@ -192,6 +192,8 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             }
         } catch (SOAPException | XPathExpressionException | MalformedURLException | JAXBException ex) {
             log.log(Level.ERROR, ex);
+        } catch (TransformerException e) {
+            log.log(Level.ERROR, e);
         }
     }
 
