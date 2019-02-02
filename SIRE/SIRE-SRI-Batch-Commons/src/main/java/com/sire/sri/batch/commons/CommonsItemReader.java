@@ -64,6 +64,9 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         CampoAdicional observacion = new CampoAdicional();
         observacion.setValue(rs.getString(Constant.OBSERVACION));
         observacion.setNombre("Observacion");
+        CampoAdicional placa = new CampoAdicional();
+        placa.setValue(rs.getString(Constant.PLACA));
+        placa.setNombre("Placa");
         if (direccion.getValue() != null && !direccion.getValue().isEmpty()) {
             infoAdicional.getCampoAdicional().add(direccion);
         }
@@ -75,6 +78,9 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }
         if (observacion.getValue() != null && !observacion.getValue().isEmpty()) {
             infoAdicional.getCampoAdicional().add(observacion);
+        }
+        if (placa.getValue() != null && !placa.getValue().isEmpty()) {
+            infoAdicional.getCampoAdicional().add(placa);
         }
         factura.setInfoAdicional(infoAdicional);
 
@@ -93,6 +99,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setPropina(rs.getBigDecimal(Constant.PROPINA));
         infoFactura.setRazonSocialComprador(rs.getString(Constant.RAZON_SOCIAL_COMPRADOR));
         infoFactura.setTipoIdentificacionComprador(rs.getString(Constant.TIPO_IDENTIFICACION_COMPRADOR));
+        infoFactura.setTotalSubsidio(rs.getBigDecimal(Constant.TOTAL_SUBSIDIO));
         TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
 
         TotalImpuesto totalImpuesto1 = new TotalImpuesto();
@@ -205,6 +212,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 impuesto.setValor(resultSet.getBigDecimal(Constant.VALOR));
                 impuestos.getImpuesto().add(impuesto);
                 detalle.setImpuestos(impuestos);
+                detalle.setPrecioSinSubsidio(resultSet.getBigDecimal(Constant.PRECIO_SIN_SUBSIDIO));
                 detalle.setPrecioTotalSinImpuesto(resultSet.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
                 detalle.setPrecioUnitario(resultSet.getBigDecimal(Constant.PRECIO_UNITARIO));
                 detalles.getDetalle().add(detalle);

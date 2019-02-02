@@ -53,7 +53,7 @@ public class SoapUtil {
     private static Map<Class, JAXBContext> contextStore = new ConcurrentHashMap<>();
 
     public static Map<String, Object> call(SOAPMessage soapMsg, URL url,
-                                           Class aClass) throws SOAPException {
+                                           Class aClass) throws SOAPException, TransformerException {
         return call(soapMsg,url,null, aClass);
     }
     /**
@@ -65,7 +65,7 @@ public class SoapUtil {
      * @return
      */
     public static Map<String, Object> call(SOAPMessage soapMsg, URL url, String returnObjectName,
-                                           Class aClass) throws SOAPException {
+                                           Class aClass) throws SOAPException, TransformerException {
         SOAPConnection soapConnection = null;
         String cookie;
         try {
@@ -239,7 +239,13 @@ public class SoapUtil {
             HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
 
             // Create all-trusting host name verifier
-            HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true;
+            // TODO Cambiar a expresion lambda
+            // HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true;
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                @Override public boolean verify(String s, SSLSession session) {
+                    return true;
+                }
+            };
 
             // Install the all-trusting host verifier
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
@@ -270,7 +276,7 @@ public class SoapUtil {
         return message;
     }
 
-    private static SOAPMessage clone(SOAPMessage message) {
+    private static SOAPMessage clone(SOAPMessage message) throws TransformerException, SOAPException {
         return toSOAPMessage(toDocument(message));
     }
 
@@ -293,17 +299,13 @@ public class SoapUtil {
         }
     }
 
-    private static Document toDocument(SOAPMessage soapMSG) {
-        try {
-            Source source = soapMSG.getSOAPPart().getContent();
-            TransformerFactory factoryTransform = TransformerFactory.newInstance();
-            Transformer transform = factoryTransform.newTransformer();
-            DOMResult retorno = new DOMResult();
-            transform.transform(source, retorno);
-            return (Document) retorno.getNode();
-        } catch (Exception e) {
-            throw new SecurityException(e);
-        }
+    private static Document toDocument(SOAPMessage soapMSG) throws TransformerException, SOAPException {
+        Source source = soapMSG.getSOAPPart().getContent();
+        TransformerFactory factoryTransform = TransformerFactory.newInstance();
+        Transformer transform = factoryTransform.newTransformer();
+        DOMResult retorno = new DOMResult();
+        transform.transform(source, retorno);
+        return (Document) retorno.getNode();
     }
 
     public static String object2xml(Object item) throws JAXBException {
