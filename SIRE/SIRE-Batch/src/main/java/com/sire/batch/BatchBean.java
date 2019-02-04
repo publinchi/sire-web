@@ -407,6 +407,10 @@ public class BatchBean {
 
             Properties runtimeParameters = new Properties();
 
+            for (Object key : map.keySet()) {
+                runtimeParameters.setProperty((String) key, (String) map.get(key));
+            }
+
             for (String propertyNames :runtimeParametersInitial.stringPropertyNames()) {
                 if(propertyNames.startsWith(jobName + "."))
                     runtimeParameters.setProperty(propertyNames, runtimeParameters.getProperty(propertyNames));
