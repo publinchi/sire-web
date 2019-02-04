@@ -9,6 +9,10 @@
                 <checkpoint-algorithm ref="com.sire.sri.batch.autorizacion.MyCheckpointAlgorithm"/>
             </chunk>
         </step>
+        <stop on="STOPPED" exit-status="STOPPED" />
+        <fail on="FAILED" exit-status="FAILED" />
         <end on="COMPLETED" exit-status="COMPLETED"/>
+        <end on="FAILED" exit-status="COMPLETED"/>
+        <end on="UNKNOWN" exit-status="COMPLETED"/>
     </flow>
 </job>
