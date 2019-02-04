@@ -419,14 +419,22 @@ public class BatchBean {
                 }
             }
 
-            runtimeParameters.setProperty(Constant.BATCH_IMPLEMENTATION, runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION));
-            runtimeParameters.setProperty(Constant.COD_EMPRESA, runtimeParametersInitial.getProperty(Constant.COD_EMPRESA));
-            runtimeParameters.setProperty(Constant.DATABASE, runtimeParametersInitial.getProperty(Constant.DATABASE));
-            runtimeParameters.setProperty(Constant.PASS_SIGNATURE, runtimeParametersInitial.getProperty(Constant.PASS_SIGNATURE));
-            runtimeParameters.setProperty(Constant.PATH_SIGNATURE, runtimeParametersInitial.getProperty(Constant.PATH_SIGNATURE));
-            runtimeParameters.setProperty(Constant.URL_AUTORIZACION, runtimeParametersInitial.getProperty(Constant.URL_AUTORIZACION));
-            runtimeParameters.setProperty(Constant.URL_RECEPCION, runtimeParametersInitial.getProperty(Constant.URL_RECEPCION));
-            runtimeParameters.setProperty(Constant.URL_REPORTE, runtimeParametersInitial.getProperty(Constant.PATH_REPORTS) + reportName);
+            if(runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION) != null)
+                runtimeParameters.setProperty(Constant.BATCH_IMPLEMENTATION, runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION));
+            if(runtimeParametersInitial.getProperty(Constant.COD_EMPRESA) != null)
+                runtimeParameters.setProperty(Constant.COD_EMPRESA, runtimeParametersInitial.getProperty(Constant.COD_EMPRESA));
+            if(runtimeParametersInitial.getProperty(Constant.DATABASE) != null)
+                runtimeParameters.setProperty(Constant.DATABASE, runtimeParametersInitial.getProperty(Constant.DATABASE));
+            if(runtimeParametersInitial.getProperty(Constant.PASS_SIGNATURE) != null)
+                runtimeParameters.setProperty(Constant.PASS_SIGNATURE, runtimeParametersInitial.getProperty(Constant.PASS_SIGNATURE));
+            if(runtimeParametersInitial.getProperty(Constant.PATH_SIGNATURE) != null)
+                runtimeParameters.setProperty(Constant.PATH_SIGNATURE, runtimeParametersInitial.getProperty(Constant.PATH_SIGNATURE));
+            if(runtimeParametersInitial.getProperty(Constant.URL_AUTORIZACION) != null)
+                runtimeParameters.setProperty(Constant.URL_AUTORIZACION, runtimeParametersInitial.getProperty(Constant.URL_AUTORIZACION));
+            if(runtimeParametersInitial.getProperty(Constant.URL_RECEPCION) != null)
+                runtimeParameters.setProperty(Constant.URL_RECEPCION, runtimeParametersInitial.getProperty(Constant.URL_RECEPCION));
+            if(runtimeParametersInitial.getProperty(Constant.PATH_REPORTS) != null)
+                runtimeParameters.setProperty(Constant.URL_REPORTE, runtimeParametersInitial.getProperty(Constant.PATH_REPORTS) + reportName);
 
             if(tipoComprobante != null)
                 runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
