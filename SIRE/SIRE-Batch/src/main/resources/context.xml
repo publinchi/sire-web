@@ -24,6 +24,7 @@
         <property name="dataSource" ref="dataSource" />
         <property name="transactionManager" ref="transactionManager" />
         <property name="databaseType" value="sybase" />
+        <property name="isolationLevelForCreate" value="ISOLATION_REPEATABLE_READ"/>
     </bean>
 
     <bean id="transactionManager" class="org.springframework.batch.support.transaction.ResourcelessTransactionManager" />
