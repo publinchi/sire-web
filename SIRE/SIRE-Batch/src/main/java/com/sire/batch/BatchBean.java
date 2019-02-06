@@ -9,13 +9,6 @@ import com.sire.batch.constant.Constant;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
 import java.util.*;
@@ -29,7 +22,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 import javax.ejb.Timeout;
 import javax.ejb.Timer;
-import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -57,9 +49,6 @@ public class BatchBean {
     private ThreadPoolExecutor threadPoolExecutor;
 
     private int nThreads, queueCapacity;
-
-    //@Resource(name = "concurrent/__defaultManagedExecutorService")
-    //private ManagedExecutorService managedExecutorServiceexecutorService;
 
     @PostConstruct
     public void init() {
@@ -221,7 +210,8 @@ public class BatchBean {
             if(month      != null && !month.trim().isEmpty()     ) scheduleExpression.month(month);
             if(dayOfWeek  != null && !dayOfWeek.trim().isEmpty() ) scheduleExpression.dayOfWeek(dayOfWeek);
             if(year       != null && !year.trim().isEmpty()      ) scheduleExpression.year(year);
-            if(timezone   != null && !timezone.trim().isEmpty()  ) scheduleExpression.timezone(timezone); else scheduleExpression.timezone("UTC");
+            if(timezone   != null && !timezone.trim().isEmpty()  ) scheduleExpression.timezone(timezone);
+            else scheduleExpression.timezone("UTC");
 
             Timer timer = timerService.createCalendarTimer(scheduleExpression, timerConfig);
 
@@ -319,7 +309,8 @@ public class BatchBean {
             minute = minute.trim();
         }
 
-        if ((hour != null && !hour.equals(timer.getSchedule().getHour())) || (minute != null && !minute.equals(timer.getSchedule().getMinute()))) {
+        if ((hour != null && !hour.equals(timer.getSchedule().getHour()))
+                || (minute != null && !minute.equals(timer.getSchedule().getMinute()))) {
             log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
                     + " -> Mem Hour = " + timer.getSchedule().getHour());
 
@@ -451,14 +442,13 @@ public class BatchBean {
 
                 JobOperator jobOperator = BatchRuntime.getJobOperator();
                 final Long executionId = jobOperator.start(jobName, runtimeParameters);
-                jobOperator.getJobExecution(executionId).getBatchStatus().name();
                 final String parentThread = Thread.currentThread().getName();
 
                 Executors.newSingleThreadExecutor().execute(new Runnable() {
                     @Override
                     public void run() {
                         try {
-                            awaitTermination(parentThread, jobName, batchImplementation, executionId, timeout);
+                            awaitTermination(parentThread, jobName, executionId, timeout);
                         } catch (InterruptedException e) {
                             log.log(Level.ERROR, e.getCause().getMessage());
                         }
@@ -468,13 +458,18 @@ public class BatchBean {
             } else if(batchImplementation.equals(Constant.SPRING)){
 
                 StringBuilder jobXml = new StringBuilder().append("META-INF/batch-jobs/").append(jobName).append(".xml");
+                //StringBuilder jobXml = new StringBuilder().append("classpath*:META-INF/batch-jobs/*").append(".xml");
                 String[] str = {"context.xml",  jobXml.toString()};
-                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(str);
-                Job job = (Job) applicationContext.getBean(jobName);
-                JobLauncher jobLauncher = (JobLauncher) applicationContext.getBean("jobLauncher");
+
+                org.springframework.context.support.ClassPathXmlApplicationContext applicationContext = new org.springframework.context.support.ClassPathXmlApplicationContext(str);
+
+                org.springframework.batch.core.launch.support.SimpleJobLauncher jobLauncher
+                        = (org.springframework.batch.core.launch.support.SimpleJobLauncher) applicationContext.getBean("jobLauncher");
+                jobLauncher.setTaskExecutor(new org.springframework.core.task.SimpleAsyncTaskExecutor());
 
                 try {
-                    JobParametersBuilder jobParametersBuilder = new JobParametersBuilder();
+                    org.springframework.batch.core.JobParametersBuilder jobParametersBuilder
+                            = new org.springframework.batch.core.JobParametersBuilder();
 
                     Enumeration<String> enums = (Enumeration<String>) runtimeParameters.propertyNames();
                     while (enums.hasMoreElements()) {
@@ -485,28 +480,18 @@ public class BatchBean {
 
                     jobParametersBuilder.addLong("time", System.currentTimeMillis());
 
-                    JobParameters jobParameters = jobParametersBuilder.toJobParameters();
-                    final JobExecution execution = jobLauncher.run(job, jobParameters);
-                    final String parentThread = Thread.currentThread().getName();
+                    org.springframework.batch.core.Job job = (org.springframework.batch.core.Job) applicationContext.getBean(jobName);
+                    org.springframework.batch.core.JobParameters jobParameters = jobParametersBuilder.toJobParameters();
 
-                    Executors.newSingleThreadExecutor().execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                awaitTermination(parentThread, jobName, batchImplementation, execution, timeout);
-                            } catch (InterruptedException e) {
-                                log.log(Level.ERROR, e.getCause().getMessage());
-                            }
-                        }
-                    });
+                    jobLauncher.run(job, jobParameters);
 
                 } catch(Exception e){
-                    log.log(Level.ERROR, e.getCause().getMessage());
+                    log.log(Level.ERROR, e);
                 }
 
             }
         } catch (IOException | JobStartException ex) {
-            log.log(Level.ERROR, ex.getCause().getMessage());
+            log.log(Level.ERROR, ex);
         }
     }
 
@@ -518,7 +503,7 @@ public class BatchBean {
         return Response.ok().build();
     }
 
-    private void awaitTermination(String threadName, String jobName, String batchImplementation, Object execution, String to)
+    private void awaitTermination(String threadName, String jobName, Object execution, String to)
             throws InterruptedException {
         Long timeout;
 
@@ -529,37 +514,22 @@ public class BatchBean {
 
         final long limit = System.currentTimeMillis() + timeout;
 
-        if(batchImplementation.equals(Constant.JEE)){
-            JobOperator jobOperator = BatchRuntime.getJobOperator();
-            javax.batch.runtime.JobExecution jobExecution = jobOperator.getJobExecution((Long) execution);
-            while (true) {
-                if (null != jobExecution.getExitStatus()) {
-                    log.log(Level.INFO, "Finished {} execution, with exit status {}. Parent Thread {}.", jobName, jobExecution.getExitStatus(), threadName);
-                    break;
-                }
-
-                if (System.currentTimeMillis() >= limit) {
-                    log.log(Level.INFO, "Timeout waiting {}'s answer from timer with thread id {}.", jobName, threadName);
-                    break;
-                }
-
-                Thread.sleep(timeout/10);
+        JobOperator jobOperator = BatchRuntime.getJobOperator();
+        javax.batch.runtime.JobExecution jobExecution = jobOperator.getJobExecution((Long) execution);
+        while (true) {
+            if (null != jobExecution.getExitStatus()) {
+                log.log(Level.INFO, "Finished {} execution, with exit status {}. Parent Thread {}.", jobName
+                        , jobExecution.getExitStatus(), threadName);
+                break;
             }
-        } else if(batchImplementation.equals(Constant.SPRING)) {
-            JobExecution jobExecution = ((JobExecution) execution);
-            while (true) {
-                if (null != jobExecution.getExitStatus()) {
-                    log.log(Level.INFO, "Finished {} execution, with exit status {}. Parent Thread {}.", jobName, jobExecution.getExitStatus(), threadName);
-                    break;
-                }
 
-                if (System.currentTimeMillis() >= limit) {
-                    log.log(Level.INFO, "Timeout waiting {}'s answer from timer with thread id {}.", jobName, threadName);
-                    break;
-                }
-
-                Thread.sleep(timeout/10);
+            if (System.currentTimeMillis() >= limit) {
+                log.log(Level.INFO, "Timeout waiting {}'s answer from timer with thread id {}.", jobName
+                        , threadName);
+                break;
             }
+
+            Thread.sleep(timeout/10);
         }
     }
 
