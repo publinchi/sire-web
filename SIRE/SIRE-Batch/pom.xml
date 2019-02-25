@@ -200,6 +200,7 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    <!--
                     <execution>
                         <id>copy-db-driver</id>
                         <phase>process-test-classes</phase>
@@ -219,6 +220,7 @@
                             </artifactItems>
                         </configuration>
                     </execution>
+                    -->
                 </executions>
             </plugin>
             <plugin>
