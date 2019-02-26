@@ -9,6 +9,8 @@ import com.sire.batch.constant.Constant;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.batch.core.repository.JobRepository;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
 import java.util.*;
@@ -45,14 +47,46 @@ public class BatchBean {
     private String home;
     private Boolean thresholdEnabled;
     private static StringBuffer configurationPropertiesPath;
-
     private ThreadPoolExecutor threadPoolExecutor;
-
     private int nThreads, queueCapacity;
+    private List jobNames;
+    private ClassPathXmlApplicationContext applicationContext;
 
     @PostConstruct
     public void init() {
         _init();
+        startUpSpringFramework();
+    }
+
+    private void startUpSpringFramework() {
+        Properties runtimeParametersInitial = new Properties();
+        try {
+            runtimeParametersInitial.load(new FileInputStream(configurationPropertiesPath.toString()));
+            if(runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION) != null) {
+                final String batchImplementation = runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION);
+                if(batchImplementation != null && batchImplementation.equals(Constant.SPRING)) {
+
+                    int jobsNum = jobNames.size();
+                    int total = jobsNum + 1;
+                    String[] str = new String[total];
+                    str[0] = "context.xml";
+
+                    int i = 1;
+
+                    for (Object jobName:jobNames) {
+                        StringBuilder jobXml = new StringBuilder().append("META-INF/batch-jobs/").append(jobName).append(".xml");
+                        str[i] = jobXml.toString();
+                        i++;
+                    }
+
+                    applicationContext = new org.springframework.context.support.ClassPathXmlApplicationContext(str);
+
+                    jobNames.clear();
+                }
+            }
+        } catch (IOException e) {
+            log.log(Level.ERROR, e);
+        }
     }
 
     @PreDestroy
@@ -186,9 +220,18 @@ public class BatchBean {
 
             HashMap hashMap = new HashMap<String, String>();
 
+            if(jobNames == null)
+                jobNames = new ArrayList();
+
             for (String propertyName : runtimeParameters.stringPropertyNames()) {
-                if(propertyName.startsWith(timerName+"."))
-                    hashMap.put(propertyName.replace(timerName+".",""), runtimeParameters.getProperty(propertyName));
+                if(propertyName.startsWith(timerName+".")) {
+                    String name = propertyName.replace(timerName+".","");
+                    String value = runtimeParameters.getProperty(propertyName);
+                    hashMap.put(name, value);
+                    if(name.equals("jobName") && !jobNames.contains(value)) {
+                        jobNames.add(value);
+                    }
+                }
             }
 
             timerConfig.setInfo(hashMap);
@@ -457,15 +500,16 @@ public class BatchBean {
 
             } else if(batchImplementation.equals(Constant.SPRING)){
 
-                StringBuilder jobXml = new StringBuilder().append("META-INF/batch-jobs/").append(jobName).append(".xml");
-                //StringBuilder jobXml = new StringBuilder().append("classpath*:META-INF/batch-jobs/*").append(".xml");
-                String[] str = {"context.xml",  jobXml.toString()};
+                if(applicationContext == null) {
+                    log.error("No se ejecuta el job, el contexto spring no pudo iniciarse.");
+                    return;
+                }
 
-                org.springframework.context.support.ClassPathXmlApplicationContext applicationContext = new org.springframework.context.support.ClassPathXmlApplicationContext(str);
+                JobRepository jobRepository = (JobRepository) applicationContext.getBean("jobRepository");
 
                 org.springframework.batch.core.launch.support.SimpleJobLauncher jobLauncher
                         = (org.springframework.batch.core.launch.support.SimpleJobLauncher) applicationContext.getBean("jobLauncher");
-                jobLauncher.setTaskExecutor(new org.springframework.core.task.SimpleAsyncTaskExecutor());
+                jobLauncher.setJobRepository(jobRepository);
 
                 try {
                     org.springframework.batch.core.JobParametersBuilder jobParametersBuilder
