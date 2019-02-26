@@ -80,3 +80,5 @@ SIRE/SIRE-Movil/
 SIRE/SIRE-NG/node_modules/
 
 SIRE/SIRE-NG/dist/
+
+SIRE/\.idea/sonarlint/
