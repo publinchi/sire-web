@@ -7,9 +7,9 @@
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <SIRE-Batch.version>1.5.5</SIRE-Batch.version>
+        <SIRE-Batch.version>1.5.6</SIRE-Batch.version>
         <SIRE-Commons.version>1.0.2</SIRE-Commons.version>
-        <SIRE-EE.version>1.4.4</SIRE-EE.version>
+        <SIRE-EE.version>1.4.5</SIRE-EE.version>
         <SIRE-Entities.version>1.1.1</SIRE-Entities.version>
         <SIRE-RS-Client.version>1.0.0</SIRE-RS-Client.version>
         <SIRE-Services.version>1.1.2</SIRE-Services.version>
