@@ -396,11 +396,15 @@ public class BatchBean {
     private boolean cancelTimer(Timer timer, Properties runtimeParameters) {
         String totalTimerNames = groupTimerNames(runtimeParameters);
 
-        String tn = ((Map) timer.getInfo()).get(Constant.TIMER_NAME).toString();
+        Map map = ((Map) timer.getInfo());
+        String tn = null;
+        if(map.get(Constant.TIMER_NAME) != null)
+            tn = map.get(Constant.TIMER_NAME).toString();
+
         boolean delete = true;
         String[] timerNamesArray = totalTimerNames.split(",");
         for (String timerName : timerNamesArray) {
-            if(!timerName.isEmpty() && tn.equals(timerName)) {
+            if(!timerName.isEmpty() && timerName.equals(tn)) {
                 delete = false;
             }
         }
