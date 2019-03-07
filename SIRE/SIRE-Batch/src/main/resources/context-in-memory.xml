@@ -14,9 +14,12 @@
 
     <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
         <property name="jobRepository" ref="jobRepository" />
+        <property name="taskExecutor" ref="taskExecutor" />
     </bean>
 
     <bean id="jobRepository" class="org.springframework.batch.core.repository.support.MapJobRepositoryFactoryBean" />
+
+    <bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor" />
 
     <bean id="lobHandler" class="org.springframework.jdbc.support.lob.DefaultLobHandler" />
 
