@@ -26,8 +26,6 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="CISConectorOSBConsultaORG" target="1.5" />
-      <module name="CISConectorVisionPlusTarjeta" target="1.5" />
       <module name="SIRE" target="1.5" />
       <module name="SIRE-Batch" target="1.8" />
       <module name="SIRE-Commons" target="1.8" />

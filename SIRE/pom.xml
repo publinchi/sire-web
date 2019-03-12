@@ -44,4 +44,10 @@
         <module>SIRE-WS</module>
         <module>SIRE-EE</module>
     </modules>
+    <repositories>
+        <repository>
+            <id>dev.fit-bank.com</id>
+            <url>http://dev.fit-bank.com/nexus/content/groups/public-snapshots/</url>
+        </repository>
+    </repositories>
 </project>
