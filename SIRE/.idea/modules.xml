@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/SIRE.iml" filepath="$PROJECT_DIR$/.idea/SIRE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE.iml" filepath="$PROJECT_DIR$/SIRE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Batch/SIRE-Batch.iml" filepath="$PROJECT_DIR$/SIRE-Batch/SIRE-Batch.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Commons/SIRE-Commons.iml" filepath="$PROJECT_DIR$/SIRE-Commons/SIRE-Commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-EE/SIRE-EE.iml" filepath="$PROJECT_DIR$/SIRE-EE/SIRE-EE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Entities/SIRE-Entities.iml" filepath="$PROJECT_DIR$/SIRE-Entities/SIRE-Entities.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-RS-Client/SIRE-RS-Client.iml" filepath="$PROJECT_DIR$/SIRE-RS-Client/SIRE-RS-Client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-SRI-Batch-Autorizacion/SIRE-SRI-Batch-Autorizacion.iml" filepath="$PROJECT_DIR$/SIRE-SRI-Batch-Autorizacion/SIRE-SRI-Batch-Autorizacion.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-SRI-Batch-Commons/SIRE-SRI-Batch-Commons.iml" filepath="$PROJECT_DIR$/SIRE-SRI-Batch-Commons/SIRE-SRI-Batch-Commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-SRI-Batch-Recepcion/SIRE-SRI-Batch-Recepcion.iml" filepath="$PROJECT_DIR$/SIRE-SRI-Batch-Recepcion/SIRE-SRI-Batch-Recepcion.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-SRI-Entities/SIRE-SRI-Entities.iml" filepath="$PROJECT_DIR$/SIRE-SRI-Entities/SIRE-SRI-Entities.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-SRI-Reports/SIRE-SRI-Reports.iml" filepath="$PROJECT_DIR$/SIRE-SRI-Reports/SIRE-SRI-Reports.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-SRI-Signature/SIRE-SRI-Signature.iml" filepath="$PROJECT_DIR$/SIRE-SRI-Signature/SIRE-SRI-Signature.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-SRI-WSClient/SIRE-SRI-WSClient.iml" filepath="$PROJECT_DIR$/SIRE-SRI-WSClient/SIRE-SRI-WSClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Services/SIRE-Services.iml" filepath="$PROJECT_DIR$/SIRE-Services/SIRE-Services.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Services-API/SIRE-Services-API.iml" filepath="$PROJECT_DIR$/SIRE-Services-API/SIRE-Services-API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Soap/SIRE-Soap.iml" filepath="$PROJECT_DIR$/SIRE-Soap/SIRE-Soap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-WS/SIRE-WS.iml" filepath="$PROJECT_DIR$/SIRE-WS/SIRE-WS.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Web/SIRE-Web.iml" filepath="$PROJECT_DIR$/SIRE-Web/SIRE-Web.iml" />
+    </modules>
+  </component>
+</project>

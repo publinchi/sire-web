@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+<<<<<<< Updated upstream
   <component name="ExternalStorageConfigurationManager" enabled="true" />
+=======
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="ejb" url="file://$PROJECT_DIR$/SIRE-Services" />
+    <file type="javaeeApplication" url="file://$PROJECT_DIR$/SIRE-EE" />
+    <file type="web" url="file://$PROJECT_DIR$/SIRE-Batch" />
+    <file type="web" url="file://$PROJECT_DIR$/SIRE-Web" />
+    <file type="web" url="file://$PROJECT_DIR$/SIRE-WS" />
+  </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
+>>>>>>> Stashed changes
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
