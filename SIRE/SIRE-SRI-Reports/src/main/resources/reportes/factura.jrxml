@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="factura" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a90b5cc6-9a35-48d7-a2d0-ef67a99b13b8">
 	<property name="ireport.zoom" value="1.5"/>
-	<property name="ireport.x" value="34"/>
-	<property name="ireport.y" value="531"/>
+	<property name="ireport.x" value="12"/>
+	<property name="ireport.y" value="470"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -41,6 +41,7 @@
 	<parameter name="DIRECCION_CLIENTE" class="java.lang.String"/>
 	<parameter name="FECHA_EMISION" class="java.lang.String"/>
 	<parameter name="GUIA" class="java.lang.String"/>
+	<parameter name="PLACA" class="java.lang.String"/>
 	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
 		<defaultValueExpression><![CDATA["/home/marco/NetBeansProjects/comprobantes-elctronicos-cliente/resources/reportes/"]]></defaultValueExpression>
 	</parameter>

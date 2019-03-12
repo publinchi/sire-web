@@ -9,19 +9,13 @@ import com.sire.batch.constant.Constant;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.batch.core.Job;
+import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.batch.core.repository.JobRepository;
 
 import java.io.*;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.*;
 import javax.annotation.*;
 import javax.batch.operations.JobOperator;
 import javax.batch.operations.JobStartException;
@@ -52,13 +46,57 @@ public class BatchBean {
 
     private static final Logger log = LogManager.getLogger(BatchBean.class);
     private String home;
-    private static StringBuffer comprobantePropertiesPath;
+    private Boolean thresholdEnabled;
+    private static StringBuffer configurationPropertiesPath;
+    private ThreadPoolExecutor threadPoolExecutor;
+    private int nThreads, queueCapacity;
+    private List jobNames;
 
     @PostConstruct
     public void init() {
         _init();
+        //startUpSpringFramework();
+    }
 
-        loadTimers();
+    private org.springframework.context.support.ClassPathXmlApplicationContext startUpSpringFramework() {
+        Properties runtimeParametersInitial = new Properties();
+        org.springframework.context.support.ClassPathXmlApplicationContext applicationContext = null;
+        try {
+            runtimeParametersInitial.load(new FileInputStream(configurationPropertiesPath.toString()));
+            if(runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION) != null) {
+                final String batchImplementation = runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION);
+                if(batchImplementation != null && batchImplementation.equals(Constant.SPRING)) {
+
+                    int jobsNum = jobNames.size();
+                    int total = jobsNum + 1;
+                    String[] str = new String[total];
+                    //str[0] = "context.xml";
+                    str[0] = "context-in-memory.xml";
+
+                    int i = 1;
+
+                    for (Object jobName:jobNames) {
+                        StringBuilder jobXml = new StringBuilder().append("META-INF/batch-jobs/").append(jobName).append(".xml");
+                        str[i] = jobXml.toString();
+                        i++;
+                    }
+
+                    applicationContext = new org.springframework.context.support.ClassPathXmlApplicationContext(str);
+
+                    //jobNames.clear();
+                }
+            }
+        } catch (IOException e) {
+            log.log(Level.ERROR, e);
+        }
+        return applicationContext;
+    }
+
+    @PreDestroy
+    public void finish() {
+        if(threadPoolExecutor != null)
+            threadPoolExecutor.shutdown();
+        cancelTimers();
     }
 
     private void _init(){
@@ -68,41 +106,81 @@ public class BatchBean {
             return;
         }
 
-        log.info("SIRE HOME --> " + home);
+        log.info("SIRE HOME --> {}", home);
 
-        comprobantePropertiesPath = new StringBuffer();
-        comprobantePropertiesPath.append(home);
-        comprobantePropertiesPath.append(File.separator);
-        comprobantePropertiesPath.append(Constant.CONFIGURATION_PROPERTIES);
+        thresholdEnabled = Boolean.parseBoolean(System.getProperty("sire.threshold.enabled"));
+
+        log.info("SIRE THRESHOLD ENABLED --> {}", thresholdEnabled);
+
+        if(thresholdEnabled) {
+
+            String capacity = System.getProperty("sire.capacity");
+            if (capacity == null) {
+                queueCapacity = Constant.DEFAULT_CAPACITY;
+                log.warn("SIRE QUEUE CAPACITY NOT FOUND. SETTING {} CAPACITY BY DEFAULT.", Constant.DEFAULT_CAPACITY);
+            } else {
+                queueCapacity = Integer.parseInt(capacity);
+                log.info("SIRE QUEUE CAPACITY --> {}", queueCapacity);
+            }
+            String corePoolSize = System.getProperty("sire.corePoolSize");
+            if (corePoolSize == null) {
+                corePoolSize = Constant.DEFAULT_CORE_POOL_SIZE;
+            }
+            String keepAliveTime = System.getProperty("sire.keepAliveTime");
+            if (keepAliveTime == null) {
+                keepAliveTime = Constant.DEFAULT_KEEP_ALIVE_TIME;
+            }
+            String maximumPoolSize = System.getProperty("sire.maximumPoolSize");
+            if (maximumPoolSize == null) {
+                nThreads = Constant.DEFAULT_MAXIMUM_POOL_SIZE;
+                log.warn("SIRE MAXIMUM POOL SIZE NOT FOUND. SETTING {} THREADS BY DEFAULT.", Constant.DEFAULT_MAXIMUM_POOL_SIZE);
+            } else {
+                nThreads = Integer.parseInt(maximumPoolSize);
+                log.info("SIRE THREADS --> {}", nThreads);
+            }
+
+            BlockingQueue q = new ArrayBlockingQueue(queueCapacity);
+            threadPoolExecutor = new ThreadPoolExecutor(Integer.valueOf(corePoolSize), nThreads, Integer.valueOf(keepAliveTime), TimeUnit.MILLISECONDS, q);
+        }
+
+        configurationPropertiesPath = new StringBuffer();
+        configurationPropertiesPath.append(home);
+        configurationPropertiesPath.append(File.separator);
+        configurationPropertiesPath.append(Constant.CONFIGURATION_PROPERTIES);
 
         log.log(Level.INFO, "applicationName -> {}", applicationName);
         log.log(Level.INFO, "moduleName -> {}", moduleName);
-        log.info("Configuration Properties --> " + comprobantePropertiesPath);
+        log.info("Configuration Properties --> " + configurationPropertiesPath);
+
+        loadTimers();
     }
 
-    public void loadTimers() {
-        try {
-            Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
+    private void loadTimers() {
+        reconfigTimers();
 
-            String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
-            String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
-            String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
+        configTimers();
 
-            createCalendar(timerRecepcionNames);
-            createCalendar(timerAutorizacionNames);
-            createCalendar(timerNames);
-
-            Collection<Timer> timers = timerService.getTimers();
-            log.info("************** TIMERS INFO **************");
-            for (Timer timer : timers) {
-                log.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
-                        + " m: " + timer.getSchedule().getMinute());
-            }
-            log.log(Level.INFO, "Total timers: {}", timers.size());
-        } catch (IOException ex) {
-            log.log(Level.ERROR, ex);
+        Collection<Timer> timers = timerService.getTimers();
+        log.info("************** TIMERS INFO **************");
+        for (Timer timer : timers) {
+            log.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
+                    + " m: " + timer.getSchedule().getMinute());
         }
+        log.log(Level.INFO, "Total timers: {}", timers.size());
+    }
+
+    private void cancelTimers() {
+        Collection<Timer> timers = timerService.getTimers();
+        log.info("Cancelling timers ...");
+        log.info("************** TIMERS INFO **************");
+        for (Timer timer : timers) {
+            log.log(Level.INFO, "Timer Name Cancelled: {} -> h: {} m: {}"
+                    , timer.getInfo()
+                    , timer.getSchedule().getHour()
+                    , timer.getSchedule().getMinute());
+            timer.cancel();
+        }
+        log.info("All timers were cancelled.");
     }
 
     private void createCalendar(String timerNames) {
@@ -117,50 +195,93 @@ public class BatchBean {
 
     @Timeout
     public void timeout(Timer timer) {
-        try {
-            Map map = (Map) timer.getInfo();
-            log.log(Level.INFO, "timeout: jobName --> {}, tipoComprobante --> {}, reportName --> {}"
-                    , map.get(Constant.JOB_NAME), (String) map.get(Constant.TIPO_COMPROBANTE)
-                    , map.get(Constant.REPORT_NAME));
-            
-            executeJob((String)map.get(Constant.JOB_NAME), (String)map.get(Constant.TIPO_COMPROBANTE), (String)map.get(Constant.REPORT_NAME));
-        } catch (SecurityException | IllegalArgumentException ex) {
-            log.log(Level.ERROR, ex);
+        Map map = (Map) timer.getInfo();
+        if(thresholdEnabled != null && thresholdEnabled.equals(Boolean.TRUE)){
+            executeWork(map); // TODO Hacer funcionar esta mierda
+        }
+        else {
+            executeJob(map);
         }
     }
 
     private Timer createCalendarTimer(String timerName) {
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
+            runtimeParameters.load(new FileInputStream(configurationPropertiesPath.toString()));
+            boolean persistent = Boolean.parseBoolean(runtimeParameters.getProperty(timerName + ".persistent"));
+
+            String second = runtimeParameters.getProperty(timerName + ".second");
             String minute = runtimeParameters.getProperty(timerName + ".minute");
             String hour = runtimeParameters.getProperty(timerName + ".hour");
-            String tipoComprobante = runtimeParameters.getProperty(timerName + "." + Constant.TIPO_COMPROBANTE);
-            String jobName = runtimeParameters.getProperty(timerName + "." + Constant.JOB_NAME);
-            String reportName = runtimeParameters.getProperty(timerName + "." + Constant.REPORT_NAME);
-            final TimerConfig timerConfig = new TimerConfig(timerName, false);
+            String dayOfMonth = runtimeParameters.getProperty(timerName + ".dayOfMonth");
+            String month = runtimeParameters.getProperty(timerName + ".month");
+            String dayOfWeek = runtimeParameters.getProperty(timerName + ".dayOfWeek");
+            String year = runtimeParameters.getProperty(timerName + ".year");
+            String timezone = runtimeParameters.getProperty(timerName + ".timezone");
+
+            final TimerConfig timerConfig = new TimerConfig(timerName, persistent);
+
             HashMap hashMap = new HashMap<String, String>();
-            hashMap.put(Constant.TIMER_NAME, timerName);
-            hashMap.put(Constant.JOB_NAME, jobName);
-            hashMap.put(Constant.TIPO_COMPROBANTE, tipoComprobante);
-            hashMap.put(Constant.REPORT_NAME, reportName);
+
+            if(jobNames == null)
+                jobNames = new ArrayList();
+
+            for (String propertyName : runtimeParameters.stringPropertyNames()) {
+                if(propertyName.startsWith(timerName+".")) {
+                    String name = propertyName.replace(timerName+".","");
+                    String value = runtimeParameters.getProperty(propertyName);
+                    hashMap.put(name, value);
+                    if(name.equals("jobName") && !jobNames.contains(value)) {
+                        jobNames.add(value);
+                    }
+                }
+            }
+
             timerConfig.setInfo(hashMap);
-            return timerService.createCalendarTimer(new ScheduleExpression().hour(hour).minute(minute).timezone("UTC"), timerConfig);
+
+            Collection<Timer> timers = timerService.getTimers();
+
+            for (Timer timer : timers) {
+                if(timerConfig.getInfo().equals(timer.getInfo()))
+                {
+                    return timer;
+                }
+            }
+
+            ScheduleExpression scheduleExpression = new ScheduleExpression();
+            if(second     != null && !second.trim().isEmpty()    ) scheduleExpression.second(second);
+            if(minute     != null && !minute.trim().isEmpty()    ) scheduleExpression.minute(minute);
+            if(hour       != null && !hour.trim().isEmpty()      ) scheduleExpression.hour(hour);
+            if(dayOfMonth != null && !dayOfMonth.trim().isEmpty()) scheduleExpression.dayOfMonth(dayOfMonth);
+            if(month      != null && !month.trim().isEmpty()     ) scheduleExpression.month(month);
+            if(dayOfWeek  != null && !dayOfWeek.trim().isEmpty() ) scheduleExpression.dayOfWeek(dayOfWeek);
+            if(year       != null && !year.trim().isEmpty()      ) scheduleExpression.year(year);
+            if(timezone   != null && !timezone.trim().isEmpty()  ) scheduleExpression.timezone(timezone);
+            else scheduleExpression.timezone("UTC");
+
+            Timer timer = timerService.createCalendarTimer(scheduleExpression, timerConfig);
+
+            log.info("************** TIMER CREATING **************");
+            log.info("Timer {} Created.", timerName);
+
+            return timer;
         } catch (IOException ex) {
             log.log(Level.ERROR, ex);
         }
         return null;
     }
 
-    public void reconfigJob() {
+    private void reconfigTimers() {
         try {
             Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
+            runtimeParameters.load(new FileInputStream(configurationPropertiesPath.toString()));
 
             Collection<Timer> timers = timerService.getTimers();
 
             boolean finish = createNewTimersWhenNoTimers(timers, runtimeParameters);
+
             if(finish){
+                timers = timerService.getTimers();
                 log.log(Level.INFO, "Total timers: {}", timers.size());
                 return;
             }
@@ -181,6 +302,24 @@ public class BatchBean {
     }
 
     private boolean createNewTimersWhenNoTimers(Collection<Timer> timers, Properties runtimeParameters) {
+        String totalTimerNames = groupTimerNames(runtimeParameters);
+
+        // Si no hay timers en memoria y se agregan nuevos timers en el archivo properties,
+        // se crean todos los timers del properties.
+        if(timers.isEmpty() && !totalTimerNames.trim().isEmpty()
+                && totalTimerNames.split(",").length > 0){
+            log.info("All timers are new, creating them ...");
+            createCalendar(totalTimerNames);
+            log.info("Timers created.");
+            return true;
+        } else if(timers.isEmpty() && totalTimerNames.trim().isEmpty()){
+            log.info("No timers found.");
+            return true;
+        }
+        return false;
+    }
+
+    private String groupTimerNames(Properties runtimeParameters) {
         String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
         String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
         String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
@@ -194,27 +333,13 @@ public class BatchBean {
                 totalTimerNames.append(",");
             totalTimerNames.append(timerAutorizacionNames);
         }
-        if(!timerNames.isEmpty()) {
+        if(timerNames != null && !timerNames.isEmpty()) {
             if (timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty())
                 totalTimerNames.append(",");
             totalTimerNames.append(timerNames);
         }
 
-        log.info("totalTimerNames -> " + totalTimerNames);
-
-        // Si no hay timers en memoria y se agregan nuevos timers en el archivo properties,
-        // se crean todos los timers del properties.
-        if(timers.isEmpty() && !totalTimerNames.toString().trim().isEmpty()
-                && totalTimerNames.toString().split(",").length > 0){
-            log.info("All timers are new, creating them ...");
-            createCalendar(totalTimerNames.toString());
-            log.info("Timers created.");
-            return true;
-        } else if(timers.isEmpty() && totalTimerNames.toString().trim().isEmpty()){
-            log.info("No timers found.");
-            return true;
-        }
-        return false;
+        return totalTimerNames.toString();
     }
 
     private void updateTimer(Timer timer, Properties runtimeParameters) {
@@ -224,115 +349,304 @@ public class BatchBean {
         if (hour != null) {
             hour = hour.trim();
         }
-        log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
-                + " -> Mem Hour = " + timer.getSchedule().getHour());
 
         String minute = runtimeParameters.getProperty(timerName + ".minute");
         if (minute != null) {
             minute = minute.trim();
         }
-        log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Minute = " + minute
-                + " -> Mem Minute = " + timer.getSchedule().getMinute());
 
-        if ((hour != null && !hour.equals(timer.getSchedule().getHour())) || (minute != null && !minute.equals(timer.getSchedule().getMinute()))) {
+        if ((hour != null && !hour.equals(timer.getSchedule().getHour()))
+                || (minute != null && !minute.equals(timer.getSchedule().getMinute()))) {
+            log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
+                    + " -> Mem Hour = " + timer.getSchedule().getHour());
+
+            log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Minute = " + minute
+                    + " -> Mem Minute = " + timer.getSchedule().getMinute());
+
             log.log(Level.INFO, "Diferentes");
             log.log(Level.INFO, "Cancelling timer: {}", timer.getInfo());
+
             timer.cancel();
+
             log.log(Level.INFO, "Creating timer {} -> Every {} hours - Every {} minutes.",
                     timerName, hour, minute);
+
             Timer t = createCalendarTimer(timerName);
+
             if (t != null)
                 log.log(Level.INFO, "New timer {} created -> Every {} hours - Every {} minutes.",
-                        t.getInfo(), t.getSchedule().getHour(), t.getSchedule().getHour());
+                        t.getInfo(), t.getSchedule().getHour(), t.getSchedule().getMinute());
         }
     }
 
-    private boolean newTimers() {
-        boolean newTimers = false;
+    private void configTimers() {
+        try{
+            Properties runtimeParameters = new Properties();
+            runtimeParameters.load(new FileInputStream(configurationPropertiesPath.toString()));
 
+            String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
+            String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
+            String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
 
-        return newTimers;
+            createCalendar(timerRecepcionNames);
+            createCalendar(timerAutorizacionNames);
+            createCalendar(timerNames);
+        } catch (IOException ex) {
+            log.log(Level.ERROR, ex);
+        }
     }
 
     private boolean cancelTimer(Timer timer, Properties runtimeParameters) {
-        String timerRecepcionNames = runtimeParameters.getProperty(Constant.TIMER_RECEPCION_NAMES);
-        String timerAutorizacionNames = runtimeParameters.getProperty(Constant.TIMER_AUTORIZACION_NAMES);
-        String timerNames = runtimeParameters.getProperty(Constant.TIMER_NAMES);
+        String totalTimerNames = groupTimerNames(runtimeParameters);
 
-        StringBuilder totalTimerNames = new StringBuilder();
+        Map map = ((Map) timer.getInfo());
+        String tn = null;
+        if(map.get(Constant.TIMER_NAME) != null)
+            tn = map.get(Constant.TIMER_NAME).toString();
 
-        if(timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
-            totalTimerNames.append(timerRecepcionNames);
-        if(timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty()) {
-            if (timerRecepcionNames != null && !timerRecepcionNames.isEmpty())
-                totalTimerNames.append(",");
-            totalTimerNames.append(timerAutorizacionNames);
-        }
-        if(!timerNames.isEmpty()) {
-            if (timerAutorizacionNames !=null && !timerAutorizacionNames.isEmpty())
-                totalTimerNames.append(",");
-            totalTimerNames.append(timerNames);
-        }
-
-        log.info("totalTimerNames -> " + totalTimerNames);
-
-        String tn = ((Map) timer.getInfo()).get(Constant.TIMER_NAME).toString();
         boolean delete = true;
-        String[] timerNamesArray = totalTimerNames.toString().split(",");
+        String[] timerNamesArray = totalTimerNames.split(",");
         for (String timerName : timerNamesArray) {
-            if(!timerName.isEmpty() && tn.equals(timerName)) {
+            if(!timerName.isEmpty() && timerName.equals(tn)) {
                 delete = false;
             }
         }
         if(delete){
+            log.info("Timer Canceled -> " + timer.getInfo());
             timer.cancel();
         }
         return delete;
     }
 
-    public void executeJob(String jobName, String tipoComprobante, String reportName) {
-        try {
-            Properties runtimeParameters = new Properties();
-            runtimeParameters.load(new FileInputStream(comprobantePropertiesPath.toString()));
-            runtimeParameters.setProperty("urlReporte", runtimeParameters.getProperty("pathReports") + reportName);
-            if(tipoComprobante != null)
-                runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
+    private void executeWork(Map map) {
+        if(threadPoolExecutor != null && threadPoolExecutor instanceof ThreadPoolExecutor) {
+            int activeCount = threadPoolExecutor.getActiveCount();
+            int queueSize = threadPoolExecutor.getQueue().size();
+            log.info("Active Threads --> {}, Queue Size --> {}", activeCount, queueSize);
 
-            String batchImplementation = runtimeParameters.getProperty(Constant.BATCH_IMPLEMENTATION) ;
-
-            log.log(Level.INFO, "batchImplementation: {}", batchImplementation);
-
-            if(batchImplementation == null || (batchImplementation != null && batchImplementation.equals(Constant.JEE))){
-                JobOperator jobOperator = BatchRuntime.getJobOperator();
-                Long executionId = jobOperator.start(jobName, runtimeParameters);
-                jobOperator.getJobExecution(executionId);
-            } else if(batchImplementation.equals(Constant.SPRING)){
-                String[] str = {"context.xml", "META-INF/batch-jobs/*.xml"};
-                ApplicationContext applicationContext = new ClassPathXmlApplicationContext(str);
-                Job job = (Job) applicationContext.getBean(jobName);
-                JobLauncher jobLauncher = (JobLauncher) applicationContext.getBean("jobLauncher");
-                try{
-                    JobParameters jobParameters = new JobParametersBuilder()
-                            .addLong("time",System.currentTimeMillis()).toJobParameters();
-                    JobExecution execution = jobLauncher.run(job, jobParameters);
-                    log.log(Level.INFO, "Job Execution Status: {}", execution.getStatus());
-                }catch(Exception e){
-                    log.log(Level.ERROR, e.getCause().getMessage());
-                }
+            if(activeCount >= nThreads &&  queueSize >= queueCapacity){
+                log.warn("Se ha alcanzado el umbral de {} hilo(s) disponible(s).", activeCount);
+                log.warn("Por favor revise si existen hilos colgados.");
+                return;
             }
-        } catch (IOException | JobStartException ex) {
-            log.log(Level.ERROR, ex.getCause().getMessage());
         }
+
+        threadPoolExecutor.execute(new Work(map));
     }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
+    private void executeJob(Map map){
+        try {
+            final String timeout = (String) map.get(Constant.TIMEOUT);
+            final String jobName = (String) map.get(Constant.JOB_NAME);
+            String tipoComprobante = (String) map.get(Constant.TIPO_COMPROBANTE);
+            String reportName = (String) map.get(Constant.REPORT_NAME);
+
+            Properties runtimeParametersInitial = new Properties();
+            runtimeParametersInitial.load(new FileInputStream(configurationPropertiesPath.toString()));
+
+            Properties runtimeParameters = new Properties();
+
+            for (Object key : map.keySet()) {
+                runtimeParameters.setProperty((String) key, (String) map.get(key));
+            }
+
+            for (String propertyName :runtimeParametersInitial.stringPropertyNames()) {
+                if(propertyName.startsWith(jobName + ".")) {
+                    String value = runtimeParameters.getProperty(propertyName);
+                    if(value != null)
+                        runtimeParameters.setProperty(propertyName, value);
+                }
+            }
+
+            if(runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION) != null)
+                runtimeParameters.setProperty(Constant.BATCH_IMPLEMENTATION, runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION));
+            if(runtimeParametersInitial.getProperty(Constant.COD_EMPRESA) != null)
+                runtimeParameters.setProperty(Constant.COD_EMPRESA, runtimeParametersInitial.getProperty(Constant.COD_EMPRESA));
+            if(runtimeParametersInitial.getProperty(Constant.DATABASE) != null)
+                runtimeParameters.setProperty(Constant.DATABASE, runtimeParametersInitial.getProperty(Constant.DATABASE));
+            if(runtimeParametersInitial.getProperty(Constant.PASS_SIGNATURE) != null)
+                runtimeParameters.setProperty(Constant.PASS_SIGNATURE, runtimeParametersInitial.getProperty(Constant.PASS_SIGNATURE));
+            if(runtimeParametersInitial.getProperty(Constant.PATH_SIGNATURE) != null)
+                runtimeParameters.setProperty(Constant.PATH_SIGNATURE, runtimeParametersInitial.getProperty(Constant.PATH_SIGNATURE));
+            if(runtimeParametersInitial.getProperty(Constant.URL_AUTORIZACION) != null)
+                runtimeParameters.setProperty(Constant.URL_AUTORIZACION, runtimeParametersInitial.getProperty(Constant.URL_AUTORIZACION));
+            if(runtimeParametersInitial.getProperty(Constant.URL_RECEPCION) != null)
+                runtimeParameters.setProperty(Constant.URL_RECEPCION, runtimeParametersInitial.getProperty(Constant.URL_RECEPCION));
+            if(runtimeParametersInitial.getProperty(Constant.PATH_REPORTS) != null)
+                runtimeParameters.setProperty(Constant.URL_REPORTE, runtimeParametersInitial.getProperty(Constant.PATH_REPORTS) + reportName);
+
+            if(tipoComprobante != null)
+                runtimeParameters.setProperty(Constant.TIPO_COMPROBANTE, tipoComprobante);
+
+            final String batchImplementation = runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION) ;
+
+            if(tipoComprobante != null || reportName != null)
+                log.info("Executing job --> {}, batchImplementation: {}, tipoComprobante --> {}, reportName --> {}"
+                        , jobName, batchImplementation, map.get(Constant.TIPO_COMPROBANTE), map.get(Constant.REPORT_NAME));
+            else
+                log.info("Executing job --> {}, batchImplementation: {}", jobName, batchImplementation);
+
+            final String parentThread = Thread.currentThread().getName();
+            Object eId = null;
+
+            if(batchImplementation == null || (batchImplementation != null && batchImplementation.equals(Constant.JEE))){
+
+                JobOperator jobOperator = BatchRuntime.getJobOperator();
+                eId = jobOperator.start(jobName, runtimeParameters);
+                log.info("Initializing {} job with execution id {}.", jobName, eId.toString());
+
+            } else if(batchImplementation.equals(Constant.SPRING)){
+
+                org.springframework.context.support.ClassPathXmlApplicationContext applicationContext = startUpSpringFramework();
+
+                if(applicationContext == null) {
+                    log.error("No se ejecuta el job, el contexto spring no pudo iniciarse.");
+                    return;
+                }
+
+                org.springframework.batch.core.launch.support.SimpleJobLauncher jobLauncher
+                        = (org.springframework.batch.core.launch.support.SimpleJobLauncher) applicationContext.getBean("jobLauncher");
+
+                try {
+                    org.springframework.batch.core.JobParametersBuilder jobParametersBuilder
+                            = new org.springframework.batch.core.JobParametersBuilder();
+
+                    Enumeration<String> enums = (Enumeration<String>) runtimeParameters.propertyNames();
+                    while (enums.hasMoreElements()) {
+                        String key = enums.nextElement();
+                        String value = runtimeParameters.getProperty(key);
+                        jobParametersBuilder.addString(key, value);
+                    }
+
+                    jobParametersBuilder.addLong("time", System.currentTimeMillis());
+
+                    org.springframework.batch.core.Job job = (org.springframework.batch.core.Job) applicationContext.getBean(jobName);
+                    org.springframework.batch.core.JobParameters jobParameters = jobParametersBuilder.toJobParameters();
+
+                    jobLauncher.run(job, jobParameters);
+                    log.info("Initializing {} job.", jobName);
+                    eId = jobParameters;
+
+                } catch(Exception e){
+                    log.log(Level.ERROR, e);
+                    return;
+                }
+
+            }
+
+            final Object object = eId;
+
+            if(parentThread == null || jobName == null || object == null)
+                return;
+
+            if(!batchImplementation.equals(Constant.SPRING))
+                Executors.newSingleThreadExecutor().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            awaitTermination(parentThread, jobName, object, timeout, batchImplementation);
+                        } catch (InterruptedException e) {
+                            log.log(Level.ERROR, e.getCause().getMessage());
+                        }
+                    }
+                });
+
+        } catch (IOException | JobStartException ex) {
+            log.log(Level.ERROR, ex);
+        }
+    }
 
     @GET
     @Path("reload")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Response reloadTimers() {
-        reconfigJob();
+        loadTimers();
         return Response.ok().build();
+    }
+
+    private void awaitTermination(String threadName, String jobName, Object object, String to, String batchImplementation)
+            throws InterruptedException {
+        if(batchImplementation == null || batchImplementation.equals(Constant.JEE))
+            _awaitTermination(threadName, jobName, (Long) object, to);
+        else
+            _awaitTermination(threadName, jobName, (org.springframework.batch.core.JobParameters) object, to);
+    }
+
+    private void _awaitTermination(String threadName, String jobName, Long execution, String to)
+            throws InterruptedException {
+        Long timeout;
+
+        if(to == null)
+            timeout = Constant.DEFAULT_TIMEOUT;
+        else
+            timeout = Long.parseLong(to);
+
+        final long limit = System.currentTimeMillis() + timeout;
+
+        JobOperator jobOperator = BatchRuntime.getJobOperator();
+        javax.batch.runtime.JobExecution jobExecution = jobOperator.getJobExecution(execution);
+        while (true) {
+            if (null != jobExecution.getExitStatus()) {
+                log.log(Level.INFO, "Finished {} execution, with exit status {}. Parent Thread {}.", jobName
+                        , jobExecution.getExitStatus(), threadName);
+                break;
+            }
+
+            if (System.currentTimeMillis() >= limit) {
+                log.log(Level.INFO, "Timeout of {} ms waiting {}'s answer from timer with thread id {}.", timeout,
+                        jobName, threadName);
+                break;
+            }
+
+            Thread.sleep(timeout/10);
+        }
+    }
+
+    private void _awaitTermination(String threadName, String jobName, org.springframework.batch.core.JobParameters jobParameters, String to)
+            throws InterruptedException {
+        Long timeout;
+
+        if(to == null)
+            timeout = Constant.DEFAULT_TIMEOUT;
+        else
+            timeout = Long.parseLong(to);
+
+        final long limit = System.currentTimeMillis() + timeout;
+
+        org.springframework.context.support.ClassPathXmlApplicationContext applicationContext = null;
+
+        JobRepository jobRepository = (JobRepository) applicationContext.getBean("jobRepository");
+        JobExecution jobExecution = jobRepository.getLastJobExecution(jobName, jobParameters);
+        while (true) {
+            if (jobExecution != null && null != jobExecution.getExitStatus()
+                    && !jobExecution.getExitStatus().getExitCode().equals(ExitStatus.UNKNOWN.getExitCode())) {
+                log.log(Level.INFO, "Finished {} with execution id {} and exit status {}. Parent Thread {}.",
+                        jobName, jobExecution.getId(), jobExecution.getExitStatus().getExitCode(), threadName);
+                break;
+            }
+
+            if (System.currentTimeMillis() >= limit) {
+                log.log(Level.INFO, "Timeout of {} ms waiting {}'s answer from timer with thread id {}.", timeout,
+                        jobName, threadName);
+                break;
+            }
+
+            Thread.sleep(timeout/10);
+        }
+    }
+
+    class Work implements Runnable {
+
+        Map map;
+
+        public Work(Map map) {
+            this.map = map;
+        }
+
+        public void run() {
+            executeJob(map);
+        }
     }
 }
