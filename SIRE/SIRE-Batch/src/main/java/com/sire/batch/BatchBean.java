@@ -9,9 +9,6 @@ import com.sire.batch.constant.Constant;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.batch.core.ExitStatus;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.repository.JobRepository;
 
 import java.io.*;
 import java.util.*;
@@ -19,6 +16,7 @@ import java.util.concurrent.*;
 import javax.annotation.*;
 import javax.batch.operations.JobOperator;
 import javax.batch.operations.JobStartException;
+import javax.batch.operations.NoSuchJobExecutionException;
 import javax.batch.runtime.BatchRuntime;
 import javax.ejb.*;
 import javax.ejb.Singleton;
@@ -571,7 +569,7 @@ public class BatchBean {
         if(batchImplementation == null || batchImplementation.equals(Constant.JEE))
             _awaitTermination(threadName, jobName, (Long) object, to);
         else
-            _awaitTermination(threadName, jobName, (org.springframework.batch.core.JobParameters) object, to);
+            _awaitTermination(threadName, jobName, object, to);
     }
 
     private void _awaitTermination(String threadName, String jobName, Long execution, String to)
@@ -586,7 +584,15 @@ public class BatchBean {
         final long limit = System.currentTimeMillis() + timeout;
 
         JobOperator jobOperator = BatchRuntime.getJobOperator();
-        javax.batch.runtime.JobExecution jobExecution = jobOperator.getJobExecution(execution);
+        javax.batch.runtime.JobExecution jobExecution;
+
+        try {
+            jobExecution = jobOperator.getJobExecution(execution);
+        } catch (NoSuchJobExecutionException nsjee) {
+            log.catching(nsjee);
+            return;
+        }
+
         while (true) {
             if (null != jobExecution.getExitStatus()) {
                 log.log(Level.INFO, "Finished {} execution, with exit status {}. Parent Thread {}.", jobName
@@ -604,7 +610,7 @@ public class BatchBean {
         }
     }
 
-    private void _awaitTermination(String threadName, String jobName, org.springframework.batch.core.JobParameters jobParameters, String to)
+    private void _awaitTermination(String threadName, String jobName, Object jobParameters, String to)
             throws InterruptedException {
         Long timeout;
 
@@ -617,11 +623,14 @@ public class BatchBean {
 
         org.springframework.context.support.ClassPathXmlApplicationContext applicationContext = null;
 
-        JobRepository jobRepository = (JobRepository) applicationContext.getBean("jobRepository");
-        JobExecution jobExecution = jobRepository.getLastJobExecution(jobName, jobParameters);
+        org.springframework.batch.core.repository.JobRepository jobRepository =
+                (org.springframework.batch.core.repository.JobRepository) applicationContext.getBean("jobRepository");
+        org.springframework.batch.core.JobExecution jobExecution = jobRepository.getLastJobExecution(jobName,
+                (org.springframework.batch.core.JobParameters) jobParameters);
         while (true) {
             if (jobExecution != null && null != jobExecution.getExitStatus()
-                    && !jobExecution.getExitStatus().getExitCode().equals(ExitStatus.UNKNOWN.getExitCode())) {
+                    && !jobExecution.getExitStatus().getExitCode()
+                    .equals(org.springframework.batch.core.ExitStatus.UNKNOWN.getExitCode())) {
                 log.log(Level.INFO, "Finished {} with execution id {} and exit status {}. Parent Thread {}.",
                         jobName, jobExecution.getId(), jobExecution.getExitStatus().getExitCode(), threadName);
                 break;
