@@ -133,5 +133,11 @@
             <version>${SIRE-Batch.version}</version>
             <type>war</type>
         </dependency>
+        <dependency>
+            <groupId>xmlsec</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>1.4.2-ADSI</version>
+            <classifier>1.1</classifier>
+        </dependency>
     </dependencies>
 </project>
