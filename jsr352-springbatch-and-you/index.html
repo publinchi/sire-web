@@ -1,0 +1,917 @@
+<!--
+	Big data idea: http://waxy.org/2008/05/star_wars_kid_the_data_dump/
+-->
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>JSR-352, Spring Batch, and You</title>
+
+		<meta name="description" content="A talk about JSR-352 and how it works with Spring Batch">
+		<meta name="author" content="Michael T Minella">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<script src="lib/js/prefixfree.min.js"></script>
+
+		<link rel="stylesheet" href="css/reveal.min.css">
+		<link rel="stylesheet" href="css/theme/spring.css" id="theme">
+
+		<!-- For syntax highlighting -->
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<!-- If the query includes 'print-pdf', use the PDF print sheet -->
+		<script>
+			document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="lib/js/html5shiv.js"></script>
+		<![endif]-->
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+				<section>
+					<h1>JSR-352, Spring Batch, and You</h1>
+					<p>
+						<small>Created by <a href="http://springframework.io/team/mminella">Michael T Minella</a> / <a href="http://twitter.com/michaelminella">@michaelminella</a></small>
+					</p>
+				</section>
+
+				<section data-state="bio">
+					<h1>Who is this guy?</h1>
+					<img id="proSpringBatch" src="./img/proSpringBatch.jpg" style="transform: rotate(-20deg) scale(.7);float:left;visibility:hidden;"/>
+					<ul>
+						<li class="fragment" id="author">Author of Pro Spring Batch</li>
+						<li class="fragment">Member of the expert group for JSR-352</li>
+						<li class="fragment">Project lead for Spring Batch</li>
+						<li class="fragment">Twitter: <a href="http://www.twitter.com/michaelminella">@michaelminella</a></li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>I do a lot of batch ;)</h1>
+				</section>
+
+				<section>
+					<h1>No need to take notes!</h1>
+					<ul>
+						<li>These talks are being recorded...</li>
+						<li>These slides and code are on <a href="https://github.com/mminella/jsr352-springbatch-and-you.git">Github</a></li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Find it all here</h1>
+					<img src="./img/repository.png"/>
+				</section>
+
+				<section data-background="./img/springio.png" data-background-transition="slide">
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>3</h1>
+				</section>
+
+				<section>
+					<h1>JSR-352</h1>
+				</section>
+
+				<section>
+					<h1>Spring Batch's implementation of JSR-352</h1>
+				</section>
+
+				<section>
+					<h1>Spring Batch beyond JSR-352</h1>
+				</section>
+
+				<section>
+					<h1>Expectations</h1>
+					<ul>
+						<li class="fragment">Basic knowledge of Spring</li>
+						<li class="fragment">Basic knowledge of Spring Batch</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>? when you have them</h1>
+				</section>
+
+				<section>
+					<h1>JSR-352</h1>
+				</section>
+
+				<section>
+					<blockquote cite="http://jaxenter.com/java-ee-7-introduction-to-batch-jsr-352-47400.html"><p>JSR-352 introduces an exciting new Java specification for building, deploying, and running batch applications.</p><footer style="text-align:right;">- <a href="http://jaxenter.com/java-ee-7-introduction-to-batch-jsr-352-47400.html">Chris Vignola</a></footer></blockquote>
+				</section>
+
+				<section data-state="spring-involvement">
+					<h1>Spring's involvement</h1>
+					<canvas id="spring-involvement-chart" width="400" height="400"></canvas>
+					<aside class="notes">
+						IBM: 2
+						Spring: 2
+						Credit Suisse: 1
+						Oracle: 1
+						RedHat: 1
+						Independent: 1
+						I'm counting myself in the Spring camp in the numbers above
+					</aside>
+				</section>
+
+				<section>
+					<h1>Spring Batch is a leader in the space</h1>
+				</section>
+
+				<section>
+					<h1>Results of the spec?</h1>
+				</section>
+
+				<section>
+					<div style="column-count:2;"><img src="./img/spec.png"/><img src="./img/documentation.png"/></div>
+				</section>
+
+				<section>
+					<h1>Structurally the same</h1>
+				</section>
+
+				<section>
+					<h1>3</h1>
+					<ul>
+						<li class="fragment">API for building batch components</li>
+						<li class="fragment">A DSL for configuring batch components</li>
+						<li class="fragment">A contract of how batch components interact</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>High level differences</h1>
+				</section>
+
+				<section data-transition="fade">
+					<h1>Spring Batch Job</h1>
+					<pre><code data-trim contenteditable class="xml">
+&lt;job id="personJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;tasklet&gt;
+            &lt;chunk commit-interval="5"
+                   reader="itemReader" 
+                   processor="itemProcessor" 
+                   writer="itemWriter" /&gt;
+        &lt;/tasklet&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+				</section>
+
+				<section data-transition="fade">
+					<h1>JSR-352 Job</h1>
+					<pre><code data-trim contenteditable>
+&lt;job id="personJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;chunk item-count="5"&gt;
+            &lt;reader ref="itemReader"/&gt;
+            &lt;processor ref="itemProcessor"/&gt;
+            &lt;writer ref="itemWriter"/&gt;
+        &lt;/chunk&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+				</section>
+
+				<section data-transition="fade">
+					<div>
+						<pre><code data-trim contenteditable class="xml">
+&lt;!-- Spring Batch --&gt;
+&lt;job id="personJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;tasklet&gt;
+            &lt;chunk commit-interval="5"
+                   reader="itemReader" 
+                   processor="itemProcessor" 
+                   writer="itemWriter"/&gt;
+        &lt;/tasklet&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+						</code></pre>
+						<pre><code data-trim contenteditable>
+&lt;!-- JSR-352 --&gt;
+&lt;job id="personJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;chunk item-count="5"&gt;
+            &lt;reader ref="itemReader"/&gt;
+            &lt;processor ref="itemProcessor"/&gt;
+            &lt;writer ref="itemWriter"/&gt;
+        &lt;/chunk&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+						</code></pre>
+					</div>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>Dependency Injection</h1>
+					<ul>
+						<li class="fragment">Foundational technology of Spring Batch</li>
+						<li class="fragment">Not required with JSR-352</li> 
+					</ul>
+					<aside class="notes">
+						Not required meaning no JSR-299 or JSR-330 etc implementation is required
+					</aside>
+				</section>
+
+				<section>
+					<h1>References in JSR-352</h1>
+					<pre><code data-trim contenteditable>
+&lt;job id="personJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;chunk item-count="5"&gt;
+            &lt;reader ref="itemReader"/&gt;
+            &lt;processor ref="itemProcessor"/&gt;
+            &lt;writer ref="itemWriter"/&gt;
+        &lt;/chunk&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>References point to 1 of 3 places</h1>
+					<ul>
+						<li class="fragment">Spring bean</li>
+						<li class="fragment">batch.xml definition</li>
+						<li class="fragment">The class itself</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Spring bean</h1>
+					<pre><code data-trim contenteditable class="xml">
+&lt;bean id="itemWriter" class="org.springframework.batch.item.xml.StaxEventItemWriter"&gt;
+    &lt;property name="resource" ref="outputFile" /&gt;
+    &lt;property name="marshaller" ref="customerMarshaller" /&gt;
+    &lt;property name="rootTagName" value="customers" /&gt;
+&lt;/bean&gt;
+					</code></pre>					
+				</section>
+
+				<section>
+					<h1>batch.xml</h1>
+					<pre><code data-trim contenteditable>
+&lt;batch-artifacts xmlns="http://xmlns.jcp.org/xml/ns/javaee"&gt;
+
+    &lt;ref id="itemReader" class="org.sf.jsr.demo.ItemReader" /&gt;
+    &lt;ref id="itemProcessor" class="org.sf.jsr.demo.ItemProcessor" /&gt;
+    &lt;ref id="itemWriter" class="org.sf.jsr.demo.ItemWriter" /&gt;
+
+&lt;/batch-artifacts&gt;
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>The class itself</h1>
+					<pre><code data-trim contenteditable>
+&lt;job id="personJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;chunk item-count="5"&gt;
+            &lt;reader ref="org.sf.jsr.demo.ItemReader"/&gt;
+            &lt;processor ref="org.sf.jsr.demo.ItemProcessor"/&gt;
+            &lt;writer ref="org.sf.jsr.demo.ItemWriter"/&gt;
+        &lt;/chunk&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Properties</h1>
+					<ul>
+						<li class="fragment">Spring injects them on bean definitions</li>
+						<li class="fragment">JSR-352 injects properties from the job definition</li>
+						<li class="fragment">JSR-352 properties are Strings only</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Spring Batch Job</h1>
+					<pre><code data-trim contenteditable>
+&lt;job id="formatJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;tasklet&gt;
+            &lt;chunk reader="fileReader" 
+                   writer="xmlWriter" 
+                   commit-interval="#{jobParameters['commit.interval']}"/&gt;
+        &lt;/tasklet&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+					<aside class="notes">
+						Assume both fileReader and xmlWriter need file names to be injected
+					</aside>
+				</section>
+
+				<section>
+					<h1>JSR-352 Job</h1>
+					<pre><code data-trim contenteditable class="xml">
+&lt;job id="personJob"&gt;
+    &lt;step id="step1"&gt;
+        &lt;chunk item-count="#{jobParameters['commit.interval']}"&gt;
+            &lt;reader ref="fileReader"&gt;
+                &lt;properties&gt;
+                    &lt;property name="fileName" value="#{jobParameters['input.fileName']}"/&gt;
+                &lt;/properties&gt;
+            &lt;/reader&gt;
+            &lt;writer ref="xmlWriter"&gt;
+                &lt;properties&gt;
+                    &lt;property name="fileName" value="#{jobParameters['output.fileName']}"/&gt;
+                &lt;/properties&gt;
+            &lt;/writer&gt;
+        &lt;/chunk&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+					<aside class="notes">
+						All JSR-352 properties are Strings
+					</aside>
+				</section>
+
+				<section>
+					<h1>Injection of properties</h1>
+					<pre><code data-trim contenteditable class="java">
+@Inject
+@BatchProperty
+public String fileName;
+
+@Inject
+@BatchProperty(name="otherProperty")
+public String otherProperty;
+					</code></pre>
+					<aside class="notes">
+						All JSR-352 properties are Strings
+					</aside>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>Let's build an app!</h1>
+				</section>
+
+				<section>
+					<video id="starWarsKid" controls="controls" 
+					       src="./video/starWarsKid.mp4"
+					       width="320" height="240"
+					       preload="auto">
+					</video>
+					<aside class="notes">
+						<ul>
+							<li>Released in 2003</li>
+							<li>Year MySpace was founded</li>
+							<li>Zuckerberg would start coding Facebook the next year</li>
+							<li>2 years before YouTube existed</li>
+						</ul>
+					</aside>
+				</section>
+
+				<section>
+					<h1>Logs of a viral video</h1>
+					<ul>
+						<li class="fragment">Released in 2003.</li>
+						<li class="fragment">Downloaded 1.1 million times the first 2 weeks</li>
+						<li class="fragment">Since been downloaded 40 million times since it was moved to YouTube</li>
+						<li class="fragment">2008, Andy Baio posted the Apache logs for the first 6 months</li>
+						<li class="fragment">File is 1.6 GB unzipped and available via BitTorent</li>
+						<li class="fragment">File was originally called "ghyslain_razaa.wmv"</li>
+						<li class="fragment">File was later renamed to "Star_Wars_Kid.wmv"</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Who was watching this video?</h1>
+				</section>
+
+				<section>
+					<h1>Our Job</h1>
+					<img src="./img/logAnalysis.png"/>
+				</section>
+
+				<section>
+					<h1>Step Processing Models</h1>
+				</section>
+
+				<section>
+					<h1>Batchlet</h1>
+				</section>
+
+				<section>
+					<h1>Batchlet = StoppableTasklet</h1>
+				</section>
+
+				<section>
+					<pre><code data-trim contenteditable class="java">
+public interface Tasklet {
+    RepeatStatus execute(StepContribution contribution, 
+                         ChunkContext chunkContext) throws Exception;
+}
+
+public interface StoppableTasklet extends Tasklet {
+    void stop();
+}
+					</code></pre>
+					<pre><code data-trim contenteditable class="java">
+public interface Batchlet {
+	
+    public String process() throws Exception;
+    public void stop() throws Exception;  
+}
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Step 1...split the file</h1>
+				</section>
+
+				<section>
+					<h1>Launching</h1>
+				</section>
+
+				<section>
+					<h1>JobOperator</h1>
+					<pre><code data-trim contenteditable class="java">
+JobOperator jobOperator = BatchRuntime.getJobOperator();
+
+// start
+long jobExecutionId = jobOperator.start("myJob", new Properties());
+
+// restart
+long newJobExecutionId = jobOperator.restart(jobExecutionId, new Properties());
+
+// stop
+jobOperator.stop(jobExecutionid);
+					</code></pre>
+					<aside class="notes">
+						A cross between Spring Batch's JobOperator and JobExplorer
+					</aside>
+				</section>
+
+				<section>
+					<h1>Chunk processing</h1>
+				</section>
+
+				<section>
+					<h1>Spring Batch</h1>
+					<img src="./img/oldSequence.png"/>
+				</section>
+
+				<section>
+					<h1>Spring Batch Really</h1>
+					<img src="./img/realSequence.png"/>
+				</section>
+
+				<section>
+					<h1>JSR-352</h1>
+					<img src="./img/oldSequence.png"/>
+				</section>
+
+				<section>
+					<h1>Chunk Related Interfaces</h1>
+					<ul>
+						<li class="fragment">ItemReader</li>
+						<li class="fragment">ItemProcessor</li>
+						<li class="fragment">ItemWriter</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Checkpoints</h1>
+					<ul>
+						<li class="fragment">Item</li>
+						<li class="fragment">Custom</li>
+					</ul>
+					<aside class="notes">
+						Equivalent to Spring Batch's CompletionPolicy
+						There is also a timeout component to checkpoints
+					</aside>
+				</section>
+
+				<section>
+					<h1>Step 2...import the file</h1>
+				</section>
+
+				<section>
+					<h1>Error handling</h1>
+				</section>
+
+				<section>
+					<h1>Skip</h1>
+					<pre><code data-trim contenteditable>
+&lt;job id="skip" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0"&gt;
+    &lt;step id="step1"&gt;
+        &lt;chunk skip-limit="3"&gt;
+            &lt;reader ref="retryableListReader"/&gt;
+            &lt;writer ref="fileWriter"/&gt;
+            
+            &lt;!-- Skippable exceptions --&gt;
+            &lt;skippable-exception-classes&gt;
+            	&lt;include class="java.lang.RuntimeException"/&gt;
+            &lt;/skippable-exception-classes&gt;
+        &lt;/chunk&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Retry</h1>
+					<pre><code data-trim contenteditable>
+&lt;job id="retry" xmlns="http://xmlns.jcp.org/xml/ns/javaee" version="1.0"&gt;
+    &lt;step id="step1"&gt;
+        &lt;chunk retry-limit="3"&gt;
+            &lt;reader ref="retryableListReader"/&gt;
+            &lt;writer ref="fileWriter"/&gt;
+
+            &lt;!-- Retryable exceptions --&gt;
+            &lt;retryable-exception-classes&gt;
+            	&lt;include class="java.lang.RuntimeException"/&gt;
+            &lt;/retryable-exception-classes&gt;
+        &lt;/chunk&gt;
+    &lt;/step&gt;
+&lt;/job&gt;
+					</code></pre>
+				</section>
+
+				<section>
+					<h1>Read Retries</h1>
+					<ul>
+						<li class="fragment">Spring Batch hasn't supported read retries</li>
+						<li class="fragment">JSR-352 allows read retries</li>
+						<li class="fragment">Existing Spring Batch readers won't support read retry with 3.0</li>
+					</ul>
+					<aside class="notes">
+						Most Spring Batch readers are forward moving stateful readers.  They will not support retry.
+					</aside>
+				</section>
+
+				<section>
+					<h1>Scaling</h1>
+				</section>
+
+				<section>
+					<h1>Splits</h1>
+					<p>Same as Spring Batch</p>
+				</section>
+
+				<section>
+					<h1>Partitioning</h1>
+					<ul>
+						<li class="fragment">Executes chunks or multiple instances of Batchlets in parallel</li>
+						<li class="fragment">Two configuration options
+							<ul>
+								<li>Hardcoded in XML</li>
+								<li>PartitionMapper</li>
+							</ul>
+						</li>
+						<li class="fragment">Adds two additional concepts...</li>
+				</section>
+
+				<section>
+					<h1>Partition Reducer</h1>
+					<ul>
+						<li class="fragment">Provides a hook for compensating logic upon failure</li>
+						<li class="fragment">Really just a specialized StepListener/StepExecutionListenr</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>Partition Collector/<br/>Analyzer</h1>
+					<ul>
+						<li class="fragment">Collector collects data from batch artifacts</li>
+						<li class="fragment">Analyzer allows the ability to set ExitStatus after a partitioned step</li>
+					</ul>
+					<aside class="notes">
+						Provides a standardized way of aggregating results of partitioned steps programmatically
+					</aside>
+				</section>
+
+				<section>
+					<h1>Spring Batch's<br/>Implementation</h1>
+				</section>
+
+				<section>
+					<h1>Spring Batch Status</h1>
+					<ul>
+						<li class="fragment">Released 3.0.0.M2 last night</li>
+						<li class="fragment">Passes &gt; 50% of the TCK tests</li>
+						<li class="fragment">3.0 will be JSR-352 compliant</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>"Raw" JSR-352 version</h1>
+					<ul>
+						<li class="fragment">Classes: 8</li>
+						<li class="fragment">Lines of custom code: 826</li>
+					</ul>
+					<aside class="notes">
+						None of the above numbers include unit tests
+					</aside>
+				</section>
+
+				<section>
+					<h1>3</h1>
+					<ul>
+						<li class="fragment">API for building batch components</li>
+						<li class="fragment">A DSL for configuring batch components</li>
+						<li class="fragment">A contract of how batch components interact</li>
+					</ul>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>Components!!!</h1>
+				</section>
+
+				<section>
+					<h1>JSR-352 provides 0<br/>implementations</h1>
+				</section>
+
+				<section id="components">
+					<h3>Item Readers</h3>
+					<ul style="width:80%;column-count:3;column-gap:0px;font-size:50%;">
+						<li>AggregateItemReader</li>
+						<li>AmqpItemReader</li>
+						<li>FlatFileItemReader</li>
+						<li>HibernateCursorItemReader</li>
+						<li>HibernatePagingItemReader</li>
+						<li>IbatisPagingItemReader</li>
+						<li>ItemReaderAdapter</li>
+						<li>JdbcCursorItemReader</li>
+						<li>JdbcPagingItemReader</li>
+						<li>JmsItemReader</li>
+						<li>JpaPagingItemReader</li>
+						<li>ListItemReader</li>
+						<li>MongoItemReader</li>
+						<li>Neo4jItemReader</li>
+						<li>RepositoryItemReader</li>
+						<li>StoredProcedureItemReader</li>
+						<li>StaxEventItemReader</li>
+					</ul>
+					<h3>Item Writers</h3>
+					<ul style="width:80%;column-count:3;column-gap:0px;font-size:50%;">
+						<li>AmqpItemWriter</li>
+						<li>CompositeItemWriter</li>
+						<li>FlatFileItemWriter</li>
+						<li>GemfireItemWriter</li>
+						<li>HibernateItemWriter</li>
+						<li>IbatisBatchItemWriter</li>
+						<li>ItemWriterAdapter</li>
+						<li>JdbcBatchItemWriter</li>
+						<li>JmsItemWriter</li>
+						<li>JpaItemWriter</li>
+						<li>MimeMessageItemWriter</li>
+						<li>MongoItemWriter</li>
+						<li>Neo4jItemWriter</li>
+						<li>PropertyExtractingDelegatingItemWriter</li>
+						<li>RepositoryItemWriter</li>
+						<li>StaxEventItemWriter</li>
+					</ul>
+					<aside class="notes">
+						17 concrete ItemReader implementations and 16 concrete ItemWriter implementations
+					</aside>
+				</section>
+
+				<section>
+					<h1>Same app...Spring-ified</h1>
+				</section>
+
+				<section>
+					<h1>Comparison</h1>
+				</section>
+
+				<section>
+					<h1>"Raw" JSR-352 version</h1>
+					<ul>
+						<li class="fragment">Classes: 8</li>
+						<li class="fragment">Lines of custom code: 826</li>
+					</ul>
+					<aside class="notes">
+						None of the above numbers include unit tests
+					</aside>
+				</section>
+
+				<section>
+					<h1>Spring JSR-352 version</h1>
+					<ul>
+						<li class="fragment">Classes: 5</li>
+						<li class="fragment">Lines of custom code: 596</li>
+					</ul>
+					<aside class="notes">
+						None of the above numbers include unit tests
+						Over 300 lines of mapping code
+					</aside>
+				</section>
+
+				<section>
+					<h1>Beyond JSR-352</h1>
+				</section>
+
+				<section>
+					<h1>Spring!</h1>
+				</section>
+
+				<section>
+					<h1>Type safe properties</h1>
+				</section>
+
+				<section>
+					<h1>No Inheritence</h1>
+				</section>
+
+				<section>
+					<h1>Scalability</h1>
+				</section>
+
+				<section>
+					<h1>JSR-352 is single JVM only</h1>
+				</section>
+
+				<section>
+					<h1>Spring Batch scales beyond 1 JVM</h1>
+				</section>
+
+				<section>
+					<h1>Remote Chunking</h1>
+					<img src="./img/remote-chunking.png"/>
+				</section>
+
+				<section>
+					<h1>Remote Partitioning</h1>
+					<img src="./img/remote-partitioning.png"/>
+				</section>
+
+				<section>
+					<h1>Batch doesn't occur<br/>in a vacuum</h1>
+				</section>
+
+				<section>
+					<h1>Launching jobs via messages</h1>
+				</section>
+
+				<section>
+					<h1>Spring Hadoop</h1>
+				</section>
+
+				<section>
+					<h1>Spring XD</h1>
+				</section>
+
+				<section>
+					<h1>?</h1>
+				</section>
+
+				<section>
+					<h1>Find this deck and demo code:</h1>
+					<p><a href="https://github.com/mminella/jsr352-springbatch-and-you.git">Github</a><br/>
+						<img src="./img/repository.png"/></p>
+				</section>
+
+				<section>
+					<h1>Keep in touch!</h1>
+					<ul>
+						<li>Michael Minella
+							<ul>
+								<li>Twitter: <a href="https://twitter.com/michaelminella">@MichaelMinella</a></li>
+								<li>Github: <a href="https://github.com/mminella">mminella</a></li>
+							</ul>
+						</li>
+						<li>Spring Batch
+							<ul>
+								<li>Site: <a href="http://spring.io/projects/spring-batch">Spring Batch</a></li>
+								<li>Session replays on YouTube: <a href="http://spring.io/video">YouTube</a></li>
+							</ul>
+						</li>
+						<li>Spring
+							<ul>
+								<li>Site: <a href="http://spring.io/">Spring IO</a></li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+
+			</div>
+			<img src="./img/springonewhite.png" style="width:20%;margin:10px;position:fixed;right:0px;bottom:0px;"/>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.min.js"></script>
+		<script src="lib/js/Chart.js"></script>
+
+		<script>
+			Reveal.addEventListener( 'fragmentshown', function( event ) {
+			    var element = event.fragment;
+
+			    if(element.id == "author") {
+			    	document.getElementById("proSpringBatch").style.visibility = 'visible';
+			    }
+			} );
+
+			Reveal.addEventListener( 'fragmenthidden', function( event ) {
+			    var element = event.fragment;
+
+			    if(element.id == "author") {
+			    	document.getElementById("proSpringBatch").style.visibility = 'hidden';
+			    }
+			} );
+
+			Reveal.addEventListener( 'spring-involvement', function() {
+				var ctx = document.getElementById("spring-involvement-chart").getContext("2d");
+				var options = {
+					animationEasing : "easeInOutCubic"
+				}
+				var data = [
+					{
+						value: 2,
+						color:"#5ED065",
+						label: 'Spring'
+					},
+					{
+						value : 2,
+						color : "#55B9BD",
+						label: 'IBM'
+					},
+					{
+						value : 1,
+						color : "#E6A267",
+						label: 'Independent'
+					},
+					{
+						value : 1,
+						color : "#E66B67",
+						label: 'Oracle'
+					},
+					{
+						value : 1,
+						color : "#5ED065",
+						label: 'Red Hat'
+					},
+					{
+						value : 1,
+						color : "#55B9BD",
+						label: 'Credit Suisse'
+					}			
+				];
+
+				new Chart(ctx).Pie(data, options);
+			}, false );
+
+			// Full list of configuration options available here:
+			// https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: false,
+				progress: true,
+				history: true,
+				center: true,
+				width: 1280,
+				height: 720,
+
+				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+				transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+
+				// Optional libraries used to extend on reveal.js
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+					{ src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+				]
+			});
+
+		</script>
+
+	</body>
+</html>
