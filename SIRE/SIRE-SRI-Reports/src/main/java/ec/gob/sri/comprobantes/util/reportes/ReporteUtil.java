@@ -46,8 +46,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
@@ -57,6 +55,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JRSaveContributor;
 import net.sf.jasperreports.view.save.JRPdfSaveContributor;
+import org.apache.logging.log4j.LogManager;
 
 public class ReporteUtil {
 
@@ -64,6 +63,7 @@ public class ReporteUtil {
     private static final String CONT_ESPECIAL = "CONT_ESPECIAL";
     private static final String LLEVA_CONTABILIDAD = "LLEVA_CONTABILIDAD";
     String tarifaIva;
+    private static final org.apache.logging.log4j.Logger log = LogManager.getLogger(ReporteUtil.class);
 
     private static Emisor obtenerEmisor()
             throws SQLException, ClassNotFoundException {
@@ -83,7 +83,7 @@ public class ReporteUtil {
 //            showReport(reporteView);
             return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
             return null;
         } finally {
             //clean off
@@ -99,7 +99,7 @@ public class ReporteUtil {
                     is.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             }
         }
     }
@@ -116,7 +116,7 @@ public class ReporteUtil {
 //            showReport(reporteView);
             return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
             return null;
         } finally {
             //clean off
@@ -132,7 +132,7 @@ public class ReporteUtil {
                     is.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             }
         }
     }
@@ -171,7 +171,7 @@ public class ReporteUtil {
 //            showReport(reporte_view);
             return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
             return null;
         } finally {
             //clean off
@@ -187,7 +187,7 @@ public class ReporteUtil {
                     is.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             }
         }
     }
@@ -225,7 +225,7 @@ public class ReporteUtil {
 //            showReport(reporte_view);
             return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
             return null;
         } finally {
             //clean off
@@ -241,7 +241,7 @@ public class ReporteUtil {
                     is.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             }
         }
     }
@@ -279,7 +279,7 @@ public class ReporteUtil {
 //            showReport(reporte_view);
             return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
             return null;
         } finally {
             //clean off
@@ -295,7 +295,7 @@ public class ReporteUtil {
                     is.close();
                 }
             } catch (IOException ex) {
-                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             }
         }
     }
@@ -342,9 +342,9 @@ public class ReporteUtil {
         } catch (FileNotFoundException ex) {
             try {
                 param.put("LOGO", new FileInputStream("resources/images/logo.jpeg"));
-                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+                log.error(ex);
             } catch (FileNotFoundException ex1) {
-                Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex1);
+                log.error(ex);
             }
         }
         String home = System.getProperty("sire.home");
@@ -391,7 +391,7 @@ public class ReporteUtil {
             }
             return new BufferedInputStream(new FileInputStream("resources/images/pruebas.jpeg"));
         } catch (FileNotFoundException fe) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, fe);
+            log.error(fe);
         }
         return null;
     }
@@ -502,10 +502,10 @@ public class ReporteUtil {
             BigDecimal porcentaje = BigDecimal.valueOf(((ImpuestoValor) impvalorSQL.obtenerDatosIvaVigente(fechaEmision).get(0)).getPorcentaje().doubleValue());
             return porcentaje.setScale(0).toString() + "%";
         } catch (SQLException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
             return "";
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
         }
         return "";
     }
@@ -516,10 +516,10 @@ public class ReporteUtil {
             BigDecimal porcentaje = BigDecimal.valueOf(((ImpuestoValor) impvalorSQL.obtenerDatosIvaCodigoPorcentaje(cod).get(0)).getPorcentaje().doubleValue());
             return porcentaje.setScale(0).toString() + "%";
         } catch (SQLException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
             return "";
         } catch (ClassNotFoundException ex) {
-            Logger.getLogger(ReporteUtil.class.getName()).log(Level.SEVERE, null, ex);
+            log.error(ex);
         }
         return "";
     }

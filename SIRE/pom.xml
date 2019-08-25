@@ -19,8 +19,8 @@
         <SIRE-SRI-Batch-Commons.version>1.2.7</SIRE-SRI-Batch-Commons.version>
         <SIRE-SRI-Batch-Recepcion.version>1.2.4</SIRE-SRI-Batch-Recepcion.version>
         <SIRE-SRI-Entities.version>1.0.0</SIRE-SRI-Entities.version>
-        <SIRE-SRI-Reports.version>1.2.3</SIRE-SRI-Reports.version>
-        <SIRE-SRI-Signature.version>1.0.1</SIRE-SRI-Signature.version>
+        <SIRE-SRI-Reports.version>1.2.3.1</SIRE-SRI-Reports.version>
+        <SIRE-SRI-Signature.version>1.0.1.1</SIRE-SRI-Signature.version>
         <SIRE-SRI-WSClient.version>1.1.0</SIRE-SRI-WSClient.version>
         <SIRE-Web.version>1.0.1</SIRE-Web.version>
         <SIRE-WS.version>1.2.0</SIRE-WS.version>

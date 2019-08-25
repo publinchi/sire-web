@@ -79,17 +79,15 @@ public class MailService implements IMailService {
             }
 
             Transport.send(message);
-            log.info("E-Mail sent to {}, with secuential {}",
-                    event.getTo(), event.getProperties().get("secuencial"));
+            log.info("E-Mail sent to {} , with secuential {}", event.getTo(), event.getProperties().get("secuencial"));
         } catch (MessagingException e) {
             try {
-                log.info("E-Mail not sent to {}, Cause: {}",
-                        event.getTo(), e.getCause());
+                log.error("E-Mail not sent to {}, Cause: {}", event.getTo(), e.getCause());
                 log.info("Retrying after 5 seconds ...");
                 Thread.sleep(5000L);
                 Transport.send(message);
-                log.info("E-Mail sent again to {}, with secuential {}",
-                        event.getTo(), event.getProperties().get("secuencial"));
+                log.info("E-Mail sent again to {} , with secuential {}", event.getTo(), event.getProperties()
+                        .get("secuencial"));
             } catch (InterruptedException | MessagingException ex) {
                 log.error(ex);
             }
