@@ -134,7 +134,9 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
                 String loteXml = object2xmlUnicode(lote, null,null,null);
 
-                //log.log(Level.INFO, "loteXml: {}", loteXml);
+                if(log.isTraceEnabled()) {
+                    log.trace("loteXml: {}", loteXml);
+                }
 
                 Map mapCall = SoapUtil.call(
                         createSOAPMessage(new String(Base64.getEncoder().encode(doc2bytes(xml2document(loteXml))))),
@@ -142,8 +144,12 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                         null,
                         null);
                 SOAPMessage soapMessage = (SOAPMessage) mapCall.get(Constant.SOAP_MESSAGE);
-                //log.info("Soap Recepcion Response:");
-                //log.info(SoapUtil.getStringFromSoapMessage(soapMessage));
+
+                if(log.isTraceEnabled()) {
+                    log.trace("Soap Recepcion Response:");
+                    log.trace(SoapUtil.getStringFromSoapMessage(soapMessage));
+                }
+
                 ValidarComprobanteResponse validarComprobanteResponse = toValidarComprobanteResponse(soapMessage);
 
                 String estadoLote = validarComprobanteResponse.getRespuestaRecepcionComprobante().getEstado();
@@ -163,7 +169,9 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                             .append("','").append(estadoLote).append("','").append(fechaEstado)
                             .append("')");
 
-                    log.log(Level.INFO, "insertSQL -> {}", insertSQL.toString());
+                    if(log.isTraceEnabled()) {
+                        log.trace("insertSQL -> {}", insertSQL.toString());
+                    }
 
                     Connection connection = null;
                     PreparedStatement preparedStatement = null;
@@ -451,7 +459,10 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
                         .append("ESTADO_SRI = ?, ").append("CLAVE_ACCESO_LOTE = ?").append(motivo)
                         .append(" WHERE ").append(nombreSecuencial).append(" = ?");
-                log.log(Level.INFO, "update {} -> {}", new Object[]{nombreTablaComprobante, cabeceraSQL});
+
+                if(log.isTraceEnabled()) {
+                    log.trace("update {} -> {}", new Object[]{nombreTablaComprobante, cabeceraSQL});
+                }
 
                 Connection connection = null;
                 PreparedStatement preparedStatement = null;
@@ -485,7 +496,11 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             cabeceraSQL.append("UPDATE ").append(nombreTablaComprobante).append(" SET ")
                     .append("ESTADO_SRI = 'RECIBIDA', ").append("CLAVE_ACCESO_LOTE = ? ").append("WHERE ")
                     .append(nombreSecuencial).append(" = ?");
-            log.log(Level.INFO, "update -> {}", cabeceraSQL);
+
+            if(log.isTraceEnabled()){
+                log.trace("update -> {}", cabeceraSQL);
+            }
+
             executeSql(cabeceraSQL.toString(), claveAccesoLote , secuencial.toString());
         }
     }

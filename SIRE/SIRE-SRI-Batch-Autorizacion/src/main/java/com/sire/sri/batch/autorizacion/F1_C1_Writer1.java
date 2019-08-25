@@ -312,7 +312,13 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     claveAcceso = comprobanteRetencion.getInfoTributaria().getClaveAcceso();
                     secuencial = comprobanteRetencion.getInfoTributaria().getSecuencial();
                     ComprobanteRetencionReporte comprobanteRetencionReporte = new ComprobanteRetencionReporte(comprobanteRetencion);
+                    if(log.isDebugEnabled()) {
+                        log.debug("Generando PDF - ({},{},{},{})", urlReporte, comprobanteRetencionReporte, numAut, fechaAut);
+                    }
                     pdfBytes = reporteUtil.generarReporte(urlReporte, comprobanteRetencionReporte, numAut, fechaAut);
+                    if(log.isDebugEnabled()) {
+                        log.debug("PDF Generado: {}", pdfBytes);
+                    }
                     razonSocialComprador = comprobanteRetencion.getInfoCompRetencion().getRazonSocialSujetoRetenido();
                     nombreComercial = comprobanteRetencion.getInfoTributaria().getNombreComercial();
                     ruc = comprobanteRetencion.getInfoTributaria().getRuc();
@@ -320,10 +326,14 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
                 //construct the mime multi part
                 MimeMultipart mimeMultipart = new MimeMultipart();
-                addBodyPart(pdfBytes, "application/pdf", claveAcceso + ".pdf", mimeMultipart);
-
                 String autorizacionXml = object2xmlUnicode(autorizacion, Autorizacion.class, "ec.gob.sri.ws.autorizacion",
                         "autorizacion");
+
+                if(log.isTraceEnabled()) {
+                    log.trace("AutorizacionXml Generada: {} ", autorizacionXml);
+                }
+
+                addBodyPart(pdfBytes, "application/pdf", claveAcceso + ".pdf", mimeMultipart);
                 addBodyPart(autorizacionXml.getBytes(), "application/xml", claveAcceso + ".xml", mimeMultipart);
 
                 BodyPart messageBodyPart = new MimeBodyPart();

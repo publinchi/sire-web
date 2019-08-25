@@ -123,7 +123,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String pagosSQL = Constant.FACTURA_PAGO_SQL
                 + "NUM_FACTURA = " + numFacturaInterno;
-        log.log(Level.INFO, "pagosSQL -> {}", pagosSQL);
+
+        if(log.isTraceEnabled()) {
+            log.trace("pagosSQL -> {}", pagosSQL);
+        }
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -188,7 +191,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String detalleSQL = Constant.FACTURA_D_SQL
                 + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
-        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
+
+        if(log.isTraceEnabled()) {
+            log.trace("detalleSQL -> {}", detalleSQL);
+        }
 
         connection = null;
         preparedStatement = null;
@@ -328,7 +334,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
 
         String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
-        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
+
+        if(log.isTraceEnabled()) {
+            log.trace("detalleSQL -> {}", detalleSQL);
+        }
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -446,7 +455,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         //Pagos
         NotaDebito.InfoNotaDebito.Pago pagos = new NotaDebito.InfoNotaDebito.Pago();
-        log.log(Level.INFO, "pagoSQL -> {}", pagoSQL);
+
+        if(log.isTraceEnabled()) {
+            log.trace("pagoSQL -> {}", pagoSQL);
+        }
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -579,7 +591,9 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         String articuloSQL = Constant.GUIA_REMISION_ARTICULO_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
 
-        log.log(Level.INFO, "articuloSQL -> {}", articuloSQL);
+        if(log.isTraceEnabled()) {
+            log.trace("articuloSQL -> {}", articuloSQL);
+        }
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;
@@ -618,7 +632,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }
 
         String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
-        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
+
+        if(log.isTraceEnabled()) {
+            log.trace("detalleSQL -> {}", detalleSQL);
+        }
 
         connection = null;
         preparedStatement = null;
@@ -715,7 +732,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         ComprobanteRetencion.Impuestos impuestos = new ComprobanteRetencion.Impuestos();
 
         String detalleSQL = Constant.RETENCION_D_SQL + "NUM_RETENCION_INTERNO = ? AND COD_EMPRESA = ?";
-        log.log(Level.INFO, "detalleSQL -> {}", detalleSQL);
+
+        if(log.isTraceEnabled()) {
+            log.trace("detalleSQL -> {}", detalleSQL);
+        }
 
         Connection connection = null;
         PreparedStatement preparedStatement = null;

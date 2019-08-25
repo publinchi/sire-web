@@ -7,20 +7,20 @@
     <packaging>pom</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <SIRE-Batch.version>1.5.7</SIRE-Batch.version>
+        <SIRE-Batch.version>1.5.8</SIRE-Batch.version>
         <SIRE-Commons.version>1.0.2</SIRE-Commons.version>
-        <SIRE-EE.version>1.4.6</SIRE-EE.version>
+        <SIRE-EE.version>1.4.7</SIRE-EE.version>
         <SIRE-Entities.version>1.1.1</SIRE-Entities.version>
         <SIRE-RS-Client.version>1.0.0</SIRE-RS-Client.version>
-        <SIRE-Services.version>1.1.2</SIRE-Services.version>
+        <SIRE-Services.version>1.1.3</SIRE-Services.version>
         <SIRE-Services-API.version>1.1.0</SIRE-Services-API.version>
         <SIRE-Soap.version>1.2.2</SIRE-Soap.version>
-        <SIRE-SRI-Batch-Autorizacion.version>1.3.2</SIRE-SRI-Batch-Autorizacion.version>
-        <SIRE-SRI-Batch-Commons.version>1.2.6</SIRE-SRI-Batch-Commons.version>
-        <SIRE-SRI-Batch-Recepcion.version>1.2.3</SIRE-SRI-Batch-Recepcion.version>
+        <SIRE-SRI-Batch-Autorizacion.version>1.3.3</SIRE-SRI-Batch-Autorizacion.version>
+        <SIRE-SRI-Batch-Commons.version>1.2.7</SIRE-SRI-Batch-Commons.version>
+        <SIRE-SRI-Batch-Recepcion.version>1.2.4</SIRE-SRI-Batch-Recepcion.version>
         <SIRE-SRI-Entities.version>1.0.0</SIRE-SRI-Entities.version>
-        <SIRE-SRI-Reports.version>1.2.3</SIRE-SRI-Reports.version>
-        <SIRE-SRI-Signature.version>1.0.1</SIRE-SRI-Signature.version>
+        <SIRE-SRI-Reports.version>1.2.3.1</SIRE-SRI-Reports.version>
+        <SIRE-SRI-Signature.version>1.0.1.1</SIRE-SRI-Signature.version>
         <SIRE-SRI-WSClient.version>1.1.0</SIRE-SRI-WSClient.version>
         <SIRE-Web.version>1.0.1</SIRE-Web.version>
         <SIRE-WS.version>1.2.0</SIRE-WS.version>
@@ -48,6 +48,11 @@
         <repository>
             <id>dev.fit-bank.com</id>
             <url>http://dev.fit-bank.com/nexus/content/groups/public-snapshots/</url>
+        </repository>
+        <repository>
+            <id>guillermo</id>
+            <name>guillermo-repo</name>
+            <url>http://maven.petalslink.com/repo</url>
         </repository>
     </repositories>
 </project>

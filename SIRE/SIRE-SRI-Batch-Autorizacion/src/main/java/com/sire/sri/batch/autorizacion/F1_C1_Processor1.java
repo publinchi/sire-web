@@ -59,6 +59,12 @@ public class F1_C1_Processor1 implements ItemProcessor {
                 null,
                 null);
         SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
+
+        if(log.isTraceEnabled()) {
+            log.trace("Soap Recepcion Response:");
+            log.trace(SoapUtil.getStringFromSoapMessage(soapMessage));
+        }
+
         RespuestaComprobante respuestaComprobante = toRespuestaComprobante(soapMessage);
         Map<String, Object> map = new HashMap();
         map.put("respuestaComprobante", respuestaComprobante);
