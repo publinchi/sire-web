@@ -123,9 +123,8 @@
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
-            <artifactId>log4j-core</artifactId>
+            <artifactId>log4j-web</artifactId>
             <version>2.11.2</version>
-            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>com.sire</groupId>
