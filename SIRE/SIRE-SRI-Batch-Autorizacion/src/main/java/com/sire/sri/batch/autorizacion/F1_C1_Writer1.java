@@ -33,7 +33,7 @@ import ec.gob.sri.comprobantes.modelo.reportes.NotaCreditoReporte;
 import ec.gob.sri.comprobantes.modelo.reportes.NotaDebitoReporte;
 import ec.gob.sri.comprobantes.util.reportes.ReporteUtil;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;

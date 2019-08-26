@@ -7,7 +7,7 @@ package com.sire.batch;
 
 import com.sire.batch.constant.Constant;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.*;
@@ -42,7 +42,7 @@ public class BatchBean {
     @Resource(lookup="java:app/AppName")
     private String applicationName;
 
-    private static final Logger log = LogManager.getLogger(BatchBean.class);
+    private Logger logger;
     private String home;
     private Boolean thresholdEnabled;
     private static StringBuffer configurationPropertiesPath;
@@ -51,6 +51,7 @@ public class BatchBean {
     private List jobNames;
 
     @PostConstruct
+    @TransactionAttribute(value=TransactionAttributeType.NOT_SUPPORTED)
     public void init() {
         _init();
         //startUpSpringFramework();
@@ -85,7 +86,7 @@ public class BatchBean {
                 }
             }
         } catch (IOException e) {
-            log.log(Level.ERROR, e);
+            logger.log(Level.ERROR, e);
         }
         return applicationContext;
     }
@@ -95,30 +96,33 @@ public class BatchBean {
         if(threadPoolExecutor != null)
             threadPoolExecutor.shutdown();
         cancelTimers();
+        LogManager.destroy();
     }
 
     private void _init(){
+        logger = LogManager.getLogger(this.getClass());
+
         home = System.getProperty("sire.home");
         if (home == null) {
-            log.error("SIRE HOME NOT FOUND.");
+            logger.error("SIRE HOME NOT FOUND.");
             return;
         }
 
-        log.info("SIRE HOME --> {}", home);
+        logger.info("SIRE HOME --> {}", home);
 
         thresholdEnabled = Boolean.parseBoolean(System.getProperty("sire.threshold.enabled"));
 
-        log.info("SIRE THRESHOLD ENABLED --> {}", thresholdEnabled);
+        logger.info("SIRE THRESHOLD ENABLED --> {}", thresholdEnabled);
 
         if(thresholdEnabled) {
 
             String capacity = System.getProperty("sire.capacity");
             if (capacity == null) {
                 queueCapacity = Constant.DEFAULT_CAPACITY;
-                log.warn("SIRE QUEUE CAPACITY NOT FOUND. SETTING {} CAPACITY BY DEFAULT.", Constant.DEFAULT_CAPACITY);
+                logger.warn("SIRE QUEUE CAPACITY NOT FOUND. SETTING {} CAPACITY BY DEFAULT.", Constant.DEFAULT_CAPACITY);
             } else {
                 queueCapacity = Integer.parseInt(capacity);
-                log.info("SIRE QUEUE CAPACITY --> {}", queueCapacity);
+                logger.info("SIRE QUEUE CAPACITY --> {}", queueCapacity);
             }
             String corePoolSize = System.getProperty("sire.corePoolSize");
             if (corePoolSize == null) {
@@ -131,10 +135,10 @@ public class BatchBean {
             String maximumPoolSize = System.getProperty("sire.maximumPoolSize");
             if (maximumPoolSize == null) {
                 nThreads = Constant.DEFAULT_MAXIMUM_POOL_SIZE;
-                log.warn("SIRE MAXIMUM POOL SIZE NOT FOUND. SETTING {} THREADS BY DEFAULT.", Constant.DEFAULT_MAXIMUM_POOL_SIZE);
+                logger.warn("SIRE MAXIMUM POOL SIZE NOT FOUND. SETTING {} THREADS BY DEFAULT.", Constant.DEFAULT_MAXIMUM_POOL_SIZE);
             } else {
                 nThreads = Integer.parseInt(maximumPoolSize);
-                log.info("SIRE THREADS --> {}", nThreads);
+                logger.info("SIRE THREADS --> {}", nThreads);
             }
 
             BlockingQueue q = new ArrayBlockingQueue(queueCapacity);
@@ -146,9 +150,9 @@ public class BatchBean {
         configurationPropertiesPath.append(File.separator);
         configurationPropertiesPath.append(Constant.CONFIGURATION_PROPERTIES);
 
-        log.log(Level.INFO, "applicationName -> {}", applicationName);
-        log.log(Level.INFO, "moduleName -> {}", moduleName);
-        log.info("Configuration Properties --> " + configurationPropertiesPath);
+        logger.log(Level.INFO, "applicationName -> {}", applicationName);
+        logger.log(Level.INFO, "moduleName -> {}", moduleName);
+        logger.info("Configuration Properties --> " + configurationPropertiesPath);
 
         loadTimers();
     }
@@ -159,26 +163,26 @@ public class BatchBean {
         configTimers();
 
         Collection<Timer> timers = timerService.getTimers();
-        log.info("************** TIMERS INFO **************");
+        logger.info("************** TIMERS INFO **************");
         for (Timer timer : timers) {
-            log.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
+            logger.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
                     + " m: " + timer.getSchedule().getMinute());
         }
-        log.log(Level.INFO, "Total timers: {}", timers.size());
+        logger.log(Level.INFO, "Total timers: {}", timers.size());
     }
 
     private void cancelTimers() {
         Collection<Timer> timers = timerService.getTimers();
-        log.info("Cancelling timers ...");
-        log.info("************** TIMERS INFO **************");
+        logger.info("Cancelling timers ...");
+        logger.info("************** TIMERS INFO **************");
         for (Timer timer : timers) {
-            log.log(Level.INFO, "Timer Name Cancelled: {} -> h: {} m: {}"
+            logger.log(Level.INFO, "Timer Name Cancelled: {} -> h: {} m: {}"
                     , timer.getInfo()
                     , timer.getSchedule().getHour()
                     , timer.getSchedule().getMinute());
             timer.cancel();
         }
-        log.info("All timers were cancelled.");
+        logger.info("All timers were cancelled.");
     }
 
     private void createCalendar(String timerNames) {
@@ -259,12 +263,12 @@ public class BatchBean {
 
             Timer timer = timerService.createCalendarTimer(scheduleExpression, timerConfig);
 
-            log.info("************** TIMER CREATING **************");
-            log.info("Timer {} Created.", timerName);
+            logger.info("************** TIMER CREATING **************");
+            logger.info("Timer {} Created.", timerName);
 
             return timer;
         } catch (IOException ex) {
-            log.log(Level.ERROR, ex);
+            logger.log(Level.ERROR, ex);
         }
         return null;
     }
@@ -280,11 +284,11 @@ public class BatchBean {
 
             if(finish){
                 timers = timerService.getTimers();
-                log.log(Level.INFO, "Total timers: {}", timers.size());
+                logger.log(Level.INFO, "Total timers: {}", timers.size());
                 return;
             }
 
-            log.info("***************** TIMERS INFO *****************");
+            logger.info("***************** TIMERS INFO *****************");
 
             for (Timer timer : timers) {
 
@@ -293,9 +297,9 @@ public class BatchBean {
 
             }
             timers = timerService.getTimers();
-            log.log(Level.INFO, "Total timers: {}", timers.size());
+            logger.log(Level.INFO, "Total timers: {}", timers.size());
         } catch (IOException ex) {
-            log.log(Level.ERROR, ex);
+            logger.log(Level.ERROR, ex);
         }
     }
 
@@ -306,12 +310,12 @@ public class BatchBean {
         // se crean todos los timers del properties.
         if(timers.isEmpty() && !totalTimerNames.trim().isEmpty()
                 && totalTimerNames.split(",").length > 0){
-            log.info("All timers are new, creating them ...");
+            logger.info("All timers are new, creating them ...");
             createCalendar(totalTimerNames);
-            log.info("Timers created.");
+            logger.info("Timers created.");
             return true;
         } else if(timers.isEmpty() && totalTimerNames.trim().isEmpty()){
-            log.info("No timers found.");
+            logger.info("No timers found.");
             return true;
         }
         return false;
@@ -355,24 +359,24 @@ public class BatchBean {
 
         if ((hour != null && !hour.equals(timer.getSchedule().getHour()))
                 || (minute != null && !minute.equals(timer.getSchedule().getMinute()))) {
-            log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
+            logger.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Hour = " + hour
                     + " -> Mem Hour = " + timer.getSchedule().getHour());
 
-            log.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Minute = " + minute
+            logger.log(Level.INFO, "Timer Name: {}", timerName + " -> Disk Minute = " + minute
                     + " -> Mem Minute = " + timer.getSchedule().getMinute());
 
-            log.log(Level.INFO, "Diferentes");
-            log.log(Level.INFO, "Cancelling timer: {}", timer.getInfo());
+            logger.log(Level.INFO, "Diferentes");
+            logger.log(Level.INFO, "Cancelling timer: {}", timer.getInfo());
 
             timer.cancel();
 
-            log.log(Level.INFO, "Creating timer {} -> Every {} hours - Every {} minutes.",
+            logger.log(Level.INFO, "Creating timer {} -> Every {} hours - Every {} minutes.",
                     timerName, hour, minute);
 
             Timer t = createCalendarTimer(timerName);
 
             if (t != null)
-                log.log(Level.INFO, "New timer {} created -> Every {} hours - Every {} minutes.",
+                logger.log(Level.INFO, "New timer {} created -> Every {} hours - Every {} minutes.",
                         t.getInfo(), t.getSchedule().getHour(), t.getSchedule().getMinute());
         }
     }
@@ -390,7 +394,7 @@ public class BatchBean {
             createCalendar(timerAutorizacionNames);
             createCalendar(timerNames);
         } catch (IOException ex) {
-            log.log(Level.ERROR, ex);
+            logger.log(Level.ERROR, ex);
         }
     }
 
@@ -410,7 +414,7 @@ public class BatchBean {
             }
         }
         if(delete){
-            log.info("Timer Canceled -> " + timer.getInfo());
+            logger.info("Timer Canceled -> " + timer.getInfo());
             timer.cancel();
         }
         return delete;
@@ -420,11 +424,11 @@ public class BatchBean {
         if(threadPoolExecutor != null && threadPoolExecutor instanceof ThreadPoolExecutor) {
             int activeCount = threadPoolExecutor.getActiveCount();
             int queueSize = threadPoolExecutor.getQueue().size();
-            log.info("Active Threads --> {}, Queue Size --> {}", activeCount, queueSize);
+            logger.info("Active Threads --> {}, Queue Size --> {}", activeCount, queueSize);
 
             if(activeCount >= nThreads &&  queueSize >= queueCapacity){
-                log.warn("Se ha alcanzado el umbral de {} hilo(s) disponible(s).", activeCount);
-                log.warn("Por favor revise si existen hilos colgados.");
+                logger.warn("Se ha alcanzado el umbral de {} hilo(s) disponible(s).", activeCount);
+                logger.warn("Por favor revise si existen hilos colgados.");
                 return;
             }
         }
@@ -481,10 +485,10 @@ public class BatchBean {
             final String batchImplementation = runtimeParametersInitial.getProperty(Constant.BATCH_IMPLEMENTATION) ;
 
             if(tipoComprobante != null || reportName != null)
-                log.info("Executing job --> {}, batchImplementation: {}, tipoComprobante --> {}, reportName --> {}"
+                logger.info("Executing job --> {}, batchImplementation: {}, tipoComprobante --> {}, reportName --> {}"
                         , jobName, batchImplementation, map.get(Constant.TIPO_COMPROBANTE), map.get(Constant.REPORT_NAME));
             else
-                log.info("Executing job --> {}, batchImplementation: {}", jobName, batchImplementation);
+                logger.info("Executing job --> {}, batchImplementation: {}", jobName, batchImplementation);
 
             final String parentThread = Thread.currentThread().getName();
             Object eId = null;
@@ -493,14 +497,14 @@ public class BatchBean {
 
                 JobOperator jobOperator = BatchRuntime.getJobOperator();
                 eId = jobOperator.start(jobName, runtimeParameters);
-                log.info("Initializing {} job with execution id {}.", jobName, eId.toString());
+                logger.info("Initializing {} job with execution id {}.", jobName, eId.toString());
 
             } else if(batchImplementation.equals(Constant.SPRING)){
 
                 org.springframework.context.support.ClassPathXmlApplicationContext applicationContext = startUpSpringFramework();
 
                 if(applicationContext == null) {
-                    log.error("No se ejecuta el job, el contexto spring no pudo iniciarse.");
+                    logger.error("No se ejecuta el job, el contexto spring no pudo iniciarse.");
                     return;
                 }
 
@@ -524,11 +528,11 @@ public class BatchBean {
                     org.springframework.batch.core.JobParameters jobParameters = jobParametersBuilder.toJobParameters();
 
                     jobLauncher.run(job, jobParameters);
-                    log.info("Initializing {} job.", jobName);
+                    logger.info("Initializing {} job.", jobName);
                     eId = jobParameters;
 
                 } catch(Exception e){
-                    log.log(Level.ERROR, e);
+                    logger.log(Level.ERROR, e);
                     return;
                 }
 
@@ -546,13 +550,13 @@ public class BatchBean {
                         try {
                             awaitTermination(parentThread, jobName, object, timeout, batchImplementation);
                         } catch (InterruptedException e) {
-                            log.log(Level.ERROR, e.getCause().getMessage());
+                            logger.log(Level.ERROR, e.getCause().getMessage());
                         }
                     }
                 });
 
         } catch (IOException | JobStartException ex) {
-            log.log(Level.ERROR, ex);
+            logger.log(Level.ERROR, ex);
         }
     }
 
@@ -589,19 +593,19 @@ public class BatchBean {
         try {
             jobExecution = jobOperator.getJobExecution(execution);
         } catch (NoSuchJobExecutionException nsjee) {
-            log.catching(nsjee);
+            logger.catching(nsjee);
             return;
         }
 
         while (true) {
             if (null != jobExecution.getExitStatus()) {
-                log.log(Level.INFO, "Finished {} execution, with exit status {}. Parent Thread {}.", jobName
+                logger.log(Level.INFO, "Finished {} execution, with exit status {}. Parent Thread {}.", jobName
                         , jobExecution.getExitStatus(), threadName);
                 break;
             }
 
             if (System.currentTimeMillis() >= limit) {
-                log.log(Level.INFO, "Timeout of {} ms waiting {}'s answer from timer with thread id {}.", timeout,
+                logger.log(Level.INFO, "Timeout of {} ms waiting {}'s answer from timer with thread id {}.", timeout,
                         jobName, threadName);
                 break;
             }
@@ -631,13 +635,13 @@ public class BatchBean {
             if (jobExecution != null && null != jobExecution.getExitStatus()
                     && !jobExecution.getExitStatus().getExitCode()
                     .equals(org.springframework.batch.core.ExitStatus.UNKNOWN.getExitCode())) {
-                log.log(Level.INFO, "Finished {} with execution id {} and exit status {}. Parent Thread {}.",
+                logger.log(Level.INFO, "Finished {} with execution id {} and exit status {}. Parent Thread {}.",
                         jobName, jobExecution.getId(), jobExecution.getExitStatus().getExitCode(), threadName);
                 break;
             }
 
             if (System.currentTimeMillis() >= limit) {
-                log.log(Level.INFO, "Timeout of {} ms waiting {}'s answer from timer with thread id {}.", timeout,
+                logger.log(Level.INFO, "Timeout of {} ms waiting {}'s answer from timer with thread id {}.", timeout,
                         jobName, threadName);
                 break;
             }

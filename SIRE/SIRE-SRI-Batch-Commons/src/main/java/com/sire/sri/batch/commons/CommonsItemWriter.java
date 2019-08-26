@@ -18,7 +18,7 @@ import com.sire.service.IDatasourceService;
 import com.sun.xml.bind.marshaller.DataWriter;
 import com.sire.sri.batch.util.JaxbCharacterEscapeHandler;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public abstract class CommonsItemWriter extends AbstractItemWriter {

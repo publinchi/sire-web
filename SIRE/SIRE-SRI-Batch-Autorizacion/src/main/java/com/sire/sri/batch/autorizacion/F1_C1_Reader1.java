@@ -18,7 +18,7 @@ import javax.inject.Inject;
 import javax.naming.NamingException;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Named
