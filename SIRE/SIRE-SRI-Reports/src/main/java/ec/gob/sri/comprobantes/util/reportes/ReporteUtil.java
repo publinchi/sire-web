@@ -55,7 +55,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JRSaveContributor;
 import net.sf.jasperreports.view.save.JRPdfSaveContributor;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 
 public class ReporteUtil {
 

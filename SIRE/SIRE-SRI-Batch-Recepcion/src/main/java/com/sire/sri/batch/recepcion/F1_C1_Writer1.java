@@ -16,7 +16,7 @@ import ec.gob.sri.comprobantes.modelo.rentencion.ComprobanteRetencion;
 import java.io.*;
 
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.CDATA;
 import org.dom4j.DocumentHelper;

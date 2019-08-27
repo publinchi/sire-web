@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/SIRE.iml" filepath="$PROJECT_DIR$/.idea/SIRE.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE.iml" filepath="$PROJECT_DIR$/SIRE.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE-Batch/SIRE-Batch.iml" filepath="$PROJECT_DIR$/SIRE-Batch/SIRE-Batch.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE-Commons/SIRE-Commons.iml" filepath="$PROJECT_DIR$/SIRE-Commons/SIRE-Commons.iml" />

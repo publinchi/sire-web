@@ -6,8 +6,7 @@
 package com.sire.service;
 
 import com.sire.event.MailEvent;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.ejb.*;
@@ -30,7 +29,7 @@ import javax.naming.NamingException;
 @Startup
 public class MailService implements IMailService {
 
-    private static final Logger log = LogManager.getLogger(MailService.class);
+    private static final Logger logger = LogManager.getLogger(MailService.class);
 
     @Asynchronous
     @Lock(LockType.READ)
@@ -79,20 +78,20 @@ public class MailService implements IMailService {
             }
 
             Transport.send(message);
-            log.info("E-Mail sent to {} , with secuential {}", event.getTo(), event.getProperties().get("secuencial"));
+            logger.info("E-Mail sent to {} , with secuential {}", event.getTo(), event.getProperties().get("secuencial"));
         } catch (MessagingException e) {
             try {
-                log.error("E-Mail not sent to {}, Cause: {}", event.getTo(), e.getCause());
-                log.info("Retrying after 5 seconds ...");
+                logger.error("E-Mail not sent to {}, Cause: {}", event.getTo(), e.getCause());
+                logger.info("Retrying after 5 seconds ...");
                 Thread.sleep(5000L);
                 Transport.send(message);
-                log.info("E-Mail sent again to {} , with secuential {}", event.getTo(), event.getProperties()
+                logger.info("E-Mail sent again to {} , with secuential {}", event.getTo(), event.getProperties()
                         .get("secuencial"));
             } catch (InterruptedException | MessagingException ex) {
-                log.error(ex);
+                logger.error(ex);
             }
         } catch (NamingException ex) {
-            log.error(ex);
+            logger.error(ex);
         }
     }
 
