@@ -35,7 +35,7 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;

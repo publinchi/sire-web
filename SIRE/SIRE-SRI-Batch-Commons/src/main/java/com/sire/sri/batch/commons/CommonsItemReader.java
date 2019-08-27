@@ -29,7 +29,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 import javax.batch.api.chunk.AbstractItemReader;
 import javax.naming.NamingException;

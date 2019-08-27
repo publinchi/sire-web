@@ -4,7 +4,7 @@ import com.sire.sri.batch.commons.CommonsItemReader;
 import com.sire.sri.batch.constant.Constant;
 import com.sire.sri.batch.recepcion.constant.RecepcionConstant;
 import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
+import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.Serializable;
