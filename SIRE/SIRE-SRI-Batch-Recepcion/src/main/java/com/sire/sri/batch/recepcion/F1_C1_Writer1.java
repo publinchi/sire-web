@@ -29,11 +29,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
 import javax.inject.Inject;
@@ -98,6 +94,9 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
     @Override
     public void writeItems(List<Object> items) {
+        if(Objects.isNull(items)) {
+            return;
+        }
         try {
             Lote lote = new Lote();
             for (Object item : items) {
@@ -122,6 +121,10 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 GenericXMLSignature genericXMLSignature = XAdESBESSignature.firmar(xml2document(SoapUtil.object2xml(((Map) item)
                         .get(Constant.COMPROBANTE))), pathSignature.toString(), passSignature);
                 String signedXml = genericXMLSignature.toSignedXml();
+                if(Objects.isNull(signedXml)) {
+                    log.log(Level.ERROR, "No se pudo firmar lote {}.", lote.getClaveAcceso());
+                    return;
+                }
                 lote.getComprobantes().getComprobante().add(appendCdata(signedXml));
             }
 
