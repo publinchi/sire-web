@@ -24,8 +24,52 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-batch</artifactId>
-            <version>2.1.7.RELEASE</version>
+            <version>${spring-boot-starter-batch.version}</version>
             <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>spring-core</artifactId>
+                    <groupId>org.springframework</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring-context-support.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase-core.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>snakeyaml</artifactId>
+                    <groupId>org.yaml</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>slf4j-api</artifactId>
+                    <groupId>org.slf4j</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jboss.arquillian.junit</groupId>
@@ -73,6 +117,14 @@
                     <groupId>commons-logging</groupId>
                     <artifactId>commons-logging</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>xml-apis</artifactId>
+                    <groupId>xml-apis</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-codec</artifactId>
+                    <groupId>commons-codec</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -98,6 +150,12 @@
             <artifactId>jsonassert</artifactId>
             <version>1.2.1</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>json</artifactId>
+                    <groupId>org.json</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -130,11 +188,33 @@
             <version>3.0.0</version>
             <type>pom</type>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-io</artifactId>
+                    <groupId>commons-io</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>commons-lang3</artifactId>
+                    <groupId>org.apache.commons</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>wagon-provider-api</artifactId>
+                    <groupId>org.apache.maven.wagon</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>plexus-component-annotations</artifactId>
+                    <groupId>org.codehaus.plexus</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>plexus-utils</artifactId>
+                    <groupId>org.codehaus.plexus</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-web</artifactId>
-            <version>2.11.2</version>
+            <version>${org.apache.logging.log4j.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -239,7 +319,7 @@
                     <environmentVariables>
                         <GLASSFISH_HOME>${session.executionRootDirectory}/target/payara5</GLASSFISH_HOME>
                     </environmentVariables>
-                    <!-- This needs tuning --> 
+                    <!-- This needs tuning -->
                     <systemPropertyVariables>
                         <!--<resourcesXml>src/test/resources/glassfish-resources.xml</resourcesXml>-->
                         <glassfishRemote_gfHome>${session.executionRootDirectory}/target/payara5</glassfishRemote_gfHome>
