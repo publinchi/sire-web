@@ -9,11 +9,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 import javax.batch.api.chunk.ItemProcessor;
 import javax.batch.runtime.BatchRuntime;
 import javax.batch.runtime.context.JobContext;
@@ -53,11 +49,16 @@ public class F1_C1_Processor1 implements ItemProcessor {
         String urlAutorizacion = runtimeParams.getProperty("urlAutorizacion");
         String claveAcceso = ((LoteXml) item).getClaveAcceso();
 
-        Map mapCall = (Map) SoapUtil.call(
+        Map mapCall = SoapUtil.call(
                 createSOAPMessage(claveAcceso),
                 new URL(urlAutorizacion),
                 null,
                 null);
+
+        if(Objects.isNull(mapCall)) {
+            return null;
+        }
+
         SOAPMessage soapMessage = (SOAPMessage) mapCall.get("soapMessage");
 
         if(log.isTraceEnabled()) {
