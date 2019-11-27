@@ -22,6 +22,17 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SIRE-Services" />
     <orderEntry type="module" module-name="SIRE-Entities" />
+    <orderEntry type="module" module-name="SIRE-Services-API" />
+    <orderEntry type="module" module-name="SIRE-SRI-Signature" />
+    <orderEntry type="module" module-name="SIRE-Soap" />
+    <orderEntry type="module" module-name="SIRE-SRI-WSClient" />
+    <orderEntry type="module" module-name="SIRE-Commons" />
+    <orderEntry type="module" module-name="SIRE-SRI-Batch-Commons" />
+    <orderEntry type="module" module-name="SIRE-SRI-Batch-Autorizacion" />
+    <orderEntry type="module" module-name="SIRE-SRI-Batch-Recepcion" />
+    <orderEntry type="module" module-name="SIRE-SRI-Reports" />
+    <orderEntry type="module" module-name="SIRE-Services" />
+    <orderEntry type="module" module-name="SIRE-Entities" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:eclipselink:2.5.2" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:commonj.sdo:2.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />

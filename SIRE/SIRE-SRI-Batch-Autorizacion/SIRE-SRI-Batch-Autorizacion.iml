@@ -17,6 +17,13 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SIRE-SRI-Signature" />
+    <orderEntry type="module" module-name="SIRE-Soap" />
+    <orderEntry type="module" module-name="SIRE-SRI-WSClient" />
+    <orderEntry type="module" module-name="SIRE-SRI-Batch-Commons" />
+    <orderEntry type="module" module-name="SIRE-Services-API" />
+    <orderEntry type="module" module-name="SIRE-Commons" />
+    <orderEntry type="module" module-name="SIRE-SRI-Reports" scope="PROVIDED" />
+    <orderEntry type="module" module-name="SIRE-SRI-Signature" />
     <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibTSA:1.1.7" level="project" />
     <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibTrust:1.1.7" level="project" />
     <orderEntry type="library" name="Maven: es.mityc.jumbo.adsi:MITyCLibOCSP:1.1.7" level="project" />

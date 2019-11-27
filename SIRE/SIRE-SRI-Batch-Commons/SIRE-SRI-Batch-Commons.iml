@@ -17,6 +17,10 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SIRE-SRI-Reports" scope="PROVIDED" />
+    <orderEntry type="module" module-name="SIRE-Services-API" />
+    <orderEntry type="module" module-name="SIRE-SRI-WSClient" />
+    <orderEntry type="module" module-name="SIRE-Commons" scope="PROVIDED" />
+    <orderEntry type="module" module-name="SIRE-SRI-Reports" scope="PROVIDED" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: net.sf.jasperreports:jasperreports:6.4.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-collections:commons-collections:3.2.2" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: commons-digester:commons-digester:2.1" level="project" />

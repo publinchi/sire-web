@@ -13,6 +13,8 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SIRE-Entities" />
     <orderEntry type="module" module-name="SIRE-Commons" />
+    <orderEntry type="module" module-name="SIRE-Entities" />
+    <orderEntry type="module" module-name="SIRE-Commons" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.4" level="project" />
     <orderEntry type="library" name="Maven: commons-beanutils:commons-beanutils:1.9.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax:javaee-api:6.0" level="project" />
