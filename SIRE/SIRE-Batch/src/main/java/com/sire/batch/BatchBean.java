@@ -32,7 +32,7 @@ import javax.ws.rs.core.*;
  */
 @Singleton
 @Startup
-@Path("timer")
+@Path(Constant.TASKS)
 public class BatchBean {
 
     @Resource
@@ -438,7 +438,35 @@ public class BatchBean {
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
 
-    private void executeJob(Map map){
+    @POST
+    @Path(Constant.EXECUTIONS)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void executeTask(String message){
+        String[] params = message.split(Constant.AMPERSAND);
+
+        Map map = new HashMap();
+
+        for (String param: params) {
+            if(param.startsWith(Constant.NAME)){
+                String[] p = param.split(Constant.EQUAL);
+                map.put(Constant.JOB_NAME,p[1]);
+            } else if(param.startsWith(Constant.PROPERTIES)) {
+                // TODO Implementar
+            } else if(param.startsWith(Constant.ARGUMENTS)) {
+                String[] p = param.split(Constant.EQUAL);
+                String[] q = p[1].split(Constant.PLUS);
+                for (String r : q) {
+                    String[] s = r.split(Constant.TRES_D);
+                    map.put(s[0].replaceAll(Constant.GUION_GUION, Constant.EMPTY), s[1]);
+                }
+            }
+        }
+        executeJob(map);
+    }
+
+    @POST
+    @Consumes("application/json")
+    public void executeJob(Map map){
         try {
             final String timeout = (String) map.get(Constant.TIMEOUT);
             final String jobName = (String) map.get(Constant.JOB_NAME);
