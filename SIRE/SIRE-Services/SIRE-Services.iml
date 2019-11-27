@@ -22,9 +22,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="SIRE-Entities" />
-    <orderEntry type="module" module-name="SIRE-Services-API" />
-    <orderEntry type="module" module-name="SIRE-Commons" />
-    <orderEntry type="module" module-name="SIRE-Entities" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok:1.18.4" level="project" />
     <orderEntry type="library" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.eclipse.persistence:eclipselink:2.5.2" level="project" />
