@@ -11,6 +11,8 @@ package com.sire.batch.constant;
  */
 public class Constant {
 
+    public static final String AMPERSAND = "&";
+    public static final String ARGUMENTS = "arguments";
     public static final String BATCH_IMPLEMENTATION = "batchImplementation";
     public static final String COD_EMPRESA = "codEmpresa";
     public static final String CONFIGURATION_PROPERTIES = "configuration.properties";
@@ -20,19 +22,28 @@ public class Constant {
     public static final String DEFAULT_KEEP_ALIVE_TIME = "20000";
     public static final int DEFAULT_MAXIMUM_POOL_SIZE = 10;
     public static final Long DEFAULT_TIMEOUT = 60000L;
+    public static final String EMPTY = "";
+    public static final String EQUAL = "=";
+    public static final String EXECUTIONS = "executions";
+    public static final String GUION_GUION = "--";
     public static final String JEE = "jee";
     public static final String JOB_NAME = "jobName";
+    public static final String NAME = "name";
     public static final String PATH_REPORTS = "pathReports";
     public static final String PASS_SIGNATURE = "passSignature";
     public static final String PATH_SIGNATURE = "pathSignature";
+    public static final String PLUS = "\\+";
+    public static final String PROPERTIES = "properties";
     public static final String REPORT_NAME = "reportName";
     public static final String SPRING = "spring";
+    public static final String TASKS = "tasks";
     public static final String TIMER_AUTORIZACION_NAMES = "timerAutorizacionNames";
     public static final String TIMER_RECEPCION_NAMES = "timerRecepcionNames";
     public static final String TIMER_NAMES = "timerNames";
     public static final Object TIMER_NAME = "timerName";
     public static final Object TIMEOUT = "timeout";
     public static final String TIPO_COMPROBANTE = "tipoComprobante";
+    public static final String TRES_D = "%3D";
     public static final String URL_AUTORIZACION = "urlAutorizacion";
     public static final String URL_RECEPCION = "urlRecepcion";
     public static final String URL_REPORTE = "urlReporte";
