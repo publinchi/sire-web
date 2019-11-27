@@ -75,7 +75,13 @@ public class SoapUtil {
 
 //            printHeaders(soapMsg);
             // Send SOAP Message to SOAP Server
-            SOAPMessage soapMessage = soapConnection.call(soapMsg, url);
+            SOAPMessage soapMessage;
+            try {
+                soapMessage = soapConnection.call(soapMsg, url);
+            } catch(Exception ex) {
+                Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+                return null;
+            }
 
             MimeHeaders session = soapMessage.getMimeHeaders();
             String[] cookies = session.getHeader("Set-Cookie");
