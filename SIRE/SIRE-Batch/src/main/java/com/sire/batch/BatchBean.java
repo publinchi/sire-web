@@ -559,7 +559,6 @@ public class BatchBean {
     @POST
     @Consumes("application/json")
     private static void executeJob(Map map) {
-      try {
         final String timeout = (String) map.get(Constant.TIMEOUT);
         final String jobName = (String) map.get(Constant.JOB_NAME);
         String tipoComprobante = (String) map.get(Constant.TIPO_COMPROBANTE);
