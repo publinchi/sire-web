@@ -189,8 +189,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         Detalles detalles = new Detalles();
 
-        String detalleSQL = Constant.FACTURA_D_SQL
-                + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
+        String detalleSQL = Constant.FACTURA_D_SQL + "NUM_DOCUMENTO_INTERNO = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("detalleSQL -> {}", detalleSQL);
@@ -202,6 +201,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(detalleSQL);
+            preparedStatement.setString(1, numFacturaInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Detalle detalle = new Detalle();
@@ -333,7 +334,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
 
-        String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
+        String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("detalleSQL -> {}", detalleSQL);
@@ -345,6 +346,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(detalleSQL);
+            preparedStatement.setString(1, numNotaCreditoInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 NotaCredito.Detalles.Detalle detalle = new NotaCredito.Detalles.Detalle();
@@ -631,7 +634,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 }
         }
 
-        String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
+        String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("detalleSQL -> {}", detalleSQL);
@@ -643,6 +646,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(detalleSQL);
+            preparedStatement.setString(1, numDespachoInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
