@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="ejb-jar" name="SIRE-Services:ejb">
+    <output-path>$PROJECT_DIR$/SIRE-Services/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>SIRE-Services</module>
+        <packaging>ejb</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="SIRE-Services.jar">
+      <element id="artifact" artifact-name="SIRE-Services:ejb exploded" />
+    </root>
+  </artifact>
+</component>
