@@ -121,8 +121,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setTotalDescuento(rs.getBigDecimal(Constant.TOTAL_DESCUENTOS));
         infoFactura.setTotalSinImpuestos(rs.getBigDecimal(Constant.TOTAL_SIN_IMPUESTOS));
 
-        String pagosSQL = Constant.FACTURA_PAGO_SQL
-                + "NUM_FACTURA = " + numFacturaInterno;
+        String pagosSQL = Constant.FACTURA_PAGO_SQL + "NUM_FACTURA = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("pagosSQL -> {}", pagosSQL);
@@ -134,6 +133,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(pagosSQL);
+            preparedStatement.setString(1, numFacturaInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             InfoFactura.Pago pagos = new InfoFactura.Pago();
             while (resultSet.next()) {
