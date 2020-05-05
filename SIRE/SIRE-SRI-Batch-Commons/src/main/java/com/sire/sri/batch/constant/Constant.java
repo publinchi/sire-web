@@ -72,6 +72,7 @@ public class Constant {
     public static final String BASE_IMPONIBLE = "BASE_IMPONIBLE";
     public static final String CODIGO_IMPUESTO = "CODIGO_IMPUESTO";
     public static final String CODIGO_PORCENTAJE = "CODIGO_PORCENTAJE";
+    public static final String CODIGO_PORCENTAJE_TXT = "CODIGO_PORCENTAJE_TXT";
     public static final String VALOR = "VALOR";
     public static final String BASE_IMPONIBLE_SIN_IVA = "BASE_IMPONIBLE_SIN_IVA";
     public static final String CODIGO_IMPUESTO_SIN_IVA = "CODIGO_IMPUESTO_SIN_IVA";
