@@ -28,6 +28,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+
 import org.apache.logging.log4j.Level;
 import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -102,12 +104,14 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setTotalSubsidio(rs.getBigDecimal(Constant.TOTAL_SUBSIDIO));
         TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
 
-        TotalImpuesto totalImpuesto1 = new TotalImpuesto();
-        totalImpuesto1.setBaseImponible(rs.getBigDecimal(Constant.BASE_IMPONIBLE));
-        totalImpuesto1.setCodigo(rs.getString(Constant.CODIGO_IMPUESTO));
-        totalImpuesto1.setCodigoPorcentaje(rs.getString(Constant.CODIGO_PORCENTAJE));
-        totalImpuesto1.setValor(rs.getBigDecimal(Constant.VALOR));
-        totalConImpuestos.getTotalImpuesto().add(totalImpuesto1);
+        if (!Objects.equals(Constant.CODIGO_PORCENTAJE_TXT, rs.getString(Constant.CODIGO_PORCENTAJE))) {
+            TotalImpuesto totalImpuesto1 = new TotalImpuesto();
+            totalImpuesto1.setBaseImponible(rs.getBigDecimal(Constant.BASE_IMPONIBLE));
+            totalImpuesto1.setCodigo(rs.getString(Constant.CODIGO_IMPUESTO));
+            totalImpuesto1.setCodigoPorcentaje(rs.getString(Constant.CODIGO_PORCENTAJE));
+            totalImpuesto1.setValor(rs.getBigDecimal(Constant.VALOR));
+            totalConImpuestos.getTotalImpuesto().add(totalImpuesto1);
+        }
 
         TotalImpuesto totalImpuesto2 = new TotalImpuesto();
         totalImpuesto2.setBaseImponible(rs.getBigDecimal(Constant.BASE_IMPONIBLE_SIN_IVA));
