@@ -50,7 +50,7 @@ public class SoapUtil {
         disableSslVerification();
     }
 
-    private static Map<Class, JAXBContext> contextStore = new ConcurrentHashMap<>();
+    private static Map<Class, JAXBContext> contextStore = new ConcurrentHashMap();
 
     public static Map<String, Object> call(SOAPMessage soapMsg, URL url,
                                            Class aClass) throws SOAPException, TransformerException {
@@ -87,7 +87,7 @@ public class SoapUtil {
             String[] cookies = session.getHeader("Set-Cookie");
 
 //            printHeaders(soapMessage);
-            Map<String, Object> map = new HashMap<>();
+            Map<String, Object> map = new HashMap();
 
             if (cookies != null && cookies.length == 1) {
                 cookie = cookies[0];
@@ -135,7 +135,9 @@ public class SoapUtil {
             } else {
                 object = unmarshaller.unmarshal(soapResponse.getSOAPBody().extractContentAsDocument());
             }
-        } catch (SOAPException | JAXBException ex) {
+        } catch (SOAPException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (JAXBException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
         return object;
@@ -170,7 +172,9 @@ public class SoapUtil {
             //Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, "Transform: {0}", out);
 
             return out.toString();
-        } catch (TransformerException | SOAPException ex) {
+        } catch (TransformerException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SOAPException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -255,7 +259,9 @@ public class SoapUtil {
 
             // Install the all-trusting host verifier
             HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        } catch (NoSuchAlgorithmException | KeyManagementException ex) {
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyManagementException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -276,7 +282,9 @@ public class SoapUtil {
         try {
             factory = MessageFactory.newInstance();
             message = factory.createMessage(new MimeHeaders(), new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
-        } catch (IOException | SOAPException ex) {
+        } catch (IOException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SOAPException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
         return message;
