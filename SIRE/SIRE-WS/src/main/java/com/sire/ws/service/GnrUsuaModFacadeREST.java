@@ -5,8 +5,11 @@
  */
 package com.sire.ws.service;
 
+import com.sire.entities.FacParametros;
 import com.sire.entities.GnrUsuaMod;
 import com.sire.entities.GnrUsuaModPK;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -126,7 +129,17 @@ public class GnrUsuaModFacadeREST extends AbstractFacade<GnrUsuaMod> {
         query.setParameter("nombreUsuario", nombreUsuario);
         query.setParameter("tipoModulo", "M");
         List<GnrUsuaMod> retorno = query.getResultList();
-        return retorno;
+
+        List<GnrUsuaMod> tmpGnrUsuaMods = retorno.isEmpty() ? null : new ArrayList<GnrUsuaMod>();
+
+        for (GnrUsuaMod gnrUsuaMod : retorno) {
+            tmpGnrUsuaMods.add(new GnrUsuaMod(
+                    gnrUsuaMod.getGnrUsuaModPK().getCodModulo(),
+                    gnrUsuaMod.getGnrUsuaModPK().getNombreUsuario(),
+                    gnrUsuaMod.getGnrUsuaModPK().getCodEmpresa()
+            ));
+        }
+        return tmpGnrUsuaMods;
     }
 
 }

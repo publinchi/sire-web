@@ -7,6 +7,9 @@ package com.sire.ws.service;
 
 import com.sire.entities.FacParametros;
 import com.sire.entities.FacParametrosPK;
+import com.sire.entities.GnrEmpresa;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -86,14 +89,30 @@ public class FacParametrosFacadeREST extends AbstractFacade<FacParametros> {
         com.sire.entities.FacParametrosPK key = getPrimaryKey(id);
         FacParametros facParametros = super.find(key);
         em.refresh(facParametros);
-        return facParametros;
+
+        FacParametros tmpFacParametros = new FacParametros(facParametros.getFacParametrosPK().getNombreUsuario(),
+                facParametros.getFacParametrosPK().getCodEmpresa());
+        tmpFacParametros.setDefCodVendedor(facParametros.getDefCodVendedor());
+
+        return tmpFacParametros;
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacParametros> findAll() {
-        return super.findAll();
+
+        List<FacParametros> facParametross = super.findAll();
+
+        List<FacParametros> tmpFacParametross = facParametross.isEmpty() ? null : new ArrayList<FacParametros>();
+
+        for (FacParametros facParametros : facParametross) {
+            tmpFacParametross.add(new FacParametros(
+                    facParametros.getFacParametrosPK().getNombreUsuario(),
+                    facParametros.getFacParametrosPK().getCodEmpresa()
+            ));
+        }
+        return tmpFacParametross;
     }
 
     @GET

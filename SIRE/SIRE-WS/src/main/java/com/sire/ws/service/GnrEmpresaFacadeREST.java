@@ -6,6 +6,8 @@
 package com.sire.ws.service;
 
 import com.sire.entities.GnrEmpresa;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -66,7 +68,20 @@ public class GnrEmpresaFacadeREST extends AbstractFacade<GnrEmpresa> {
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<GnrEmpresa> findAll() {
-        return super.findAll();
+
+        List<GnrEmpresa> gnrEmpresas = super.findAll();
+
+        List<GnrEmpresa> tmpGnrEmpresas = gnrEmpresas.isEmpty() ? null : new ArrayList<GnrEmpresa>();
+
+        for (GnrEmpresa gnrEmpresa : gnrEmpresas) {
+            tmpGnrEmpresas.add(new GnrEmpresa(
+                    gnrEmpresa.getCodEmpresa(),
+                    null,
+                    null,
+                    gnrEmpresa.getDescEmpresa(),
+                    null));
+        }
+        return tmpGnrEmpresas;
     }
 
     @GET

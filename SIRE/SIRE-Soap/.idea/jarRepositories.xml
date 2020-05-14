@@ -2,14 +2,6 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
-<<<<<<< Updated upstream
-      <option name="id" value="PrimeFaces-maven-lib" />
-      <option name="name" value="Repository for library PrimeFaces-maven-lib" />
-      <option name="url" value="http://repository.primefaces.org/" />
-    </remote-repository>
-    <remote-repository>
-=======
->>>>>>> Stashed changes
       <option name="id" value="Central Repository" />
       <option name="name" value="Central Repository" />
       <option name="url" value="https://repo1.maven.org/maven2/" />
@@ -30,19 +22,6 @@
       <option name="url" value="http://maven.petalslink.com/repo" />
     </remote-repository>
     <remote-repository>
-<<<<<<< Updated upstream
-      <option name="id" value="default" />
-      <option name="name" value="default" />
-      <option name="url" value="http://dev.fit-bank.com/nexus/content/groups/public" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="snapshots" />
-      <option name="name" value="snapshots" />
-      <option name="url" value="http://dev.fit-bank.com/nexus/content/groups/public-snapshots" />
-    </remote-repository>
-    <remote-repository>
-=======
->>>>>>> Stashed changes
       <option name="id" value="jboss.community" />
       <option name="name" value="JBoss Community repository" />
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />

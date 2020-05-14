@@ -14,16 +14,12 @@
           <element id="module-output" name="SIRE-WS" />
         </element>
         <element id="directory" name="lib">
-          <element id="archive" name="SIRE-Entities-1.1.1.jar">
-            <element id="module-output" name="SIRE-Entities" />
-          </element>
+          <element id="library" level="project" name="Maven: com.sire:SIRE-Entities:1.1.1" />
           <element id="library" level="project" name="Maven: org.eclipse.persistence:eclipselink:2.5.2" />
           <element id="library" level="project" name="Maven: org.eclipse.persistence:commonj.sdo:2.1.1" />
           <element id="library" level="project" name="Maven: org.projectlombok:lombok:1.18.4" />
           <element id="library" level="project" name="Maven: org.eclipse.persistence:javax.persistence:2.1.0" />
-          <element id="archive" name="SIRE-Commons-1.0.3.jar">
-            <element id="module-output" name="SIRE-Commons" />
-          </element>
+          <element id="library" level="project" name="Maven: com.sire:SIRE-Commons:1.0.3" />
           <element id="library" level="project" name="Maven: commons-beanutils:commons-beanutils:1.9.1" />
           <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-multipart:2.22.2" />
           <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-common:2.22.2" />
