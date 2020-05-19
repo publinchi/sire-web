@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -213,7 +214,9 @@ public class CxcDocCobrar implements Serializable {
     }
 
     public Double getSaldoDocumento() {
-        return Round.round(saldoDocumento, 2);
+        if(Objects.nonNull(saldoDocumento))
+            return Round.round(saldoDocumento, 2);
+        return Round.round(0, 2);
     }
 
     public void setSaldoDocumento(Double saldoDocumento) {

@@ -2,18 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4f1dfbc3-f2cf-4a83-88fa-c4efe35910f3" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/jarRepositories.xml" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/artifacts/SIRE_WS_war_exploded.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/artifacts/SIRE_WS_war_exploded.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/CxcFormaPagoFacadeREST.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/CxcFormaPagoFacadeREST.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/FacParametrosFacadeREST.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/FacParametrosFacadeREST.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/GnrEmpresaFacadeREST.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/GnrEmpresaFacadeREST.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/GnrUsuaModFacadeREST.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/GnrUsuaModFacadeREST.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/GnrUsuariosFacadeREST.java" beforeDir="false" afterPath="$PROJECT_DIR$/../SIRE-WS/src/main/java/com/sire/ws/service/GnrUsuariosFacadeREST.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/sire/soap/util/SoapUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/sire/soap/util/SoapUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -49,10 +43,6 @@
   </component>
   <component name="ProjectId" id="1bayuuo6F02DktvBGmQemZlnNGA" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectViewState">
-    <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showLibraryContents" value="true" />
-  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -81,6 +71,24 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="2" />
+  </component>
+  <component name="WindowStateProjectService">
+    <state width="1554" height="219" key="GridCell.Tab.0.bottom" timestamp="1588886807520">
+      <screen x="0" y="0" width="1600" height="872" />
+    </state>
+    <state width="1554" height="219" key="GridCell.Tab.0.bottom/0.0.1600.872@0.0.1600.872" timestamp="1588886807520" />
+    <state width="1554" height="219" key="GridCell.Tab.0.center" timestamp="1588886807519">
+      <screen x="0" y="0" width="1600" height="872" />
+    </state>
+    <state width="1554" height="219" key="GridCell.Tab.0.center/0.0.1600.872@0.0.1600.872" timestamp="1588886807519" />
+    <state width="1554" height="219" key="GridCell.Tab.0.left" timestamp="1588886807519">
+      <screen x="0" y="0" width="1600" height="872" />
+    </state>
+    <state width="1554" height="219" key="GridCell.Tab.0.left/0.0.1600.872@0.0.1600.872" timestamp="1588886807519" />
+    <state width="1554" height="219" key="GridCell.Tab.0.right" timestamp="1588886807520">
+      <screen x="0" y="0" width="1600" height="872" />
+    </state>
+    <state width="1554" height="219" key="GridCell.Tab.0.right/0.0.1600.872@0.0.1600.872" timestamp="1588886807520" />
   </component>
   <component name="masterDetails">
     <states>

@@ -101,10 +101,12 @@ public class CxcFormaPagoFacadeREST extends AbstractFacade<CxcFormaPago> {
         List<CxcFormaPago> tmpCxcFormaPagos = cxcFormaPagos.isEmpty() ? null : new ArrayList<CxcFormaPago>();
 
         for (CxcFormaPago cxcFormaPago : cxcFormaPagos) {
-            tmpCxcFormaPagos.add(new CxcFormaPago(
+            CxcFormaPago tmpCxcFormaPago = new CxcFormaPago(
                     cxcFormaPago.getCxcFormaPagoPK().getCodEmpresa(),
                     cxcFormaPago.getCxcFormaPagoPK().getCodPago()
-            ));
+            );
+            tmpCxcFormaPago.setDescripcion(cxcFormaPago.getDescripcion());
+            tmpCxcFormaPagos.add(tmpCxcFormaPago);
         }
         return tmpCxcFormaPagos;
     }

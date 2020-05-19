@@ -113,7 +113,7 @@ public class FacCatalogoPrecioDFacadeREST extends AbstractFacade<FacCatalogoPrec
         facCatalogoPrecioD1.setPrecioVenta1(facCatalogoPrecioD.getPrecioVenta1());
         facCatalogoPrecioD1.setPrecioVenta2(facCatalogoPrecioD.getPrecioVenta2());
         facCatalogoPrecioD1.setPrecioVenta3(facCatalogoPrecioD.getPrecioVenta3());
-        facCatalogoPrecioD1.setUsuario(new GnrUsuarios(facCatalogoPrecioD.getUsuario().getNombreUsuario()));
+        //facCatalogoPrecioD1.setUsuario(new GnrUsuarios(facCatalogoPrecioD.getUsuario().getNombreUsuario()));
 
         return facCatalogoPrecioD1;
     }

@@ -7,6 +7,9 @@ package com.sire.ws.service;
 
 import com.sire.entities.InvBodegaArt;
 import com.sire.entities.InvBodegaArtPK;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -103,7 +106,21 @@ public class InvBodegaArtFacadeREST extends AbstractFacade<InvBodegaArt> {
         query.setParameter("codArticulo", codArticulo);
         query.setParameter("codInventario", "01");
         List<InvBodegaArt> invBodegaArts = query.getResultList();
-        return invBodegaArts;
+
+        List<InvBodegaArt> tmpInvBodegaArts = new ArrayList<>();
+
+        for (InvBodegaArt invBodegaArt : invBodegaArts) {
+            tmpInvBodegaArts.add(
+                    new InvBodegaArt(
+                            invBodegaArt.getInvBodegaArtPK(),
+                            invBodegaArt.getExistencia(),
+                            invBodegaArt.getExistPendEnt(),
+                            invBodegaArt.getExistPendSal()
+                    )
+            );
+        }
+
+        return tmpInvBodegaArts;
     }
 
     @GET

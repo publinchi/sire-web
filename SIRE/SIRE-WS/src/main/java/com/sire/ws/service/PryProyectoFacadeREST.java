@@ -8,6 +8,8 @@ package com.sire.ws.service;
 import com.sire.entities.PryProyecto;
 import com.sire.entities.PryProyectoPK;
 import com.sire.entities.PrySubproyecto;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -121,8 +123,19 @@ public class PryProyectoFacadeREST extends AbstractFacade<PryProyecto> {
         TypedQuery<PryProyecto> query = em.createNamedQuery("PryProyecto.findByCodEmpresa", PryProyecto.class);
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("estadoProyecto", 'A');
+
+        List<PryProyecto> tmpPryProyectos = new ArrayList<>();
+
+        for (PryProyecto pryProyecto : query.getResultList()) {
+            tmpPryProyectos.add(new PryProyecto(
+                    pryProyecto.getPryProyectoPK().getCodEmpresa(),
+                    pryProyecto.getPryProyectoPK().getCodProyecto()
+                    )
+            );
+        }
+
         try {
-            return query.getResultList();
+            return tmpPryProyectos;
         } catch (Exception ex) {
             return null;
         }
