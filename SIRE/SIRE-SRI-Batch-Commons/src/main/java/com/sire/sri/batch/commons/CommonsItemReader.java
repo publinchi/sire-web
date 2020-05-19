@@ -153,24 +153,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         }finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
 
         factura.setInfoFactura(infoFactura);
@@ -235,24 +218,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         }finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -382,24 +348,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -488,24 +437,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
 
         /* Motivos */
@@ -619,24 +551,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
 
         String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = ? AND COD_EMPRESA = ?";
@@ -713,24 +628,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -827,24 +725,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -911,5 +792,9 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
         return datetime;
+    }
+
+    protected void closeConnections(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet) {
+        CommonsItem.closeConnections(connection, preparedStatement, resultSet, null, null);
     }
 }

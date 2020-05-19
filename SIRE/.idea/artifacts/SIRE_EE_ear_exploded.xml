@@ -62,10 +62,10 @@
         <element id="archive" name="SIRE-SRI-Batch-Commons-1.3.0.jar">
           <element id="module-output" name="SIRE-SRI-Batch-Commons" />
         </element>
-        <element id="archive" name="SIRE-SRI-Batch-Autorizacion-1.3.5.jar">
+        <element id="archive" name="SIRE-SRI-Batch-Autorizacion-1.3.6.jar">
           <element id="module-output" name="SIRE-SRI-Batch-Autorizacion" />
         </element>
-        <element id="archive" name="SIRE-SRI-Batch-Recepcion-1.2.6.jar">
+        <element id="archive" name="SIRE-SRI-Batch-Recepcion-1.2.7.jar">
           <element id="module-output" name="SIRE-SRI-Batch-Recepcion" />
         </element>
         <element id="library" level="project" name="Maven: dom4j:dom4j:1.6.1" />
