@@ -7,6 +7,8 @@ package com.sire.ws.service;
 
 import com.sire.entities.CajRubro;
 import com.sire.entities.CajRubroPK;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -115,8 +117,17 @@ public class CajRubroFacadeREST extends AbstractFacade<CajRubro> {
     public List<CajRubro> cajRubroByCodEmpresa(@PathParam("codEmpresa") String codEmpresa) {
         TypedQuery<CajRubro> query = em.createNamedQuery("CajRubro.findByCodEmpresa", CajRubro.class);
         query.setParameter("codEmpresa", codEmpresa);
+
+        List<CajRubro> tmpCajRubros = new ArrayList<>();
+
+        for (CajRubro cajRubro : query.getResultList()) {
+            tmpCajRubros.add(new CajRubro(
+                    cajRubro.getCajRubroPK().getCodEmpresa(), cajRubro.getCajRubroPK().getCodRubro()
+            ));
+        }
+
         try {
-            return query.getResultList();
+            return tmpCajRubros;
         } catch (Exception ex) {
             return null;
         }

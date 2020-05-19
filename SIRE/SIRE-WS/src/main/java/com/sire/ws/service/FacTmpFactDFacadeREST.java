@@ -115,19 +115,37 @@ public class FacTmpFactDFacadeREST extends AbstractFacade<FacTmpFactD> {
     @Path("/findByFacTmpFactC/{codEmpresa}/{egresoInv}/{ei}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacTmpFactD> findByFacTmpFactC(@PathParam("codEmpresa") String codEmpresa,
-            @PathParam("egresoInv") String egresoInv, @PathParam("ei") String ei) {
+                                               @PathParam("egresoInv") String egresoInv, @PathParam("ei") String ei) {
         TypedQuery<FacTmpFactD> query = em.createNamedQuery("FacTmpFactD.findByFacTmpFactC", FacTmpFactD.class);
         query.setParameter("codEmpresa", codEmpresa);
         query.setParameter("egresoInv", Integer.valueOf(egresoInv));
         query.setParameter("ei", ei);
-        List<FacTmpFactD> retorno = new ArrayList<>();
+        List<FacTmpFactD> tmpFacTmpFactDs = new ArrayList<>();
         for (FacTmpFactD facTmpFactD : query.getResultList()) {
-            FacTmpFactD newFacTmpFactD = new FacTmpFactD();
-            newFacTmpFactD.setFacTmpFactDPK(facTmpFactD.getFacTmpFactDPK());
-            newFacTmpFactD.setInvUnidadAlternativa(facTmpFactD.getInvUnidadAlternativa());
-            retorno.add(newFacTmpFactD);
+            FacTmpFactD tmpFacTmpFactD = new FacTmpFactD();
+            tmpFacTmpFactD.setFacTmpFactDPK(facTmpFactD.getFacTmpFactDPK());
+            tmpFacTmpFactD.setInvUnidadAlternativa(facTmpFactD.getInvUnidadAlternativa());
+            tmpFacTmpFactD.setAuxCantidad(facTmpFactD.getAuxCantidad());
+            tmpFacTmpFactD.setCantidad(facTmpFactD.getCantidad());
+            tmpFacTmpFactD.setCantidadDevuelta(facTmpFactD.getCantidadDevuelta());
+            tmpFacTmpFactD.setCodBodega(facTmpFactD.getCodBodega());
+            tmpFacTmpFactD.setCodInventario(facTmpFactD.getCodInventario());
+            tmpFacTmpFactD.setDetalle(facTmpFactD.getDetalle());
+            tmpFacTmpFactD.setEntregado(facTmpFactD.getEntregado());
+            tmpFacTmpFactD.setFactor(facTmpFactD.getFactor());
+            tmpFacTmpFactD.setOperador(facTmpFactD.getOperador());
+            tmpFacTmpFactD.setPorcDescPago(facTmpFactD.getPorcDescPago());
+            tmpFacTmpFactD.setPorcDescProm(facTmpFactD.getPorcDescProm());
+            tmpFacTmpFactD.setPorcDescVol(facTmpFactD.getPorcDescVol());
+            tmpFacTmpFactD.setPorcentajeIva(facTmpFactD.getPorcentajeIva());
+            tmpFacTmpFactD.setPrecioUnitario(facTmpFactD.getPrecioUnitario());
+            tmpFacTmpFactD.setPromocion(facTmpFactD.getPromocion());
+            tmpFacTmpFactD.setSerie(facTmpFactD.getSerie());
+            tmpFacTmpFactD.setTotalReg(facTmpFactD.getTotalReg());
+
+            tmpFacTmpFactDs.add(tmpFacTmpFactD);
         }
-        return retorno;
+        return tmpFacTmpFactDs;
     }
 
     @GET

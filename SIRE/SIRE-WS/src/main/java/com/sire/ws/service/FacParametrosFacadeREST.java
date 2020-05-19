@@ -7,7 +7,12 @@ package com.sire.ws.service;
 
 import com.sire.entities.FacParametros;
 import com.sire.entities.FacParametrosPK;
+import com.sire.entities.GnrEmpresa;
+import com.sire.entities.GnrUsuarios;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -86,14 +91,38 @@ public class FacParametrosFacadeREST extends AbstractFacade<FacParametros> {
         com.sire.entities.FacParametrosPK key = getPrimaryKey(id);
         FacParametros facParametros = super.find(key);
         em.refresh(facParametros);
-        return facParametros;
+
+        FacParametros tmpFacParametros = new FacParametros(
+                facParametros.getFacParametrosPK().getNombreUsuario(),
+                facParametros.getFacParametrosPK().getCodEmpresa()
+        );
+        tmpFacParametros.setDefCodVendedor(facParametros.getDefCodVendedor());
+        tmpFacParametros.setGnrUsuarios(new GnrUsuarios(facParametros.getGnrUsuarios().getNombreUsuario()));
+
+        return tmpFacParametros;
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<FacParametros> findAll() {
-        return super.findAll();
+
+        List<FacParametros> facParametross = super.findAll();
+
+        List<FacParametros> tmpFacParametross = new ArrayList<>();
+
+        for (FacParametros facParametros : facParametross) {
+            FacParametros tmpFacParametros = new FacParametros(
+                    facParametros.getFacParametrosPK().getNombreUsuario(),
+                    facParametros.getFacParametrosPK().getCodEmpresa()
+            );
+            tmpFacParametros.setDefCodVendedor(facParametros.getDefCodVendedor());
+            if(Objects.nonNull(facParametros.getGnrUsuarios()))
+                tmpFacParametros.setGnrUsuarios(new GnrUsuarios(facParametros.getGnrUsuarios().getNombreUsuario()));
+
+            tmpFacParametross.add(tmpFacParametros);
+        }
+        return tmpFacParametross;
     }
 
     @GET

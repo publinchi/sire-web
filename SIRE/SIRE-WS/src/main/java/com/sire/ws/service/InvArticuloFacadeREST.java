@@ -5,12 +5,12 @@
  */
 package com.sire.ws.service;
 
-import com.sire.entities.FacCatalogoPrecioD;
-import com.sire.entities.InvArticulo;
-import com.sire.entities.InvArticuloPK;
+import com.sire.entities.*;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -24,6 +24,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.PathSegment;
+
 import org.eclipse.persistence.config.CacheUsage;
 import org.eclipse.persistence.config.QueryHints;
 
@@ -150,11 +151,26 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
 
         List<InvArticulo> list = new ArrayList<>();
         for (Object[] objects : retorno) {
-            ((InvArticulo) objects[0]).setAuxPrecio(((FacCatalogoPrecioD) objects[1]).getAuxPrecio());
-            ((InvArticulo) objects[0]).setPrecio(((FacCatalogoPrecioD) objects[1]).getPrecioVenta1());
-            ((InvArticulo) objects[0]).setUnidad(((FacCatalogoPrecioD) objects[1]).getCodUnidad());
-            ((InvArticulo) objects[0]).setExistencia((BigDecimal) objects[2]);
-            list.add((InvArticulo) objects[0]);
+            InvArticulo invArticulo = (InvArticulo) objects[0];
+            FacCatalogoPrecioD facCatalogoPrecioD = (FacCatalogoPrecioD) objects[1];
+
+            InvArticulo tmpInvArticulo = new InvArticulo(invArticulo.getInvArticuloPK());
+
+            tmpInvArticulo.setNombreArticulo(invArticulo.getNombreArticulo());
+            tmpInvArticulo.setCodUnidad(
+                    new InvUnidadMedida(
+                            invArticulo.getCodUnidad().getCodUnidad(),
+                            invArticulo.getCodUnidad().getCodEmpresa(),
+                            invArticulo.getCodUnidad().getDescUnidad()
+                    )
+            );
+            tmpInvArticulo.setAuxPrecio(facCatalogoPrecioD.getAuxPrecio());
+            tmpInvArticulo.setPrecio(facCatalogoPrecioD.getPrecioVenta1());
+            tmpInvArticulo.setUnidad(facCatalogoPrecioD.getCodUnidad());
+            tmpInvArticulo.setExistencia((BigDecimal) objects[2]);
+            tmpInvArticulo.setCodIva(invArticulo.getCodIva());
+
+            list.add(tmpInvArticulo);
         }
 
         return list;
@@ -179,6 +195,12 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
                 invArticulo.getCostoPromedio(),
                 invArticulo.getFechaCreacion(),
                 invArticulo.getCostoUltimaCompra());
+        //String codEmpresa, String codGrupo1, String codGrupo2, String codGrupo3
+        invArticuloNew.setInvGrupo3(new InvGrupo3(codEmpresa,
+                invArticulo.getInvGrupo3().getInvGrupo3PK().getCodGrupo1(),
+                invArticulo.getInvGrupo3().getInvGrupo3PK().getCodGrupo2(),
+                invArticulo.getInvGrupo3().getInvGrupo3PK().getCodGrupo3())
+        );
 
         return invArticuloNew;
     }
@@ -187,7 +209,7 @@ public class InvArticuloFacadeREST extends AbstractFacade<InvArticulo> {
     @Path("/findByArticuloEmpresaEstado/{codArticulo}/{codEmpresa}/{estado}")
     @Produces({"application/json"})
     public InvArticulo findByArticuloEmpresaEstado(@PathParam("codArticulo") String codArticulo,
-            @PathParam("codEmpresa") String codEmpresa, @PathParam("estado") String estado) {
+                                                   @PathParam("codEmpresa") String codEmpresa, @PathParam("estado") String estado) {
         TypedQuery<InvArticulo> query = em.createNamedQuery("InvArticulo.findByArticuloEmpresaEstado", InvArticulo.class);
         query.setParameter("codArticulo", Integer.valueOf(codArticulo));
         query.setParameter("codEmpresa", codEmpresa);

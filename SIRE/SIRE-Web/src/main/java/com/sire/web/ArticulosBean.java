@@ -643,8 +643,7 @@ public class ArticulosBean {
     private void buscarDescuento(InvMovimientoDtll invMovimientoDtll) throws ClienteException {
         String articulosString = invArticuloFacadeREST.findByArticuloEmpresa(String.class,
                 String.valueOf(invMovimientoDtll.getInvArticulo().getInvArticuloPK().getCodArticulo()), obtenerEmpresa());
-        List<InvArticulo> listaArticulos = gson.fromJson(articulosString, new TypeToken<java.util.List<InvArticulo>>() {
-        }.getType());
+        InvArticulo invArticulo = gson.fromJson(articulosString, new TypeToken<InvArticulo>(){}.getType());
 
         String clientesString = vClienteFacadeREST.findByClienteEmpresa(String.class,
                 String.valueOf(obtenerVCliente().getCodCliente()), obtenerEmpresa());
@@ -657,9 +656,9 @@ public class ArticulosBean {
         facDescVolPK.setCodEmpresa(obtenerEmpresa());
         facDescVolPK.setCodGrupo(listaClientes.get(0).getCodGrupo());
         facDescVolPK.setCodTipo(listaClientes.get(0).getCodTipo());
-        facDescVolPK.setCodGrupo1(listaArticulos.get(0).getInvGrupo3().getInvGrupo3PK().getCodGrupo1());
-        facDescVolPK.setCodGrupo2(listaArticulos.get(0).getInvGrupo3().getInvGrupo3PK().getCodGrupo2());
-        facDescVolPK.setCodGrupo3(listaArticulos.get(0).getInvGrupo3().getInvGrupo3PK().getCodGrupo3());
+        facDescVolPK.setCodGrupo1(invArticulo.getInvGrupo3().getInvGrupo3PK().getCodGrupo1());
+        facDescVolPK.setCodGrupo2(invArticulo.getInvGrupo3().getInvGrupo3PK().getCodGrupo2());
+        facDescVolPK.setCodGrupo3(invArticulo.getInvGrupo3().getInvGrupo3PK().getCodGrupo3());
 
         StringBuilder id = new StringBuilder();
 
@@ -862,9 +861,9 @@ public class ArticulosBean {
             throw new PayWayException("Por favor seleccione la forma de pago.");
         }
 
-        if (mapa.getDireccion() == null) {
+        /*if (mapa.getDireccion() == null) {
             throw new GPSException("Por favor active el GPS y seleccione Geolocalizar.");
-        }
+        }*/
 
         InvMovimientoCabPK invMovimientoCabPK = new InvMovimientoCabPK();
         invMovimientoCabPK.setCodEmpresa(obtenerEmpresa());
@@ -948,7 +947,7 @@ public class ArticulosBean {
     private FacParametros obtenerFacParametros() {
         FacParametros facParametros = facParametrosFacadeREST.find_JSON(
                 FacParametros.class, "id;codEmpresa=" + obtenerEmpresa()
-                + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
+                        + ";nombreUsuario=" + userManager.getCurrent().getNombreUsuario());
         return facParametros;
     }
 
@@ -1062,9 +1061,9 @@ public class ArticulosBean {
         gnrLogHistoricoPK.setNumDocumento(new Long(pedido.getInvMovimientoCab().getInvMovimientoCabPK().getNumDocumento()).intValue());
         gnrLogHistorico.setGnrLogHistoricoPK(gnrLogHistoricoPK);
         gnrLogHistorico.setNombreUsuario(userManager.getCurrent().getNombreUsuario());
-        gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
-        gnrLogHistorico.setLatitud(Double.valueOf(mapa.getLat()));
-        gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
+        //gnrLogHistorico.setUbicacionGeografica(mapa.getDireccion());
+        //gnrLogHistorico.setLatitud(Double.valueOf(mapa.getLat()));
+        //gnrLogHistorico.setLongitud(Double.valueOf(mapa.getLng()));
         pedido.setGnrLogHistorico(gnrLogHistorico);
     }
 

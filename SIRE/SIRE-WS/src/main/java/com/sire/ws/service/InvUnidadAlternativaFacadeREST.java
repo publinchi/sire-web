@@ -7,6 +7,8 @@ package com.sire.ws.service;
 
 import com.sire.entities.InvUnidadAlternativa;
 import com.sire.entities.InvUnidadAlternativaPK;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -89,7 +91,18 @@ public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlte
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public InvUnidadAlternativa find(@PathParam("id") PathSegment id) {
         com.sire.entities.InvUnidadAlternativaPK key = getPrimaryKey(id);
-        return super.find(key);
+        InvUnidadAlternativa invUnidadAlternativa = super.find(key);
+        InvUnidadAlternativa tmpInvUnidadAlternativa = new InvUnidadAlternativa(
+                invUnidadAlternativa.getInvUnidadAlternativaPK()
+        );
+        tmpInvUnidadAlternativa.setOperador(invUnidadAlternativa.getOperador());
+        tmpInvUnidadAlternativa.setFactor(invUnidadAlternativa.getFactor());
+        tmpInvUnidadAlternativa.setEstado(invUnidadAlternativa.getEstado());
+        tmpInvUnidadAlternativa.setFechaEstado(tmpInvUnidadAlternativa.getFechaEstado());
+        tmpInvUnidadAlternativa.setPeso(tmpInvUnidadAlternativa.getPeso());
+        tmpInvUnidadAlternativa.setVolumen(tmpInvUnidadAlternativa.getVolumen());
+
+        return tmpInvUnidadAlternativa;
     }
 
     @GET
@@ -113,8 +126,15 @@ public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlte
         TypedQuery<InvUnidadAlternativa> query = em.createNamedQuery("InvUnidadAlternativa.findByCodArticulo", InvUnidadAlternativa.class);
         query.setParameter("codArticulo", Integer.parseInt(codArticulo));
         query.setParameter("estado", "A");
-        List<InvUnidadAlternativa> retorno = query.getResultList();
-        return retorno;
+        List<InvUnidadAlternativa> invUnidadAlternativas = query.getResultList();
+
+        List<InvUnidadAlternativa> tmpInvUnidadAlternativas = new ArrayList<>();
+
+        for (InvUnidadAlternativa invUnidadAlternativa : invUnidadAlternativas) {
+            tmpInvUnidadAlternativas.add(new InvUnidadAlternativa(invUnidadAlternativa.getInvUnidadAlternativaPK()));
+        }
+
+        return tmpInvUnidadAlternativas;
     }
 
     @GET
@@ -128,5 +148,5 @@ public class InvUnidadAlternativaFacadeREST extends AbstractFacade<InvUnidadAlte
     protected EntityManager getEntityManager() {
         return em;
     }
-    
+
 }

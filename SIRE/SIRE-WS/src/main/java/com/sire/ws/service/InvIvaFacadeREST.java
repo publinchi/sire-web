@@ -5,6 +5,7 @@
  */
 package com.sire.ws.service;
 
+import com.sire.entities.GnrEmpresa;
 import com.sire.entities.InvIva;
 import com.sire.entities.InvIvaPK;
 import java.util.List;
@@ -84,7 +85,14 @@ public class InvIvaFacadeREST extends AbstractFacade<InvIva> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public InvIva find(@PathParam("id") PathSegment id) {
         com.sire.entities.InvIvaPK key = getPrimaryKey(id);
-        return super.find(key);
+        InvIva invIva = super.find(key);
+        InvIva tmpInvIva = new InvIva(invIva.getInvIvaPK());
+        tmpInvIva.setEstado(invIva.getEstado());
+        tmpInvIva.setFechaVigencia(invIva.getFechaVigencia());
+        tmpInvIva.setValor(invIva.getValor());
+        tmpInvIva.setGnrEmpresa(new GnrEmpresa(invIva.getGnrEmpresa().getCodEmpresa()));
+
+        return tmpInvIva;
     }
 
     @GET

@@ -10,7 +10,10 @@ import com.sire.entities.CxcDocCobrar;
 import com.sire.entities.CxcDocCobrarPK;
 import com.sire.entities.Pago;
 import com.sire.event.MailEvent;
+
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.enterprise.event.Event;
@@ -145,12 +148,26 @@ public class CxcDocCobrarFacadeREST extends AbstractFacade<CxcDocCobrar> {
     @Path("/findByCodClienteCodVendedor/{codCliente}/{codVendedor}")
     @Produces({"application/json"})
     public List<CxcDocCobrar> findByCodClienteCodVendedor(@PathParam("codCliente") String codCliente,
-            @PathParam("codVendedor") String codVendedor) {
+                                                          @PathParam("codVendedor") String codVendedor) {
         TypedQuery<CxcDocCobrar> query = em.createNamedQuery("CxcDocCobrar.findByCodClienteCodVendedor", CxcDocCobrar.class);
         query.setParameter("codCliente", new BigInteger(codCliente));
         query.setParameter("codVendedor", new BigInteger(codVendedor));
-        List<CxcDocCobrar> retorno = query.getResultList();
-        return retorno;
+
+        List<CxcDocCobrar> tmpCxcDocCobrars = new ArrayList<>();
+
+        for (CxcDocCobrar cxcDocCobrar : query.getResultList()) {
+            CxcDocCobrar tmpCxcDocCobrar = new CxcDocCobrar(
+                    cxcDocCobrar.getCxcDocCobrarPK(),
+                    cxcDocCobrar.getDiasPlazo(),
+                    cxcDocCobrar.getPorcComision(),
+                    cxcDocCobrar.getValorDocumento(),
+                    cxcDocCobrar.getSaldoDocumento(),
+                    cxcDocCobrar.getNroPagos()
+            );
+            tmpCxcDocCobrars.add(tmpCxcDocCobrar);
+        }
+
+        return tmpCxcDocCobrars;
     }
 
     @GET

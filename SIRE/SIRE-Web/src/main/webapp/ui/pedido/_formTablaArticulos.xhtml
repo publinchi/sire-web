@@ -1,13 +1,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://java.sun.com/jsf/html">
-    <p:panel id="panelTablaArticulos" widgetVar="panelTablaArticulos" 
+    <p:panel id="panelTablaArticulos" widgetVar="panelTablaArticulos"
              header="Artículos Seleccionados:"
              toggleable="true" collapsed="false" >
         <h:form id="formTablaArticulos">
             <p:growl id="message" showDetail="true" sticky="true" autoUpdate="true"/>
-            <p:dataTable id="tablaArticulos" var="invMovimientoDtll" 
-                         value="#{articulosBean.invMovimientoDtlls}" 
+            <p:dataTable id="tablaArticulos" var="invMovimientoDtll"
+                         value="#{articulosBean.invMovimientoDtlls}"
                          selection="#{articulosBean.invMovimientoDtllSeleccionado}"
                          selectionMode="single" reflow="false"
                          rowKey="#{invMovimientoDtll.invBodegaArt.invBodegaArtPK.codArticulo}"
@@ -15,12 +15,12 @@
                          tableStyle="width:auto"
                          rendered="#{articulosBean.invMovimientoDtlls.size() gt 0}"
                          style="font-size:9px;">
-                <p:ajax event="tap" listener="#{articulosBean.tapArticuloFinal}" 
-                        update="@form:tablaArticulos,pedido:accordionPanel:dialogArticulo" 
+                <p:ajax event="tap" listener="#{articulosBean.tapArticuloFinal}"
+                        update="@form:tablaArticulos,pedido:accordionPanel:dialogArticulo"
                         oncomplete="PF('dlg3').show();"/>
-                <p:ajax event="swipeleft" listener="#{articulosBean.swipeleft}" 
-                        update="@form" 
-                        onstart="return confirm('¿Desea eliminar el registro?')" 
+                <p:ajax event="swipeleft" listener="#{articulosBean.swipeleft}"
+                        update="@form"
+                        onstart="return confirm('¿Desea eliminar el registro?')"
                         oncomplete="$( window ).orientationchange();"/>
                 <p:column headerText="Art." priority="1">
                     <h:outputText value="#{invMovimientoDtll.invArticulo.nombreArticulo}" />
@@ -52,16 +52,12 @@
             </p:dataTable>
 
             <p:outputLabel for="observacion" value="Observacion:" />
-            <p:inputTextarea id="observacion" rows="6" cols="33" 
+            <p:inputTextarea id="observacion" rows="6" cols="33"
                              value="#{articulosBean.observacion}"/>
 
-            <p:commandButton id="enviarButton" value="Enviar" 
-                             onclick="getLocation('articulosBean');"/>
-
-            <p:remoteCommand name="articulosBean" 
-                             actionListener="#{mapa.processLocation()}"
-                             process="@form" partialSubmit="true"
-                             action="#{articulosBean.enviar()}"/>
+            <p:commandButton value="Enviar"
+                             action="#{articulosBean.enviar()}"
+                             update="@form:message" />
         </h:form>
     </p:panel>
 </html>

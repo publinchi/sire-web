@@ -91,7 +91,20 @@ public class CxcFormaPagoFacadeREST extends AbstractFacade<CxcFormaPago> {
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<CxcFormaPago> findAll() {
-        return super.findAll();
+
+        List<CxcFormaPago> cxcFormaPagos = super.findAll();
+
+        List<CxcFormaPago> tmpCxcFormaPagos = cxcFormaPagos.isEmpty() ? null : new ArrayList<CxcFormaPago>();
+
+        for (CxcFormaPago cxcFormaPago : cxcFormaPagos) {
+            CxcFormaPago tmpCxcFormaPago = new CxcFormaPago(
+                    cxcFormaPago.getCxcFormaPagoPK().getCodEmpresa(),
+                    cxcFormaPago.getCxcFormaPagoPK().getCodPago()
+            );
+            tmpCxcFormaPago.setDescripcion(cxcFormaPago.getDescripcion());
+            tmpCxcFormaPagos.add(tmpCxcFormaPago);
+        }
+        return tmpCxcFormaPagos;
     }
 
     @GET
