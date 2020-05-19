@@ -347,4 +347,30 @@ public class SoapUtil {
         }
         return object;
     }
+
+    public static Object getObjectFromNode(Node node, Class aClass) {
+        Object object = null;
+        try {
+            JAXBContext jaxbContext = getContextInstance(aClass);
+
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            JAXBElement root = jaxbUnmarshaller.unmarshal(node, aClass);
+            object = root.getValue();
+        } catch (JAXBException e) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return object;
+    }
+
+    public static Object getObjectFromElement(SOAPMessage soapMessage, String elementName, Class aClass) {
+        Object object = null;
+        try {
+            String xml = soapMessage.getSOAPBody().extractContentAsDocument().getElementById(elementName)
+                    .getTextContent();
+            object = SoapUtil.getObjectFromString(xml, aClass);
+        } catch (SOAPException e) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return object;
+    }
 }
