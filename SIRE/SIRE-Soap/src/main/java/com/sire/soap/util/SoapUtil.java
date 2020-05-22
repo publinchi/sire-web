@@ -370,8 +370,8 @@ public class SoapUtil {
                         .getFaultString());
                 object = soapMessage.getSOAPBody().getFault();
             } else {
-                String xml = soapMessage.getSOAPBody().extractContentAsDocument().getElementById(elementName)
-                        .getTextContent();
+                String xml = soapMessage.getSOAPBody().extractContentAsDocument().getElementsByTagName(elementName)
+                        .item(0).getTextContent();
                 object = SoapUtil.getObjectFromString(xml, aClass);
             }
 
