@@ -365,9 +365,16 @@ public class SoapUtil {
     public static Object getObjectFromElement(SOAPMessage soapMessage, String elementName, Class aClass) {
         Object object = null;
         try {
-            String xml = soapMessage.getSOAPBody().extractContentAsDocument().getElementsByTagName(elementName)
-                    .item(0).getTextContent();
-            object = SoapUtil.getObjectFromString(xml, aClass);
+            if(soapMessage.getSOAPBody().hasFault()){
+                Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, soapMessage.getSOAPBody().getFault()
+                        .getFaultString());
+                object = soapMessage.getSOAPBody().getFault();
+            } else {
+                String xml = soapMessage.getSOAPBody().extractContentAsDocument().getElementById(elementName)
+                        .getTextContent();
+                object = SoapUtil.getObjectFromString(xml, aClass);
+            }
+
         } catch (SOAPException e) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
         }
