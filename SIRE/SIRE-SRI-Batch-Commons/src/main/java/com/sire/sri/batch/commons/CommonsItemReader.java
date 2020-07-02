@@ -210,6 +210,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 detalle.setPrecioSinSubsidio(resultSet.getBigDecimal(Constant.PRECIO_SIN_SUBSIDIO));
                 detalle.setPrecioTotalSinImpuesto(resultSet.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
                 detalle.setPrecioUnitario(resultSet.getBigDecimal(Constant.PRECIO_UNITARIO));
+                detalle.setCodigoBarras(resultSet.getString(Constant.CODIGO_BARRAS));
                 detalles.getDetalle().add(detalle);
             }
             factura.setDetalles(detalles);

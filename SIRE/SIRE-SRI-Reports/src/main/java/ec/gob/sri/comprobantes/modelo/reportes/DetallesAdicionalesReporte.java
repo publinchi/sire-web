@@ -28,6 +28,15 @@ public class DetallesAdicionalesReporte {
     private String nombreImpuesto;
     private String porcentajeRetener;
     private String valorRetenido;
+    private String codigoBarras;
+
+    public String getCodigoBarras() {
+        return codigoBarras;
+    }
+
+    public void setCodigoBarras(String codigoBarras) {
+        this.codigoBarras = codigoBarras;
+    }
 
     public String getCodigoPrincipal() {
         return this.codigoPrincipal;

@@ -89,6 +89,7 @@ public class FacturaReporte {
             detAd.setCodigoPrincipal(det.getCodigoPrincipal());
             detAd.setCodigoAuxiliar(det.getCodigoAuxiliar());
             detAd.setDescripcion(det.getDescripcion());
+            detAd.setCodigoBarras(det.getCodigoBarras());
             detAd.setCantidad(det.getCantidad().toPlainString());
             detAd.setPrecioTotalSinImpuesto(det.getPrecioTotalSinImpuesto().setScale(2).toString());
             detAd.setPrecioUnitario(det.getPrecioUnitario());
