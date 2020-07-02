@@ -38,6 +38,7 @@ public class Test {
         detalle.setDescuento(BigDecimal.valueOf(107.33));
         detalle.setPrecioUnitario(BigDecimal.valueOf(16.49));
         detalle.setPrecioTotalSinImpuesto(BigDecimal.valueOf(238.89));
+        detalle.setCodigoBarras("123456789");
         detalles.getDetalle().add(detalle);
 
         Factura.Detalles.Detalle.Impuestos impuestos = new Factura.Detalles.Detalle.Impuestos();

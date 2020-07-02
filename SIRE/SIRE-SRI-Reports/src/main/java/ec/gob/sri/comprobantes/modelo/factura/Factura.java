@@ -94,7 +94,7 @@ public class Factura {
         }
 
         @XmlAccessorType(XmlAccessType.FIELD)
-        @XmlType(name = "", propOrder = {"codigoPrincipal", "codigoAuxiliar", "descripcion", "cantidad", "precioUnitario", "precioSinSubsidio", "descuento", "precioTotalSinImpuesto", "detallesAdicionales", "impuestos"})
+        @XmlType(name = "", propOrder = {"codigoPrincipal", "codigoAuxiliar", "descripcion", "codigoBarras", "cantidad", "precioUnitario", "precioSinSubsidio", "descuento", "precioTotalSinImpuesto", "detallesAdicionales", "impuestos"})
         public static class Detalle {
 
             @XmlElement(required = true)
@@ -115,6 +115,16 @@ public class Factura {
             protected DetallesAdicionales detallesAdicionales;
             @XmlElement(required = true)
             protected Impuestos impuestos;
+            @XmlElement
+            protected String codigoBarras;
+
+            public String getCodigoBarras() {
+                return codigoBarras;
+            }
+
+            public void setCodigoBarras(String codigoBarras) {
+                this.codigoBarras = codigoBarras;
+            }
 
             public String getCodigoPrincipal() {
                 return this.codigoPrincipal;
