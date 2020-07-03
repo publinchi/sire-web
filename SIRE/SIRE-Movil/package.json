@@ -38,7 +38,7 @@
         "ionic-angular": "3.5.0",
         "ionic-plugin-keyboard": "^2.2.1",
         "ionicons": "3.0.0",
-        "jquery": "^3.1.1",
+        "jquery": "^3.5.0",
         "nanoscroller": "0.8.7",
         "primeng": "^4.0.3",
         "rxjs": "5.4.0",
