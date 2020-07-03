@@ -20,8 +20,10 @@ import java.sql.SQLException;
 public class Test {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
+        System.out.println("TEST");
+        System.setProperty("sire.home", "/home/pestupinan/SIRE");
         ReporteUtil reporteUtil = new ReporteUtil();
-        String urlReporte = "/opt/payara41/SIRE/reportes/factura.jasper";
+        String urlReporte = "/home/pestupinan/SIRE/reportes/factura.jasper";
 
         Factura factura = new Factura();
         factura.setId("comprobante");
@@ -38,7 +40,7 @@ public class Test {
         detalle.setDescuento(BigDecimal.valueOf(107.33));
         detalle.setPrecioUnitario(BigDecimal.valueOf(16.49));
         detalle.setPrecioTotalSinImpuesto(BigDecimal.valueOf(238.89));
-        detalle.setCodigoBarras("123456789");
+        detalle.setCodigoBarras("1234567890123");
         detalles.getDetalle().add(detalle);
 
         Factura.Detalles.Detalle.Impuestos impuestos = new Factura.Detalles.Detalle.Impuestos();
