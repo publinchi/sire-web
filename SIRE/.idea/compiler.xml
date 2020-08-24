@@ -7,22 +7,23 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="SIRE-Entities" />
+        <module name="SIRE-Services" />
+        <module name="SIRE-RS-Client" />
+        <module name="SIRE-Web" />
+        <module name="SIRE-SRI-Entities" />
+        <module name="SIRE-Batch" />
+        <module name="SIRE-Services-API" />
+        <module name="SIRE-SRI-Batch-Commons" />
         <module name="SIRE-SRI-Reports" />
         <module name="SIRE-SRI-Batch-Recepcion" />
         <module name="SIRE-SRI-Signature" />
-        <module name="SIRE-Commons" />
-        <module name="SIRE-Web" />
-        <module name="SIRE-SRI-Entities" />
-        <module name="SIRE-Services" />
-        <module name="SIRE-SRI-Batch-Autorizacion" />
-        <module name="SIRE-RS-Client" />
-        <module name="SIRE-WS" />
-        <module name="SIRE-Services-API" />
-        <module name="SIRE-SRI-Batch-Commons" />
         <module name="SIRE-SRI-WSClient" />
+        <module name="SIRE-SRI-Batch-Autorizacion" />
+        <module name="SIRE-WS" />
+        <module name="SIRE-Rest" />
         <module name="SIRE-EE" />
-        <module name="SIRE-Entities" />
-        <module name="SIRE-Batch" />
+        <module name="SIRE-Commons" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -31,6 +32,7 @@
       <module name="SIRE-Commons" target="1.8" />
       <module name="SIRE-EE" target="1.8" />
       <module name="SIRE-Entities" target="8" />
+      <module name="SIRE-Rest" target="1.8" />
       <module name="SIRE-RS-Client" target="1.7" />
       <module name="SIRE-Services" target="1.8" />
       <module name="SIRE-Services-API" target="1.7" />

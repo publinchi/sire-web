@@ -22,6 +22,7 @@
         <SIRE-Commons.version>1.0.4</SIRE-Commons.version>
         <SIRE-EE.version>1.6.0</SIRE-EE.version>
         <SIRE-Entities.version>1.1.1</SIRE-Entities.version>
+        <SIRE-Rest.version>1.0.0</SIRE-Rest.version>
         <SIRE-RS-Client.version>1.0.0</SIRE-RS-Client.version>
         <SIRE-Services.version>1.1.5</SIRE-Services.version>
         <SIRE-Services-API.version>1.1.0</SIRE-Services-API.version>
@@ -40,6 +41,7 @@
         <module>SIRE-Batch</module>
         <module>SIRE-Commons</module>
         <module>SIRE-Entities</module>
+        <module>SIRE-Rest</module>
         <module>SIRE-RS-Client</module>
         <module>SIRE-Services</module>
         <module>SIRE-Services-API</module>
