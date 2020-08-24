@@ -2,53 +2,13 @@
 <project version="4">
   <component name="RemoteRepositoriesConfiguration">
     <remote-repository>
-      <option name="id" value="PrimeFaces-maven-lib" />
-      <option name="name" value="Repository for library PrimeFaces-maven-lib" />
-      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="Central Repository" />
-      <option name="name" value="Central Repository" />
-      <option name="url" value="https://repo1.maven.org/maven2/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="central" />
-      <option name="name" value="Maven Central repository" />
-      <option name="url" value="https://repo1.maven.org/maven2" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="sonatype-snapshots" />
-      <option name="name" value="Sonatype Snapshots" />
+      <option name="id" value="guillermo" />
+      <option name="name" value="guillermo-repo" />
       <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="dev.fit-bank.com" />
       <option name="name" value="dev.fit-bank.com" />
-      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="Central Repository" />
-      <option name="name" value="Central Repository" />
-      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="jboss.community" />
-      <option name="name" value="JBoss Community repository" />
-      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="default" />
-      <option name="name" value="default" />
-      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="PrimeFaces-maven-lib" />
-      <option name="name" value="Repository for library PrimeFaces-maven-lib" />
-      <option name="url" value="http://repository.primefaces.org/" />
-    </remote-repository>
-    <remote-repository>
-      <option name="id" value="guillermo" />
-      <option name="name" value="guillermo-repo" />
       <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
     </remote-repository>
     <remote-repository>
@@ -67,9 +27,24 @@
       <option name="url" value="http://dev.fit-bank.com/nexus/content/groups/public" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="central" />
+      <option name="id" value="Central Repository" />
       <option name="name" value="Central Repository" />
+      <option name="url" value="https://repo1.maven.org/maven2/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="central" />
+      <option name="name" value="Maven Central repository" />
+      <option name="url" value="https://repo1.maven.org/maven2" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="default" />
+      <option name="name" value="default" />
       <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="PrimeFaces-maven-lib" />
+      <option name="name" value="Repository for library PrimeFaces-maven-lib" />
+      <option name="url" value="http://repository.primefaces.org/" />
     </remote-repository>
     <remote-repository>
       <option name="id" value="snapshots" />
@@ -77,14 +52,39 @@
       <option name="url" value="http://dev.fit-bank.com/nexus/content/groups/public-snapshots" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="dev.fit-bank.com" />
+      <option name="name" value="dev.fit-bank.com" />
+      <option name="url" value="http://dev.fit-bank.com/nexus/content/groups/public-snapshots/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="snapshots" />
       <option name="name" value="snapshots" />
       <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
     </remote-repository>
     <remote-repository>
-      <option name="id" value="dev.fit-bank.com" />
-      <option name="name" value="dev.fit-bank.com" />
-      <option name="url" value="http://dev.fit-bank.com/nexus/content/groups/public-snapshots/" />
+      <option name="id" value="central" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="Central Repository" />
+      <option name="name" value="Central Repository" />
+      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="jboss.community" />
+      <option name="name" value="JBoss Community repository" />
+      <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="sonatype-snapshots" />
+      <option name="name" value="Sonatype Snapshots" />
+      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
+    </remote-repository>
+    <remote-repository>
+      <option name="id" value="PrimeFaces-maven-lib" />
+      <option name="name" value="Repository for library PrimeFaces-maven-lib" />
+      <option name="url" value="http://repolib.cobiscorp.com:8081/nexus/content/groups/cobis-base-mvn-dev" />
     </remote-repository>
   </component>
 </project>

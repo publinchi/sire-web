@@ -10,14 +10,13 @@
         <module name="SIRE-SRI-Reports" />
         <module name="SIRE-SRI-Batch-Recepcion" />
         <module name="SIRE-SRI-Signature" />
-        <module name="SIRE-SRI-Entities" />
+        <module name="SIRE-Commons" />
         <module name="SIRE-Web" />
-        <module name="SIRE-Soap" />
+        <module name="SIRE-SRI-Entities" />
         <module name="SIRE-Services" />
         <module name="SIRE-SRI-Batch-Autorizacion" />
         <module name="SIRE-RS-Client" />
         <module name="SIRE-WS" />
-        <module name="SIRE-Commons" />
         <module name="SIRE-Services-API" />
         <module name="SIRE-SRI-Batch-Commons" />
         <module name="SIRE-SRI-WSClient" />

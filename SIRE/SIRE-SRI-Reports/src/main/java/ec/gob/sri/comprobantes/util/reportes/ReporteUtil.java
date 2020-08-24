@@ -80,7 +80,8 @@ public class ReporteUtil {
             is = new FileInputStream(urlReporte);
             JasperPrint reporteView = JasperFillManager.fillReport(is, obtenerMapaParametrosReportes(obtenerParametrosInfoTriobutaria(fact.getFactura().getInfoTributaria(), numAut, fechaAut), obtenerInfoFactura(fact.getFactura().getInfoFactura(), fact)), dataSource);
             JasperExportManager.exportReportToPdfStream(reporteView, outputStream);
-//            showReport(reporteView);
+            if("true".equals(System.getProperty("isTest")))
+                showReport(reporteView);
             return outputStream.toByteArray();
         } catch (FileNotFoundException | JRException ex) {
             log.error(ex);
@@ -137,7 +138,7 @@ public class ReporteUtil {
         }
     }
 
-//    public void generarReporte(String urlReporte, NotaDebitoReporte rep, String numAut, String fechaAut)
+    //    public void generarReporte(String urlReporte, NotaDebitoReporte rep, String numAut, String fechaAut)
 //            throws SQLException, ClassNotFoundException, IOException {
 //        FileInputStream is = null;
 //        try {
@@ -192,7 +193,7 @@ public class ReporteUtil {
         }
     }
 
-//    public void generarReporte(String urlReporte, NotaCreditoReporte rep, String numAut, String fechaAut)
+    //    public void generarReporte(String urlReporte, NotaCreditoReporte rep, String numAut, String fechaAut)
 //            throws SQLException, ClassNotFoundException, IOException {
 //        FileInputStream is = null;
 //        try {
@@ -246,7 +247,7 @@ public class ReporteUtil {
         }
     }
 
-//    public void generarReporte(String urlReporte, GuiaRemisionReporte rep, String numAut, String fechaAut, GuiaRemision guiaRemision)
+    //    public void generarReporte(String urlReporte, GuiaRemisionReporte rep, String numAut, String fechaAut, GuiaRemision guiaRemision)
 //            throws SQLException, ClassNotFoundException, IOException {
 //        FileInputStream is = null;
 //        try {
@@ -300,7 +301,7 @@ public class ReporteUtil {
         }
     }
 
-//    public void generarReporte(String urlReporte, ComprobanteRetencionReporte rep, String numAut, String fechaAut)
+    //    public void generarReporte(String urlReporte, ComprobanteRetencionReporte rep, String numAut, String fechaAut)
 //            throws SQLException, ClassNotFoundException, IOException {
 //        FileInputStream is = null;
 //        try {

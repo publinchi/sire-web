@@ -22,6 +22,7 @@ public class Test {
     public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
         System.out.println("TEST");
         System.setProperty("sire.home", "/home/pestupinan/SIRE");
+        System.setProperty("isTest", "true");
         ReporteUtil reporteUtil = new ReporteUtil();
         String urlReporte = "/home/pestupinan/SIRE/reportes/factura.jasper";
 
@@ -124,7 +125,7 @@ public class Test {
         factura.setInfoTributaria(infoTributaria);
         FacturaReporte fact = new FacturaReporte(factura);
         fact.setFactura(factura);
-        String numAut = "1";
+        String numAut = "2511201701109172437100120020010000323820668973317";
         String fechaAut = "12/19/2017";
         reporteUtil.generarReporte(urlReporte, fact, numAut, fechaAut);
     }
