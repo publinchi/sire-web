@@ -5,6 +5,7 @@
  */
 package com.sire.ws.service;
 
+import com.sire.entities.CxcCliente;
 import com.sire.entities.CxcPagoContado;
 import com.sire.entities.CxcPagoContadoPK;
 import com.sire.entities.Pago;
@@ -145,7 +146,7 @@ public class CxcPagoContadoFacadeREST extends AbstractFacade<CxcPagoContado> {
                 newCxcPagoContado.setCodVendedor(cxcPagoContado.getCodVendedor());
                 newCxcPagoContado.setFechaDocumento(cxcPagoContado.getFechaDocumento());
                 newCxcPagoContado.setNombreUsuario(cxcPagoContado.getNombreUsuario());
-                newCxcPagoContado.setCxcCliente(cxcPagoContado.getCxcCliente());
+                newCxcPagoContado.setCxcCliente(new CxcCliente(cxcPagoContado.getCxcCliente().getCxcClientePK()));
                 newCxcPagoContado.setPagoTotal(cxcPagoContado.getPagoTotal());
                 pago.setCxcPagoContado(newCxcPagoContado);
                 pago.setRazonSocial((String) object[1]);

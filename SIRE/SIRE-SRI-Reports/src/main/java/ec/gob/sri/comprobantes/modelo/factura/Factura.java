@@ -4,14 +4,7 @@ import ec.gob.sri.comprobantes.modelo.InfoTributaria;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.XmlValue;
+import javax.xml.bind.annotation.*;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {"infoTributaria", "infoFactura", "detalles", "infoAdicional"})
@@ -115,6 +108,16 @@ public class Factura {
             protected DetallesAdicionales detallesAdicionales;
             @XmlElement(required = true)
             protected Impuestos impuestos;
+            @XmlTransient
+            protected String codigoBarras;
+
+            public String getCodigoBarras() {
+                return codigoBarras;
+            }
+
+            public void setCodigoBarras(String codigoBarras) {
+                this.codigoBarras = codigoBarras;
+            }
 
             public String getCodigoPrincipal() {
                 return this.codigoPrincipal;

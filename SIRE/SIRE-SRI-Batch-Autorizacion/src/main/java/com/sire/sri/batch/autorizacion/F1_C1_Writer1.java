@@ -180,18 +180,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     }catch (SQLException | NamingException e) {
                         log.log(Level.ERROR, e);
                     }finally {
-                        if(statement != null)
-                            try{
-                                statement.close();
-                            }catch (SQLException e){
-                                log.log(Level.ERROR, e);
-                            }
-                        if(connection != null)
-                            try{
-                                connection.close();
-                            }catch (SQLException e){
-                                log.log(Level.ERROR, e);
-                            }
+                        closeConnections(connection, null, null, null, statement);
                     }
                 }
                 StringBuffer loteSQL = new StringBuffer();
@@ -201,26 +190,15 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
 
                 Connection connection = null;
                 PreparedStatement preparedStatement = null;
-                try{
+                try {
                     connection = getConnection();
                     preparedStatement = connection.prepareStatement(loteSQL.toString());
                     preparedStatement.setString(1, lote.getClaveAcceso());
                     preparedStatement.executeUpdate();
-                }catch (SQLException | NamingException e) {
+                } catch (SQLException | NamingException e) {
                     log.log(Level.ERROR, e);
-                }finally {
-                    if(preparedStatement != null)
-                        try{
-                            preparedStatement.close();
-                        }catch (SQLException e){
-                            log.log(Level.ERROR, e);
-                        }
-                    if(connection != null)
-                        try{
-                            connection.close();
-                        }catch (SQLException e){
-                            log.log(Level.ERROR, e);
-                        }
+                } finally {
+                    closeConnections(connection, preparedStatement, null, null, null);
                 }
             } catch (ParseException ex) {
                 log.log(Level.ERROR, ex);

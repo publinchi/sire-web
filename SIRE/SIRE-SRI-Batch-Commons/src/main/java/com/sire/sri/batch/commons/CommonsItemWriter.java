@@ -10,9 +10,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 import com.sire.service.IDatasourceService;
 import com.sun.xml.bind.marshaller.DataWriter;
@@ -61,18 +59,7 @@ public abstract class CommonsItemWriter extends AbstractItemWriter {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, null, null, null);
         }
     }
 
@@ -81,5 +68,10 @@ public abstract class CommonsItemWriter extends AbstractItemWriter {
         IDatasourceService datasourceService = (IDatasourceService) ic.lookup("java:global/SIRE-EE/SIRE-Services/DatasourceService!com.sire.service.IDatasourceService");
         Connection connection = datasourceService.getConnection();
         return connection;
+    }
+
+    protected void closeConnections(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet,
+                                    CallableStatement callableStatement, Statement statement) {
+        CommonsItem.closeConnections(connection, preparedStatement, resultSet, callableStatement, statement);
     }
 }

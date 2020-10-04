@@ -6,8 +6,8 @@
 package com.sire.batch;
 
 import com.sire.batch.constant.Constant;
-import org.apache.logging.log4j.Level;
 import com.sire.logger.LogManager;
+import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
@@ -23,8 +23,6 @@ import javax.batch.runtime.BatchRuntime;
 import javax.ejb.*;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.Timeout;
-import javax.ejb.Timer;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -37,7 +35,6 @@ import javax.ws.rs.core.*;
 @Path(Constant.TASKS)
 public class BatchBean {
 
-    @Resource
     private TimerService timerService;
     @Resource(lookup="java:module/ModuleName")
     private String moduleName;
@@ -58,7 +55,6 @@ public class BatchBean {
     @TransactionAttribute(value=TransactionAttributeType.NOT_SUPPORTED)
     public void init() {
         _init();
-        //startUpSpringFramework();
     }
 
     private static org.springframework.context.support.ClassPathXmlApplicationContext startUpSpringFramework() {
@@ -90,7 +86,6 @@ public class BatchBean {
 
                     applicationContext = new org.springframework.context.support.ClassPathXmlApplicationContext(str);
 
-                    //jobNames.clear();
                 }
             }
         } catch (IOException e) {
@@ -103,14 +98,14 @@ public class BatchBean {
     public void finish() {
         if(threadPoolExecutor != null)
             threadPoolExecutor.shutdown();
-        cancelTimers();
         try {
             if(Objects.nonNull(scheduler)) {
                 logger.info("Shutting down quartz with status started: {}, standbyMode: {} ...",
                         scheduler.isStarted(), scheduler.isInStandbyMode());
                 scheduler.shutdown();
                 logger.info("Is Quartz Shutdown?: {}.", scheduler.isShutdown());
-            }
+            } else if(Objects.nonNull(timerService))
+                cancelTimers();
         } catch (SchedulerException e) {
             logger.error(e);
         }
@@ -148,8 +143,7 @@ public class BatchBean {
         Properties properties = getProperties();
         if(Objects.isNull(properties.getProperty(Constant.SCHEDULE_IMPLEMENTATION)) ||
                 properties.getProperty(Constant.SCHEDULE_IMPLEMENTATION).equals(Constant.JEE)) {
-            logger.info("EJB TIMER ENABLED.");
-            loadTimers();
+            logger.info("EJB TIMER NOT MORE SUPPORTED.");
         }
         else if(properties.getProperty(Constant.SCHEDULE_IMPLEMENTATION).equals(Constant.QUARTZ)) {
             logger.info("QUARTZ ENABLED.");
@@ -217,9 +211,9 @@ public class BatchBean {
         int size = 0;
         if(Objects.isNull(properties.getProperty(Constant.SCHEDULE_IMPLEMENTATION)) ||
                 properties.getProperty(Constant.SCHEDULE_IMPLEMENTATION).equals(Constant.JEE)) {
-            Collection<Timer> timers = timerService.getTimers();
+            Collection<javax.ejb.Timer> timers = timerService.getTimers();
 
-            for (Timer timer : timers) {
+            for (javax.ejb.Timer timer : timers) {
                 logger.log(Level.INFO, "Name: {}", timer.getInfo() + " -> h: " + timer.getSchedule().getHour()
                         + " m: " + timer.getSchedule().getMinute());
             }
@@ -236,10 +230,10 @@ public class BatchBean {
     }
 
     private void cancelTimers() {
-        Collection<Timer> timers = timerService.getTimers();
+        Collection<javax.ejb.Timer> timers = timerService.getTimers();
         logger.info("Cancelling timers ...");
         logger.info("************** TIMERS INFO **************");
-        for (Timer timer : timers) {
+        for (javax.ejb.Timer timer : timers) {
             logger.log(Level.INFO, "Timer Name Cancelled: {} -> h: {} m: {}"
                     , timer.getInfo()
                     , timer.getSchedule().getHour()
@@ -256,17 +250,6 @@ public class BatchBean {
                 if(!timerName.isEmpty())
                     createCalendarTimer(timerName);
             }
-        }
-    }
-
-    @Timeout
-    public void timeout(Timer timer) {
-        Map map = (Map) timer.getInfo();
-        if(thresholdEnabled != null && thresholdEnabled.equals(Boolean.TRUE)){
-            executeWork(map); // TODO Hacer funcionar esta mierda
-        }
-        else {
-            executeJob(map);
         }
     }
 
@@ -308,9 +291,9 @@ public class BatchBean {
 
             timerConfig.setInfo(hashMap);
 
-            Collection<Timer> timers = timerService.getTimers();
+            Collection<javax.ejb.Timer> timers = timerService.getTimers();
 
-            for (Timer timer : timers) {
+            for (javax.ejb.Timer timer : timers) {
                 if (timerConfig.getInfo().equals(timer.getInfo())) {
                     return;
                 }
@@ -327,7 +310,7 @@ public class BatchBean {
             if (timezone != null && !timezone.trim().isEmpty()) scheduleExpression.timezone(timezone);
             else scheduleExpression.timezone(Constant.UTC);
 
-            Timer timer = timerService.createCalendarTimer(scheduleExpression, timerConfig);
+            javax.ejb.Timer timer = timerService.createCalendarTimer(scheduleExpression, timerConfig);
 
             if (Objects.nonNull(timer))
                 logger.log(Level.INFO, "New timer {} created -> Every {} hours - Every {} minutes.",
@@ -382,7 +365,7 @@ public class BatchBean {
     private void reconfigTimers() {
         Properties runtimeParameters = getProperties();
 
-        Collection<Timer> timers = timerService.getTimers();
+        Collection<javax.ejb.Timer> timers = timerService.getTimers();
 
         boolean finish = createNewTimersWhenNoTimers(timers, runtimeParameters);
 
@@ -394,7 +377,7 @@ public class BatchBean {
 
         logger.info("***************** TIMERS INFO *****************");
 
-        for (Timer timer : timers) {
+        for (javax.ejb.Timer timer : timers) {
 
             if(!cancelTimer(timer, runtimeParameters))
                 updateTimer(timer, runtimeParameters);
@@ -404,7 +387,7 @@ public class BatchBean {
         logger.log(Level.INFO, "Total timers: {}", timers.size());
     }
 
-    private boolean createNewTimersWhenNoTimers(Collection<Timer> timers, Properties runtimeParameters) {
+    private boolean createNewTimersWhenNoTimers(Collection<javax.ejb.Timer> timers, Properties runtimeParameters) {
         String totalTimerNames = groupTimerNames(runtimeParameters);
 
         // Si no hay timers en memoria y se agregan nuevos timers en el archivo properties,
@@ -445,7 +428,7 @@ public class BatchBean {
         return totalTimerNames.toString();
     }
 
-    private void updateTimer(Timer timer, Properties runtimeParameters) {
+    private void updateTimer(javax.ejb.Timer timer, Properties runtimeParameters) {
         String timerName = ((Map) timer.getInfo()).get(Constant.TIMER_NAME).toString();
 
         String hour = runtimeParameters.getProperty(timerName + Constant.HOUR_SUFFIX);
@@ -490,7 +473,7 @@ public class BatchBean {
         createCalendar(timerNames);
     }
 
-    private boolean cancelTimer(Timer timer, Properties runtimeParameters) {
+    private boolean cancelTimer(javax.ejb.Timer timer, Properties runtimeParameters) {
         String totalTimerNames = groupTimerNames(runtimeParameters);
 
         Map map = ((Map) timer.getInfo());

@@ -116,24 +116,7 @@ public class F1_C1_Reader1 extends CommonsItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 }

@@ -82,3 +82,13 @@ SIRE/SIRE-NG/node_modules/
 SIRE/SIRE-NG/dist/
 
 SIRE/\.idea/sonarlint/
+
+SIRE/.idea/artifacts/
+
+*.iml
+
+SIRE/SIRE-Rest/.idea/sonarlint/
+
+SIRE/SIRE-Rest/.idea/workspace.xml
+
+SIRE/SIRE-Rest/target/

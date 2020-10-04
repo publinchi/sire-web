@@ -28,6 +28,8 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
+
 import org.apache.logging.log4j.Level;
 import com.sire.logger.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -102,12 +104,14 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setTotalSubsidio(rs.getBigDecimal(Constant.TOTAL_SUBSIDIO));
         TotalConImpuestos totalConImpuestos = new TotalConImpuestos();
 
-        TotalImpuesto totalImpuesto1 = new TotalImpuesto();
-        totalImpuesto1.setBaseImponible(rs.getBigDecimal(Constant.BASE_IMPONIBLE));
-        totalImpuesto1.setCodigo(rs.getString(Constant.CODIGO_IMPUESTO));
-        totalImpuesto1.setCodigoPorcentaje(rs.getString(Constant.CODIGO_PORCENTAJE));
-        totalImpuesto1.setValor(rs.getBigDecimal(Constant.VALOR));
-        totalConImpuestos.getTotalImpuesto().add(totalImpuesto1);
+        if (!Objects.equals(Constant.CODIGO_PORCENTAJE_TXT, rs.getString(Constant.CODIGO_PORCENTAJE))) {
+            TotalImpuesto totalImpuesto1 = new TotalImpuesto();
+            totalImpuesto1.setBaseImponible(rs.getBigDecimal(Constant.BASE_IMPONIBLE));
+            totalImpuesto1.setCodigo(rs.getString(Constant.CODIGO_IMPUESTO));
+            totalImpuesto1.setCodigoPorcentaje(rs.getString(Constant.CODIGO_PORCENTAJE));
+            totalImpuesto1.setValor(rs.getBigDecimal(Constant.VALOR));
+            totalConImpuestos.getTotalImpuesto().add(totalImpuesto1);
+        }
 
         TotalImpuesto totalImpuesto2 = new TotalImpuesto();
         totalImpuesto2.setBaseImponible(rs.getBigDecimal(Constant.BASE_IMPONIBLE_SIN_IVA));
@@ -121,8 +125,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoFactura.setTotalDescuento(rs.getBigDecimal(Constant.TOTAL_DESCUENTOS));
         infoFactura.setTotalSinImpuestos(rs.getBigDecimal(Constant.TOTAL_SIN_IMPUESTOS));
 
-        String pagosSQL = Constant.FACTURA_PAGO_SQL
-                + "NUM_FACTURA = " + numFacturaInterno;
+        String pagosSQL = Constant.FACTURA_PAGO_SQL + "NUM_FACTURA = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("pagosSQL -> {}", pagosSQL);
@@ -134,6 +137,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(pagosSQL);
+            preparedStatement.setString(1, numFacturaInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             InfoFactura.Pago pagos = new InfoFactura.Pago();
             while (resultSet.next()) {
@@ -148,24 +153,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         }finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
 
         factura.setInfoFactura(infoFactura);
@@ -189,8 +177,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         Detalles detalles = new Detalles();
 
-        String detalleSQL = Constant.FACTURA_D_SQL
-                + "NUM_DOCUMENTO_INTERNO = " + numFacturaInterno;
+        String detalleSQL = Constant.FACTURA_D_SQL + "NUM_DOCUMENTO_INTERNO = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("detalleSQL -> {}", detalleSQL);
@@ -202,6 +189,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(detalleSQL);
+            preparedStatement.setString(1, numFacturaInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 Detalle detalle = new Detalle();
@@ -221,6 +210,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
                 detalle.setPrecioSinSubsidio(resultSet.getBigDecimal(Constant.PRECIO_SIN_SUBSIDIO));
                 detalle.setPrecioTotalSinImpuesto(resultSet.getBigDecimal(Constant.PRECIO_TOTAL_SIN_IMPUESTOS));
                 detalle.setPrecioUnitario(resultSet.getBigDecimal(Constant.PRECIO_UNITARIO));
+                detalle.setCodigoBarras(resultSet.getString(Constant.CODIGO_BARRAS));
                 detalles.getDetalle().add(detalle);
             }
             factura.setDetalles(detalles);
@@ -229,24 +219,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         }catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         }finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -333,7 +306,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
 
         NotaCredito.Detalles detalles = new NotaCredito.Detalles();
 
-        String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = " + numNotaCreditoInterno;
+        String detalleSQL = Constant.NOTA_CREDITO_D_SQL + "NUM_DOCUMENTO_INTERNO = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("detalleSQL -> {}", detalleSQL);
@@ -345,6 +318,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(detalleSQL);
+            preparedStatement.setString(1, numNotaCreditoInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 NotaCredito.Detalles.Detalle detalle = new NotaCredito.Detalles.Detalle();
@@ -374,24 +349,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -480,24 +438,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
 
         /* Motivos */
@@ -611,27 +552,10 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
 
-        String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = " + numDespachoInterno;
+        String detalleSQL = Constant.GUIA_REMISION_D_SQL + "NUM_DESPACHO_INTERNO = ? AND COD_EMPRESA = ?";
 
         if(log.isTraceEnabled()) {
             log.trace("detalleSQL -> {}", detalleSQL);
@@ -643,6 +567,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         try{
             connection = getDatasourceService().getConnection();
             preparedStatement = connection.prepareStatement(detalleSQL);
+            preparedStatement.setString(1, numDespachoInterno);
+            preparedStatement.setString(2, codEmpresa);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
 
@@ -703,24 +629,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -817,24 +726,7 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         } catch (SQLException | NamingException e) {
             log.log(Level.ERROR, e);
         } finally {
-            if(resultSet != null)
-                try{
-                    resultSet.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(preparedStatement != null)
-                try{
-                    preparedStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection, preparedStatement, resultSet);
         }
     }
 
@@ -901,5 +793,9 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             datetime = LocalDateTime.parse(oldDate, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
         }
         return datetime;
+    }
+
+    protected void closeConnections(Connection connection, PreparedStatement preparedStatement, ResultSet resultSet) {
+        CommonsItem.closeConnections(connection, preparedStatement, resultSet, null, null);
     }
 }

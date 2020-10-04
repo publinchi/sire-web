@@ -185,20 +185,8 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                     } catch (SQLException | NamingException e) {
                         log.log(Level.ERROR, e);
                     } finally {
-                        if (preparedStatement != null)
-                            try {
-                                preparedStatement.close();
-                            } catch (SQLException e) {
-                                log.log(Level.ERROR, e);
-                            }
-                        if (connection != null)
-                            try {
-                                connection.close();
-                            } catch (SQLException e) {
-                                log.log(Level.ERROR, e);
-                            }
+                        closeConnections(connection, preparedStatement, null, null, null);
                     }
-
                 }
             }
         } catch (SOAPException | XPathExpressionException | MalformedURLException | JAXBException ex) {
@@ -352,18 +340,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
             log.log(Level.ERROR, e);
             return null;
         } finally {
-            if(callableStatement != null)
-                try{
-                    callableStatement.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
-            if(connection != null)
-                try{
-                    connection.close();
-                }catch (SQLException e){
-                    log.log(Level.ERROR, e);
-                }
+            closeConnections(connection,null, null, callableStatement, null);
         }
     }
 
@@ -479,18 +456,7 @@ public class F1_C1_Writer1 extends CommonsItemWriter {
                 } catch (SQLException | NamingException e) {
                     log.log(Level.ERROR, e);
                 } finally {
-                    if(preparedStatement != null)
-                        try{
-                            preparedStatement.close();
-                        }catch (SQLException e){
-                            log.log(Level.ERROR, e);
-                        }
-                    if(connection != null)
-                        try{
-                            connection.close();
-                        }catch (SQLException e){
-                            log.log(Level.ERROR, e);
-                        }
+                    closeConnections(connection, preparedStatement, null, null, null);
                 }
             }
         }

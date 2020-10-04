@@ -7,6 +7,10 @@ package com.sire.ws.service;
 
 import com.sire.entities.CxcFormaPago;
 import com.sire.entities.CxcFormaPagoPK;
+import com.sire.entities.GnrUsuaMod;
+import com.sire.entities.GnrUsuarios;
+
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -91,7 +95,20 @@ public class CxcFormaPagoFacadeREST extends AbstractFacade<CxcFormaPago> {
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<CxcFormaPago> findAll() {
-        return super.findAll();
+
+        List<CxcFormaPago> cxcFormaPagos = super.findAll();
+
+        List<CxcFormaPago> tmpCxcFormaPagos = cxcFormaPagos.isEmpty() ? null : new ArrayList<CxcFormaPago>();
+
+        for (CxcFormaPago cxcFormaPago : cxcFormaPagos) {
+            CxcFormaPago tmpCxcFormaPago = new CxcFormaPago(
+                    cxcFormaPago.getCxcFormaPagoPK().getCodEmpresa(),
+                    cxcFormaPago.getCxcFormaPagoPK().getCodPago()
+            );
+            tmpCxcFormaPago.setDescripcion(cxcFormaPago.getDescripcion());
+            tmpCxcFormaPagos.add(tmpCxcFormaPago);
+        }
+        return tmpCxcFormaPagos;
     }
 
     @GET
