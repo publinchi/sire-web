@@ -6,6 +6,7 @@
 package com.sire.soap.util;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.NodeList;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
@@ -14,9 +15,7 @@ import java.nio.charset.Charset;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.X509Certificate;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -50,12 +49,13 @@ public class SoapUtil {
         disableSslVerification();
     }
 
-    private static Map<Class, JAXBContext> contextStore = new ConcurrentHashMap();
+    private static final Map<Class, JAXBContext> contextStore = new ConcurrentHashMap();
 
-    public static Map<String, Object> call(SOAPMessage soapMsg, URL url,
+    public static Map<Object, Object> call(SOAPMessage soapMsg, URL url,
                                            Class aClass) throws SOAPException, TransformerException {
         return call(soapMsg,url,null, aClass);
     }
+
     /**
      *
      * @param soapMsg
@@ -64,7 +64,7 @@ public class SoapUtil {
      * @param aClass
      * @return
      */
-    public static Map<String, Object> call(SOAPMessage soapMsg, URL url, String returnObjectName,
+    public static Map<Object, Object> call(SOAPMessage soapMsg, URL url, String returnObjectName,
                                            Class aClass) throws SOAPException, TransformerException {
         SOAPConnection soapConnection = null;
         String cookie;
@@ -87,7 +87,7 @@ public class SoapUtil {
             String[] cookies = session.getHeader("Set-Cookie");
 
 //            printHeaders(soapMessage);
-            Map<String, Object> map = new HashMap();
+            Map<Object, Object> map = new HashMap();
 
             if (cookies != null && cookies.length == 1) {
                 cookie = cookies[0];
@@ -122,18 +122,22 @@ public class SoapUtil {
             JAXBContext jaxbContext = getContextInstance(aClass);
             Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
-            JAXBElement root =
-                    unmarshaller.unmarshal(soapResponse.getSOAPBody().extractContentAsDocument(), aClass);
+            Document document = soapResponse.getSOAPBody().extractContentAsDocument();
+
+            JAXBElement root = unmarshaller.unmarshal(document, aClass);
+
             object = root.getValue();
+
             if(object != null) {
                 return object;
             }
 
             if(soapResponse.getSOAPBody().hasFault()){
-                Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, soapResponse.getSOAPBody().getFault().getFaultString());
+                Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO, soapResponse.getSOAPBody().getFault()
+                        .getFaultString());
                 object = unmarshaller.unmarshal(soapResponse.getSOAPBody().getFault());
             } else {
-                object = unmarshaller.unmarshal(soapResponse.getSOAPBody().extractContentAsDocument());
+                object = unmarshaller.unmarshal(document);
             }
         } catch (SOAPException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
@@ -194,7 +198,8 @@ public class SoapUtil {
 
             Annotation annotation = object.getClass().getDeclaredAnnotation(javax.xml.bind.annotation.XmlType.class);
 
-            QName qName = new QName(object.getClass().getPackage().getName(), ((javax.xml.bind.annotation.XmlType)annotation).name());
+            QName qName = new QName(object.getClass().getPackage().getName(),
+                    ((javax.xml.bind.annotation.XmlType)annotation).name());
             JAXBElement root = new JAXBElement(qName, object.getClass(), object);
 
             jaxbMarshaller.marshal(root, stringWriter);
@@ -223,103 +228,19 @@ public class SoapUtil {
         return object;
     }
 
-    private static void disableSslVerification() {
-        try {
-            // Create a trust manager that does not validate certificate chains
-            TrustManager[] trustAllCerts = new TrustManager[]{
-                    new X509TrustManager() {
-                        @Override
-                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-                            return null;
-                        }
-
-                        @Override
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
-                        }
-
-                        @Override
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
-                        }
-                    }
-            };
-
-            // Install the all-trusting trust manager
-            SSLContext sc = SSLContext.getInstance("SSL");
-            sc.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-
-            // Create all-trusting host name verifier
-            // TODO Cambiar a expresion lambda
-            // HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true;
-            HostnameVerifier allHostsValid = new HostnameVerifier() {
-                @Override public boolean verify(String s, SSLSession session) {
-                    return true;
-                }
-            };
-
-            // Install the all-trusting host verifier
-            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
-        } catch (NoSuchAlgorithmException ex) {
-            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (KeyManagementException ex) {
-            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private static void printHeaders(SOAPMessage soapMessage) {
-        MimeHeaders mimeHeaders = soapMessage.getMimeHeaders();
-        Iterator<MimeHeader> it = mimeHeaders.getAllHeaders();
-        while (it.hasNext()) {
-            MimeHeader mime = it.next();
-            Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO,
-                    "Name: {0} Value: {1}", new Object[]{mime.getName(), mime.getValue()});
-        }
-    }
-
     public static SOAPMessage getSoapMessageFromString(String xml) {
         MessageFactory factory;
         SOAPMessage message = null;
         try {
             factory = MessageFactory.newInstance();
-            message = factory.createMessage(new MimeHeaders(), new ByteArrayInputStream(xml.getBytes(Charset.forName("UTF-8"))));
+            message = factory.createMessage(new MimeHeaders(), new ByteArrayInputStream(xml.getBytes(Charset
+                    .forName("UTF-8"))));
         } catch (IOException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SOAPException ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
         }
         return message;
-    }
-
-    private static SOAPMessage clone(SOAPMessage message) throws TransformerException, SOAPException {
-        return toSOAPMessage(toDocument(message));
-    }
-
-    private static SOAPMessage toSOAPMessage(Document doc) {
-        return toSOAPMessage(doc, SOAPConstants.DEFAULT_SOAP_PROTOCOL);
-    }
-
-    private static SOAPMessage toSOAPMessage(Document doc, String protocol) {
-        DOMSource domSource;
-        SOAPMessage retorno;
-        MessageFactory messageFactory;
-        try {
-            domSource = new DOMSource(doc);
-            messageFactory = MessageFactory.newInstance(protocol);
-            retorno = messageFactory.createMessage();
-            retorno.getSOAPPart().setContent(domSource);
-            return retorno;
-        } catch (SOAPException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    private static Document toDocument(SOAPMessage soapMSG) throws TransformerException, SOAPException {
-        Source source = soapMSG.getSOAPPart().getContent();
-        TransformerFactory factoryTransform = TransformerFactory.newInstance();
-        Transformer transform = factoryTransform.newTransformer();
-        DOMResult retorno = new DOMResult();
-        transform.transform(source, retorno);
-        return (Document) retorno.getNode();
     }
 
     public static String object2xml(Object item) throws JAXBException {
@@ -379,5 +300,115 @@ public class SoapUtil {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, e);
         }
         return object;
+    }
+
+    public static List getDataSetFromSoapMessage(SOAPMessage soapResponse, Class aClass) {
+        try {
+            Document document = soapResponse.getSOAPBody().extractContentAsDocument();
+            org.w3c.dom.Element root = document.getDocumentElement();
+            NodeList dataSets = root.getElementsByTagName(aClass.getSimpleName());
+
+            JAXBContext jaxbContext = getContextInstance(aClass);
+            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+
+            List list = new ArrayList<>();
+
+            for (int i = 0; i < dataSets.getLength() ; i++) {
+                org.w3c.dom.Node node = dataSets.item(i);
+                JAXBElement r = jaxbUnmarshaller.unmarshal(node, aClass);
+                Object object = r.getValue();
+                list.add(object);
+            }
+
+            return list;
+        } catch (SOAPException | JAXBException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    private static void disableSslVerification() {
+        try {
+            // Create a trust manager that does not validate certificate chains
+            TrustManager[] trustAllCerts = new TrustManager[]{
+                    new X509TrustManager() {
+                        @Override
+                        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                            return null;
+                        }
+
+                        @Override
+                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+                        }
+
+                        @Override
+                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+                        }
+                    }
+            };
+
+            // Install the all-trusting trust manager
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+            // Create all-trusting host name verifier
+            // TODO Cambiar a expresion lambda
+            // HostnameVerifier allHostsValid = (String hostname, SSLSession session) -> true;
+            HostnameVerifier allHostsValid = new HostnameVerifier() {
+                @Override public boolean verify(String s, SSLSession session) {
+                    return true;
+                }
+            };
+
+            // Install the all-trusting host verifier
+            HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (KeyManagementException ex) {
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private static void printHeaders(SOAPMessage soapMessage) {
+        MimeHeaders mimeHeaders = soapMessage.getMimeHeaders();
+        Iterator<MimeHeader> it = mimeHeaders.getAllHeaders();
+        while (it.hasNext()) {
+            MimeHeader mime = it.next();
+            Logger.getLogger(SoapUtil.class.getName()).log(Level.INFO,
+                    "Name: {0} Value: {1}", new Object[]{mime.getName(), mime.getValue()});
+        }
+    }
+
+    private static SOAPMessage clone(SOAPMessage message) throws TransformerException, SOAPException {
+        return toSOAPMessage(toDocument(message));
+    }
+
+    private static SOAPMessage toSOAPMessage(Document doc) {
+        return toSOAPMessage(doc, SOAPConstants.DEFAULT_SOAP_PROTOCOL);
+    }
+
+    private static SOAPMessage toSOAPMessage(Document doc, String protocol) {
+        DOMSource domSource;
+        SOAPMessage retorno;
+        MessageFactory messageFactory;
+        try {
+            domSource = new DOMSource(doc);
+            messageFactory = MessageFactory.newInstance(protocol);
+            retorno = messageFactory.createMessage();
+            retorno.getSOAPPart().setContent(domSource);
+            return retorno;
+        } catch (SOAPException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    private static Document toDocument(SOAPMessage soapMSG) throws TransformerException, SOAPException {
+        Source source = soapMSG.getSOAPPart().getContent();
+        TransformerFactory factoryTransform = TransformerFactory.newInstance();
+        Transformer transform = factoryTransform.newTransformer();
+        DOMResult retorno = new DOMResult();
+        transform.transform(source, retorno);
+        return (Document) retorno.getNode();
     }
 }
