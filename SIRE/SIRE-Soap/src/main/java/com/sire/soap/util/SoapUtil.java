@@ -10,6 +10,7 @@ import org.w3c.dom.NodeList;
 
 import java.io.*;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.KeyManagementException;
@@ -303,10 +304,19 @@ public class SoapUtil {
     }
 
     public static List getDataSetFromSoapMessage(SOAPMessage soapResponse, Class aClass) {
+        return getDataSetFromSoapMessage(soapResponse, aClass, false);
+    }
+
+    public static List getDataSetFromSoapMessage(SOAPMessage soapResponse, Class aClass, boolean reflection) {
         try {
+            Annotation annotation = aClass.getDeclaredAnnotation(javax.xml.bind.annotation.XmlType.class);
+            String type = ((javax.xml.bind.annotation.XmlType)annotation).name();
+            if(Objects.isNull(type) || Objects.equals("", type))
+                type = aClass.getSimpleName();
+
             Document document = soapResponse.getSOAPBody().extractContentAsDocument();
             org.w3c.dom.Element root = document.getDocumentElement();
-            NodeList dataSets = root.getElementsByTagName(aClass.getSimpleName());
+            NodeList dataSets = root.getElementsByTagName(type);
 
             JAXBContext jaxbContext = getContextInstance(aClass);
             Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -315,13 +325,32 @@ public class SoapUtil {
 
             for (int i = 0; i < dataSets.getLength() ; i++) {
                 org.w3c.dom.Node node = dataSets.item(i);
-                JAXBElement r = jaxbUnmarshaller.unmarshal(node, aClass);
-                Object object = r.getValue();
+
+                Object object;
+
+                if(reflection){
+                    NodeList children = node.getChildNodes();
+                    object = aClass.newInstance();
+
+                    for (int j = 0; j < children.getLength(); j++) {
+                        org.w3c.dom.Node childNode = children.item(j);
+                        String nodeName = childNode.getNodeName();
+                        Field field = aClass.getDeclaredField(nodeName.substring(0, 1).toLowerCase()
+                                + nodeName.substring(1));
+                        field.setAccessible(true);
+                        field.set(object, childNode.getTextContent());
+                        field.setAccessible(false);
+                    }
+                } else {
+                    JAXBElement r = jaxbUnmarshaller.unmarshal(node, aClass);
+                    object = r.getValue();
+                }
+
                 list.add(object);
             }
-
             return list;
-        } catch (SOAPException | JAXBException ex) {
+        } catch (SOAPException | JAXBException | IllegalAccessException | InstantiationException | NoSuchFieldException
+                ex) {
             Logger.getLogger(SoapUtil.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

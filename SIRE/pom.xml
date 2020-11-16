@@ -20,6 +20,7 @@
         <!-- Module's Versions -->
         <SIRE-Batch.version>1.7.2</SIRE-Batch.version>
         <SIRE-Commons.version>1.0.4</SIRE-Commons.version>
+        <SIRE-Crypt.version>1.0.0</SIRE-Crypt.version>
         <SIRE-EE.version>1.7.0</SIRE-EE.version>
         <SIRE-Crypt.version>1.0.0</SIRE-Crypt.version>
         <SIRE-Entities.version>1.1.1</SIRE-Entities.version>

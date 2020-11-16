@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/SIRE.iml" filepath="$PROJECT_DIR$/SIRE.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE-Batch/SIRE-Batch.iml" filepath="$PROJECT_DIR$/SIRE-Batch/SIRE-Batch.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE-Commons/SIRE-Commons.iml" filepath="$PROJECT_DIR$/SIRE-Commons/SIRE-Commons.iml" />
+      <module fileurl="file://$PROJECT_DIR$/SIRE-Crypt/SIRE-Crypt.iml" filepath="$PROJECT_DIR$/SIRE-Crypt/SIRE-Crypt.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE-EE/SIRE-EE.iml" filepath="$PROJECT_DIR$/SIRE-EE/SIRE-EE.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE-Entities/SIRE-Entities.iml" filepath="$PROJECT_DIR$/SIRE-Entities/SIRE-Entities.iml" />
       <module fileurl="file://$PROJECT_DIR$/SIRE-RS-Client/SIRE-RS-Client.iml" filepath="$PROJECT_DIR$/SIRE-RS-Client/SIRE-RS-Client.iml" />

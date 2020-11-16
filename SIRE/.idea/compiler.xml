@@ -22,6 +22,7 @@
         <module name="SIRE-SRI-WSClient" />
         <module name="SIRE-SRI-Batch-Autorizacion" />
         <module name="SIRE-WS" />
+        <module name="SIRE-Crypt" />
         <module name="SIRE-Rest" />
         <module name="SIRE-EE" />
         <module name="SIRE-Commons" />
@@ -31,6 +32,7 @@
       <module name="SIRE" target="1.5" />
       <module name="SIRE-Batch" target="1.8" />
       <module name="SIRE-Commons" target="1.8" />
+      <module name="SIRE-Crypt" target="1.8" />
       <module name="SIRE-EE" target="1.8" />
       <module name="SIRE-Entities" target="8" />
       <module name="SIRE-Rest" target="1.8" />
