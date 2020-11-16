@@ -50,6 +50,7 @@ SIRE/crashlytics.properties
 SIRE/crashlytics-build.properties
 SIRE/fabric.properties
 
+SIRE/SIRE-Crypt/target/
 SIRE/SIRE-WS/target/
 SIRE/SIRE-Commons/target/
 SIRE/SIRE-Entities/target/
@@ -92,3 +93,5 @@ SIRE/SIRE-Rest/.idea/sonarlint/
 SIRE/SIRE-Rest/.idea/workspace.xml
 
 SIRE/SIRE-Rest/target/
+
+SIRE/SIRE-Crypt/target/
