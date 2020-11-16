@@ -11,6 +11,7 @@
         <module name="SIRE-Services" />
         <module name="SIRE-RS-Client" />
         <module name="SIRE-Web" />
+        <module name="SIRE-Soap" />
         <module name="SIRE-SRI-Entities" />
         <module name="SIRE-Batch" />
         <module name="SIRE-Services-API" />
