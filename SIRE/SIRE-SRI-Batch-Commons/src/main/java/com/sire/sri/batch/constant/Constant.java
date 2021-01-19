@@ -151,6 +151,8 @@ public class Constant {
     public static final String RAZON_SOCIAL_SUJETO_RETENIDO = "RAZON_SOCIAL_SUJETO_RETENIDO";
     public static final String TIPO_IDENT_SUJETO_RETENIDO = "TIPO_IDENT_SUJETO_RETENIDO";
     public static final String CODIGO_BARRAS = "CODIGO_BARRAS";
+    public static final String AGENTE_RETENCION = "AGENTE_RETENCION";
+    public static final String REGIMEN_MICROEMPRESAS = "REGIMEN_MICROEMPRESAS";
 
     public static final String FACTURA_C_SQL = "SELECT COD_EMPRESA, RUC_EMPRESA, RAZON_SOCIAL_EMPRESA, "
             + "NOMBRE_COMERCIAL, COD_DOCUMENTO, NUM_FACTURA_INTERNO, ESTABLECIMIENTO, "

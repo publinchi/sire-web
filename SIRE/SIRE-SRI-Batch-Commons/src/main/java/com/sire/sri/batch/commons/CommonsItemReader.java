@@ -170,6 +170,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoTributaria.setRuc(rs.getString(Constant.RUC_EMPRESA));
         infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
         infoTributaria.setTipoEmision("1");
+        infoTributaria.setRegimenMicroempresas(rs.getString(Constant.REGIMEN_MICROEMPRESAS));
+        infoTributaria.setAgenteRetencion(rs.getString(Constant.AGENTE_RETENCION));
         factura.setInfoTributaria(infoTributaria);
 
         factura.setId("comprobante");

@@ -365,6 +365,8 @@ public class ReporteUtil {
         param.put("NUM_FACT", infoTributaria.getEstab() + "-" + infoTributaria.getPtoEmi() + "-" + infoTributaria.getSecuencial());
         param.put("AMBIENTE", obtenerAmbiente(infoTributaria));
         param.put("NOM_COMERCIAL", infoTributaria.getNombreComercial());
+        param.put("REGIMEN_MICROEMPRESAS", infoTributaria.getRegimenMicroempresas());
+        param.put("AGENTE_RETENCION", infoTributaria.getAgenteRetencion());
         return param;
     }
 
