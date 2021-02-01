@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="notaDebitofinal" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="643bc080-30e7-4c61-ad48-11d053319815">
 	<property name="ireport.zoom" value="3.4522712143931042"/>
 	<property name="ireport.x" value="13"/>
-	<property name="ireport.y" value="528"/>
+	<property name="ireport.y" value="720"/>
 	<parameter name="RUC" class="java.lang.String"/>
 	<parameter name="NUM_AUT" class="java.lang.String"/>
 	<parameter name="FECHA_AUT" class="java.lang.String"/>
@@ -39,6 +39,8 @@
 	<parameter name="NOM_COMERCIAL" class="java.lang.String"/>
 	<parameter name="EXENTO_IVA" class="java.math.BigDecimal"/>
 	<parameter name="PORCENTAJE_IVA" class="java.lang.String"/>
+	<parameter name="REGIMEN_MICROEMPRESAS" class="java.lang.String"/>
+	<parameter name="AGENTE_RETENCION" class="java.lang.String"/>
 	<field name="razonModificacion" class="java.lang.String"/>
 	<field name="valorModificacion" class="java.lang.String"/>
 	<field name="infoAdicional" class="java.util.Collection"/>
