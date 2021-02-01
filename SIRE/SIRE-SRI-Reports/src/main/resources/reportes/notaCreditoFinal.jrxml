@@ -31,6 +31,8 @@
 	<parameter name="AMBIENTE" class="java.lang.String"/>
 	<parameter name="RAZON_MODIF" class="java.lang.String"/>
 	<parameter name="NOM_COMERCIAL" class="java.lang.String"/>
+	<parameter name="REGIMEN_MICROEMPRESAS" class="java.lang.String"/>
+	<parameter name="AGENTE_RETENCION" class="java.lang.String"/>
 	<field name="codigoPrincipal" class="java.lang.String"/>
 	<field name="codigoAuxiliar" class="java.lang.String"/>
 	<field name="cantidad" class="java.lang.String"/>
