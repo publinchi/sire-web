@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="notaDebitofinal" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="643bc080-30e7-4c61-ad48-11d053319815">
-	<property name="ireport.zoom" value="1.4641000000000006"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="495"/>
+	<property name="ireport.zoom" value="3.4522712143931042"/>
+	<property name="ireport.x" value="13"/>
+	<property name="ireport.y" value="528"/>
 	<parameter name="RUC" class="java.lang.String"/>
 	<parameter name="NUM_AUT" class="java.lang.String"/>
 	<parameter name="FECHA_AUT" class="java.lang.String"/>
@@ -233,28 +233,28 @@
 				<textFieldExpression><![CDATA[$P{FECHA_EMISION_DOC_SUSTENTO}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="58" y="234" width="222" height="13" uuid="2d10cd42-9ba0-4adb-9466-27dd79570874"/>
+				<reportElement x="58" y="209" width="222" height="13" uuid="2d10cd42-9ba0-4adb-9466-27dd79570874"/>
 				<textElement verticalAlignment="Top">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DIR_MATRIZ}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="7" y="232" width="49" height="25" uuid="3ec363d1-b824-4c48-9c42-ffe5ee0e42b6"/>
+				<reportElement x="7" y="207" width="49" height="25" uuid="3ec363d1-b824-4c48-9c42-ffe5ee0e42b6"/>
 				<textElement verticalAlignment="Top">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Dirección Matriz:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="9" y="206" width="268" height="13" uuid="a21238e9-0c3b-4b02-b626-a6b790d646e3"/>
+				<reportElement x="9" y="192" width="268" height="13" uuid="a21238e9-0c3b-4b02-b626-a6b790d646e3"/>
 				<textElement>
 					<font size="7"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{NOM_COMERCIAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="8" y="302" width="169" height="14" uuid="db66ceb8-abc1-400f-b64f-e439c673a3ad">
+				<reportElement x="8" y="270" width="169" height="14" uuid="db66ceb8-abc1-400f-b64f-e439c673a3ad">
 					<printWhenExpression><![CDATA[$P{CONT_ESPECIAL}!=null]]></printWhenExpression>
 				</reportElement>
 				<textElement verticalAlignment="Middle">
@@ -263,21 +263,21 @@
 				<text><![CDATA[Contribuyente Especial Nro ]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="9" y="316" width="177" height="14" uuid="91e3d1b1-ae6e-4ad7-8725-ea6d25af4f64"/>
+				<reportElement x="8" y="284" width="177" height="14" uuid="91e3d1b1-ae6e-4ad7-8725-ea6d25af4f64"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
 				<text><![CDATA[OBLIGADO A LLEVAR CONTABILIDAD]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement x="58" y="275" width="222" height="13" uuid="70fc7158-ba55-4fc2-b32a-6aa6a22f3e05"/>
+				<reportElement x="58" y="246" width="222" height="13" uuid="70fc7158-ba55-4fc2-b32a-6aa6a22f3e05"/>
 				<textElement verticalAlignment="Top">
 					<font size="7" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{DIR_SUCURSAL}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="7" y="268" width="51" height="25" uuid="42b77433-fbc4-43a6-8d3e-45ddc0dfb6ec"/>
+				<reportElement x="7" y="239" width="51" height="25" uuid="42b77433-fbc4-43a6-8d3e-45ddc0dfb6ec"/>
 				<textElement verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
 				</textElement>
@@ -291,18 +291,41 @@
 				<textFieldExpression><![CDATA[$P{RAZON_SOCIAL}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="192" y="302" width="85" height="14" uuid="bd9c64b1-5941-4b74-93c9-b4f84cdc2e27"/>
+				<reportElement x="192" y="270" width="85" height="14" uuid="bd9c64b1-5941-4b74-93c9-b4f84cdc2e27"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CONT_ESPECIAL}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="192" y="317" width="51" height="14" uuid="8cf88796-bfa2-4ce1-aed2-1765fe7c6b2a"/>
+				<reportElement x="192" y="284" width="51" height="14" uuid="8cf88796-bfa2-4ce1-aed2-1765fe7c6b2a"/>
 				<textElement verticalAlignment="Middle">
 					<font size="7" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{LLEVA_CONTABILIDAD}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="8" y="298" width="269" height="14" uuid="4fd2561d-7dd0-4cd3-a4e0-afb5ee32bd37"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{REGIMEN_MICROEMPRESAS}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="8" y="312" width="169" height="14" uuid="bcd83c25-1dc2-492a-bfee-bab69258c838">
+					<printWhenExpression><![CDATA[$P{AGENTE_RETENCION}!=null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Agente de Retención Resolución No.]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="192" y="312" width="85" height="14" uuid="fdd7ae6f-04f8-40c0-b381-fa2693f2ccc0"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font size="7" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{AGENTE_RETENCION}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
