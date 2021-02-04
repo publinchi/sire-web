@@ -103,6 +103,8 @@ public class F1_C1_Reader1 extends CommonsItemReader {
                         + "asociada al tipo de comprobante " + tipoComprobante);
         }
 
+        log.log(Level.INFO, "comprobanteSQL -> {}", comprobanteSQL);
+
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
