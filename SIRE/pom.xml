@@ -40,6 +40,7 @@
     <modules>
         <module>SIRE-Batch</module>
         <module>SIRE-Commons</module>
+        <module>SIRE-Crypt</module>
         <module>SIRE-Entities</module>
         <module>SIRE-Rest</module>
         <module>SIRE-RS-Client</module>
