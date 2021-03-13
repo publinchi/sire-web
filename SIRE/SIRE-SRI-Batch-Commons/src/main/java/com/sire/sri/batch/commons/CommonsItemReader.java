@@ -170,6 +170,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoTributaria.setRuc(rs.getString(Constant.RUC_EMPRESA));
         infoTributaria.setSecuencial(rs.getString("SECUENCIAL"));
         infoTributaria.setTipoEmision("1");
+        infoTributaria.setRegimenMicroempresas(rs.getString(Constant.REGIMEN_MICROEMPRESAS));
+        infoTributaria.setAgenteRetencion(rs.getString(Constant.AGENTE_RETENCION));
         factura.setInfoTributaria(infoTributaria);
 
         factura.setId("comprobante");
@@ -299,6 +301,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoTributaria.setRuc(rs.getString(Constant.RUC_EMPRESA));
         infoTributaria.setSecuencial(rs.getString(Constant.SECUENCIAL));
         infoTributaria.setTipoEmision("1");
+        infoTributaria.setRegimenMicroempresas(rs.getString(Constant.REGIMEN_MICROEMPRESAS));
+        infoTributaria.setAgenteRetencion(rs.getString(Constant.AGENTE_RETENCION));
         notaCredito.setInfoTributaria(infoTributaria);
 
         notaCredito.setId(Constant.COMPROBANTE);
@@ -374,6 +378,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoTributaria.setPtoEmi(rs.getString(Constant.PUNTO_EMISION));
         infoTributaria.setSecuencial(rs.getString(Constant.SECUENCIAL));
         infoTributaria.setDirMatriz(rs.getString(Constant.DIRECCION_MATRIZ));
+        infoTributaria.setRegimenMicroempresas(rs.getString(Constant.REGIMEN_MICROEMPRESAS));
+        infoTributaria.setAgenteRetencion(rs.getString(Constant.AGENTE_RETENCION));
         notaDebito.setInfoTributaria(infoTributaria);
 
         /* Información Nota de Débito */
@@ -498,6 +504,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
         infoTributaria.setPtoEmi(rs.getString(Constant.PUNTO_EMISION));
         infoTributaria.setSecuencial(rs.getString(Constant.SECUENCIAL));
         infoTributaria.setDirMatriz(rs.getString(Constant.DIRECCION_MATRIZ));
+        infoTributaria.setRegimenMicroempresas(rs.getString(Constant.REGIMEN_MICROEMPRESAS));
+        infoTributaria.setAgenteRetencion(rs.getString(Constant.AGENTE_RETENCION));
         guiaRemision.setInfoTributaria(infoTributaria);
 
         /* Información Guia de Remisión */
@@ -719,6 +727,8 @@ public abstract class CommonsItemReader extends AbstractItemReader {
             infoTributaria.setRuc(rs.getString(Constant.RUC_EMPRESA));
             infoTributaria.setSecuencial(rs.getString(Constant.SECUENCIAL));
             infoTributaria.setTipoEmision("1");
+            infoTributaria.setRegimenMicroempresas(rs.getString(Constant.REGIMEN_MICROEMPRESAS));
+            infoTributaria.setAgenteRetencion(rs.getString(Constant.AGENTE_RETENCION));
             comprobanteRetencion.setInfoTributaria(infoTributaria);
             comprobanteRetencion.setVersion("1.0.0");
 
