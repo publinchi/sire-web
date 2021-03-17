@@ -17,9 +17,9 @@ double sumBillDataPrimaryAmount(List<BillData> items) =>
 
 /// Calculates the sum of the primary amounts of a list of [BillData].
 double sumBillDataPaidAmount(List<BillData> items) => sumOf<BillData>(
-  items.where((item) => item.isPaid).toList(),
+      items.where((item) => item.isPaid).toList(),
       (item) => item.primaryAmount,
-);
+    );
 
 /// Calculates the sum of the primary amounts of a list of [BudgetData].
 double sumBudgetDataPrimaryAmount(List<BudgetData> items) =>
@@ -132,9 +132,13 @@ class UserDetailData {
 }
 
 /// A data model for an contrato.
-class  ContratoData {
-  ContratoData({this.codEmpresa, this.codCliente, this.numContrato,
-    this.fechaContrato, this.valorContrato});
+class ContratoData {
+  ContratoData(
+      {this.codEmpresa,
+      this.codCliente,
+      this.numContrato,
+      this.fechaContrato,
+      this.valorContrato});
 
   final String codEmpresa;
 
@@ -153,6 +157,53 @@ class  ContratoData {
       numContrato: json['num_contrato'],
       fechaContrato: json['fecha_contrato'],
       valorContrato: json['valor_contrato'] * 1.0,
+    );
+  }
+}
+
+class DetailedCuotaData {
+  const DetailedCuotaData({
+    this.codEmpresa,
+    this.codCliente,
+    this.numContrato,
+    this.nroCuota,
+    this.fechaCuota,
+    this.valorCuota,
+    this.saldoCuota,
+    this.tipoCuota,
+    this.estado,
+    this.fechaEstado,
+    this.actualizoPor,
+    this.fechaActualizacion,
+  });
+
+  final String codEmpresa;
+  final String codCliente;
+  final int numContrato;
+  final int nroCuota;
+  final String fechaCuota;
+  final double valorCuota;
+  final double saldoCuota;
+  final String tipoCuota;
+  final String estado;
+  final String fechaEstado;
+  final String actualizoPor;
+  final String fechaActualizacion;
+
+  factory DetailedCuotaData.fromJson(Map<String, dynamic> json) {
+    return DetailedCuotaData(
+      codEmpresa: json['cod_empresav'],
+      codCliente: json['cod_cliente'],
+      numContrato: json['num_contrato'],
+      nroCuota: json['nro_cuota'],
+      fechaCuota: json['fecha_cuota'],
+      valorCuota: json['valor_cuota'] * 1.0,
+      saldoCuota: json['saldo_cuota'] * 1.0,
+      tipoCuota: json['tipo_cuota'],
+      estado: json['estado'],
+      fechaEstado: json['fecha_estado'],
+      actualizoPor: json['actualizo_por'],
+      fechaActualizacion: json['fecha_actualizacion'],
     );
   }
 }
@@ -195,12 +246,12 @@ class DummyDataService {
       ),
       UserDetailData(
         title:
-        GalleryLocalizations.of(context).rallyAccountDetailDataInterestRate,
+            GalleryLocalizations.of(context).rallyAccountDetailDataInterestRate,
         value: usdWithSignFormat(context).format(1676.14),
       ),
       UserDetailData(
         title:
-        GalleryLocalizations.of(context).rallyAccountDetailDataInterestYtd,
+            GalleryLocalizations.of(context).rallyAccountDetailDataInterestYtd,
         value: usdWithSignFormat(context).format(81.45),
       ),
       UserDetailData(
@@ -215,7 +266,7 @@ class DummyDataService {
       ),
       UserDetailData(
         title:
-        GalleryLocalizations.of(context).rallyAccountDetailDataAccountOwner,
+            GalleryLocalizations.of(context).rallyAccountDetailDataAccountOwner,
         value: 'Philip Cao',
       ),
     ];
@@ -373,13 +424,13 @@ class DummyDataService {
       AlertData(
         message: GalleryLocalizations.of(context)
             .rallyAlertsMessageHeadsUpShopping(
-            percentFormat(context, decimalDigits: 0).format(0.9)),
+                percentFormat(context, decimalDigits: 0).format(0.9)),
         iconData: Icons.sort,
       ),
       AlertData(
         message: GalleryLocalizations.of(context)
             .rallyAlertsMessageSpentOnRestaurants(
-            usdWithSignFormat(context, decimalDigits: 0).format(120)),
+                usdWithSignFormat(context, decimalDigits: 0).format(120)),
         iconData: Icons.sort,
       ),
       AlertData(
@@ -390,7 +441,7 @@ class DummyDataService {
       AlertData(
         message: GalleryLocalizations.of(context)
             .rallyAlertsMessageCheckingAccount(
-            percentFormat(context, decimalDigits: 0).format(0.04)),
+                percentFormat(context, decimalDigits: 0).format(0.04)),
         iconData: Icons.attach_money,
       ),
       AlertData(
