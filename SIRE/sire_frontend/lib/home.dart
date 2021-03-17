@@ -24,14 +24,20 @@ const int turnsToRotateRight = 1;
 const int turnsToRotateLeft = 3;
 
 class HomePage extends StatefulWidget {
-  const HomePage();
+  final int codCliente;
+
+  const HomePage({this.codCliente,});
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState(codCliente: codCliente);
 }
 
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin, RestorationMixin {
+  int codCliente;
+
+  _HomePageState({this.codCliente,});
+
   Future<List<ContratoData>> contratoDatas;
   TabController _tabController;
   RestorableInt tabIndex = RestorableInt(0);
@@ -81,7 +87,6 @@ class _HomePageState extends State<HomePage>
           tabIndex.value = _tabController.index;
         });
       });
-    contratoDatas = getContratos(1);
   }
 
   @override
@@ -189,7 +194,7 @@ class _HomePageState extends State<HomePage>
 
     return ApplyTextOptions(
         child: FutureBuilder<List<ContratoData>>(
-          future: getContratos(1),
+          future: getContratos(codCliente),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               //return Text(snapshot.data!.title);

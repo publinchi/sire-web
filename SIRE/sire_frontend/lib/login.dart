@@ -9,6 +9,7 @@ import 'package:flutter/services.dart';
 
 import 'package:sire_frontend/data/options.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
+import 'package:sire_frontend/home.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
 import 'package:sire_frontend/layout/image_placeholder.dart';
 import 'package:sire_frontend/layout/text_scale.dart';
@@ -89,7 +90,11 @@ class _MainView extends StatelessWidget {
     };
     var response = await http.post(uri, body: body, headers: headers);
     if(response.statusCode == 200) {
-      Navigator.of(context).restorablePushNamed(RallyApp.homeRoute);
+      int codCliente = int.parse(json.decode(response.body)['cod_cliente']);
+      Navigator.push(context, new MaterialPageRoute(
+        builder: (BuildContext context) => new HomePage(
+            codCliente: codCliente),
+      ));
     } else {
       usernameController.clear();
       passwordController.clear();
