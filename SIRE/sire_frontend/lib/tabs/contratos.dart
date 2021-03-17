@@ -24,7 +24,7 @@ class ContratosView extends StatelessWidget {
 
     return TabWithSidebar(
       restorationId: 'accounts_view',
-      mainView: FinancialEntityView(
+      mainView: FinancialCuotaView(
         heroLabel: GalleryLocalizations.of(context).rallyAccountTotal,
         heroAmount: balanceTotal,
         segments: buildSegmentsFromContratoItems(items),
