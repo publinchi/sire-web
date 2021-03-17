@@ -617,7 +617,7 @@ class FinancialEntityCuotaDetailsPage extends StatelessWidget {
                   elevation: 0,
                   centerTitle: true,
                   title: Text(
-                    GalleryLocalizations.of(context).rallyAccountDataChecking,
+                    "Cuotas", //TODO
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2
