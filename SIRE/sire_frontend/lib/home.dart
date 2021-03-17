@@ -26,7 +26,9 @@ const int turnsToRotateLeft = 3;
 class HomePage extends StatefulWidget {
   final int codCliente;
 
-  const HomePage({this.codCliente,});
+  const HomePage({
+    this.codCliente,
+  });
 
   @override
   _HomePageState createState() => _HomePageState(codCliente: codCliente);
@@ -36,7 +38,9 @@ class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin, RestorationMixin {
   int codCliente;
 
-  _HomePageState({this.codCliente,});
+  _HomePageState({
+    this.codCliente,
+  });
 
   Future<List<ContratoData>> contratoDatas;
   TabController _tabController;
@@ -54,10 +58,10 @@ class _HomePageState extends State<HomePage>
   Future<List<ContratoData>> getContratos(int codCliente) async {
     var domain = 'sire.bmcmotors.com.ec';
     var port = '8000';
-    var path = '/contratos/'+codCliente.toString();
+    var path = '/contratos/' + codCliente.toString();
     var uri = Uri.http('$domain:$port', path);
-    var headers = <String,String>{
-      'Content-type' : 'application/json',
+    var headers = <String, String>{
+      'Content-type': 'application/json',
       'Accept': 'application/json'
     };
 
@@ -67,8 +71,8 @@ class _HomePageState extends State<HomePage>
       // If the server did return a 200 OK response,
       // then parse the JSON.
       Iterable l = json.decode(response.body)['items'];
-      List<ContratoData> contratoDatas = List<ContratoData>.from(l.map((model)=>
-          ContratoData.fromJson(model)));
+      List<ContratoData> contratoDatas = List<ContratoData>.from(
+          l.map((model) => ContratoData.fromJson(model)));
       return contratoDatas;
     } else {
       // If the server did not return a 200 OK response,
@@ -104,9 +108,9 @@ class _HomePageState extends State<HomePage>
           GalleryOptions.of(context).resolvedTextDirection() ==
               TextDirection.rtl;
       final verticalRotation =
-      isTextDirectionRtl ? turnsToRotateLeft : turnsToRotateRight;
+          isTextDirectionRtl ? turnsToRotateLeft : turnsToRotateRight;
       final revertVerticalRotation =
-      isTextDirectionRtl ? turnsToRotateRight : turnsToRotateLeft;
+          isTextDirectionRtl ? turnsToRotateRight : turnsToRotateLeft;
       tabBarView = Row(
         children: [
           Container(
@@ -131,9 +135,9 @@ class _HomePageState extends State<HomePage>
                   quarterTurns: verticalRotation,
                   child: _RallyTabBar(
                     tabs: _buildTabs(
-                        context: context, theme: theme, isVertical: true)
+                            context: context, theme: theme, isVertical: true)
                         .map(
-                          (widget) {
+                      (widget) {
                         // Revert the rotation on the tabs.
                         return RotatedBox(
                           quarterTurns: revertVerticalRotation,
@@ -154,7 +158,7 @@ class _HomePageState extends State<HomePage>
               child: TabBarView(
                 controller: _tabController,
                 children: _buildTabViews(contratoDatas).map(
-                      (widget) {
+                  (widget) {
                     // Revert the rotation on the tab views.
                     return RotatedBox(
                       quarterTurns: revertVerticalRotation,
@@ -194,61 +198,37 @@ class _HomePageState extends State<HomePage>
 
     return ApplyTextOptions(
         child: FutureBuilder<List<ContratoData>>(
-          future: getContratos(codCliente),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              //return Text(snapshot.data!.title);
-              return Scaffold(
-                body: SafeArea(
-                  // For desktop layout we do not want to have SafeArea at the top and
-                  // bottom to display 100% height content on the accounts view.
-                  top: !isDesktop,
-                  bottom: !isDesktop,
-                  child: Theme(
-                    // This theme effectively removes the default visual touch
-                    // feedback for tapping a tab, which is replaced with a custom
-                    // animation.
-                    data: theme.copyWith(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                    ),
-                    child: FocusTraversalGroup(
-                      policy: OrderedTraversalPolicy(),
-                      child: getTabBarView(context, isDesktop, theme, snapshot.data),
-                    ),
-                  ),
+      future: getContratos(codCliente),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          //return Text(snapshot.data!.title);
+          return Scaffold(
+            body: SafeArea(
+              // For desktop layout we do not want to have SafeArea at the top and
+              // bottom to display 100% height content on the accounts view.
+              top: !isDesktop,
+              bottom: !isDesktop,
+              child: Theme(
+                // This theme effectively removes the default visual touch
+                // feedback for tapping a tab, which is replaced with a custom
+                // animation.
+                data: theme.copyWith(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
                 ),
-              );
-            }
-
-            // By default, show a loading spinner.
-            return CircularProgressIndicator();
-          },
-        )
-
-      /*child: Scaffold(
-        body: SafeArea(
-          // For desktop layout we do not want to have SafeArea at the top and
-          // bottom to display 100% height content on the accounts view.
-          top: !isDesktop,
-          bottom: !isDesktop,
-          child: Theme(
-            // This theme effectively removes the default visual touch
-            // feedback for tapping a tab, which is replaced with a custom
-            // animation.
-            data: theme.copyWith(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
+                child: FocusTraversalGroup(
+                  policy: OrderedTraversalPolicy(),
+                  child:
+                      getTabBarView(context, isDesktop, theme, snapshot.data),
+                ),
+              ),
             ),
-            child: FocusTraversalGroup(
-              policy: OrderedTraversalPolicy(),
-              child: getTabBarView(context, isDesktop, theme),
-            ),
-          ),
-        ),
-      ),*/
-    );
-
+          );
+        }
+        // By default, show a loading spinner.
+        return const Center(child: CircularProgressIndicator());
+      },
+    ));
   }
 
   List<Widget> _buildTabs(
