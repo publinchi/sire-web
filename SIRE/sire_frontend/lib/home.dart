@@ -246,7 +246,7 @@ class _HomePageState extends State<HomePage>
         theme: theme,
         iconData: Icons.article,
         title: 'CONTRATOS', //TODO
-        tabIndex: 1,
+        tabIndex: 0,
         tabController: _tabController,
         isVertical: isVertical,
       ),
