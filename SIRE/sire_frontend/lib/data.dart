@@ -408,12 +408,12 @@ class DummyDataService {
   static List<String> getSettingsTitles(BuildContext context) {
     return <String>[
       GalleryLocalizations.of(context).rallySettingsManageAccounts,
-      GalleryLocalizations.of(context).rallySettingsTaxDocuments,
+      //GalleryLocalizations.of(context).rallySettingsTaxDocuments,
       GalleryLocalizations.of(context).rallySettingsPasscodeAndTouchId,
       GalleryLocalizations.of(context).rallySettingsNotifications,
       GalleryLocalizations.of(context).rallySettingsPersonalInformation,
-      GalleryLocalizations.of(context).rallySettingsPaperlessSettings,
-      GalleryLocalizations.of(context).rallySettingsFindAtms,
+      //GalleryLocalizations.of(context).rallySettingsPaperlessSettings,
+      //GalleryLocalizations.of(context).rallySettingsFindAtms,
       GalleryLocalizations.of(context).rallySettingsHelp,
       GalleryLocalizations.of(context).rallySettingsSignOut,
     ];
