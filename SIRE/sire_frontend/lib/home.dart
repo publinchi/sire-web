@@ -19,7 +19,7 @@ import 'package:sire_frontend/tabs/settings.dart';
 
 import 'package:http/http.dart' as http;
 
-const int tabCount = 6;
+const int tabCount = 2;
 const int turnsToRotateRight = 1;
 const int turnsToRotateLeft = 3;
 
@@ -234,14 +234,14 @@ class _HomePageState extends State<HomePage>
   List<Widget> _buildTabs(
       {BuildContext context, ThemeData theme, bool isVertical = false}) {
     return [
-      _RallyTab(
+      /*_RallyTab(
         theme: theme,
         iconData: Icons.pie_chart,
         title: GalleryLocalizations.of(context).rallyTitleOverview,
         tabIndex: 0,
         tabController: _tabController,
         isVertical: isVertical,
-      ),
+      ),*/
       _RallyTab(
         theme: theme,
         iconData: Icons.article,
@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage>
         tabController: _tabController,
         isVertical: isVertical,
       ),
-      _RallyTab(
+      /*_RallyTab(
         theme: theme,
         iconData: Icons.attach_money,
         title: GalleryLocalizations.of(context).rallyTitleAccounts,
@@ -273,12 +273,12 @@ class _HomePageState extends State<HomePage>
         tabIndex: 4,
         tabController: _tabController,
         isVertical: isVertical,
-      ),
+      ),*/
       _RallyTab(
         theme: theme,
         iconData: Icons.settings,
         title: GalleryLocalizations.of(context).rallyTitleSettings,
-        tabIndex: 5,
+        tabIndex: 1,
         tabController: _tabController,
         isVertical: isVertical,
       ),
@@ -287,11 +287,11 @@ class _HomePageState extends State<HomePage>
 
   List<Widget> _buildTabViews(List contratoDatas) {
     return [
-      OverviewView(),
+      //OverviewView(),
       ContratosView(contratoDatas: contratoDatas),
-      AccountsView(),
-      BillsView(),
-      BudgetsView(),
+      //AccountsView(),
+      //BillsView(),
+      //BudgetsView(),
       SettingsView(),
     ];
   }
