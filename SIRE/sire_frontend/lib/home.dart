@@ -245,7 +245,7 @@ class _HomePageState extends State<HomePage>
       _RallyTab(
         theme: theme,
         iconData: Icons.article,
-        title: 'Contratos', //TODO
+        title: 'CONTRATOS', //TODO
         tabIndex: 1,
         tabController: _tabController,
         isVertical: isVertical,
