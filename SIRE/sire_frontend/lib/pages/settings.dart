@@ -12,7 +12,7 @@ import 'package:sire_frontend/data/options.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
 import 'package:sire_frontend/pages/about.dart' as about;
-import 'package:sire_frontend/pages/home.dart';
+import 'package:sire_frontend/pages/welcome.dart';
 import 'package:sire_frontend/pages/settings_list_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 

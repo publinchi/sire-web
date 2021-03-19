@@ -9,7 +9,7 @@ import 'package:sire_frontend/constants.dart';
 import 'package:sire_frontend/data/options.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
-import 'package:sire_frontend/pages/home.dart';
+import 'package:sire_frontend/pages/welcome.dart';
 import 'package:sire_frontend/pages/settings.dart';
 import 'package:sire_frontend/pages/settings_icon/icon.dart' as settings_icon;
 
@@ -55,7 +55,7 @@ class _BackdropState extends State<Backdrop> with TickerProviderStateMixin {
         SettingsPage(
           animationController: _settingsPanelController,
         );
-    _homePage = widget.homePage ?? HomePage();
+    _homePage = widget.homePage ?? WelcomePage();
   }
 
   @override

@@ -7,7 +7,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:sire_frontend/constants.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
-import 'package:sire_frontend/pages/home.dart';
+import 'package:sire_frontend/pages/welcome.dart';
 
 const homePeekDesktop = 210.0;
 const homePeekMobile = 60.0;

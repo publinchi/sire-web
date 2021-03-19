@@ -9,7 +9,7 @@ import 'package:flutter/services.dart';
 
 import 'package:sire_frontend/data/options.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
-import 'package:sire_frontend/home.dart';
+import 'package:sire_frontend/pages/home.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
 import 'package:sire_frontend/layout/image_placeholder.dart';
 import 'package:sire_frontend/layout/text_scale.dart';

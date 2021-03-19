@@ -10,8 +10,8 @@ import 'package:sire_frontend/data/options.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
 import 'package:sire_frontend/layout/letter_spacing.dart';
 import 'package:sire_frontend/colors.dart';
-import 'package:sire_frontend/home.dart';
-import 'package:sire_frontend/login.dart';
+import 'package:sire_frontend/pages/home.dart';
+import 'package:sire_frontend/pages/login.dart';
 import 'package:sire_frontend/routes.dart' as routes;
 
 /// The RallyApp is a MaterialApp with a theme and 2 routes.

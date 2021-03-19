@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
 import 'package:sire_frontend/charts/pie_chart.dart';
 import 'package:sire_frontend/data.dart';
-import 'package:sire_frontend/finance.dart';
+import 'package:sire_frontend/pages/cuotas.dart';
 import 'package:sire_frontend/tabs/sidebar.dart';
 
 /// A page that shows a summary of accounts.
@@ -24,7 +24,7 @@ class ContratosView extends StatelessWidget {
 
     return TabWithSidebar(
       restorationId: 'accounts_view',
-      mainView: FinancialCuotaView(
+      mainView: CuotasView(
         heroLabel: GalleryLocalizations.of(context).rallyAccountTotal,
         heroAmount: balanceTotal,
         segments: buildSegmentsFromContratoItems(items),
