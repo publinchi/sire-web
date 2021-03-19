@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:sire_frontend/deferred_widget.dart';
 import 'package:sire_frontend/main.dart';
 import 'package:sire_frontend/pages/demo.dart';
-import 'package:sire_frontend/pages/home.dart';
+import 'package:sire_frontend/pages/welcome.dart';
 import 'package:sire_frontend/app.dart' deferred as rally;
 import 'package:sire_frontend/routes.dart' as rally_routes;
 
