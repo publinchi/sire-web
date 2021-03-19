@@ -19,6 +19,8 @@ import 'package:http/http.dart' as http;
 import 'package:sire_frontend/layout/text_scale.dart';
 
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
+import 'package:sire_frontend/main.dart';
+import 'package:sire_frontend/pages/camara.dart';
 
 class CuotasView extends StatelessWidget {
   const CuotasView({
@@ -348,7 +350,14 @@ class _DetailedCuotasCard extends StatelessWidget {
         primary: Colors.black,
         padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
-      onPressed: () {},
+      onPressed: () => {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TakePictureScreen
+            (camera: firstCamera,),
+          ),
+        )
+      },
       child: Column(
         children: [
           Container(
