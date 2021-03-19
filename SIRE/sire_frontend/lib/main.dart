@@ -2,13 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart' show timeDilation;
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
 import 'package:flutter_localized_locales/flutter_localized_locales.dart';
 import 'package:sire_frontend/routes.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:sire_frontend/constants.dart';
 import 'package:sire_frontend/data/options.dart';
 import 'package:sire_frontend/pages/backdrop.dart';
@@ -16,8 +16,17 @@ import 'package:sire_frontend/pages/splash.dart';
 import 'package:sire_frontend/themes/gallery_theme_data.dart';
 export 'package:sire_frontend/data/demos.dart' show pumpDeferredLibraries;
 
-void main() {
-  GoogleFonts.config.allowRuntimeFetching = false;
+CameraDescription firstCamera;
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Obtain a list of the available cameras on the device.
+  final cameras = await availableCameras();
+
+  // Get a specific camera from the list of available cameras.
+  firstCamera = cameras.first;
+
   runApp(const GalleryApp());
 }
 
