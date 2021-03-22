@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sire_frontend/colors.dart';
 import 'package:sire_frontend/data/options.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
@@ -11,6 +12,7 @@ import 'package:sire_frontend/layout/text_scale.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -147,12 +149,14 @@ class _MainView extends StatelessWidget {
   final Image imageController;
   final TextEditingController fechaCuotaController;
   final TextEditingController valorCuotaController;
+  final TextEditingController nroDocumentController;
 
   const _MainView({
     Key key,
     this.imageController,
     this.fechaCuotaController,
     this.valorCuotaController,
+    this.nroDocumentController,
   }) : super(key: key);
 
   Future<void> _send(BuildContext context) async {
@@ -206,6 +210,10 @@ class _MainView extends StatelessWidget {
           maxWidth: desktopMaxWidth,
           valorCuotaController: valorCuotaController,
         ),
+        const SizedBox(height: 12),
+        _NroDocumentCuotaInput(
+          nroDocumentController: nroDocumentController,
+        ),
         _SendButton(
           maxWidth: desktopMaxWidth,
           onTap: () {
@@ -224,6 +232,10 @@ class _MainView extends StatelessWidget {
         const SizedBox(height: 10),
         _ValorCuotaInput(
           valorCuotaController: valorCuotaController,
+        ),
+        const SizedBox(height: 10),
+        _NroDocumentCuotaInput(
+          nroDocumentController: nroDocumentController,
         ),
         const SizedBox(height: 12),
         _SendButton(
@@ -254,7 +266,7 @@ class _MainView extends StatelessWidget {
 
 class _FechaCuotaInput extends StatelessWidget {
 
-  const _FechaCuotaInput({
+  _FechaCuotaInput({
     Key key,
     this.maxWidth,
     this.fechaCuotaController,
@@ -262,6 +274,7 @@ class _FechaCuotaInput extends StatelessWidget {
 
   final double maxWidth;
   final TextEditingController fechaCuotaController;
+  final format = DateFormat("dd-MM-yyyy");
 
   @override
   Widget build(BuildContext context) {
@@ -269,12 +282,19 @@ class _FechaCuotaInput extends StatelessWidget {
       alignment: Alignment.center,
       child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
-        child: TextField(
-          textInputAction: TextInputAction.next,
-          controller: fechaCuotaController,
-          decoration: InputDecoration(
-            labelText: 'Fecha Recibo',//GalleryLocalizations.of(context).rallyLoginUsername,
+        child: Column(children: <Widget>[
+          DateTimeField(
+              textInputAction: TextInputAction.next,
+              controller: fechaCuotaController,
+              decoration: InputDecoration(
+                labelText: 'Fecha Recibo',//GalleryLocalizations.of(context).rallyLoginUsername,
+              ),
+              format: format,
+              onShowPicker: (context, currentValue) {
+                return showDatePicker(context: context, initialDate: currentValue ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
+              }
           ),
+        ],
         ),
       ),
     );
@@ -306,6 +326,35 @@ class _ValorCuotaInput extends StatelessWidget {
             labelText: 'Valor Recibo',//GalleryLocalizations.of(context).rallyLoginPassword,
           ),
           obscureText: false,
+        ),
+      ),
+    );
+  }
+}
+
+class _NroDocumentCuotaInput extends StatelessWidget {
+
+  const _NroDocumentCuotaInput({
+    Key key,
+    this.maxWidth,
+    this.nroDocumentController,
+  }) : super(key: key);
+
+  final double maxWidth;
+  final TextEditingController nroDocumentController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
+        child: TextField(
+          textInputAction: TextInputAction.next,
+          controller: nroDocumentController,
+          decoration: InputDecoration(
+            labelText: 'Nro. Documento',//GalleryLocalizations.of(context).rallyLoginPassword,
+          ),
         ),
       ),
     );
