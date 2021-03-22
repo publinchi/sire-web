@@ -137,8 +137,9 @@ class DisplayPictureScreen extends StatelessWidget {
         ),
         body: _MainView(
           imageController: Image.file(File(imagePath)),
-          fechaCuotaController: fechaCuotaController,
-          valorCuotaController: valorCuotaController,
+          imagePath: imagePath,
+          fechaReciboController: fechaCuotaController,
+          valorReciboController: valorCuotaController,
         ),
       ),
     );
@@ -147,47 +148,84 @@ class DisplayPictureScreen extends StatelessWidget {
 
 class _MainView extends StatelessWidget {
   final Image imageController;
-  final TextEditingController fechaCuotaController;
-  final TextEditingController valorCuotaController;
+  final String imagePath;
+  final TextEditingController fechaReciboController;
+  final TextEditingController valorReciboController;
   final TextEditingController nroDocumentController;
 
   const _MainView({
     Key key,
     this.imageController,
-    this.fechaCuotaController,
-    this.valorCuotaController,
+    this.imagePath,
+    this.fechaReciboController,
+    this.valorReciboController,
     this.nroDocumentController,
   }) : super(key: key);
 
   Future<void> _send(BuildContext context) async {
-    print('fechaCuota -> ' + fechaCuotaController.text);
-    print('valorCuota -> ' + valorCuotaController.value.text);
+    print('fechaRecibo -> ' + fechaReciboController.text);
+    print('valorRecibo -> ' + valorReciboController.value.text);
 
     var domain = 'sire.bmcmotors.com.ec';
     var port = '8000';
-    var path = '/cuota/';
+    var path = '/medias/';
     var uri = Uri.http('$domain:$port', path);
-    var body = json.encode(
-        {
-          'fecha_cuota': fechaCuotaController.text,
-          'valor_cuota': valorCuotaController.text
-        }
-    );
+
     var headers = <String,String>{
       'Content-type' : 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'file_name': '1-1-1.jpg',
+      'file_type': 'image/jpeg'
     };
-    var response = await http.post(uri, body: body, headers: headers);
-    if(response.statusCode == 200) {
-      int codCliente = int.parse(json.decode(response.body)['cod_cliente']);
+
+    var response = await http.post(
+        uri,
+        body: File(this.imagePath).readAsBytesSync(),
+        headers: headers
+    );
+
+    print('response.statusCode -> ' + response.statusCode.toString());
+
+    if(response.statusCode == 201) {
+      int id = json.decode(response.body)['id'];
+      print('id -> ' + id.toString());
+
+      /*path = '/recibos/';
+      uri = Uri.http('$domain:$port', path);
+
+      var body = json.encode(
+          {
+            'id': id,
+            'fecha_recibo': fechaReciboController.text,
+            'cod_cliente': "1",
+            'num_contrato': 1,
+            'nro_cuota': 1,
+            'cod_forma_pago': "EFECTIVO",
+            'nro_recibo_documento': "12222",
+            "valor_recibo": double.parse(valorReciboController.value.text),
+            "valor_cuota": 101
+          }
+      );
+
+      var headers = <String,String>{
+        'Content-type' : 'application/json',
+        'Accept': 'application/json',
+      };
+
+      var response2 = await http.post(uri, body: body, headers: headers);
+
+      if(response2.statusCode == 201) {
+        print('OK');
+      }*/
+
       //Navigator.push(context, new MaterialPageRoute(
       //  builder: (BuildContext context) => new HomePage(
       //      codCte: clienodCliente),
       //)
       // );
     } else {
-      fechaCuotaController.clear();
-      valorCuotaController.clear();
+      //fechaCuotaController.clear();
+      //valorCuotaController.clear();
     }
   }
 
@@ -203,12 +241,12 @@ class _MainView extends StatelessWidget {
         const SizedBox(height: 12),
         _FechaCuotaInput(
           maxWidth: desktopMaxWidth,
-          fechaCuotaController: fechaCuotaController,
+          fechaCuotaController: fechaReciboController,
         ),
         const SizedBox(height: 12),
         _ValorCuotaInput(
           maxWidth: desktopMaxWidth,
-          valorCuotaController: valorCuotaController,
+          valorCuotaController: valorReciboController,
         ),
         const SizedBox(height: 12),
         _NroDocumentCuotaInput(
@@ -227,11 +265,11 @@ class _MainView extends StatelessWidget {
         imageController,
         const SizedBox(height: 10),
         _FechaCuotaInput(
-          fechaCuotaController: fechaCuotaController,
+          fechaCuotaController: fechaReciboController,
         ),
         const SizedBox(height: 10),
         _ValorCuotaInput(
-          valorCuotaController: valorCuotaController,
+          valorCuotaController: valorReciboController,
         ),
         const SizedBox(height: 10),
         _NroDocumentCuotaInput(
