@@ -350,13 +350,11 @@ class _NroDocumentCuotaInput extends StatelessWidget {
       child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
         child: TextField(
-          inputFormatters: [CurrencyTextInputFormatter()],
-          keyboardType: TextInputType.number,
+          textInputAction: TextInputAction.next,
           controller: nroDocumentController,
           decoration: InputDecoration(
             labelText: 'Nro. Documento',//GalleryLocalizations.of(context).rallyLoginPassword,
           ),
-          obscureText: false,
         ),
       ),
     );
