@@ -314,6 +314,7 @@ class EntityCuotasDetailsPage extends StatelessWidget {
 }
 
 class _DetailedCuotasCard extends StatelessWidget {
+
   const _DetailedCuotasCard({
     @required this.codEmpresa,
     @required this.codCliente,
@@ -353,8 +354,11 @@ class _DetailedCuotasCard extends StatelessWidget {
       onPressed: () => {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => TakePictureScreen
-            (camera: firstCamera,),
+          MaterialPageRoute(
+              builder: (context) =>
+                  TakePictureScreen(
+                      camera: firstCamera
+                  )
           ),
         )
       },
