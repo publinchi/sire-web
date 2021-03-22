@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:sire_frontend/colors.dart';
 import 'package:sire_frontend/data/options.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
@@ -11,6 +12,7 @@ import 'package:sire_frontend/layout/text_scale.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -254,7 +256,7 @@ class _MainView extends StatelessWidget {
 
 class _FechaCuotaInput extends StatelessWidget {
 
-  const _FechaCuotaInput({
+  _FechaCuotaInput({
     Key key,
     this.maxWidth,
     this.fechaCuotaController,
@@ -262,6 +264,7 @@ class _FechaCuotaInput extends StatelessWidget {
 
   final double maxWidth;
   final TextEditingController fechaCuotaController;
+  final format = DateFormat("yyyy-MM-dd");
 
   @override
   Widget build(BuildContext context) {
@@ -269,12 +272,19 @@ class _FechaCuotaInput extends StatelessWidget {
       alignment: Alignment.center,
       child: Container(
         constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
-        child: TextField(
-          textInputAction: TextInputAction.next,
-          controller: fechaCuotaController,
-          decoration: InputDecoration(
-            labelText: 'Fecha Recibo',//GalleryLocalizations.of(context).rallyLoginUsername,
+        child: Column(children: <Widget>[
+          DateTimeField(
+            textInputAction: TextInputAction.next,
+            controller: fechaCuotaController,
+            decoration: InputDecoration(
+              labelText: 'Fecha Recibo',//GalleryLocalizations.of(context).rallyLoginUsername,
+            ),
+            format: format,
+            onShowPicker: (context, currentValue) {
+              return showDatePicker(context: context, initialDate: currentValue ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
+            }
           ),
+        ],
         ),
       ),
     );
