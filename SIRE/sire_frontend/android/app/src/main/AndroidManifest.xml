@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.sire.sire_frontend">
    <application
+        android:usesCleartextTraffic="true"
         android:label="sire_frontend"
         android:icon="@mipmap/ic_launcher">
         <activity
