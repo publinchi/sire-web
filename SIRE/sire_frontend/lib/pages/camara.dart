@@ -149,12 +149,14 @@ class _MainView extends StatelessWidget {
   final Image imageController;
   final TextEditingController fechaCuotaController;
   final TextEditingController valorCuotaController;
+  final TextEditingController nroDocumentController;
 
   const _MainView({
     Key key,
     this.imageController,
     this.fechaCuotaController,
     this.valorCuotaController,
+    this.nroDocumentController,
   }) : super(key: key);
 
   Future<void> _send(BuildContext context) async {
@@ -208,6 +210,10 @@ class _MainView extends StatelessWidget {
           maxWidth: desktopMaxWidth,
           valorCuotaController: valorCuotaController,
         ),
+        const SizedBox(height: 12),
+        _NroDocumentCuotaInput(
+          nroDocumentController: nroDocumentController,
+        ),
         _SendButton(
           maxWidth: desktopMaxWidth,
           onTap: () {
@@ -226,6 +232,10 @@ class _MainView extends StatelessWidget {
         const SizedBox(height: 10),
         _ValorCuotaInput(
           valorCuotaController: valorCuotaController,
+        ),
+        const SizedBox(height: 10),
+        _NroDocumentCuotaInput(
+          nroDocumentController: nroDocumentController,
         ),
         const SizedBox(height: 12),
         _SendButton(
@@ -264,7 +274,7 @@ class _FechaCuotaInput extends StatelessWidget {
 
   final double maxWidth;
   final TextEditingController fechaCuotaController;
-  final format = DateFormat("yyyy-MM-dd");
+  final format = DateFormat("dd-MM-yyyy");
 
   @override
   Widget build(BuildContext context) {
@@ -274,15 +284,15 @@ class _FechaCuotaInput extends StatelessWidget {
         constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
         child: Column(children: <Widget>[
           DateTimeField(
-            textInputAction: TextInputAction.next,
-            controller: fechaCuotaController,
-            decoration: InputDecoration(
-              labelText: 'Fecha Recibo',//GalleryLocalizations.of(context).rallyLoginUsername,
-            ),
-            format: format,
-            onShowPicker: (context, currentValue) {
-              return showDatePicker(context: context, initialDate: currentValue ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
-            }
+              textInputAction: TextInputAction.next,
+              controller: fechaCuotaController,
+              decoration: InputDecoration(
+                labelText: 'Fecha Recibo',//GalleryLocalizations.of(context).rallyLoginUsername,
+              ),
+              format: format,
+              onShowPicker: (context, currentValue) {
+                return showDatePicker(context: context, initialDate: currentValue ?? DateTime.now(), firstDate: DateTime(1900), lastDate: DateTime(2100));
+              }
           ),
         ],
         ),
@@ -314,6 +324,37 @@ class _ValorCuotaInput extends StatelessWidget {
           controller: valorCuotaController,
           decoration: InputDecoration(
             labelText: 'Valor Recibo',//GalleryLocalizations.of(context).rallyLoginPassword,
+          ),
+          obscureText: false,
+        ),
+      ),
+    );
+  }
+}
+
+class _NroDocumentCuotaInput extends StatelessWidget {
+
+  const _NroDocumentCuotaInput({
+    Key key,
+    this.maxWidth,
+    this.nroDocumentController,
+  }) : super(key: key);
+
+  final double maxWidth;
+  final TextEditingController nroDocumentController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Container(
+        constraints: BoxConstraints(maxWidth: maxWidth ?? double.infinity),
+        child: TextField(
+          inputFormatters: [CurrencyTextInputFormatter()],
+          keyboardType: TextInputType.number,
+          controller: nroDocumentController,
+          decoration: InputDecoration(
+            labelText: 'Nro. Documento',//GalleryLocalizations.of(context).rallyLoginPassword,
           ),
           obscureText: false,
         ),
