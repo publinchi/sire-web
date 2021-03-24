@@ -266,7 +266,7 @@ class _GalleryHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Header(
       color: Theme.of(context).colorScheme.primaryVariant,
-      text: GalleryLocalizations.of(context).homeHeaderGallery,
+      text: ('BMC'),//GalleryLocalizations.of(context).homeHeaderGallery,
     );
   }
 }
