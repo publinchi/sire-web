@@ -315,7 +315,7 @@ class _MainView extends StatelessWidget {
 
       Navigator.push(context, new MaterialPageRoute(
         builder: (BuildContext context) => new HomePage(
-            codCliente: int.parse(idCliente)
+            numContrato: idContrato
         ),
       )
       );
