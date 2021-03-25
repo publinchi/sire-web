@@ -65,6 +65,12 @@ dev_dependencies:
   string_scanner: ^1.1.0
   test: ^1.16.0
   web_benchmarks: ^0.0.4
+  flutter_launcher_icons:
+
+flutter_icons:
+  image_path: 'images/Sire_Pagos.png'
+  android: true
+  ios: true
 
 dependency_overrides:
   path_provider: ^2.0.0-nullsafety.1
@@ -303,6 +309,7 @@ flutter:
     - packages/shrine_images/35-0.jpg
     - packages/shrine_images/36-0.jpg
     - packages/shrine_images/37-0.jpg
+    - images/Sire_Pagos.png
 
   generate: true
   fonts:
