@@ -6,7 +6,6 @@ import 'package:animations/animations.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:sire_frontend/charts/line_chart.dart';
 import 'package:sire_frontend/charts/pie_chart.dart';
 import 'package:sire_frontend/charts/vertical_fraction_bar.dart';
 import 'package:sire_frontend/colors.dart';
@@ -381,7 +380,7 @@ class _DetailedCuotasCard extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: _EventCuotaTitle(title: actualizoPor),
+                  child: _EventCuotaTitle(title: nroCuota.toString()),
                 ),
                 _EventCuotaDate(date: fechaCuota),
                 Expanded(
@@ -400,7 +399,7 @@ class _DetailedCuotasCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _EventCuotaTitle(title: actualizoPor),
+                    _EventCuotaTitle(title: nroCuota.toString()),
                     _EventCuotaDate(date: fechaCuota),
                   ],
                 ),
