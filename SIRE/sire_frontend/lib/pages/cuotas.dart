@@ -205,7 +205,7 @@ EntityCuotasView buildFinancialEntityFromContratoData(
   return EntityCuotasView(
     suffix: const Icon(Icons.chevron_right, color: Colors.grey),
     title: model.numContrato.toString(),
-    subtitle: '• • • • • • $shortAccountNumber',
+    subtitle: '$shortAccountNumber',
     semanticsLabel: GalleryLocalizations.of(context).rallyAccountAmount(
       model.numContrato,
       shortAccountNumber,
