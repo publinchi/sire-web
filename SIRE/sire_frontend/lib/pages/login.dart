@@ -126,6 +126,7 @@ class _MainView extends StatelessWidget {
         ),
       ];
     } else {
+      final desktopMaxWidth = 400.0 + 100.0 * (cappedTextScale(context) - 1);
       listViewChildren = [
         const _SmallLogo(),
         _UsernameInput(
@@ -135,7 +136,8 @@ class _MainView extends StatelessWidget {
         _PasswordInput(
           passwordController: passwordController,
         ),
-        _ThumbButton(
+        _LoginButton(
+          maxWidth: desktopMaxWidth,
           onTap: () {
             _login(context);
           },
@@ -231,15 +233,12 @@ class _SmallLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 64),
       child: SizedBox(
         height: 160,
         child: ExcludeSemantics(
-          child: FadeInImagePlaceholder(
-            image: AssetImage('logo.png', package: 'rally_assets'),
-            placeholder: SizedBox.shrink(),
-          ),
+          child: Image.asset('images/Sire_Pagos.png'),
         ),
       ),
     );
@@ -266,7 +265,7 @@ class _UsernameInput extends StatelessWidget {
           textInputAction: TextInputAction.next,
           controller: usernameController,
           decoration: InputDecoration(
-            labelText: GalleryLocalizations.of(context).rallyLoginUsername,
+            labelText: ('Número de Contrato'),//GalleryLocalizations.of(context).rallyLoginUsername,
           ),
         ),
       ),
@@ -293,7 +292,7 @@ class _PasswordInput extends StatelessWidget {
         child: TextField(
           controller: passwordController,
           decoration: InputDecoration(
-            labelText: GalleryLocalizations.of(context).rallyLoginPassword,
+            labelText: ('Clave de Usuario'),//GalleryLocalizations.of(context).rallyLoginPassword,
           ),
           obscureText: true,
         ),
