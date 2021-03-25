@@ -90,10 +90,10 @@ class _MainView extends StatelessWidget {
     };
     var response = await http.post(uri, body: body, headers: headers);
     if(response.statusCode == 200) {
-      int codCliente = int.parse(json.decode(response.body)['cod_cliente']);
+      int numContrato = json.decode(response.body)['num_contrato'];
       Navigator.push(context, new MaterialPageRoute(
         builder: (BuildContext context) => new HomePage(
-            codCliente: codCliente),
+            numContrato: numContrato),
       ));
     } else {
       usernameController.clear();
