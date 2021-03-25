@@ -233,15 +233,12 @@ class _SmallLogo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return Padding(
       padding: EdgeInsets.symmetric(vertical: 64),
       child: SizedBox(
         height: 160,
         child: ExcludeSemantics(
-          child: FadeInImagePlaceholder(
-            image: AssetImage('logo.png', package: 'rally_assets'),
-            placeholder: SizedBox.shrink(),
-          ),
+          child: Image.asset('images/Sire_Pagos.png'),
         ),
       ),
     );
