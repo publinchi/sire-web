@@ -310,6 +310,7 @@ flutter:
     - packages/shrine_images/36-0.jpg
     - packages/shrine_images/37-0.jpg
     - images/Sire_Pagos.png
+    - images/rally_card.png
 
   generate: true
   fonts:
