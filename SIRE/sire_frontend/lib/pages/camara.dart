@@ -404,7 +404,7 @@ class _FechaCuotaInput extends StatelessWidget {
 
   final double maxWidth;
   final TextEditingController fechaCuotaController;
-  final format = DateFormat("dd-MM-yyyy");
+  final format = DateFormat("dd/MM/yyyy");
 
   @override
   Widget build(BuildContext context) {
