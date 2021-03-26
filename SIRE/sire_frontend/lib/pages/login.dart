@@ -385,10 +385,10 @@ class _LoginButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 30),
         child: Row(
           children: [
-            const Icon(Icons.check_circle_outline,
-                color: RallyColors.buttonColor),
-            const SizedBox(width: 12),
-            Text(GalleryLocalizations.of(context).rallyLoginRememberMe),
+            //const Icon(Icons.check_circle_outline,
+            //    color: RallyColors.buttonColor),
+            //const SizedBox(width: 12),
+            //Text(GalleryLocalizations.of(context).rallyLoginRememberMe),
             const Expanded(child: SizedBox.shrink()),
             _FilledButton(
               text: GalleryLocalizations.of(context).rallyLoginButtonLogin,
