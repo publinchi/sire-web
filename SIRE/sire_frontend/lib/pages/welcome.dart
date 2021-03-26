@@ -77,8 +77,7 @@ class WelcomePage extends StatelessWidget {
         demo: studyDemos['rally'],
         textColor: RallyColors.accountColors[0],
         asset: const AssetImage(
-          'assets/studies/rally_card.png',
-          package: 'flutter_gallery_assets',
+          'images/rally_card.png',
         ),
         assetColor: const Color(0xFFD1F2E6),
         assetDark: const AssetImage(
