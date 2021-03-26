@@ -186,7 +186,7 @@ class DisplayPictureScreen extends StatelessWidget {
       return;
     }
 
-    if(valorCuota != double.parse(valorReciboController.value.text)) {
+    if(valorCuota != double.parse(valorReciboController.value.text.replaceAll(',', ''))) {
       _showMyDialog(context, 'Advertencia', 'Valor del Recibo incorrecto.');
       return;
     }
@@ -228,7 +228,7 @@ class DisplayPictureScreen extends StatelessWidget {
             'nro_cuota': idCuota,
             'cod_forma_pago': "EFECTIVO",
             'nro_recibo_documento': nroDocumentController.text,
-            "valor_recibo": double.parse(valorReciboController.value.text),
+            "valor_recibo": double.parse(valorReciboController.value.text.replaceAll(',', '')),
             "valor_cuota": valorCuota
           }
       );
