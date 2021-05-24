@@ -17,6 +17,7 @@ import 'package:sire_frontend/app.dart';
 import 'package:sire_frontend/colors.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:sire_frontend/pages/otp.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage();
@@ -92,7 +93,7 @@ class _MainView extends StatelessWidget {
     if(response.statusCode == 200) {
       int numContrato = json.decode(response.body)['num_contrato'];
       Navigator.push(context, new MaterialPageRoute(
-        builder: (BuildContext context) => new HomePage(
+        builder: (BuildContext context) => new OtpPage(
             numContrato: numContrato),
       ));
     } else {
