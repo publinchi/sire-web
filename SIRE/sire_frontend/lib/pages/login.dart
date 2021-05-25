@@ -96,7 +96,7 @@ class _MainView extends StatelessWidget {
           new MaterialPageRoute(
             builder: (BuildContext context) =>
             new HomePage(
-                numContrato: numContrato,
+              numContrato: numContrato,
             ),
           )
       );
