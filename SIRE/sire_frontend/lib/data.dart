@@ -171,7 +171,7 @@ class DetailedCuotaData {
     this.valorCuota,
     this.saldoCuota,
     this.tipoCuota,
-    this.estado,
+    this.estado_cuota,
     this.fechaEstado,
     this.actualizoPor,
     this.fechaActualizacion,
@@ -185,7 +185,7 @@ class DetailedCuotaData {
   final double valorCuota;
   final double saldoCuota;
   final String tipoCuota;
-  final String estado;
+  final String estado_cuota;
   final String fechaEstado;
   final String actualizoPor;
   final String fechaActualizacion;
@@ -200,7 +200,7 @@ class DetailedCuotaData {
       valorCuota: json['valor_cuota'] * 1.0,
       saldoCuota: json['saldo_cuota'] * 1.0,
       tipoCuota: json['tipo_cuota'],
-      estado: json['estado'],
+      estado_cuota: json['estado_cuota'],
       fechaEstado: json['fecha_estado'],
       actualizoPor: json['actualizo_por'],
       fechaActualizacion: json['fecha_actualizacion'],
@@ -409,12 +409,12 @@ class DummyDataService {
     return <String>[
       //GalleryLocalizations.of(context).rallySettingsManageAccounts,
       //GalleryLocalizations.of(context).rallySettingsTaxDocuments,
-      GalleryLocalizations.of(context).rallySettingsPasscodeAndTouchId,
+      //GalleryLocalizations.of(context).rallySettingsPasscodeAndTouchId,
       //GalleryLocalizations.of(context).rallySettingsNotifications,
       //GalleryLocalizations.of(context).rallySettingsPersonalInformation,
       //GalleryLocalizations.of(context).rallySettingsPaperlessSettings,
       //GalleryLocalizations.of(context).rallySettingsFindAtms,
-      GalleryLocalizations.of(context).rallySettingsHelp,
+      //GalleryLocalizations.of(context).rallySettingsHelp,
       GalleryLocalizations.of(context).rallySettingsSignOut,
     ];
   }

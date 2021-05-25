@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:sire_frontend/colors.dart';
 import 'package:sire_frontend/data/options.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
 import 'package:sire_frontend/layout/text_scale.dart';
@@ -13,7 +12,8 @@ import 'package:http/http.dart' as http;
 
 import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
-import 'package:sire_frontend/pages/home.dart';
+
+import 'home.dart';
 
 class TakePictureScreen extends StatefulWidget {
   final CameraDescription camera;
@@ -105,6 +105,7 @@ class TakePictureScreenState extends State<TakePictureScreen> with RestorationMi
               context,
               MaterialPageRoute(
                   builder: (context) => DisplayPictureScreen(
+                      cameraController: _controller,
                       imagePath: image?.path,
                       fechaReciboController: _fechaReciboController.value,
                       valorReciboController: _valorReciboController.value,
@@ -129,6 +130,7 @@ class DisplayPictureScreen extends StatelessWidget {
 
   const DisplayPictureScreen({
     Key key,
+    @required this.cameraController,
     @required this.imagePath,
     @required this.fechaReciboController,
     @required this.valorReciboController,
@@ -137,9 +139,9 @@ class DisplayPictureScreen extends StatelessWidget {
     @required this.idContrato,
     @required this.idCuota,
     @required this.valorCuota,
-    @required this.onTap,
   }) : super(key: key);
 
+  final CameraController cameraController;
   final String imagePath;
   final TextEditingController fechaReciboController;
   final TextEditingController valorReciboController;
@@ -148,7 +150,6 @@ class DisplayPictureScreen extends StatelessWidget {
   final int idContrato;
   final int idCuota;
   final double valorCuota;
-  final VoidCallback onTap;
 
   Future<void> _showMyDialog(BuildContext context, String titulo, String mensaje) async {
     return showDialog<void>(
@@ -256,11 +257,13 @@ class DisplayPictureScreen extends StatelessWidget {
 
       _showMyDialog(context, 'Envío Exitoso', 'Recibo Enviado Exitosamente.');
 
-      Navigator.push(context, new MaterialPageRoute(
-        builder: (BuildContext context) => new HomePage(
-            numContrato: idContrato
-        ),
-      )
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+            builder: (BuildContext context) => new HomePage(
+                numContrato: idContrato,
+            ),
+          )
       );
     } else {
       //fechaCuotaController.clear();

@@ -91,10 +91,15 @@ class _MainView extends StatelessWidget {
     var response = await http.post(uri, body: body, headers: headers);
     if(response.statusCode == 200) {
       int numContrato = json.decode(response.body)['num_contrato'];
-      Navigator.push(context, new MaterialPageRoute(
-        builder: (BuildContext context) => new HomePage(
-            numContrato: numContrato),
-      ));
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+            builder: (BuildContext context) =>
+            new HomePage(
+                numContrato: numContrato,
+            ),
+          )
+      );
     } else {
       usernameController.clear();
       passwordController.clear();
@@ -329,10 +334,10 @@ class _ThumbButtonState extends State<_ThumbButton> {
               if (event.logicalKey == LogicalKeyboardKey.enter ||
                   event.logicalKey == LogicalKeyboardKey.space) {
                 widget.onTap();
-                return true;
+                return KeyEventResult.handled;
               }
             }
-            return false;
+            return KeyEventResult.ignored;
           },
           onFocusChange: (hasFocus) {
             if (hasFocus) {

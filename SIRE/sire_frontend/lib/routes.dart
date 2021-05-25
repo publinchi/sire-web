@@ -1,10 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:sire_frontend/deferred_widget.dart';
 import 'package:sire_frontend/main.dart';
 import 'package:sire_frontend/pages/demo.dart';
-import 'package:sire_frontend/pages/welcome.dart';
-import 'package:sire_frontend/app.dart' deferred as rally;
+import 'package:sire_frontend/app.dart';
 import 'package:sire_frontend/routes.dart' as rally_routes;
 
 typedef PathWidgetBuilder = Widget Function(BuildContext, String);
@@ -32,7 +30,7 @@ class Path {
 }
 
 class RouteConfiguration {
-  /// List of [Path] to for route matching. When a named route is pushed with
+  /// List of [Path] to for route matching. WheHomen a named route is pushed with
   /// [Navigator.pushNamed], the route name is matched with the [Path.pattern]
   /// in the list below. As soon as there is a match, the associated builder
   /// will be returned. This means that the paths higher up in the list will
@@ -43,11 +41,8 @@ class RouteConfiguration {
           (context, match) => DemoPage(slug: match),
     ),
     Path(
-      r'^' + rally_routes.homeRoute,
-          (context, match) => StudyWrapper(
-        study: DeferredWidget(rally.loadLibrary,
-                () => rally.RallyApp()), // ignore: prefer_const_constructors
-      ),
+      r'^' + rally_routes.loginRoute,
+          (context, match) => RallyApp(),
     ),
     Path(
       r'^/',

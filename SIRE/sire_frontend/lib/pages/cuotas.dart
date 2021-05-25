@@ -15,7 +15,6 @@ import 'package:sire_frontend/data/options.dart';
 import 'package:sire_frontend/formatters.dart';
 import 'package:sire_frontend/layout/adaptive.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:sire_frontend/layout/text_scale.dart';
 
 import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
@@ -90,6 +89,7 @@ class EntityCuotasView extends StatelessWidget {
     @required this.semanticsLabel,
     @required this.amount,
     @required this.suffix,
+    @required this.cuotas,
   });
 
   final Color indicatorColor;
@@ -99,6 +99,7 @@ class EntityCuotasView extends StatelessWidget {
   final String semanticsLabel;
   final String amount;
   final Widget suffix;
+  final Future<List<DetailedCuotaData>> cuotas;
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +119,10 @@ class EntityCuotasView extends StatelessWidget {
         transitionDuration: const Duration(milliseconds: 350),
         transitionType: ContainerTransitionType.fade,
         openBuilder: (context, openContainer) =>
-            EntityCuotasDetailsPage(numContrato: int.parse(title)),
+            EntityCuotasDetailsPage(
+              numContrato: int.parse(title),
+              cuotas: cuotas,
+            ),
         openColor: RallyColors.primaryBackground,
         closedColor: RallyColors.primaryBackground,
         closedElevation: 0,
@@ -200,6 +204,7 @@ EntityCuotasView buildFinancialEntityFromContratoData(
     ContratoData model,
     int accountDataIndex,
     BuildContext context,
+    Future<List<DetailedCuotaData>> cuotas,
     ) {
   final amount = usdWithSignFormat(context).format(model.valorContrato);
   final formatter = DateFormat("dd/MM/yyyy");
@@ -216,48 +221,35 @@ EntityCuotasView buildFinancialEntityFromContratoData(
     ),
     indicatorColor: RallyColors.accountColor(accountDataIndex),
     indicatorFraction: 1,
-    amount: amount,
+    amount: "Consultar Cuotas",
+    cuotas: cuotas,
   );
 }
 
 List<EntityCuotasView> buildContratoDataListViews(
     List<ContratoData> items,
     BuildContext context,
+    Future<List<DetailedCuotaData>> cuotas,
     ) {
   return List<EntityCuotasView>.generate(
     items.length,
-        (i) => buildFinancialEntityFromContratoData(items[i], i, context),
+        (i) => buildFinancialEntityFromContratoData(
+        items[i],
+        i,
+        context,
+        cuotas
+    ),
   );
 }
 
 class EntityCuotasDetailsPage extends StatelessWidget {
 
-  EntityCuotasDetailsPage({this.numContrato});
+  EntityCuotasDetailsPage({this.numContrato, this.cuotas});
 
   final List<DetailedEventData> items =
   DummyDataService.getDetailedEventItems();
   final int numContrato;
-
-  Future<List<DetailedCuotaData>> getDetailedCuotaItems(int numContrato) async {
-    var domain = 'sire.bmcmotors.com.ec';
-    var port = '8000';
-    var path = '/cuotas/' + numContrato.toString();
-    var uri = Uri.http('$domain:$port', path);
-    final response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-      // If the server did return a 200 OK response,
-      // then parse the JSON.
-      Iterable l = json.decode(response.body)['items'];
-      List<DetailedCuotaData> detailedCuotaDatas = List<DetailedCuotaData>.from(
-          l.map((model) => DetailedCuotaData.fromJson(model)));
-      return detailedCuotaDatas;
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to load album');
-    }
-  }
+  final Future<List<DetailedCuotaData>> cuotas;
 
   @override
   Widget build(BuildContext context) {
@@ -265,7 +257,7 @@ class EntityCuotasDetailsPage extends StatelessWidget {
 
     return ApplyTextOptions(
         child: FutureBuilder<List<DetailedCuotaData>>(
-            future: getDetailedCuotaItems(numContrato),
+            future: cuotas,
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -304,8 +296,9 @@ class EntityCuotasDetailsPage extends StatelessWidget {
                                 valorCuota: detailedEventData.valorCuota,
                                 actualizoPor: detailedEventData.actualizoPor,
                                 codCliente: detailedEventData.codCliente,
-                                numContrato: detailedEventData.numContrato,
+                                numContrato: numContrato,
                                 nroCuota: detailedEventData.nroCuota,
+                                estadoCuota: detailedEventData.estado_cuota,
                               ),
                           ],
                         ),
@@ -323,32 +316,22 @@ class EntityCuotasDetailsPage extends StatelessWidget {
 class _DetailedCuotasCard extends StatelessWidget {
 
   const _DetailedCuotasCard({
-    @required this.codEmpresa,
     @required this.codCliente,
     @required this.numContrato,
     @required this.nroCuota,
     @required this.fechaCuota,
     @required this.valorCuota,
-    @required this.saldoCuota,
-    @required this.tipoCuota,
-    @required this.estado,
-    @required this.fechaEstado,
+    @required this.estadoCuota,
     @required this.actualizoPor,
-    @required this.fechaActualizacion,
   });
 
-  final String codEmpresa;
   final String codCliente;
   final int numContrato;
   final int nroCuota;
   final DateTime fechaCuota;
   final double valorCuota;
-  final double saldoCuota;
-  final String tipoCuota;
-  final String estado;
-  final String fechaEstado;
+  final String estadoCuota;
   final String actualizoPor;
-  final String fechaActualizacion;
 
   @override
   Widget build(BuildContext context) {
@@ -359,19 +342,20 @@ class _DetailedCuotasCard extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16),
       ),
       onPressed: () => {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  TakePictureScreen(
-                    camera: firstCamera,
-                    idCliente: codCliente,
-                    idContrato: numContrato,
-                    idCuota: nroCuota,
-                    valorCuota: valorCuota,
-                  )
-          ),
-        )
+        if(estadoCuota == "EN PLANILLA")
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    TakePictureScreen(
+                      camera: firstCamera,
+                      idCliente: codCliente,
+                      idContrato: numContrato,
+                      idCuota: nroCuota,
+                      valorCuota: valorCuota,
+                    )
+            ),
+          )
       },
       child: Column(
         children: [
@@ -390,7 +374,10 @@ class _DetailedCuotasCard extends StatelessWidget {
                   flex: 1,
                   child: Align(
                     alignment: AlignmentDirectional.centerEnd,
-                    child: _EventCuotaAmount(amount: valorCuota),
+                    child: _EventCuotaAmount(
+                      amount: valorCuota,
+                      estadoCuota: estadoCuota,
+                    ),
                   ),
                 ),
               ],
@@ -406,7 +393,10 @@ class _DetailedCuotasCard extends StatelessWidget {
                     _EventCuotaDate(date: fechaCuota),
                   ],
                 ),
-                _EventCuotaAmount(amount: valorCuota),
+                _EventCuotaAmount(
+                  amount: valorCuota,
+                  estadoCuota: estadoCuota,
+                ),
               ],
             ),
           ),
@@ -423,20 +413,50 @@ class _DetailedCuotasCard extends StatelessWidget {
 }
 
 class _EventCuotaAmount extends StatelessWidget {
-  const _EventCuotaAmount({Key key, @required this.amount}) : super(key: key);
+  const _EventCuotaAmount({
+    Key key,
+    @required this.amount,
+    @required this.estadoCuota,
+  }) : super(key: key);
 
   final double amount;
+  final String estadoCuota;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    return Text(
-      usdWithSignFormat(context).format(amount),
-      style: textTheme.bodyText1.copyWith(
-        fontSize: 20,
-        color: RallyColors.gray,
-      ),
-    );
+    if(estadoCuota == "RECIBIDO")
+      return Text(
+        usdWithSignFormat(context).format(amount),
+        style: textTheme.bodyText1.copyWith(
+          fontSize: 20,
+          color: Colors.yellow,
+        ),
+      );
+    else if(estadoCuota == "RECHAZADO")
+      return Text(
+        usdWithSignFormat(context).format(amount),
+        style: textTheme.bodyText1.copyWith(
+          fontSize: 20,
+          color: Colors.red,
+        ),
+      );
+    else if(estadoCuota == "CANCELADO")
+      return Text(
+        usdWithSignFormat(context).format(amount),
+        style: textTheme.bodyText1.copyWith(
+          fontSize: 20,
+          color: Colors.green,
+        ),
+      );
+    else
+      return Text(
+        usdWithSignFormat(context).format(amount),
+        style: textTheme.bodyText1.copyWith(
+          fontSize: 20,
+          color: RallyColors.gray,
+        ),
+      );
   }
 }
 

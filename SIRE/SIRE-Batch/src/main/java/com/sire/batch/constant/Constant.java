@@ -11,6 +11,8 @@ package com.sire.batch.constant;
  */
 public class Constant {
 
+    private Constant() {}
+
     public static final String AMPERSAND = "&";
     public static final String ARGUMENTS = "arguments";
     public static final String BATCH_IMPLEMENTATION = "batchImplementation";
@@ -62,6 +64,7 @@ public class Constant {
     public static final String TIMER_NAME = "timerName";
     public static final String TIMEOUT = "timeout";
     public static final String TIPO_COMPROBANTE = "tipoComprobante";
+    public static final String TOTAL_TIMERS = "Total timers: {}";
     public static final String TRES_D = "%3D";
     public static final String URL_AUTORIZACION = "urlAutorizacion";
     public static final String URL_RECEPCION = "urlRecepcion";

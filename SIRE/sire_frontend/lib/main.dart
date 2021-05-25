@@ -15,6 +15,7 @@ import 'package:sire_frontend/pages/backdrop.dart';
 import 'package:sire_frontend/pages/splash.dart';
 import 'package:sire_frontend/themes/gallery_theme_data.dart';
 export 'package:sire_frontend/data/demos.dart' show pumpDeferredLibraries;
+import 'package:sire_frontend/routes.dart' as routes;
 
 CameraDescription firstCamera;
 
@@ -27,7 +28,11 @@ Future<void> main() async {
   // Get a specific camera from the list of available cameras.
   firstCamera = cameras.first;
 
-  runApp(const GalleryApp());
+  runApp(
+      const GalleryApp(
+        initialRoute: routes.loginRoute,
+      )
+  );
 }
 
 class GalleryApp extends StatelessWidget {
@@ -69,7 +74,7 @@ class GalleryApp extends StatelessWidget {
               ...GalleryLocalizations.localizationsDelegates,
               LocaleNamesLocalizationsDelegate()
             ],
-            initialRoute: "/",
+            initialRoute: initialRoute,
             supportedLocales: GalleryLocalizations.supportedLocales,
             locale: GalleryOptions.of(context).locale,
             localeResolutionCallback: (locale, supportedLocales) {

@@ -33,12 +33,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin, RestorationMixin {
   int numContrato;
+  Future<List<ContratoData>> contratos;
+  Future<List<DetailedCuotaData>> cuotas;
 
   _HomePageState({
     this.numContrato,
   });
 
-  Future<List<ContratoData>> contratoDatas;
   TabController _tabController;
   RestorableInt tabIndex = RestorableInt(0);
 
@@ -77,9 +78,36 @@ class _HomePageState extends State<HomePage>
     }
   }
 
+  Future<List<DetailedCuotaData>> getDetailedCuotaItems(int numContrato) async {
+    var domain = 'sire.bmcmotors.com.ec';
+    var port = '8000';
+    var path = '/cuotas/' + numContrato.toString();
+    var uri = Uri.http('$domain:$port', path);
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      Iterable l = json.decode(response.body)['items'];
+      List<DetailedCuotaData> detailedCuotaDatas = List<DetailedCuotaData>.from(
+          l.map((model) => DetailedCuotaData.fromJson(model)));
+      return detailedCuotaDatas;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    contratos = getContratos(numContrato);
+    contratos.whenComplete(() =>
+        contratos.then((value) => {
+          cuotas = getDetailedCuotaItems(value.first.numContrato)
+        })
+    );
     _tabController = TabController(length: tabCount, vsync: this)
       ..addListener(() {
         // Set state to make sure that the [_RallyTab] widgets get updated when changing tabs.
@@ -97,7 +125,7 @@ class _HomePageState extends State<HomePage>
   }
 
   Widget getTabBarView(BuildContext context, bool isDesktop, ThemeData theme,
-      List contratoDatas) {
+      List contratoDatas, Future<List<DetailedCuotaData>> cuotas) {
     Widget tabBarView;
     if (isDesktop) {
       final isTextDirectionRtl =
@@ -153,7 +181,7 @@ class _HomePageState extends State<HomePage>
               quarterTurns: verticalRotation,
               child: TabBarView(
                 controller: _tabController,
-                children: _buildTabViews(contratoDatas).map(
+                children: _buildTabViews(contratoDatas, cuotas).map(
                       (widget) {
                     // Revert the rotation on the tab views.
                     return RotatedBox(
@@ -177,7 +205,7 @@ class _HomePageState extends State<HomePage>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: _buildTabViews(contratoDatas),
+              children: _buildTabViews(contratoDatas, cuotas),
             ),
           ),
         ],
@@ -194,7 +222,7 @@ class _HomePageState extends State<HomePage>
 
     return ApplyTextOptions(
         child: FutureBuilder<List<ContratoData>>(
-          future: getContratos(numContrato),
+          future: contratos,
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               //return Text(snapshot.data!.title);
@@ -215,7 +243,13 @@ class _HomePageState extends State<HomePage>
                     child: FocusTraversalGroup(
                       policy: OrderedTraversalPolicy(),
                       child:
-                      getTabBarView(context, isDesktop, theme, snapshot.data),
+                      getTabBarView(
+                        context,
+                        isDesktop,
+                        theme,
+                        snapshot.data,
+                        cuotas,
+                      ),
                     ),
                   ),
                 ),
@@ -281,10 +315,14 @@ class _HomePageState extends State<HomePage>
     ];
   }
 
-  List<Widget> _buildTabViews(List contratoDatas) {
+  List<Widget> _buildTabViews(List contratoDatas,
+      Future<List<DetailedCuotaData>> cuotas) {
     return [
       //OverviewView(),
-      ContratosView(contratoDatas: contratoDatas),
+      ContratosView(
+        contratoDatas: contratoDatas,
+        cuotas: cuotas,
+      ),
       //AccountsView(),
       //BillsView(),
       //BudgetsView(),

@@ -4,7 +4,6 @@
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_gen/gen_l10n/gallery_localizations.dart';
 import 'package:sire_frontend/charts/pie_chart.dart';
 import 'package:sire_frontend/data.dart';
 import 'package:sire_frontend/pages/cuotas.dart';
@@ -13,8 +12,9 @@ import 'package:sire_frontend/tabs/sidebar.dart';
 /// A page that shows a summary of accounts.
 class ContratosView extends StatelessWidget {
   var contratoDatas;
+  var cuotas;
 
-  ContratosView({this.contratoDatas});
+  ContratosView({this.contratoDatas, this.cuotas});
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +25,15 @@ class ContratosView extends StatelessWidget {
     return TabWithSidebar(
       restorationId: 'accounts_view',
       mainView: CuotasView(
-        heroLabel: GalleryLocalizations.of(context).rallyAccountTotal,
+        heroLabel: "Certificado de Compra", //GalleryLocalizations.of(context).rallyAccountTotal,
         heroAmount: balanceTotal,
         segments: buildSegmentsFromContratoItems(items),
         wholeAmount: balanceTotal,
-        financialEntityCards: buildContratoDataListViews(items, context),
+        financialEntityCards: buildContratoDataListViews(
+          items,
+          context,
+          cuotas,
+        ),
       ),
       sidebarItems: [
         for (UserDetailData item in detailItems)
