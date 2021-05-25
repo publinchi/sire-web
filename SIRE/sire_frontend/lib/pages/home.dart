@@ -74,7 +74,7 @@ class _HomePageState extends State<HomePage>
     } else {
       // If the server did not return a 200 OK response,
       // then throw an exception.
-      throw Exception('Failed to load album');
+      throw Exception('Falla al cargar contratos');
     }
   }
 
@@ -102,12 +102,15 @@ class _HomePageState extends State<HomePage>
   @override
   void initState() {
     super.initState();
-    contratos = getContratos(numContrato);
-    contratos.whenComplete(() =>
-        contratos.then((value) => {
-          cuotas = getDetailedCuotaItems(value.first.numContrato)
-        })
-    );
+    if(numContrato != null) {
+      contratos = getContratos(numContrato);
+      contratos.whenComplete(() =>
+          contratos.then((value) =>
+          {
+            cuotas = getDetailedCuotaItems(value.first.numContrato)
+          })
+      );
+    }
     _tabController = TabController(length: tabCount, vsync: this)
       ..addListener(() {
         // Set state to make sure that the [_RallyTab] widgets get updated when changing tabs.
