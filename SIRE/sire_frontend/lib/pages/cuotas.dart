@@ -367,7 +367,10 @@ class _DetailedCuotasCard extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 1,
-                  child: _EventCuotaTitle(title: nroCuota.toString()),
+                  child: _EventCuotaTitle(
+                    title: nroCuota.toString(),
+                    estadoCuota: estadoCuota,
+                  ),
                 ),
                 _EventCuotaDate(date: fechaCuota),
                 Expanded(
@@ -389,7 +392,10 @@ class _DetailedCuotasCard extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    _EventCuotaTitle(title: nroCuota.toString()),
+                    _EventCuotaTitle(
+                      title: nroCuota.toString(),
+                      estadoCuota: estadoCuota,
+                    ),
                     _EventCuotaDate(date: fechaCuota),
                   ],
                 ),
@@ -477,15 +483,20 @@ class _EventCuotaDate extends StatelessWidget {
 }
 
 class _EventCuotaTitle extends StatelessWidget {
-  const _EventCuotaTitle({Key key, @required this.title}) : super(key: key);
+  const _EventCuotaTitle({
+    Key key,
+    @required this.title,
+    @required this.estadoCuota,
+  }) : super(key: key);
 
   final String title;
+  final String estadoCuota;
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
     return Text(
-      title,
+      title + " " + estadoCuota,
       style: textTheme.bodyText2.copyWith(fontSize: 16),
     );
   }
