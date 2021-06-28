@@ -187,7 +187,10 @@ class DisplayPictureScreen extends StatelessWidget {
       return;
     }
 
-    if(valorCuota != double.parse(valorReciboController.value.text)) {
+    double valorReciboFinal = double.parse(valorReciboController.value.text
+        .replaceAll(",", ""));
+
+    if(valorCuota != valorReciboFinal) {
       _showMyDialog(context, 'Advertencia', 'Valor del Recibo incorrecto.');
       return;
     }
@@ -229,7 +232,7 @@ class DisplayPictureScreen extends StatelessWidget {
             'nro_cuota': idCuota,
             'cod_forma_pago': "EFECTIVO",
             'nro_recibo_documento': nroDocumentController.text,
-            "valor_recibo": double.parse(valorReciboController.value.text),
+            "valor_recibo": valorReciboFinal,
             "valor_cuota": valorCuota
           }
       );
@@ -261,7 +264,7 @@ class DisplayPictureScreen extends StatelessWidget {
           context,
           new MaterialPageRoute(
             builder: (BuildContext context) => new HomePage(
-                numContrato: idContrato,
+              numContrato: idContrato,
             ),
           )
       );
