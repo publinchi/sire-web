@@ -190,7 +190,7 @@ class DisplayPictureScreen extends StatelessWidget {
     double valorReciboFinal = double.parse(valorReciboController.value.text
         .replaceAll(",", ""));
 
-    if(valorCuota != valorReciboFinal) {
+    if(valorCuota < valorReciboFinal) {
       _showMyDialog(context, 'Advertencia', 'Valor del Recibo incorrecto.');
       return;
     }
